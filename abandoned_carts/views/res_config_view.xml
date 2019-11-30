@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<record id="view_sales_config_abandoned_carts" model="ir.ui.view">
+            <field name="name">sale.settings.abandoned.carts</field>
+            <field name="model">sale.config.settings</field>
+            <field name="inherit_id" ref="sale.view_sales_config"/>
+            <field name="arch" type="xml">
+            	<group name="Sale" position="after">	
+            		<group name='retention_period_group'>
+                        <label for="id" string="Retention Period"/>
+                        <div>
+                            <div name='retention_period'>
+                                <label for="order_retention_period" string='Delete Quotation older than '/>
+                                <field name="order_retention_period" class="oe_inline"/>
+                                <label for="order_retention_period" string=' days' class="oe_inline"/>
+                            </div>
+                        </div>
+                    </group>
+                </group>
+            </field>
+        </record>
+    </data>
+</openerp>
