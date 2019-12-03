@@ -14,7 +14,7 @@
         'wizard/customer_view.xml',
         
     ],
-    'author': "Nilesh Sheliya",
-    'website': "",
+    'author': "Nitrokey GmbH",
+    'website': "https://www.nitrokey.com",
     
 }
