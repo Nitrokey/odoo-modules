@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 {
-    'name': "Vat online Validation",
-    'description': 'System will validate vat number online for the customer only. If it fails to validate, system shows message to user.',
+    'name': "VAT online validation",
+    'description': 'This module will validate VAT number online for the ecommerce customers only. If it fails to validate, Odoo shows an error message to the customer.',
     'category': '',
     'version': '1.0',
     'depends': ['base_vat',
@@ -11,8 +11,8 @@
             'views/res_company_view.xml',
     ],
     
-    'author': "initOS",
-    'website': "http://www.initos.com",
+    'author': "Nitrokey GmbH",
+    'website': "https://www.nitrokey.com",
 
 
 }
