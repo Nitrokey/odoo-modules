@@ -2,7 +2,7 @@
 
 {
     'name': "VAT online validation",
-    'description': 'This module will validate VAT number online for the ecommerce customers only. If it fails to validate, Odoo shows an error message to the customer.',
+    'description': 'This module will validate VAT number online for the ecommerce customers. If it fails to validate, Odoo shows an error message to the customer.',
     'category': '',
     'version': '1.0',
     'depends': ['base_vat',
