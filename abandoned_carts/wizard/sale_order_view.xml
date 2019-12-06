@@ -6,6 +6,13 @@
             <field name="model">sale.order.wizard</field>
             <field name="arch" type="xml">
             	<form string="Sale Order">
+	            	<div>
+	            		<h3>
+	            			<label for="max_delete_limit" string='User can delete Maximum' style="padding-top: 0px; padding-right: 0px !important; padding-bottom: 0px !important;padding-left: 0px !important;"/>
+	            			<field name="max_delete_limit" class="oe_inline" readonly="1"/>
+	            			<label for="max_delete_limit" string=' abandoned items at a time' class="oe_inline"/>
+	            		</h3>
+	            	</div>
 	            	<group>
 	            		<field name="sale_order_ids" nolabel="1" widget="one2many_list"> 
 		            		<tree string="Sale Order" name="sale_order" create='false' edit='false'>

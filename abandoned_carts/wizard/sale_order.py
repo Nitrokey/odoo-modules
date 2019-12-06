@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+
 from openerp import models, fields, api, _
 from datetime import datetime
 from datetime import timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp.tools.safe_eval import safe_eval
+from openerp.exceptions import Warning
 
 class SaleOrderWizardLine(models.TransientModel):
     _name = 'sale.order.wizard.line'
@@ -30,11 +33,12 @@ class SaleOrderWizard(models.TransientModel):
     _name = 'sale.order.wizard'
     
     sale_order_ids = fields.One2many('sale.order.wizard.line','wizard_id', string='Sale Order')
+    max_delete_limit = fields.Integer("Max Record delete limit")
     
     @api.model
     def default_get(self,fields):
         res_config = self.env['sale.config.settings'].get_default_order_retention_period(fields)
-        date = datetime.now() - timedelta(days=res_config.get('order_retention_period'))
+        date = datetime.now() - timedelta(hours=res_config.get('order_retention_period'))
         
         res = super(SaleOrderWizard,self).default_get(fields)
         sales_team = self.env['crm.case.section'].search([('name','=','Website Sales')], limit=1)
@@ -42,8 +46,9 @@ class SaleOrderWizard(models.TransientModel):
         
         if sales_team:
             domain.append(('section_id','=',sales_team.id))
-            
-        current_quotation = self.env['sale.order'].search(domain)
+        
+        max_delete_batch_limit = safe_eval(self.env['ir.config_parameter'].get_param('abandoned_carts.max_delete_batch_limit', '2000'))    
+        current_quotation = self.env['sale.order'].search(domain, limit=max_delete_batch_limit)
         lines = []
         for order in current_quotation:
             lines.append((0,0,{'partner_id': order.partner_id.id, 
@@ -54,12 +59,15 @@ class SaleOrderWizard(models.TransientModel):
                                'state': order.state,
                                'order_id': order.id,
                                }))
-        res.update({'sale_order_ids':lines})
+        res.update({'sale_order_ids':lines, 'max_delete_limit': max_delete_batch_limit})
         return res
 
 
     @api.multi
     def action_remove_sale_order(self):
+        max_delete_batch_limit = safe_eval(self.env['ir.config_parameter'].get_param('abandoned_carts.max_delete_batch_limit', '2000'))
+        if len(self.sale_order_ids)>max_delete_batch_limit:
+            raise Warning('For safety reasons, you cannot delete more than %d sale orders together. You can re-open the wizard several times if needed.'%(max_delete_batch_limit))
         current_date = datetime.now()
         log_obj = self.env['removed.record.log']
         orders = self.sale_order_ids.mapped('order_id')
