@@ -46,8 +46,9 @@
         
         <menuitem id="menu_main_abandoned_log" 
         	name="Abandoned Log"
-        	sequence='90' 
-        	parent="base.menu_administration"/>
+        	sequence='25'
+        	groups="base.group_sale_manager" 
+        	parent="base.menu_base_partner"/>
         	
         <menuitem id="menu_removed_record_log" 
         	action="action_removed_record_log" 
