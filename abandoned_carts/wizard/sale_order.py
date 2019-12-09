@@ -36,6 +36,13 @@ class SaleOrderWizard(models.TransientModel):
     max_delete_limit = fields.Integer("Max Record delete limit")
     
     @api.model
+    def _cron_remove_abandoned_cart_order(self):
+        vals = self.default_get(['max_delete_limit','sale_order_ids'])
+        record = self.create(vals)
+        record.action_remove_sale_order()
+        return True
+    
+    @api.model
     def default_get(self,fields):
         res_config = self.env['sale.config.settings'].get_default_order_retention_period(fields)
         date = datetime.now() - timedelta(hours=res_config.get('order_retention_period'))
@@ -62,7 +69,6 @@ class SaleOrderWizard(models.TransientModel):
         res.update({'sale_order_ids':lines, 'max_delete_limit': max_delete_batch_limit})
         return res
 
-
     @api.multi
     def action_remove_sale_order(self):
         max_delete_batch_limit = safe_eval(self.env['ir.config_parameter'].get_param('abandoned_carts.max_delete_batch_limit', '2000'))
@@ -81,6 +87,6 @@ class SaleOrderWizard(models.TransientModel):
                     'user_id' : user_id,
                     })
             line.unlink()
-        return
+        return True
 
     

@@ -8,6 +8,7 @@
     'depends': ['website_sale','crm','account','project', 'calendar'],
     'data': [
         'security/ir.model.access.csv',
+        'data/ir_cron.xml',
         'views/res_config_view.xml',
         'views/removed_record_log_view.xml',
         'wizard/sale_order_view.xml',
