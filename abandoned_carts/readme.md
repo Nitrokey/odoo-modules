@@ -73,3 +73,4 @@ As soon as you have deleted the orders, customers will not be removed automatica
 go to Sales -> Abandoned Log:Abandoned Customer. Now you can see a window like in the picture below. When you click
 on the "bin" Symbol on the right side, you can skip the customer from the removing process. If you scoll down and can click on the red remove button, all customers will be deleted from this view.
 
+![Abandoned_customers](/abandoned_carts/images/4_abandoned_customer.png)
