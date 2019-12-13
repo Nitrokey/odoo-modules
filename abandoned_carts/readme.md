@@ -2,11 +2,11 @@ Abandoned carts
 ===============
 
 __Abandoned carts__ is a module for __Odoo__ which allows you to delete website
-Quotations when those are older than _x_ days.
+Quotations and  related partner records when those are older than a definable retention period.
 
 Features supported:
-* set a retention period in x hours (48 hours are preset)
-* type in a maximum of abandoned items to delete at a time (2000 items are preset)
+* Configure a retention period of x hours (48 hours are default)
+* Specify a maximum of abandoned items to be deleted at a time (2000 items are default) in order to avoid unresponsive server
 * delete x items at a time
 * check if there are customers with 0 orders left
 * see abandoned log for checkup
@@ -14,20 +14,9 @@ Features supported:
 Algorithm
 =========
 
-This module searches the database for orders  with all possible states 
-* draft = Draft Quotation
-* sent = Quotation Sent
-* cancel = Cancelled
-* waiting_date = Waiting Schedule
-* progress = Sales Order
-* manual = Sale to Invoice
-* shipping_except = Shipping Exception
-* invoice_except = Invoice Exception
-* done = Done
+This module identifies orders as abandoned (and to be deleted) if all of the following is true:
 
-and selects all orders with 
-
-"state = __draft__" and "sales = website_sales" and "date_of_order <= hours_from_retention_period" and "orders <= max_delete_batch". 
+"state = __draft__" and "sales = website_sales" and "date_of_order <= hours_from_retention_period"
 
 These orders will be displayed in "Abandoned orders". If the user confirms the deletion, these orders will be marked for the cron job to remove these in the database. if the cron job is set for a particular time, the orders will be deleted completely and remains only in the "Removed Log. If the user delete several orders one more time, the orders will be append to the deleted orders in the "Removed Log". First after the order is deleted the customer is able to appear in "Abandoned customer"
 
