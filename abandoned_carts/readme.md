@@ -53,7 +53,7 @@ Usage
 __How to find removable orders with draft-status?__
 
 go to Sales -> Abandoned Log:Abandoned Order. Now you can see a window like in the picture below. When you click
-on the "bin" Symbol on the right side, you can skip the order from the removing process. If you scoll down and can click on the red remove button, all orders will be deleted from removable orders.
+on the "bin" Symbol on the right side, you can skip the order from the removing-process. If you scoll down and click on the red remove button, all orders will be deleted from this view.
 
 ![Abandoned_order](/abandoned_carts/images/2_abandoned_order.png)
 
