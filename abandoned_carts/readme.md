@@ -75,9 +75,9 @@ Type in Name, Interval Number, Next Execution Date and Inverval Unit. Next Execu
 
 For example:
 
-"Number of calls = 1" and "Interval Unit = Days" means: It runs only one day.
+"Number of calls = 1", "Interval Unit = Days" and "next Execution Date = 12/16/2019 15:45:44" means: It runs only one day beginning with this date.
 
-"Number of calls = 7" and "Interval Unit = Days" means: It runs seven days.
+"Number of calls = 7", "Interval Unit = Days" and "next Execution Date = 12/16/2019 15:45:44" means: It runs seven days beginning with this date.
 
 "Number of calls is negative" means that this process will run every day. 
 
