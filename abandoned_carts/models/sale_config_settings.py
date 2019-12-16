@@ -7,7 +7,7 @@ class SaleConfigSettings(models.TransientModel):
     _inherit='sale.config.settings'
     
     order_retention_period = fields.Integer("Order older than X hours", default=48, help='Retention period for order. Afer X hours order are deleted automatically.')
-    max_delete_batch_limit = fields.Integer("Maximum record Delete limit", default=2000, help="User can delete maximum x records at a time.")
+    max_delete_batch_limit = fields.Integer("Maximum record Delete limit", default=2000, help="User can delete maximum x records(Quotation/Customer) at a time.")
     
     @api.model
     def get_default_order_retention_period(self, fields):

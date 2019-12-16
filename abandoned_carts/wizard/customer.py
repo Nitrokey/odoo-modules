@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api
 from datetime import datetime
+from openerp.tools.safe_eval import safe_eval
 
 class CustomerWizardLine(models.TransientModel):
     _name = 'customer.wizard.line'
@@ -16,11 +17,13 @@ class CustomerWizard(models.TransientModel):
     _name = 'customer.wizard'
     
     customer_ids = fields.One2many('customer.wizard.line','wizard_id', string='Customers')
+    max_delete_limit = fields.Integer("Max Record delete limit")
     
     @api.model
     def default_get(self,fields):
         res = super(CustomerWizard,self).default_get(fields)
-                
+        max_delete_batch_limit = safe_eval(self.env['ir.config_parameter'].get_param('abandoned_carts.max_delete_batch_limit', '2000'))
+        
         qry = """SELECT p.id
 FROM res_partner p
     LEFT JOIN crm_lead lead ON lead.partner_id = p.id
@@ -43,22 +46,27 @@ WHERE
     p.active and
     p.customer and
     p.id not in (select partner_id from res_users)
-    """
+    limit %d
+    """%(max_delete_batch_limit)
         partner_obj = self.env['res.partner']
-        if hasattr(partner_obj, 'newsletter_sendy'):
-            qry += " and not p.newsletter_sendy"   
+#         if hasattr(partner_obj, 'newsletter_sendy'):
+#             qry += " and not p.newsletter_sendy"   
         self._cr.execute(qry)
         data = self._cr.fetchall()
         customer_ids = [p[0] for p in data]
         lines = []
         for customer in partner_obj.browse(customer_ids):
             lines.append((0,0,{'partner_id': customer.id, 'email': customer.email, 'phone': customer.phone, 'name': customer.name}))
-        res.update({'customer_ids':lines})
+        res.update({'customer_ids':lines, 'max_delete_limit': max_delete_batch_limit})
         return res
     
     
     @api.multi
     def action_remove_customer(self):
+        max_delete_batch_limit = safe_eval(self.env['ir.config_parameter'].get_param('abandoned_carts.max_delete_batch_limit', '2000'))
+        if len(self.customer_ids)>max_delete_batch_limit:
+            raise Warning('For safety reasons, you cannot delete more than %d Customer together. You can re-open the wizard several times if needed.'%(max_delete_batch_limit))
+        
         current_date = datetime.now()
         log_obj = self.env['removed.record.log']
         user_id = self.env.user.id

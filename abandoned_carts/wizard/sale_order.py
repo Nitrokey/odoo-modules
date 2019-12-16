@@ -37,9 +37,15 @@ class SaleOrderWizard(models.TransientModel):
     
     @api.model
     def _cron_remove_abandoned_cart_order(self):
+        #Remove sale order
         vals = self.default_get(['max_delete_limit','sale_order_ids'])
         record = self.create(vals)
         record.action_remove_sale_order()
+        
+        #Remove Customers
+        vals = self.env['customer.wizard'].default_get(['max_delete_limit','customer_ids'])
+        record = self.env['customer.wizard'].create(vals)
+        record.action_remove_customer()
         return True
     
     @api.model

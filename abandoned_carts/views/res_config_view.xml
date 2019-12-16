@@ -18,7 +18,7 @@
                             <div name='max_delete_batch_limit_div'>
                                 <label for="max_delete_batch_limit" string='Maximum '/>
                                 <field name="max_delete_batch_limit" class="oe_inline"/>
-                                <label for="max_delete_batch_limit" string=' abandoned items to be deleted at a time' class="oe_inline"/>
+                                <label for="max_delete_batch_limit" string=' abandoned items(Quotation/Customer) to be deleted at a time' class="oe_inline"/>
                             </div>
                             
                         </div>
