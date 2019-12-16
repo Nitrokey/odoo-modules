@@ -66,3 +66,19 @@ go to Sales -> Abandoned Log:Abandoned Customer. Now you can see a window like i
 on the "bin" Symbol on the right side, you can skip the customer from the removing process. If you scroll down and click on the red remove button, all customers will be deleted.
 
 ![Abandoned_customers](/abandoned_carts/images/4_abandoned_customer.png)
+
+__How to set automation (cron job) to delete orders?__
+
+If we want to set an automation to remove orders, we have to go to settings -> Technical:Automation -> Scheduled Actions.
+
+Type in Name, Interval Number, Next Execution Date and Inverval Unit. Next Execution Date means that to this date everything what is in retention period set will be executed. In Number of calls you can determine how many intervals it has to run. 
+
+For example:
+
+"Number of calls = 1" and "Interval Unit = Days" means: It runs only one day.
+
+"Number of calls = 7" and "Interval Unit = Days" means: It runs seven days.
+
+"Number of calls is negative" means that this process will run every day. 
+
+![Abandoned_customers](/abandoned_carts/images/6_cron_job.png)
