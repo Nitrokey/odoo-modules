@@ -16,17 +16,20 @@ This module identifies orders as abandoned (and to be deleted) if all of the fol
 
 "state = __draft__" and "sales = website_sales" and "date_of_order <= hours_from_retention_period"
 
-These orders will be displayed in "Abandoned orders" and can be deleted manually. If the cron job is activated, the orders will be deleted automatically.
+These orders will be displayed in "Abandoned orders" and can be deleted manually. If you setup the cron job, the abandoned_orders and abandoned_ customers will be deleted automaticly, depending on your setup.
 
 Customers, which have the 
 
-"status = __draft__" and "orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "newsletter = none" 
+"status = __draft__" and "orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "date_of_order <= hours_from_retention_period" and "invoice = 0" and "tasks = 0" and "active = 0" and "is_customer = true"
 
-will be displayed in "Abandones customers" and can be deleted manually.
+will be displayed in "Abandoned customers" and can be deleted manually.
 
-Deleted items are listed in "Removed Log" for verification purposes.
+Deleted items are listed with name, date, model & user in "Removed Log" for verification purposes.
 
-If you setup in Settings -> Configuration:Sales -> Retention Period -> "max_delete_batch > 2000 and you try to remove these in "Abandoned Order" the folowing warning will be displayed "For safety reasons, you cannot delete more than %d sale orders together. You can re-open the wizard several times if needed."
+Order_retention_period is set as default = 48 hours
+max_delete_batch_limit is set by default = 2000 items
+
+When you change Order_retention_period and max_delete_batch_limit, then this value will change and affect "abandoned_orders" and "abandoned_customers".
 
 Configuration
 =============
