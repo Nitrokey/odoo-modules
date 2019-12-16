@@ -3,7 +3,7 @@
 from openerp import models, fields, api, _
 from datetime import datetime
 from datetime import timedelta
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
 from openerp.tools.safe_eval import safe_eval
 from openerp.exceptions import Warning
 
@@ -55,7 +55,7 @@ class SaleOrderWizard(models.TransientModel):
         
         res = super(SaleOrderWizard,self).default_get(fields)
         sales_team = self.env['crm.case.section'].search([('name','=','Website Sales')], limit=1)
-        domain = [('state','=','draft'),('date_order','<=',date.strftime(DF))]    
+        domain = [('state','=','draft'),('create_date','<',date.strftime(DF))]    
         
         if sales_team:
             domain.append(('section_id','=',sales_team.id))
