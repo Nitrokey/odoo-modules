@@ -16,13 +16,13 @@ This module identifies orders as abandoned (and to be deleted) if all of the fol
 
 "state = __draft__" and "sales = website_sales" and "date_of_order <= hours_from_retention_period"
 
-These orders will be displayed in "Abandoned orders" and can be deleted manually. If the cron job is activated, the orders will be deleted automatically.
+These orders will be displayed in "Abandoned orders" and can be deleted manually. If you setup the cron job, the abandoned_orders and abandoned_ customers will be deleted automaticly, depending on your setup.
 
 Customers, which have the 
 
-"status = __draft__" and "orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "newsletter = none" 
+"status = __draft__" and "orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "newsletter = none" and "date_of_order <= hours_from_retention_period"
 
-will be displayed in "Abandones customers" and can be deleted manually.
+will be displayed in "Abandoned customers" and can be deleted manually.
 
 Deleted items are listed in "Removed Log" for verification purposes.
 
