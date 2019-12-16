@@ -24,9 +24,12 @@ Customers, which have the
 
 will be displayed in "Abandoned customers" and can be deleted manually.
 
-Deleted items are listed in "Removed Log" for verification purposes.
+Deleted items are listed with name, date, model & user in "Removed Log" for verification purposes.
 
-If you setup in Settings -> Configuration:Sales -> Retention Period -> "max_delete_batch > 2000 and you try to remove these in "Abandoned Order" the folowing warning will be displayed "For safety reasons, you cannot delete more than %d sale orders together. You can re-open the wizard several times if needed."
+Order_retention_period is set as default = 48 hours
+max_delete_batch_limit is set by default = 2000 items
+
+When you change Order_retention_period and max_delete_batch_limit, then this value will change and affect "abandoned_orders" and "abandoned_customers".
 
 Configuration
 =============
