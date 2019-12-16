@@ -22,7 +22,7 @@ Customers, which have the
 
 "status = __draft__" and "orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "newsletter = none" 
 
-will be displayed in "Abandones customers" and can be deleted manually. If the cron job is activated, the customers will be deleted automatically.
+will be displayed in "Abandones customers" and can be deleted manually.
 
 Deleted items are listed in "Removed Log" for verification purposes.
 
