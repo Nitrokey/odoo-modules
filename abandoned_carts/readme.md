@@ -35,6 +35,23 @@ and maximum abandoned items:
 
 ![Configuration](/abandoned_carts/images/1_settings.png)
 
+__How to set automation (cron job) to delete orders?__
+
+If we want to set an automation to remove orders, we have to go to settings -> Technical:Automation -> Scheduled Actions.
+
+Type in Name, Interval Number, Next Execution Date and Inverval Unit. The cron job will be executed at Next Execution Date. In Number of calls you can determine how many intervals it has to run. 
+
+For example:
+
+"Number of calls = 1", "Interval Unit = Days" and "next Execution Date = 12/16/2019 15:45:44" means: It runs only one day beginning with this date.
+
+"Number of calls = 7", "Interval Unit = Days" and "next Execution Date = 12/16/2019 15:45:44" means: It runs seven days beginning with this date.
+
+"Number of calls is negative" means that this process will run every day. 
+
+![Abandoned_customers](/abandoned_carts/images/6_cron_job.png)
+
+
 Usage
 =====
 
@@ -62,19 +79,3 @@ go to Sales -> Abandoned Log:Abandoned Customer. Now you can see a window like i
 on the "bin" Symbol on the right side, you can skip the customer from the removing process. If you scroll down and click on the red remove button, all customers will be deleted.
 
 ![Abandoned_customers](/abandoned_carts/images/4_abandoned_customer.png)
-
-__How to set automation (cron job) to delete orders?__
-
-If we want to set an automation to remove orders, we have to go to settings -> Technical:Automation -> Scheduled Actions.
-
-Type in Name, Interval Number, Next Execution Date and Inverval Unit. The cron job will be executed at Next Execution Date. In Number of calls you can determine how many intervals it has to run. 
-
-For example:
-
-"Number of calls = 1", "Interval Unit = Days" and "next Execution Date = 12/16/2019 15:45:44" means: It runs only one day beginning with this date.
-
-"Number of calls = 7", "Interval Unit = Days" and "next Execution Date = 12/16/2019 15:45:44" means: It runs seven days beginning with this date.
-
-"Number of calls is negative" means that this process will run every day. 
-
-![Abandoned_customers](/abandoned_carts/images/6_cron_job.png)
