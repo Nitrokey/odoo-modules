@@ -31,8 +31,6 @@ Order_retention_period is set as default = 48 hours
 
 max_delete_batch_limit is set by default = 2000 items
 
-When you change Order_retention_period and max_delete_batch_limit, then this value will change and affect "abandoned_orders" and "abandoned_customers".
-
 Configuration
 =============
 
