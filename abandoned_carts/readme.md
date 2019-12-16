@@ -20,7 +20,7 @@ These orders will be displayed in "Abandoned orders" and can be deleted manually
 
 Customers, which have the 
 
-"status = __draft__" and "orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "newsletter = none" and "date_of_order <= hours_from_retention_period"
+"status = __draft__" and "orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "date_of_order <= hours_from_retention_period" and "invoice = 0" and "tasks = 0" and "active = 0" and "is_customer = true"
 
 will be displayed in "Abandoned customers" and can be deleted manually.
 
