@@ -73,7 +73,8 @@ WHERE
         
         customer_ids = self.customer_ids.mapped('partner_id').ids
         partner_obj = self.env['res.partner']
-        
+        newsletter_sendy = hasattr(partner_obj, 'newsletter_sendy') and True or False
+            
         for partner_id in customer_ids:
             #Browse one record only, because if partner linked to some record and raise exception when deleting record, than system will just rollback that transaction.
             self._cr.execute('SAVEPOINT remove_partner')
@@ -81,6 +82,8 @@ WHERE
             record_name = line.name
             record_id = line.id
             try:
+                if newsletter_sendy:
+                    self._cr.execute("update res_partner set newsletter_sendy=false where id=%d"%(partner_id))
                 line.unlink()
             except Exception as e:
                 self._cr.execute('ROLLBACK TO SAVEPOINT remove_partner')
