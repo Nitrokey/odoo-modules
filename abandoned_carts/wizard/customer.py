@@ -46,6 +46,7 @@ WHERE
     p.active and
     p.customer and
     p.id not in (select partner_id from res_users)
+    order by p.id desc
     limit %d
     """%(max_delete_batch_limit)
         partner_obj = self.env['res.partner']
