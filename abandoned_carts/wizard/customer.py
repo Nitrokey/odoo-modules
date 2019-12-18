@@ -82,8 +82,9 @@ WHERE
             record_name = line.name
             record_id = line.id
             try:
-                if newsletter_sendy:
+                if newsletter_sendy and line.newsletter_sendy:
                     self._cr.execute("update res_partner set newsletter_sendy=false where id=%d"%(partner_id))
+                    line.refresh()
                 line.unlink()
             except Exception as e:
                 self._cr.execute('ROLLBACK TO SAVEPOINT remove_partner')
