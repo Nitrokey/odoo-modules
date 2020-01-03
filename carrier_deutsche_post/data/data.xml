@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="1">
+
+    <record id="carrier_letter" model="carrier.account">
+      <field name="name">Letter</field>
+      <field name="partner_id">ANYOD</field>
+      <field name="partner_key">DUMMY</field>
+      <field name="account">pcf_00047@zq4nnzgbnbvt3.webpage.t-com.de</field>
+      <field name="password">DUMMY</field>
+      <field name="type">deutsche_post</field>
+    </record>
+
+    <record id="carrier_mail_germany" model="carrier.account">
+      <field name="name">Registered mail Germany</field>
+      <field name="partner_id">ANYOD</field>
+      <field name="partner_key">DUMMY</field>
+      <field name="account">pcf_00047@zq4nnzgbnbvt3.webpage.t-com.de</field>
+      <field name="password">DUMMY</field>
+      <field name="type">deutsche_post</field>
+    </record>
+
+    <record id="carrier_mail_international" model="carrier.account">
+      <field name="name">Registered mail International</field>
+      <field name="partner_id">ANYOD</field>
+      <field name="partner_key">DUMMY</field>
+      <field name="account">pcf_00047@zq4nnzgbnbvt3.webpage.t-com.de</field>
+      <field name="password">DUMMY</field>
+      <field name="type">deutsche_post</field>
+    </record>
+
+    <!--Grid-->
+
+    <!-- <record id="nitrokey_delivery_setup.carrier_letter_unregistered_grid_germany" model="delivery.carrier">
+      <field name="carrier_account_id" ref="carrier_deutsche_post.carrier_letter"/>
+      <field name="product_code">1022</field>
+    </record>
+
+    <record id="nitrokey_delivery_setup.carrier_letter_registered_grid_germany" model="delivery.carrier">
+      <field name="carrier_account_id" ref="carrier_deutsche_post.carrier_mail_germany"/>
+      <field name="product_code">147</field>
+    </record>
+    <record id="nitrokey_delivery_setup.carrier_letter_registered_grid_world" model="delivery.carrier">
+      <field name="carrier_account_id" ref="carrier_deutsche_post.carrier_mail_international"/>
+    </record> -->
+	
+
+  </data>
+</odoo>
