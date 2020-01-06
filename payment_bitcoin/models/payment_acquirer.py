@@ -87,4 +87,5 @@ class BitcoinPaymentTransaction(models.Model):
     def _bitcoin_form_validate(self, data):
         _logger.info(
             'Validated . payment for tx %s: set as pending' % self.reference)
+        self._set_transaction_pending()
         return self.write({'state': 'pending'})
