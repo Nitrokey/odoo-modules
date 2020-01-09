@@ -80,10 +80,12 @@ class Picking(models.Model):
             'res_model': 'stock.picking',
             'type': 'binary'
         })
-
-        self.write({'label_de_attach_id': attach.id})
-
-#         if tracking_number:
+        picking_vals = {'label_de_attach_id': attach.id}
+        
+        
+        if tracking_number:
+            picking_vals.update({'carrier_tracking_ref': tracking_number.replace(' ', '')})
+        self.write(picking_vals)    
 #             self.env['stock.picking.delivery'].create({
 #                 'carrier_id': self.carrier_id.id,
 #                 'carrier_tracking_ref': tracking_number.replace(' ', ''),

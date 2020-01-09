@@ -27,23 +27,7 @@
       <field name="account">pcf_00047@zq4nnzgbnbvt3.webpage.t-com.de</field>
       <field name="password">DUMMY</field>
       <field name="type">deutsche_post</field>
-    </record>
-
-    <!--Grid-->
-
-    <!-- <record id="nitrokey_delivery_setup.carrier_letter_unregistered_grid_germany" model="delivery.carrier">
-      <field name="carrier_account_id" ref="carrier_deutsche_post.carrier_letter"/>
-      <field name="product_code">1022</field>
-    </record>
-
-    <record id="nitrokey_delivery_setup.carrier_letter_registered_grid_germany" model="delivery.carrier">
-      <field name="carrier_account_id" ref="carrier_deutsche_post.carrier_mail_germany"/>
-      <field name="product_code">147</field>
-    </record>
-    <record id="nitrokey_delivery_setup.carrier_letter_registered_grid_world" model="delivery.carrier">
-      <field name="carrier_account_id" ref="carrier_deutsche_post.carrier_mail_international"/>
-    </record> -->
-	
+    </record>	
 
   </data>
 </odoo>
