@@ -296,11 +296,11 @@ class CarrierForm(models.Model):
         merged_file = NamedTemporaryFile(delete=False)
 
         with open(label_file.name, "wb") as f:
-            f.write(label_pdf.decode('base64'))
+            f.write(base64.b64decode(label_pdf)) #label_pdf.decode('base64')
             label_file.close()
 
         with open(source_file.name, "wb") as f:
-            f.write(self.pdf_file_id.datas.decode('base64'))
+            f.write(base64.b64decode(self.pdf_file_id.datas)) #self.pdf_file_id.datas.decode('base64')
             source_file.close()
 
         datas = {}

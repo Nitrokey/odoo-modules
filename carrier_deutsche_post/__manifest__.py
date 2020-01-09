@@ -12,8 +12,6 @@
         'stock',
         'delivery',
         'base_delivery_carrier_label',
-        #'nitrokey_stock_picking_multiple_carrier',
-        #'nitrokey_delivery_setup',
     ],
     'data': [
         'views/delivery.xml',
