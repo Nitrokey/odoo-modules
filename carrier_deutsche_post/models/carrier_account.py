@@ -319,7 +319,7 @@ class CarrierForm(models.Model):
         pypdftk.concat(
             [label_file.name, flatten_file.name], out_file=merged_file.name)
 
-        fp = file(merged_file.name, "rb")
+        fp = open(merged_file.name, "rb")
         merged_file_data = fp.read()
         fp.close()
 
