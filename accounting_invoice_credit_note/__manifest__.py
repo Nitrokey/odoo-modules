@@ -1,7 +1,7 @@
 {
-    'name': "Nitrokey Invoice",
+    'name': "accounting invoice credit note",
     'description': """
-- Added Credti Note Smart button in invoice form
+- Added credit Note Smart button in invoice form
     """,
     'category': '',
     'version': '12.0.1.0.0',
