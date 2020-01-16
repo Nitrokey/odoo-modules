@@ -2,7 +2,7 @@
 <!-- Copyright 2017 LasLabs Inc.
      License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
 
-<openerp>
+<odoo>
 	<data>
 	    <record id="sale_affiliate_view_form" model="ir.ui.view">
 	        <field name="name">Affiliate</field>
@@ -97,4 +97,4 @@
 	              parent="sale_affiliate_category"
 	              action="sale_affiliate_action"/>
     </data>
-</openerp>
+</odoo>
