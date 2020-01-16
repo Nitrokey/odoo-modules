@@ -2,7 +2,7 @@
 
 from odoo import models, fields, api
 from odoo.tools import float_compare
-from odoo.addons.payment.models.payment_acquirer import ValidationError
+from odoo.exceptions import ValidationError
 
 import logging
 import pprint
