@@ -6,7 +6,7 @@ from odoo import fields, models
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
     
-    must_validate_vat = fields.Boolean('Must validate Vat online?', 
+    must_validate_vat = fields.Boolean('Mandatory online verification?', 
                                        related='company_id.must_validate_vat', 
                                        readonly=False,
-                                       help='If checked, system must validate vat number online and show error message if given vat number is not valid in partner/customer.')
+                                       help='If enabled, the system validates VAT number online and shows error message if given VAT number of partner/customer is not valid.')
