@@ -39,7 +39,7 @@ class Picking(models.Model):
 
         if not product_code:
             raise Warning(_('Please configure Product Code along with Carrier account in Carrier or Grid configuration'))
-
+        
         data = {
             'name': self.name,
             'prod_code': product_code,
@@ -51,7 +51,7 @@ class Picking(models.Model):
                 'zip': self.partner_id.zip or '',
                 'city': self.partner_id.city or '',
                 'country': self.partner_id.country_id.code_iso or '',
-                'company': self.partner_id.parent_id.name if self.partner_id.parent_id else '',
+                'company': self.partner_id.parent_id and self.partner_id.name!=self.partner_id.parent_id.name and self.partner_id.parent_id.name or self.partner_id.company_name and self.partner_id.name!=self.partner_id.company_name and self.partner_id.company_name  or '',
                 'title': self.partner_id.title.shortcut if self.partner_id.title else '',
                 'state': self.partner_id.state_id.name or '',
             },
