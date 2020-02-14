@@ -5,6 +5,7 @@ from odoo.exceptions import UserError, ValidationError
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from odoo.tools.safe_eval import safe_eval
 from hashlib import sha256
 import requests
 import logging
@@ -123,7 +124,33 @@ class BitcoinAddress(models.Model):
     _sql_constraints = [
         ('name_uniq', 'unique(name)', 'Bitcoin Address must be unique'),
     ]
-
+    
+    @api.model
+    def send_bitcoin_address_goes_low_notification(self):
+        unused_address_count = self.search_count([('order_id','=',False)])
+        min_unused_bitcoin = safe_eval(self.env['ir.config_parameter'].get_param('payment_bitcoin.min_unused_bitcoin', '3'))
+        if unused_address_count <= min_unused_bitcoin:
+            groups = self.env['res.groups'].browse()
+            
+            group = self.sudo().env.ref("account.group_account_invoice", False)
+            if group:
+                groups += group
+            group = self.sudo().env.ref("account.group_account_user", False)
+            if group:
+                groups += group
+            
+            needaction_partner_ids = [(4, user.partner_id.id) for user in groups.mapped('users')]
+            self.env['mail.message'].create({
+                                            'message_type': "notification",
+                                            "subtype_id": self.env.ref("mail.mt_comment").id,
+                                            'date': datetime.now(),
+                                            'body': '<p>Only %s unused Bitcoin addresses are left. Please add new addresses.</p>'%(unused_address_count),
+                                            'needaction_partner_ids': needaction_partner_ids,
+                                            })
+            
+        return
+    
+        
     @api.constrains('name')
     def _check_bitcoin_address(self):
         if not validate_bitcoin_address(self.name):
