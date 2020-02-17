@@ -9,7 +9,8 @@ from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
 
 class InvoiceExcelExport(models.TransientModel):
     _name = 'invoice.excel.export'
-
+    _description = 'Invoice Excel Export'
+    
     invoice_ids = fields.Many2many('account.invoice', string='Invoice')
     file_data = fields.Binary('File Data')
     filename = fields.Char('Filename', default='Invoice Excel.xls')

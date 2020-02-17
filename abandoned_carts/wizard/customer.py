@@ -6,6 +6,7 @@ from odoo.tools.safe_eval import safe_eval
 
 class CustomerWizardLine(models.TransientModel):
     _name = 'customer.wizard.line'
+    _description = 'Abandoned Customer Line Popup'
     
     name = fields.Char('Name')
     partner_id = fields.Many2one('res.partner','Customer')
@@ -15,6 +16,7 @@ class CustomerWizardLine(models.TransientModel):
     
 class CustomerWizard(models.TransientModel):
     _name = 'customer.wizard'
+    _description = 'Abandoned Customer Popup'
     
     customer_ids = fields.One2many('customer.wizard.line','wizard_id', string='Customers')
     max_delete_limit = fields.Integer("Max Record delete limit")

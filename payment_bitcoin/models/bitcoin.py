@@ -113,7 +113,8 @@ class BitcoinAddress(models.Model):
     # Bitcoin address
     # once used, it'll have order_id assigned, so it won't use again.
     _name = 'bitcoin.address'
-
+    _description = 'Bitcoin Address'
+    
     name = fields.Char('Address', required=True)
     create_date = fields.Datetime('Created')
     create_uid = fields.Many2one('res.users', 'Created by')
@@ -276,7 +277,8 @@ class BitcoinRateLine(models.Model):
     # Store Log Rate lookup lines
     _name = 'bitcoin.rate.line'
     _order = 'create_date desc'
-
+    _description = 'Bitcoin Rate Lines'
+    
     rate_id = fields.Many2one('bitcoin.rate', 'Bitcoin Rate')
     create_date = fields.Datetime('Create Date')
     rate = fields.Float('BTC', digits=(20, 8))

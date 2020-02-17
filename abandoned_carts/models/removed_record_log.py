@@ -4,6 +4,7 @@ from odoo import models, fields
 
 class RemovedRecordLog(models.Model):
     _name = 'removed.record.log'
+    _description = 'Abandoned removed Record Log'
     
     name = fields.Char(string='Name')
     date = fields.Datetime(string="Date")

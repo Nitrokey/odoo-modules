@@ -9,6 +9,7 @@ from odoo.exceptions import Warning
 
 class SaleOrderWizardLine(models.TransientModel):
     _name = 'sale.order.wizard.line'
+    _description = 'Abandoned Order Line Popup'
     
     name = fields.Char('Order Reference')
     date_order = fields.Datetime('Date')
@@ -31,6 +32,7 @@ class SaleOrderWizardLine(models.TransientModel):
     
 class SaleOrderWizard(models.TransientModel):
     _name = 'sale.order.wizard'
+    _description = 'Abandoned Order Popup'
     
     sale_order_ids = fields.One2many('sale.order.wizard.line','wizard_id', string='Sale Order')
     max_delete_limit = fields.Integer("Max Record delete limit")

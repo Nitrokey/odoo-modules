@@ -282,7 +282,8 @@ class DeutschePostLogs(models.Model):
 
 class CarrierForm(models.Model):
     _name = 'carrier.form'
-
+    _description = 'Deutsche Carrier Form'
+    
     prod_code = fields.Char('Deutsche Label Product Code')
     pdf_file_id = fields.Many2one('ir.attachment', 'Form PDF')
     field_ids = fields.One2many(
@@ -358,7 +359,8 @@ class CarrierForm(models.Model):
 
 class CarrierFormField(models.Model):
     _name = 'carrier.form.field'
-
+    _description = 'Deutsche Post Form Field'
+    
     form_id = fields.Many2one('carrier.form', 'From', required=1)
     name = fields.Char('Form Variable Name', required=1)
     code = fields.Text('Code', required=1, default='result=""')
