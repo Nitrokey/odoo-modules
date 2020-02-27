@@ -6,7 +6,7 @@
     'description': "By installing this module, user can able to check availability of multiple Pickings by single click on one button inside Action button.",
     'category': 'Warehouse',
     'author': 'Nitrokey GmbH',
-    'website': 'http://www.initos.com',
+    'website': 'http://www.nitrokey.com',
     'license': 'AGPL-3',
     'data': [
         'views/stock_picking_views.xml',
