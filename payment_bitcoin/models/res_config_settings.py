@@ -7,7 +7,7 @@ class ResConfigSsettings(models.TransientModel):
     _inherit = 'res.config.settings'
     
     
-    min_unused_bitcoin = fields.Integer('Minimun Unused Bitcoin',help='Minimum Number of Unused bitcoin address goes below this, than system send notifications to its related users.')
+    min_unused_bitcoin = fields.Integer('Minimun Unused Bitcoin',help='If amount of unused Bitcoin addresses goes below this, than system sends notifications to its related users.')
     
     @api.model
     def get_values(self):
