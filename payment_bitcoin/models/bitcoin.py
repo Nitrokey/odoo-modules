@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
-
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from odoo.tools.safe_eval import safe_eval
-from hashlib import sha256
-import requests
-import logging
 import codecs
+import logging
+from datetime import datetime
+from hashlib import sha256
+
+import requests
+from dateutil.relativedelta import relativedelta
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
 
@@ -129,7 +130,10 @@ class BitcoinAddress(models.Model):
     @api.model
     def send_bitcoin_address_goes_low_notification(self):
         unused_address_count = self.search_count([('order_id','=',False)])
-        min_unused_bitcoin = safe_eval(self.env['ir.config_parameter'].get_param('payment_bitcoin.min_unused_bitcoin', '3'))
+        min_unused_bitcoin = safe_eval(self.env['ir.config_parameter'].get_param(
+            'payment_bitcoin.min_unused_bitcoin',
+            '3',
+        ))
         if unused_address_count <= min_unused_bitcoin:
             groups = self.env['res.groups'].browse()
             
@@ -171,12 +175,18 @@ class BitcoinRate(models.Model):
     url = fields.Char(
         'Bitcoin Rate URL',
         default='https://blockchain.info/tobtc?'
-                'currency={CURRENCY}&value={AMOUNT}')
-    rate_lines = fields.One2many('bitcoin.rate.line', 'rate_id', 'Rates')
+                'currency={CURRENCY}&value={AMOUNT}',
+    )
+    rate_lines = fields.One2many(
+        'bitcoin.rate.line',
+        'rate_id',
+        'Rates',
+    )
 
     markup = fields.Float('Markup (%)')
     unit = fields.Selection(
-        [('BTC', 'BTC'), ('mBTC', 'mBTC')], 'Display Unit', default='mBTC')
+        [('BTC', 'BTC'), ('mBTC', 'mBTC')], 'Display Unit', default='mBTC'
+    )
     digits = fields.Integer('Round to Digits', default=4)
     valid_minutes = fields.Integer(
         'Rate Valid For (Minutes)', default=20,
@@ -222,7 +232,8 @@ class BitcoinRate(models.Model):
             ('amount', '=', amount_total),
             ('create_date', '>=',
                 (datetime.now() - relativedelta(minutes=sobj.valid_minutes)).
-                strftime('%Y-%m-%d %H:%M:00'))
+                strftime('%Y-%m-%d %H:%M:00')
+             ),
         ]
 
         valid_rate_exists = self.env['bitcoin.rate.line'].sudo().search(
@@ -295,7 +306,10 @@ class PaymentTransaction(models.Model):
     bitcoin_address = fields.Char('Bitcoin Address')
     bitcoin_amount = fields.Float('Bitcoin Amount', digits=(20, 6))
     bitcoin_unit = fields.Selection(
-        [('BTC', 'BTC'), ('mBTC', 'mBTC')], 'Display Unit')
+        [('BTC', 'BTC'),
+         ('mBTC', 'mBTC'),
+         ], 'Display Unit',
+    )
     bitcoin_address_link = fields.Html(
         'Address Link', compute='_compute_link_address')
 

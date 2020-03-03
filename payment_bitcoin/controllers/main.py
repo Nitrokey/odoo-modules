@@ -2,11 +2,12 @@
 
 import logging
 import pprint
+
 import werkzeug
 
-from odoo import http, _
-from odoo.http import request
 import odoo.addons.website_sale.controllers.main
+from odoo import _, http
+from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
