@@ -3,6 +3,8 @@
 from openerp import models, fields, api
 from datetime import datetime
 from openerp.tools.safe_eval import safe_eval
+import logging
+_logger = logging.getLogger(__name__)
 
 class CustomerWizardLine(models.TransientModel):
     _name = 'customer.wizard.line'
@@ -70,7 +72,8 @@ WHERE
         
         current_date = datetime.now()
         log_obj = self.env['removed.record.log']
-        user_id = self.env.user.id
+        user = self.env.user
+        user_id = user.id
         
         customer_ids = self.customer_ids.mapped('partner_id').ids
         partner_obj = self.env['res.partner']
@@ -100,6 +103,7 @@ WHERE
                     'res_id': record_id,
                     'user_id' : user_id,
                     })
+            _logger.info('name %s, date %s, model %s, res_id %s, user %s',(record_name,current_date,'res.partner',record_id,user.name))
             self._cr.execute('RELEASE SAVEPOINT remove_partner')
         return
     
