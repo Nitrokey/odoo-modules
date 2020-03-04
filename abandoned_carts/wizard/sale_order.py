@@ -56,9 +56,11 @@ class SaleOrderWizard(models.TransientModel):
         date = datetime.now() - timedelta(hours=order_retention_period)
         
         res = super(SaleOrderWizard,self).default_get(fields)
-        sales_team = self.env['crm.team'].search([('name','in',['Website Sales','Website'])], limit=1)
+            
+        #sales_team = self.env['crm.team'].search([('name','in',['Website Sales','Website'])], limit=1)
         domain = [('state','=','draft'),('create_date','<',date.strftime(DF))]    
         
+        sales_team = self.env.ref('sales_team.salesteam_website_sales',False)
         if sales_team:
             domain.append(('team_id','=',sales_team.id))
         
