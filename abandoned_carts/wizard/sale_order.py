@@ -6,6 +6,8 @@ from datetime import timedelta
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import Warning
+import logging
+_logger = logging.getLogger(__name__)
 
 class SaleOrderWizardLine(models.TransientModel):
     _name = 'sale.order.wizard.line'
@@ -88,6 +90,7 @@ class SaleOrderWizard(models.TransientModel):
         log_obj = self.env['removed.record.log']
         orders = self.sale_order_ids.mapped('order_id')
         user_id = self.env.user.id
+        user = self.env.user
         for line in orders:
             log_obj.create({
                     'name' : line.name,
@@ -96,6 +99,7 @@ class SaleOrderWizard(models.TransientModel):
                     'res_id': line.id,
                     'user_id' : user_id,
                     })
+            _logger.info('name %s, date %s, model %s, res_id %s, user %s',(line.name,current_date,'sale.order',line.id,user.name))
             line.unlink()
         return True
 
