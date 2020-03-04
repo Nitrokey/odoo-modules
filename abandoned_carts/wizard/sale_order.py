@@ -54,11 +54,13 @@ class SaleOrderWizard(models.TransientModel):
         date = datetime.now() - timedelta(hours=res_config.get('order_retention_period'))
         
         res = super(SaleOrderWizard,self).default_get(fields)
-        sales_team = self.env['crm.case.section'].search([('name','=','Website Sales')], limit=1)
+        #sales_team = self.env['crm.case.section'].search([('name','=','Website Sales')], limit=1)
         domain = [('state','=','draft'),('create_date','<',date.strftime(DF))]    
+        sales_team = self.env.ref('website.salesteam_website_sales',False)
         
         if sales_team:
             domain.append(('section_id','=',sales_team.id))
+        
         
         max_delete_batch_limit = safe_eval(self.env['ir.config_parameter'].get_param('abandoned_carts.max_delete_batch_limit', '2000'))    
         current_quotation = self.env['sale.order'].search(domain, limit=max_delete_batch_limit)
