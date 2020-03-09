@@ -45,6 +45,8 @@ class Partner(models.Model):
         except InvalidEmailAddressException as e:
             # If the user is already unsubscribed, this is not a fatal error.
             _logger.exception(e)
+        except Exception as e:
+            _logger.exception(e)
 
     @api.multi
     def write(self, vals):
