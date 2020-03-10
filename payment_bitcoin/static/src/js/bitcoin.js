@@ -35,7 +35,6 @@ odoo.define('payment_bitcoin.bitcoin', function(require) {
                 }
                 else
                 {
-
                     $('div[id="order_total_bitcoin"]').remove();
                     var html = '<div class="row" id="order_total_bitcoin"><span class="col-xs-6 text-right h4 mt0"></span><span class="col-xs-6 text-right-not-xs text-left-xs h4 mt0" style="white-space: nowrap;">';
                     html += '<h4><span style="white-space: nowrap;" id="payment_bitcoin"><span class="oe_currency_value">='+ data[1] +'</span>&nbsp;'+data[2]+'</span></h4></span></div>';

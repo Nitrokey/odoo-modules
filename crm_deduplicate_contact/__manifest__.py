@@ -8,10 +8,9 @@
     "description": "Module enables dialogue to merge contacts which is hidden in current Odoo versions.",
     "depends": ['crm', 'contacts'
                 ],
-    'author': 'initOS GmbH',
-    "category": "",
-    "summary": "",
+    'author': "Nitrokey GmbH, Odoo Community Assosiation (OCA)",
     'license': 'AGPL-3',
+    'website': "https://github.com/OCA/crm_deduplicate_contact",
     'data': [
         'views/base_partner_merge_view.xml',
     ],

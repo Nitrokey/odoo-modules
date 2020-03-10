@@ -21,7 +21,6 @@
       <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
       <field name="arch" type="xml">
         <xpath expr="//page[@name='extra']//field[@name='carrier_tracking_ref']" position="after">
-          <!-- <field name="carrier_type"/> -->
           <field name="carrier_code"/>
           <field name="option_ids" nolabel="1" colspan="2" domain="[('carrier_id', '=', carrier_id)]"/>
         </xpath>

@@ -7,9 +7,6 @@
       <field name="model">delivery.carrier</field>
       <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
       <field name="arch" type="xml">
-        <!-- <field name="code" position="after">
-          <field name="carrier_account_id"/>
-        </field> -->
         <notebook position="inside">
           <page string="Carrier Account">
             <group>

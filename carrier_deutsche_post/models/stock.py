@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import Warning
-#import time
 
 
 class Picking(models.Model):
@@ -18,7 +17,8 @@ class Picking(models.Model):
         if self.label_de_attach_id:
             return {
                 'type': 'ir.actions.act_url',
-                'url': "/web/content/?model=ir.attachment&id=" + str(self.label_de_attach_id.id) + "&field=datas&download=true&filename_field=name",
+                'url': "/web/content/?model=ir.attachment&id=" + str(
+                    self.label_de_attach_id.id) + "&field=datas&download=true&filename_field=name",
                 'target': 'download',
             }
 
@@ -27,19 +27,14 @@ class Picking(models.Model):
         if self.carrier_id.carrier_account_id:
             carrier_acc = self.carrier_id.carrier_account_id
             product_code = self.carrier_id.product_code
-#         else:
-#             grid_id = self.carrier_id.grid_get(contact_id=self.partner_id.id)
-#             if grid_id:
-#                 grid = self.env['delivery.grid'].browse(grid_id)
-#                 carrier_acc = grid.carrier_account_id
-#                 product_code = grid.product_code
-
+        
         if not carrier_acc or carrier_acc.type != 'deutsche_post':
             raise Warning(_('There is not any Deutsche post account associated with the delivery method'))
 
         if not product_code:
-            raise Warning(_('Please configure Product Code along with Carrier account in Carrier or Grid configuration'))
-        
+            raise Warning(
+                _('Please configure Product Code along with Carrier account in Carrier or Grid configuration'))
+
         data = {
             'name': self.name,
             'prod_code': product_code,
@@ -51,7 +46,7 @@ class Picking(models.Model):
                 'zip': self.partner_id.zip or '',
                 'city': self.partner_id.city or '',
                 'country': self.partner_id.country_id.code_iso or '',
-                'company': self.partner_id.parent_id and self.partner_id.name!=self.partner_id.parent_id.name and self.partner_id.parent_id.name or self.partner_id.company_name and self.partner_id.name!=self.partner_id.company_name and self.partner_id.company_name  or '',
+                'company': self.partner_id.parent_id and self.partner_id.name != self.partner_id.parent_id.name and self.partner_id.parent_id.name or self.partner_id.company_name and self.partner_id.name != self.partner_id.company_name and self.partner_id.company_name or '',
                 'title': self.partner_id.title.shortcut if self.partner_id.title else '',
                 'state': self.partner_id.state_id.name or '',
             },
@@ -78,23 +73,18 @@ class Picking(models.Model):
             'datas_fname': file_name,
             'res_id': self.id,
             'res_model': 'stock.picking',
-            'type': 'binary'
+            'type': 'binary',
         })
+
         picking_vals = {'label_de_attach_id': attach.id}
-        
-        
+
         if tracking_number:
             picking_vals.update({'carrier_tracking_ref': tracking_number.replace(' ', '')})
-        self.write(picking_vals)    
-#             self.env['stock.picking.delivery'].create({
-#                 'carrier_id': self.carrier_id.id,
-#                 'carrier_tracking_ref': tracking_number.replace(' ', ''),
-#                 'date': time.strftime('%Y-%m-%d'),
-#                 'picking_id': self.id
-#             })
+        self.write(picking_vals)
         
         return {
-                'type': 'ir.actions.act_url',
-                'url': "/web/content/?model=ir.attachment&id=" + str(self.label_de_attach_id.id) + "&field=datas&filename_field=name&download=true",
-                'target': 'download',
-            }
+            'type': 'ir.actions.act_url',
+            'url': "/web/content/?model=ir.attachment&id=" + str(
+                self.label_de_attach_id.id) + "&field=datas&filename_field=name&download=true",
+            'target': 'download',
+        }

@@ -7,7 +7,5 @@
         <input name="reference" type="hidden" t-att-value="website_sale_order.name"/>
       </xpath>
     </template>
-
-
   </data>
 </odoo>

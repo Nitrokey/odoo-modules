@@ -4,7 +4,7 @@
     'name': "VAT online validation",
     'description': 'This module will validate VAT number online for the ecommerce customers. If it fails to validate, Odoo shows an error message to the customer.',
     'category': '',
-    'version': '1.0',
+    'version': '12.0.1.0.0',
     'depends': [
                 'base_vat',
                 ],
@@ -12,8 +12,8 @@
             'views/res_config_settings_views.xml',
     ],
     
-    'author': "Nitrokey GmbH",
-    'website': "https://www.nitrokey.com",
+    'author': 'Nitrokey GmbH, Odoo Community Assosiation (OCA)',
+    'website': 'https://github.com/OCA/vat_online_validation',
 
 
 }

@@ -3,19 +3,19 @@
 {
     'name': "Abandoned Carts",
     'description': 'System will automatically delete website Quotations when those are older than X days.',
-    'category': '',
-    'version': '1.0',
+    'version': '12.0.1.0.0',
     'depends': ['website_sale','crm','account','project', 'calendar'],
     'data': [
         'security/ir.model.access.csv',
         'data/ir_cron.xml',
-        'views/res_config_view.xml',
-        'views/removed_record_log_view.xml',
+        'views/res_config_settings_views.xml',
+        'views/removed_record_log_views.xml',
         'wizard/sale_order_view.xml',
         'wizard/customer_view.xml',
         
     ],
-    'author': "Nitrokey GmbH",
-    'website': "https://www.nitrokey.com",
+    'author': "Nitrokey GmbH, Odoo Community Assosiation (OCA)",
+    'license': 'AGPL-3',
+    'website': "https://github.com/OCA/carrier_deutsche_post",
     
 }

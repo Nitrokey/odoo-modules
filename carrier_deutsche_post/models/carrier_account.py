@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-#    Copyright 2017 Zedes Technologies
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
-import inema  # pip3 install git+https://gitlab.com/gsauthof/python-inema.git
-import logging
-import requests
 import base64
-
-from odoo.tools.safe_eval import safe_eval as eval
-from tempfile import NamedTemporaryFile
-from . import pypdftk
+import html
+import logging
 import os
 import re
-import html
 import time
+from tempfile import NamedTemporaryFile
 
+import requests
+
+import inema  # pip3 install git+https://gitlab.com/gsauthof/python-inema.git
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
+from odoo.tools.safe_eval import safe_eval as eval
+
+from . import pypdftk
 
 # please set the path as per pdftk installed on OS
 # pypdftk.PDFTK_PATH = '/usr/local/bin/pdftk'
@@ -262,7 +262,7 @@ class DownloadFile(models.TransientModel):
             'view_mode': 'form',
             'res_model': 'download.file',
             'target': 'new',
-            'res_id': self.id
+            'res_id': self.id,
         }
 
 

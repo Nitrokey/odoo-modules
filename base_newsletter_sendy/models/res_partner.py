@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from odoo import models, fields, api
 
-from pysendy import Sendy, AlreadySubscribedException,\
-    InvalidEmailAddressException
-
+from odoo import api, fields, models
+from pysendy import (AlreadySubscribedException, InvalidEmailAddressException,
+                     Sendy)
 
 _logger = logging.getLogger(__name__)
 

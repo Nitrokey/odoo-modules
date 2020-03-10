@@ -7,12 +7,12 @@ See http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/
 
 '''
 
+import itertools
 import logging
 import os
 import shutil
 import subprocess
 import tempfile
-import itertools
 
 log = logging.getLogger(__name__)
 

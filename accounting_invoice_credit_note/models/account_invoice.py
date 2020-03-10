@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, api, fields
+from odoo import api, fields, models
+
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
@@ -29,4 +30,3 @@ class AccountInvoice(models.Model):
         else:
             action = {'type': 'ir.actions.act_window_close'}
         return action
-    

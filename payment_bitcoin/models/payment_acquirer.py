@@ -1,11 +1,11 @@
 # -*- coding: utf-'8' "-*-"
 
-from odoo import models, fields, api
-from odoo.tools import float_compare
-from odoo.exceptions import ValidationError
-
 import logging
-import pprint
+import pprint  # from odoo import models, fields, api
+
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+from odoo.tools import float_compare
 
 _logger = logging.getLogger(__name__)
 
@@ -14,12 +14,6 @@ class BitcoinPaymentAcquirer(models.Model):
     _inherit = 'payment.acquirer'
 
     provider = fields.Selection(selection_add=[('bitcoin', 'Bitcoin')])
-
-#     @api.model
-#     def _get_providers(self):
-#         providers = super(BitcoinPaymentAcquirer, self)._get_providers()
-#         providers.append(['bitcoin', 'Bitcoin Transfer'])
-#         return providers
 
     @api.multi
     def bitcoin_form_generate_values(self, values):

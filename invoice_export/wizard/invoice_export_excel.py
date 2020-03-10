@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
+
+import io
+from datetime import datetime
+
 import xlwt
 from xlwt import easyxf
-from datetime import datetime
-from odoo import api, fields, models
-import io
 
+from odoo import api, fields, models
 from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
+
 
 class InvoiceExcelExport(models.TransientModel):
     _name = 'invoice.excel.export'
@@ -22,8 +25,8 @@ class InvoiceExcelExport(models.TransientModel):
         worksheet = workbook.add_sheet('Invoices')
         header_style = easyxf('font:height 200;pattern: pattern solid, fore_color blue; align: horiz center;font: color white; font:bold True;' "borders: top thin,left thin,right thin,bottom thin")
         text_left = easyxf('font:height 200; align: horiz left;' "borders: top thin,bottom thin")
-        text_center = easyxf('font:height 200; align: horiz center;' "borders: top thin,bottom thin")
-        text_right = easyxf('font:height 200; align: horiz right;' "borders: top thin,bottom thin")
+        #text_center = easyxf('font:height 200; align: horiz center;' "borders: top thin,bottom thin")
+        #text_right = easyxf('font:height 200; align: horiz right;' "borders: top thin,bottom thin")
         worksheet.write(0, 0, 'Invoice ID', header_style)
         worksheet.write(0, 1, 'Sale Order ID', header_style)
         worksheet.write(0, 2, 'Date Of Sales Order', header_style)

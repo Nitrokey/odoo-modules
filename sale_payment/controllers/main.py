@@ -1,10 +1,10 @@
-import json
-from werkzeug.exceptions import Forbidden, NotFound
+# -*- coding: utf-8 -*-
 
-from odoo import fields, http, tools, _
-from odoo.http import request
-from odoo.addons.sale.controllers.product_configurator import ProductConfiguratorController
+from odoo import http
 from odoo.addons.payment.controllers.portal import PaymentProcessing
+from odoo.addons.sale.controllers.product_configurator import \
+    ProductConfiguratorController
+from odoo.http import request
 
 
 class WebsiteSale(ProductConfiguratorController):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, api
+from odoo import api, models
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -10,5 +11,3 @@ class StockPicking(models.Model):
         pickings = self.filtered(lambda x: x.show_check_availability)
         if pickings:
             pickings.action_assign()
-    
-    

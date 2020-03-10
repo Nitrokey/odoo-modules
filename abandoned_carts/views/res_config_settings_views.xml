@@ -14,10 +14,6 @@
 	                            
 	                        </div>
 	                        <div class="o_setting_right_pane">
-	                            <!-- <label for="use_quotation_validity_days"/>
-	                            <div class="text-muted">
-	                                Set a default validity on your quotations
-	                            </div> -->
 	                            <div class="content-group" >
 	                                <div class="mt16">
 	                                    <span class="col-lg-4">Delete Quotation older than <field style="width:10%;" name="order_retention_period" /> hours</span>
@@ -32,24 +28,7 @@
 	                    </div>
                     </div>
             	</xpath>
-            	<!-- <group name="Sale" position="after">	
-            		<group name='retention_period_group'>
-                        <label for="id" string="Retention Period"/>
-                        <div>
-                            <div name='retention_period'>
-                                <label for="order_retention_period" string='Delete Quotation older than '/>
-                                <field name="order_retention_period" class="oe_inline"/>
-                                <label for="order_retention_period" string=' hours' class="oe_inline"/>
-                            </div>
-                            <div name='max_delete_batch_limit_div'>
-                                <label for="max_delete_batch_limit" string='Maximum '/>
-                                <field name="max_delete_batch_limit" class="oe_inline"/>
-                                <label for="max_delete_batch_limit" string=' abandoned items(Quotation/Customer) to be deleted at a time' class="oe_inline"/>
-                            </div>
-                            
-                        </div>
-                    </group>
-                </group> -->
+            	
             </field>
         </record>
     </data>

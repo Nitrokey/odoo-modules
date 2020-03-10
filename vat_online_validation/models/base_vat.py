@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models,api
 import logging
+
+from odoo import api, models
+
 _logger = logging.getLogger(__name__)
 
 try:
@@ -29,5 +31,3 @@ class res_partner(models.Model):
             # with VIES if any of these arise, including the first one (it means invalid
             # country code or empty VAT number), so we fall back to the simple check.
             return self.simple_vat_check(country_code, vat_number)
-        
-        
