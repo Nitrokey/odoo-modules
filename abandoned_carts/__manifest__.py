@@ -16,6 +16,6 @@
     ],
     'author': "Nitrokey GmbH, Odoo Community Assosiation (OCA)",
     'license': 'AGPL-3',
-    'website': "https://github.com/OCA/carrier_deutsche_post",
+    'website': "https://github.com/OCA/abandoned_carts",
     
 }
