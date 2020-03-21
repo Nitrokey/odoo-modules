@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-22 12:54+0000\n"
-"PO-Revision-Date: 2020-01-22 12:54+0000\n"
+"POT-Creation-Date: 2020-03-21 09:14+0000\n"
+"PO-Revision-Date: 2020-03-21 09:14+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.transaction_form_bitcoin
 msgid "&amp;nbsp;"
-msgstr "&amp;nbsp;"
+msgstr ""
 
 #. module: payment_bitcoin
 #: model_terms:payment.acquirer,cancel_msg:payment_bitcoin.payment_acquirer_bitcoin
@@ -60,21 +60,28 @@ msgstr "Betrag"
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line__rate
 #: selection:payment.transaction,bitcoin_unit:0
 msgid "BTC"
-msgstr "BTC"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:base.automation,name:payment_bitcoin.rule_on_create_update_bitcoin_address_goes_low_notification
+#: model:ir.actions.server,name:payment_bitcoin.rule_on_create_update_bitcoin_address_goes_low_notification_ir_actions_server
+msgid "Base Automation: send bitcoin address goes low notification"
+msgstr ""
 
 #. module: payment_bitcoin
 #: model:payment.acquirer,name:payment_bitcoin.payment_acquirer_bitcoin
 #: selection:payment.acquirer,provider:0
 msgid "Bitcoin"
-msgstr "Bitcoin"
+msgstr ""
 
 #. module: payment_bitcoin
+#: model:ir.model,name:payment_bitcoin.model_bitcoin_address
 #: model:ir.model.fields,field_description:payment_bitcoin.field_payment_transaction__bitcoin_address
 msgid "Bitcoin Address"
 msgstr "Bitcoin Adresse"
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/models/bitcoin.py:132
+#: code:addons/payment_bitcoin/models/bitcoin.py:164
 #, python-format
 msgid "Bitcoin Address '%s' doesn't seem to valid Bitcoin Address"
 msgstr "Bitcoin Adresse '%s' scheint keine gültige Bitcoin Adresse zu sein"
@@ -104,9 +111,19 @@ msgid "Bitcoin Rate"
 msgstr "Bitcoin-Rate"
 
 #. module: payment_bitcoin
+#: model:ir.model,name:payment_bitcoin.model_bitcoin_rate_line
+msgid "Bitcoin Rate Lines"
+msgstr ""
+
+#. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate__url
 msgid "Bitcoin Rate URL"
-msgstr "Bitcoin Rate URL"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:ir.model,name:payment_bitcoin.model_res_config_settings
+msgid "Config Settings"
+msgstr "Konfiguration "
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line__create_date
@@ -156,6 +173,13 @@ msgid "ID"
 msgstr "ICH WÜRDE"
 
 #. module: payment_bitcoin
+#: model:ir.model.fields,help:payment_bitcoin.field_res_config_settings__min_unused_bitcoin
+#: model:ir.model.fields,help:payment_bitcoin.field_webkul_website_addons__min_unused_bitcoin
+#: model:ir.model.fields,help:payment_bitcoin.field_website_country_config__min_unused_bitcoin
+msgid "If amount of unused Bitcoin addresses goes below this, than system sends notifications to its related users."
+msgstr ""
+
+#. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_address____last_update
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate____last_update
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line____last_update
@@ -185,6 +209,18 @@ msgstr "Manuelle Konfiguration"
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate__markup
 msgid "Markup (%)"
 msgstr "Aufschlag (%)"
+
+#. module: payment_bitcoin
+#: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin
+msgid "Minimum Unused Bitcoin Addresses"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:ir.model.fields,field_description:payment_bitcoin.field_res_config_settings__min_unused_bitcoin
+#: model:ir.model.fields,field_description:payment_bitcoin.field_webkul_website_addons__min_unused_bitcoin
+#: model:ir.model.fields,field_description:payment_bitcoin.field_website_country_config__min_unused_bitcoin
+msgid "Minimun Unused Bitcoin"
+msgstr ""
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_address__order_id
@@ -229,10 +265,10 @@ msgstr "Die Zahlungsmethode Bitcoin ist derzeit nicht verfügbar"
 #. module: payment_bitcoin
 #: selection:payment.acquirer,provider:0
 msgid "Paypal"
-msgstr "Paypal"
+msgstr ""
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/controllers/main.py:88
+#: code:addons/payment_bitcoin/controllers/main.py:89
 #, python-format
 msgid "Please send %s %s to the following address: %s"
 msgstr "Bitte senden Sie %s %s an folgende Adresse: %s"
@@ -259,10 +295,15 @@ msgid "Round to Digits"
 msgstr "Auf Ziffern runden"
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/models/bitcoin.py:167
+#: code:addons/payment_bitcoin/models/bitcoin.py:205
 #, python-format
 msgid "Sale Order reference required"
 msgstr "Verkaufsauftragsreferenz erforderlich"
+
+#. module: payment_bitcoin
+#: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin
+msgid "Send notification to users when amount of unused Bitcoin addresses are less than or equal"
+msgstr ""
 
 #. module: payment_bitcoin
 #: selection:payment.acquirer,provider:0
@@ -295,17 +336,7 @@ msgid "after this minutes rate will be checked again for same amount"
 msgstr "Nach dieser Zeit wird der Kurs erneut auf den gleichen Betrag überprüft"
 
 #. module: payment_bitcoin
-#: model:ir.model,name:payment_bitcoin.model_bitcoin_address
-msgid "bitcoin.address"
-msgstr "Bitcoin Adresse"
-
-#. module: payment_bitcoin
-#: model:ir.model,name:payment_bitcoin.model_bitcoin_rate_line
-msgid "bitcoin.rate.line"
-msgstr "bitcoin.rate.line"
-
-#. module: payment_bitcoin
-#: code:addons/payment_bitcoin/controllers/main.py:84
+#: code:addons/payment_bitcoin/controllers/main.py:85
 #, python-format
 msgid "bitcoin:%s$$amount=%s*$message=%s"
 msgstr "Bitcoin:%s$$Betrag=%s*$Nachricht=%s"
@@ -314,5 +345,5 @@ msgstr "Bitcoin:%s$$Betrag=%s*$Nachricht=%s"
 #: selection:bitcoin.rate,unit:0
 #: selection:payment.transaction,bitcoin_unit:0
 msgid "mBTC"
-msgstr "mBTC"
+msgstr ""
 
