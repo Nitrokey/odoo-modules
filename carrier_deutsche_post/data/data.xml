@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<odoo>
-  <data noupdate="1">
+<odoo noupdate="1">
 
     <record id="carrier_letter" model="carrier.account">
       <field name="name">Letter</field>
@@ -29,5 +28,4 @@
       <field name="type">deutsche_post</field>
     </record>	
 
-  </data>
 </odoo>

@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-
 {
     'name': "Abandoned Carts",
-    'description': 'System will automatically delete website Quotations when those are older than X days.',
     'version': '12.0.1.0.0',
     'depends': ['website_sale','crm','account','project', 'calendar'],
     'data': [
@@ -14,7 +11,7 @@
         'wizard/customer_view.xml',
         
     ],
-    'author': "Nitrokey GmbH, Odoo Community Assosiation (OCA)",
+    'author': "Nitrokey GmbH, Odoo Community Association (OCA)",
     'license': 'AGPL-3',
     'website': "https://github.com/OCA/abandoned_carts",
     

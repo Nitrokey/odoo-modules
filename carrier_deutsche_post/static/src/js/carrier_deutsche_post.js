@@ -6,19 +6,19 @@ var config = require('web.config');
 var framework = require('web.framework');
 
 ActionManager.include({
-	_executeURLAction: function (action, options) {
+    _executeURLAction: function (action, options) {
         var url = action.url;
         if (config.debug && url && url.length && url[0] === '/') {
             url = $.param.querystring(url, {debug: config.debug});
         }
         if (action.target === 'download') {
-        	framework.redirect(url);
+            framework.redirect(url);
         }
         else if (action.target === 'self') {
             framework.redirect(url);
             return $.Deferred();
         } else {
-        	var w = window.open(url, '_blank');
+            var w = window.open(url, '_blank');
             if (!w || w.closed || typeof w.closed === 'undefined') {
                 var message = _t('A popup window has been blocked. You ' +
                              'may need to change your browser settings to allow ' +
@@ -31,7 +31,7 @@ ActionManager.include({
 
         return $.when();
     },
-	
+
 });
 
 });

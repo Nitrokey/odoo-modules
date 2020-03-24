@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import codecs
 import logging
 from datetime import datetime

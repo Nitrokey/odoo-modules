@@ -1,5 +1,3 @@
-# -*- encoding: UTF-8 -*-
-
 ''' pypdftk
 
 Python module to drive the awesome pdftk binary.

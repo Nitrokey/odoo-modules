@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-  <data noupdate="1">
+
+<odoo noupdate="1">
 
     <record id="config_sendy_url" model="ir.config_parameter">
       <field name="key">sendy_url</field>
@@ -11,9 +11,8 @@
       <field name="key">sendy_list</field>
       <field name="value">list_id_here</field>
     </record>
-	<record id="config_sendy_api_key" model="ir.config_parameter">
+    <record id="config_sendy_api_key" model="ir.config_parameter">
         <field name="key">sendy_api_key</field>
         <field name="value">api_key_here</field>
     </record>
-  </data>
 </odoo>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-  <data noupdate="1">
+
+<odoo noupdate="1">
 
     <record id="bitcoin_rate_default" model="bitcoin.rate">
       <field name="markup">10</field>
@@ -28,5 +28,4 @@
     </record>
 
 
-  </data>
 </odoo>

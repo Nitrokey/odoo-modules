@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
-  <data>
 
     <template id="bitcoin_form">
       <input type="hidden" name="data_set" t-att-data-action-url="tx_url" data-remove-me=""/>
@@ -30,5 +30,4 @@
       </field>
     </record>
 
-  </data>
 </odoo>

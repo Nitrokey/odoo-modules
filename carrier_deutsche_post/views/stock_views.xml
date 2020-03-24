@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
+
 <odoo>
-  <data>
 
     <record id="view_picking_form_de_post" model="ir.ui.view">
       <field name="model">stock.picking</field>
@@ -27,6 +27,4 @@
       </field>
     </record>
 
-
-  </data>
 </odoo>

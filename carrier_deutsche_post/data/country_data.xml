@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <odoo>
-  <data>
     <function name="write" model="ir.model.data">
       <function name="search" model="ir.model.data">
         <value eval="[('module', '=', 'base'), ('model', '=', 'res.country')]"/>
@@ -1003,5 +1002,4 @@
     <record id="base.zw" model="res.country">
       <field name="code_iso">ZWE</field>
     </record>
-  </data>
 </odoo>

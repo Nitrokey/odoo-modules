@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
-	<record id="base_vat.res_config_settings_view_form" model="ir.ui.view">
+    <record id="base_vat.res_config_settings_view_form" model="ir.ui.view">
         <field name="name">res.config.settings.view.form.inherit.base.vat</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="account.res_config_settings_view_form"/>
@@ -17,12 +18,12 @@
                            Verify VAT numbers using the European VIES service
                         </div>
                         <div class="o_setting_left_pane" attrs="{'invisible': [('vat_check_vies','!=',True)]}">
-		                    <field name="must_validate_vat"/>
-		                </div>
-		                <div class="o_setting_right_pane" attrs="{'invisible': [('vat_check_vies','!=',True)]}">
-		                    <label for="must_validate_vat"/>
-		                    <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
-		                </div>
+                            <field name="must_validate_vat"/>
+                        </div>
+                        <div class="o_setting_right_pane" attrs="{'invisible': [('vat_check_vies','!=',True)]}">
+                            <label for="must_validate_vat"/>
+                            <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                        </div>
                     </div>
                 </div>
             </div>

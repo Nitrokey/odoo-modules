@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
-  <data>
 
     <record id="view_bitcoin_address_form" model="ir.ui.view">
       <field name="name">bitcoin.address.form</field>
@@ -105,6 +105,4 @@
 
     <menuitem action='action_bitcoin_rate' id='menu_bitcoin_rate' parent='payment.root_payment_menu' sequence='40'/>
 
-
-  </data>
 </odoo>

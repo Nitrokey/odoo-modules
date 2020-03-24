@@ -1,5 +1,3 @@
-# -*- coding: utf-'8' "-*-"
-
 import logging
 import pprint  # from odoo import models, fields, api
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
+
+<odoo noupdate="1">
         <!-- Cron job for automatically remove abandoned cart orders and customers.-->
         <record id="ir_cron_remove_abandoned_cart_orders" model="ir.cron">
             <field name="name">Remove Abandoned cart orders and Customers</field>
@@ -15,5 +15,4 @@
             <field eval="False" name="active" />
         </record>
         
-    </data>
 </odoo>

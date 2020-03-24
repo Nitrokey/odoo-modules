@@ -1,0 +1,1 @@
+This module makes online validation of VAT numbers with EU's VIES service mandatory. If ecommerce customers enter a VAT number it is validated online. If validation fails during checkout, Odoo shows an error message to the customer. Customers don't have to enter a VAT number.
