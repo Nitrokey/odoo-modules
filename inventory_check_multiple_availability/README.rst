@@ -28,6 +28,8 @@ Go to Warehouse -> Delivery Orders
 
 Choose at least two orders with status = waiting. Click on Action -> Check Availibility
 
+.. image:: images/check_availibility.png
+
 **Table of contents**
 
 .. contents::
