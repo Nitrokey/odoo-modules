@@ -1,5 +1,3 @@
-By installing this module, user can able to check availability of multiple Pickings by single click on one button inside Action button
+This module allows users to check availability of multiple delivery orders by a single click at the Action button.
 
-Go to Warehouse -> Delivery Orders
-
-Choose at least two orders with status = waiting. Click on Action -> Check Availibility
+Go to Warehouse -> Delivery Orders and choose at least two delivery orders in status "waiting". Click on Action -> Check Availability.

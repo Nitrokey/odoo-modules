@@ -1,13 +1,14 @@
-The custom module payment_bitcoin lets customers choose Bitcoin as a payment method. In the backend a bitcoin rate needs to be configured and several Bitcoin addresses. 
+This module lets ecommerce customers to pay with Bitcoin. During configuration, multiple Bitcoin addresses need to be entered. Each Bitcoin address is assigned to one order only and used only once. During checkout, when a customer chooses to pay with Bitcoin, the next available Bitcoin address will be assigned to the sales order and the amount to be paid in Bitcoin is calculated automatically. At the time of assigning a Bitcoin address, the current exchange rate is fetched from TODO and the configured Bitcoin rate is applied to it. This rate can be configured similarly to an additional payment fee. At the checkout confirmation page, the Bitcoin address and the amount to-be-payed is displayed to the customer. The amount and Bitcoin address can also be send to the customer in the order confirmation email. If a customer chooses to pay with Bitcoin but no Bitcoin address is available, an error is displayed.
+
+Other than fetching the exchange rate, there is no online integration or Blockchain implementation to other services or the Bitcoin network. The actual Bitcoin Payments are not known to Odoo. Instead payments need to be confirmed manually, similarly to wire transfers.
+
+In the backoffice a Bitcoin rate needs to be configured and several Bitcoin addresses to be entered.
 
 Invoicing -> Configuration -> Bitcoin Adresses
 
-These addresses are used only once. When entering Bitcoin addresses there validity is verified by payment_bitcoin. The same Bitcoin address can't be added twice.
+When adding or importing Bitcoin addresses their validity is verified. The same Bitcoin address can't be added twice.
 
-Create and Assign an order to its address
+Bitcoin addresses are assigned to sales orders:
 
 Invoicing -> Configuration -> Bitcoin Adresses -> Create
 
-During checkout in ecommerce, customer can choose to pay Bitcoin. If Bitcoin is selected but no Bitcoin address is available, an error is displayed. If a Bitcoin address is available, it will be assigned to the order and the amount in Bitcoin is calculated automatically by fetching the exchange rate online and applying the Bitcoin rate to it (which is kind of additional payment fee). At the checkout confirmation page, the Bitcoin address and the amount to-be-payed is displayed to the user. The amount and Bitcoin address is also send to the customer in the order confirmation email.
-
-Other than fetching the exchange rate, there is no online integration or Blockchain implementation to other services or the Bitcoin network. Bitocin Payments are not known to Odoo. Payments are booked manually and usually "wire transfer" is chosen as a payment method.

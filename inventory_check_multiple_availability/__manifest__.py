@@ -1,5 +1,5 @@
 {
-    'name' : 'Multi Picking check Availability',
+    'name' : 'Multi Picking Check Availability',
     'version' : '12.0.1.0.0',
     'summary': '',
     'category': 'Warehouse',
