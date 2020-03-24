@@ -26,11 +26,15 @@ The custom module payment_bitcoin lets customers choose Bitcoin as a payment met
 
 Invoicing -> Configuration -> Bitcoin Adresses
 
+.. image:: images/bitcoin_addresses.png
+
 These addresses are used only once. When entering Bitcoin addresses there validity is verified by payment_bitcoin. The same Bitcoin address can't be added twice.
 
 Create and Assign an order to its address
 
 Invoicing -> Configuration -> Bitcoin Adresses -> Create
+
+.. image:: images/assign_order.png
 
 During checkout in ecommerce, customer can choose to pay Bitcoin. If Bitcoin is selected but no Bitcoin address is available, an error is displayed. If a Bitcoin address is available, it will be assigned to the order and the amount in Bitcoin is calculated automatically by fetching the exchange rate online and applying the Bitcoin rate to it (which is kind of additional payment fee). At the checkout confirmation page, the Bitcoin address and the amount to-be-payed is displayed to the user. The amount and Bitcoin address is also send to the customer in the order confirmation email.
 
