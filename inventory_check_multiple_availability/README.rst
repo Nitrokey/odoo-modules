@@ -26,6 +26,8 @@ This module allows users to check availability of multiple delivery orders by a 
 
 Go to Warehouse -> Delivery Orders and choose at least two delivery orders in status "waiting". Click on Action -> Check Availability.
 
+.. image:: images/check_availibility.png
+
 **Table of contents**
 
 .. contents::
