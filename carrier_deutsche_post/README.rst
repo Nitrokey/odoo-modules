@@ -32,35 +32,35 @@ Required settings: Button "Buy Deutsche Post Label" is being invisible when carr
 
 To setup carrier accounts go to Inventory -> Configuration -> Carrier Accounts
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/1_carrier_accounts.png
+.. image:: images/1_carrier_accounts.png
 
 Click on Create to create carrier accounts
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/2_settings_carrier_accounts.png
+.. image:: images/2_settings_carrier_accounts.png
 
 If you want to edit the delivery methods go to Inventory -> Configuration -> Delivery Methods
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/3_delivery_methods.png
+.. image:: images/3_delivery_methods.png
 
 Click on Create to create delivery methods
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/4_settings_delivery_methods.png
+.. image:: images/4_settings_delivery_methods.png
 
 To purchase a Deutsche Post label go to Sales -> click on a Sales Order -> Delivery -> Buy Deutsche Post label
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/5_buy_label.png
+.. image:: images/5_buy_label.png
 
 Bought Deutsche Post labels are attached to delivery orders in tab Additional Info
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/6_attachment.png
+.. image:: images/6_attachment.png
 
 PDF label germany
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/7_germany.png
+.. image:: images/7_germany.png
 
 PDF label international
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/8_international.png
+.. image:: images/8_international.png
 
 **Operations**
 
