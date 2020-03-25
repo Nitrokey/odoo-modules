@@ -56,7 +56,7 @@ Configuration
 
 Under Settings -> Configuration -> Sales -> Retention Period set hours and maximum abandoned items:
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/1_settings.png
+.. image:: images/1_settings.png
 
 **How to set automation (cron job) to delete orders?**
 
@@ -72,7 +72,7 @@ For example:
 
 "Number of calls is negative" means that this process will run every day. 
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/2_cron_job.png
+.. image:: images/2_cron_job.png
 
 
 Usage
@@ -82,23 +82,23 @@ Usage
 
 Go to Sales -> Abandoned Log: Abandoned Order. When you click on the "bin" Symbol on the right side, you can skip the order from the removing-process. If you scroll down and click on the red remove button, all listed orders will be deleted.
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/3_abandoned_order.png
+.. image:: images/3_abandoned_order.png
 
 **How to see which data was deleted?**
 
 Go to Sales -> Abandoned Log: Removed Log
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/4_removed_log.png
+.. image:: images/4_removed_log.png
 
 You can export the data to a CSV file if you activate the check box on the left side and go to more -> export.
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/5_export.png
+.. image:: images/5_export.png
 
 **How to view and delete customers with zero orders?**
 
 After deleting abandoned orders, customers will not be removed automatically. In order to do so go to Sales -> Abandoned Log: Abandoned Customer. When you click on the "bin" Symbol on the right side, you can skip the customer from the removing process. If you scroll down and click on the red remove button, all listed customers will be deleted.
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/6_abandoned_customer.png
+.. image:: images/6_abandoned_customer.png
 
 **Table of contents**
 
