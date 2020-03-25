@@ -30,11 +30,15 @@ In the backoffice a Bitcoin rate needs to be configured and several Bitcoin addr
 
 Invoicing -> Configuration -> Bitcoin Adresses
 
+.. image:: images/bitcoin_addresses.png
+
 When adding or importing Bitcoin addresses their validity is verified. The same Bitcoin address can't be added twice.
 
 Bitcoin addresses are assigned to sales orders:
 
 Invoicing -> Configuration -> Bitcoin Adresses -> Create
+
+.. image:: images/assign_order.png
 
 
 **Table of contents**
