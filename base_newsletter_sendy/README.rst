@@ -30,15 +30,15 @@ For configuration there are three parameters to be set in Settings -> Activate t
 * sendy_list
 * sendy_url
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/base_newsletter_sendy/images/01_api_key.png
+.. image:: images/01_api_key.png
 
 During checkout customers can subscribe by activating the marked checkbox.
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/base_newsletter_sendy/images/02_e-commerce_checkout.png
+.. image:: images/02_e-commerce_checkout.png
 
 At a contact record in the backoffice: Sales & Purchases -> Newsletter (via Sendy)
 
-.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/base_newsletter_sendy/images/03_customer_record.png
+.. image:: images/03_customer_record.png
 
 **Table of contents**
 
