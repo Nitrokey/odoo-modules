@@ -14,10 +14,10 @@ Delivery Carrier Deutsche Post
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fodoo--modules-lightgray.png?logo=github
-    :target: https://github.com/OCA/odoo-modules/tree/pylint_OCA/carrier_deutsche_post
+    :target: https://github.com/OCA/odoo-modules/tree/12.0/carrier_deutsche_post
     :alt: OCA/odoo-modules
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/odoo-modules-pylint_OCA/odoo-modules-pylint_OCA-carrier_deutsche_post
+    :target: https://translation.odoo-community.org/projects/odoo-modules-12-0/odoo-modules-12-0-carrier_deutsche_post
     :alt: Translate me on Weblate
 
 |badge1| |badge2| |badge3| |badge4| 
@@ -32,35 +32,35 @@ Required settings: Button "Buy Deutsche Post Label" is being invisible when carr
 
 To setup carrier accounts go to Inventory -> Configuration -> Carrier Accounts
 
-.. image:: images/1_carrier_accounts.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/1_carrier_accounts.png
 
 Click on Create to create carrier accounts
 
-.. image:: images/2_settings_carrier_accounts.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/2_settings_carrier_accounts.png
 
 If you want to edit the delivery methods go to Inventory -> Configuration -> Delivery Methods
 
-.. image:: images/3_delivery_methods.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/3_delivery_methods.png
 
 Click on Create to create delivery methods
 
-.. image:: images/4_settings_delivery_methods.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/4_settings_delivery_methods.png
 
 To purchase a Deutsche Post label go to Sales -> click on a Sales Order -> Delivery -> Buy Deutsche Post label
 
-.. image:: images/5_buy_label.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/5_buy_label.png
 
 Bought Deutsche Post labels are attached to delivery orders in tab Additional Info
 
-.. image:: images/6_attachment.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/6_attachment.png
 
 PDF label germany
 
-.. image:: images/7_germany.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/7_germany.png
 
 PDF label international
 
-.. image:: images/8_international.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/carrier_deutsche_post/images/8_international.png
 
 **Operations**
 
@@ -84,7 +84,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/odoo-modules/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/odoo-modules/issues/new?body=module:%20carrier_deutsche_post%0Aversion:%20pylint_OCA%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/odoo-modules/issues/new?body=module:%20carrier_deutsche_post%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -109,6 +109,6 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
-This module is part of the `OCA/odoo-modules <https://github.com/OCA/odoo-modules/tree/pylint_OCA/carrier_deutsche_post>`_ project on GitHub.
+This module is part of the `OCA/odoo-modules <https://github.com/OCA/odoo-modules/tree/12.0/carrier_deutsche_post>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.

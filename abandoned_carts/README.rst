@@ -14,18 +14,17 @@ Abandoned Carts
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fodoo--modules-lightgray.png?logo=github
-    :target: https://github.com/OCA/odoo-modules/tree/pylint_OCA/abandoned_carts
+    :target: https://github.com/OCA/odoo-modules/tree/12.0/abandoned_carts
     :alt: OCA/odoo-modules
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/odoo-modules-pylint_OCA/odoo-modules-pylint_OCA-abandoned_carts
+    :target: https://translation.odoo-community.org/projects/odoo-modules-12-0/odoo-modules-12-0-abandoned_carts
     :alt: Translate me on Weblate
 
 |badge1| |badge2| |badge3| |badge4| 
 
-**Abandoned carts** is a module for **Odoo** which allows you to delete website
-Quotations and  related partner records when those are older than a definable retention period.
+This module allows to delete Quotations and related partner records when those are older than a definable retention period.
 
-Features supported:
+Features:
 
 * Configure a retention period of x hours (default: 48 hours)
 
@@ -41,27 +40,27 @@ This module identifies orders as abandoned (and to be deleted) if all of the fol
 `"state = draft" and "sales = website_sales" and "date_of_order <= hours_from_retention_period"`
 
 These orders will be displayed in "Abandoned orders" and can be deleted manually. 
-Customers, which have the 
+
+Customers, which have
 
 `"orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "invoice = 0" and "tasks = 0" and "active = 0" and "is_customer = true"`
 
 will be displayed in "Abandoned customers" and can be deleted manually.
 
-If you setup the cron job, the abandoned_orders and abandoned_customers will be deleted automaticly, depending on your setup.
+A cron job can be configured to delete abandoned orders and abandoned customers automatically.
 
 Deleted items are listed with name, date, model & user in "Removed Log" for verification purposes.
 
 Configuration
 =============
 
-Under Settings -> Configuration -> Sales -> Retention Period you can set hours and maximum abandoned items:
+Under Settings -> Configuration -> Sales -> Retention Period set hours and maximum abandoned items:
 
-.. image:: images/1_settings.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/1_settings.png
 
 **How to set automation (cron job) to delete orders?**
 
-If we want to set an automation to remove orders, we have to go to settings -> Activate the developer mode
-Technical:Automation -> Scheduled Actions.
+Go to settings -> Activate the developer mode, Technical: Automation -> Scheduled Actions.
 
 Type in Name, Interval Number, Next Execution Date and Inverval Unit. The cron job will be executed at Next Execution Date. In Number of calls you can determine how many intervals it has to run. 
 
@@ -73,7 +72,7 @@ For example:
 
 "Number of calls is negative" means that this process will run every day. 
 
-.. image:: images/2_cron_job.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/2_cron_job.png
 
 
 Usage
@@ -81,28 +80,25 @@ Usage
 
 **How to find removable orders with draft-status?**
 
-go to Sales -> Abandoned Log:Abandoned Order. Now you can see a window like in the picture below. When you click
-on the "bin" Symbol on the right side, you can skip the order from the removing-process. If you scroll down and click on the red remove button, all orders will be deleted.
+Go to Sales -> Abandoned Log: Abandoned Order. When you click on the "bin" Symbol on the right side, you can skip the order from the removing-process. If you scroll down and click on the red remove button, all listed orders will be deleted.
 
-.. image:: images/3_abandoned_order.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/3_abandoned_order.png
 
 **How to see which data was deleted?**
 
-go to Sales -> Abandoned Log:Removed Log. Now you can see a window like in the picture below. You can see here which orders have just been deleted. 
+Go to Sales -> Abandoned Log: Removed Log
 
-.. image:: images/4_removed_log.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/4_removed_log.png
 
-You can export the data to a csv-file if you activate the check button on the left side and go to more -> export.
+You can export the data to a CSV file if you activate the check box on the left side and go to more -> export.
 
-.. image:: images/5_export.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/5_export.png
 
 **How to view and delete customers with zero orders?**
 
-As soon as you have deleted the orders, customers will not be removed automatically. In order to do so
-go to Sales -> Abandoned Log:Abandoned Customer. Now you can see a window like in the picture below. When you click
-on the "bin" Symbol on the right side, you can skip the customer from the removing process. If you scroll down and click on the red remove button, all customers will be deleted.
+After deleting abandoned orders, customers will not be removed automatically. In order to do so go to Sales -> Abandoned Log: Abandoned Customer. When you click on the "bin" Symbol on the right side, you can skip the customer from the removing process. If you scroll down and click on the red remove button, all listed customers will be deleted.
 
-.. image:: images/6_abandoned_customer.png
+.. image:: https://raw.githubusercontent.com/OCA/odoo-modules/12.0/abandoned_carts/images/6_abandoned_customer.png
 
 **Table of contents**
 
@@ -115,7 +111,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/odoo-modules/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/odoo-modules/issues/new?body=module:%20abandoned_carts%0Aversion:%20pylint_OCA%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/odoo-modules/issues/new?body=module:%20abandoned_carts%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -140,6 +136,6 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
-This module is part of the `OCA/odoo-modules <https://github.com/OCA/odoo-modules/tree/pylint_OCA/abandoned_carts>`_ project on GitHub.
+This module is part of the `OCA/odoo-modules <https://github.com/OCA/odoo-modules/tree/12.0/abandoned_carts>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.

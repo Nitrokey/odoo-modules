@@ -1,5 +1,5 @@
 ================================
-Multi Picking check Availability
+Multi Picking Check Availability
 ================================
 
 .. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -14,21 +14,17 @@ Multi Picking check Availability
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fodoo--modules-lightgray.png?logo=github
-    :target: https://github.com/OCA/odoo-modules/tree/OCA_new/inventory_check_multiple_availability
+    :target: https://github.com/OCA/odoo-modules/tree/12.0/inventory_check_multiple_availability
     :alt: OCA/odoo-modules
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/odoo-modules-OCA_new/odoo-modules-OCA_new-inventory_check_multiple_availability
+    :target: https://translation.odoo-community.org/projects/odoo-modules-12-0/odoo-modules-12-0-inventory_check_multiple_availability
     :alt: Translate me on Weblate
 
 |badge1| |badge2| |badge3| |badge4| 
 
-By installing this module, user can able to check availability of multiple Pickings by single click on one button inside Action button
+This module allows users to check availability of multiple delivery orders by a single click at the Action button.
 
-Go to Warehouse -> Delivery Orders
-
-Choose at least two orders with status = waiting. Click on Action -> Check Availibility
-
-.. image:: images/check_availibility.png
+Go to Warehouse -> Delivery Orders and choose at least two delivery orders in status "waiting". Click on Action -> Check Availability.
 
 **Table of contents**
 
@@ -41,7 +37,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/odoo-modules/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/odoo-modules/issues/new?body=module:%20inventory_check_multiple_availability%0Aversion:%20OCA_new%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/odoo-modules/issues/new?body=module:%20inventory_check_multiple_availability%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -66,6 +62,6 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
-This module is part of the `OCA/odoo-modules <https://github.com/OCA/odoo-modules/tree/OCA_new/inventory_check_multiple_availability>`_ project on GitHub.
+This module is part of the `OCA/odoo-modules <https://github.com/OCA/odoo-modules/tree/12.0/inventory_check_multiple_availability>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
