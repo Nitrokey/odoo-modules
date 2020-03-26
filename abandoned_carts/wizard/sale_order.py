@@ -1,4 +1,4 @@
-"""sale_order.py"""
+# -*- coding: utf-8 -*-
 
 from datetime import datetime, timedelta
 import logging

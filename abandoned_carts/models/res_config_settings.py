@@ -1,4 +1,4 @@
-"""rest_config_settings.py"""
+# -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval

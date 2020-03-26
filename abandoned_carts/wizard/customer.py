@@ -1,4 +1,4 @@
-"""customer.py"""
+# -*- coding: utf-8 -*-
 
 from datetime import datetime
 import logging
