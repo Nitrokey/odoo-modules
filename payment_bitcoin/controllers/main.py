@@ -7,7 +7,7 @@ import odoo.addons.website_sale.controllers.main
 from odoo import _, http
 from odoo.http import request
 
-_logger = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 
 class BitcoinController(http.Controller):
@@ -16,7 +16,7 @@ class BitcoinController(http.Controller):
     @http.route(
         ['/payment/bitcoin/feedback'], type='http', auth='none', csrf=False)
     def transfer_form_feedback(self, **post):
-        _logger.debug(
+        _LOGGER.debug(
             'Beginning form_feedback with post data %s', pprint.pformat(post))
         request.env['payment.transaction'].sudo().form_feedback(
             post, 'bitcoin')
@@ -24,7 +24,7 @@ class BitcoinController(http.Controller):
 
     @http.route(['/payment_bitcoin/rate'], type='json', auth="none")
     def payment_bitcoin_rate(self, order_id=False, order_ref=False):
-        _logger.debug(
+        _LOGGER.debug(
             'bitcoin rate lookup for Order ID %s, Order Ref %s' % (
                 order_id, order_ref))
         return request.env['bitcoin.rate'].sudo().get_rate(order_id, order_ref)

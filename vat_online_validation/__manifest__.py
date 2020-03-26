@@ -7,9 +7,7 @@
                 ],
     'data': [
             'views/res_config_settings_views.xml',
-    ],   
+    ],
     'author': 'Nitrokey GmbH, Odoo Community Association (OCA)',
     'website': 'https://github.com/OCA/vat_online_validation',
-
-
 }

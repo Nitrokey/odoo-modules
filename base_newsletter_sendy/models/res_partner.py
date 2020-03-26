@@ -4,7 +4,7 @@ from odoo import api, fields, models
 from pysendy import (AlreadySubscribedException, InvalidEmailAddressException,
                      Sendy)
 
-_logger = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 
 class Partner(models.Model):
@@ -19,13 +19,13 @@ class Partner(models.Model):
         sendy_url = self.env['ir.config_parameter'].get_param('sendy_url')
         sendy_list = self.env['ir.config_parameter'].get_param('sendy_list')
         sendy_api_key = self.env['ir.config_parameter'].get_param('sendy_api_key')
-        
+
         if not sendy_url or not sendy_list or not sendy_api_key:
-            _logger.info('Sandy is not configured')
+            _LOGGER.info('Sandy is not configured')
             return False
 
-        _logger.debug('Using Sendy at %s for list %s', sendy_url, sendy_list)
-        _logger.info(
+        _LOGGER.debug('Using Sendy at %s for list %s', sendy_url, sendy_list)
+        _LOGGER.info(
             'Changing status for %(name)s <%(email)s> to %(action)s' % {
                 'name': self.name, 'email': email, 'action': subscribe})
 
@@ -33,17 +33,17 @@ class Partner(models.Model):
         try:
             if subscribe:
                 sendy.subscribe(
-                    name=self.name, email=email, list_id=sendy_list,api_key=sendy_api_key)
+                    name=self.name, email=email, list_id=sendy_list, api_key=sendy_api_key)
             else:
                 sendy.unsubscribe(email=email, list_id=sendy_list)
         except AlreadySubscribedException as e:
             # If the user is already subscribed, this is not a fatal error.
-            _logger.exception(e)
+            _LOGGER.exception(e)
         except InvalidEmailAddressException as e:
             # If the user is already unsubscribed, this is not a fatal error.
-            _logger.exception(e)
+            _LOGGER.exception(e)
         except Exception as e:
-            _logger.exception(e)
+            _LOGGER.exception(e)
 
     @api.multi
     def write(self, vals):

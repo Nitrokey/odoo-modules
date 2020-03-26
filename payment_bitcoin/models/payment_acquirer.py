@@ -5,7 +5,7 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from odoo.tools import float_compare
 
-_logger = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 
 class BitcoinPaymentAcquirer(models.Model):
@@ -34,7 +34,7 @@ class BitcoinPaymentTransaction(models.Model):
                 values['acquirer_id'])
             if acquirer.provider == 'bitcoin':
                 order_ref = values.get('reference')
-                sale_order_ids = values.get('sale_order_ids',[])
+                sale_order_ids = values.get('sale_order_ids', [])
                 if sale_order_ids:
                     resp = self.env['bitcoin.rate'].get_rate(order_id=sale_order_ids[0][2][0])
                     if resp:
@@ -55,7 +55,7 @@ class BitcoinPaymentTransaction(models.Model):
                 error_msg += '; no order found'
             else:
                 error_msg += '; multiple order found'
-            _logger.error(error_msg)
+            _LOGGER.error(error_msg)
             raise ValidationError(error_msg)
 
         return txs
@@ -77,7 +77,7 @@ class BitcoinPaymentTransaction(models.Model):
 
     @api.multi
     def _bitcoin_form_validate(self, data):
-        _logger.info(
+        _LOGGER.info(
             'Validated . payment for tx %s: set as pending' % self.reference)
         self._set_transaction_pending()
         return self.write({'state': 'pending'})

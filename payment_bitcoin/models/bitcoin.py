@@ -10,9 +10,9 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.safe_eval import safe_eval
 
-_logger = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
-digits58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+DIGITS58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
 
 
@@ -98,7 +98,7 @@ def validate_bitcoin_address(addr):
 def decode_base58(bc, length):
     n = 0
     for char in bc:
-        n = n * 58 + digits58.index(char)
+        n = n * 58 + DIGITS58.index(char)
     return codecs.decode(('%%0%dx' % (length << 1) % n), 'hex_codec')[-length:]
 
 
@@ -113,7 +113,7 @@ class BitcoinAddress(models.Model):
     # once used, it'll have order_id assigned, so it won't use again.
     _name = 'bitcoin.address'
     _description = 'Bitcoin Address'
-    
+
     name = fields.Char('Address', required=True)
     create_date = fields.Datetime('Created')
     create_uid = fields.Many2one('res.users', 'Created by')
@@ -124,36 +124,36 @@ class BitcoinAddress(models.Model):
     _sql_constraints = [
         ('name_uniq', 'unique(name)', 'Bitcoin Address must be unique'),
     ]
-    
+
     @api.model
     def send_bitcoin_address_goes_low_notification(self):
-        unused_address_count = self.search_count([('order_id','=',False)])
+        unused_address_count = self.search_count([('order_id', '=', False)])
         min_unused_bitcoin = safe_eval(self.env['ir.config_parameter'].get_param(
             'payment_bitcoin.min_unused_bitcoin',
             '3',
         ))
         if unused_address_count <= min_unused_bitcoin:
             groups = self.env['res.groups'].browse()
-            
+
             group = self.sudo().env.ref("account.group_account_invoice", False)
             if group:
                 groups += group
             group = self.sudo().env.ref("account.group_account_user", False)
             if group:
                 groups += group
-            
+
             needaction_partner_ids = [(4, user.partner_id.id) for user in groups.mapped('users')]
             self.env['mail.message'].create({
-                                            'message_type': "notification",
-                                            "subtype_id": self.env.ref("mail.mt_comment").id,
-                                            'date': datetime.now(),
-                                            'body': '<p>Only %s unused Bitcoin addresses are left. Please add new addresses.</p>'%(unused_address_count),
-                                            'needaction_partner_ids': needaction_partner_ids,
-                                            })
-            
+                'message_type': "notification",
+                "subtype_id": self.env.ref("mail.mt_comment").id,
+                'date': datetime.now(),
+                'body': '<p>Only %s unused Bitcoin addresses are left. '
+                        'Please add new addresses.</p>' % unused_address_count,
+                'needaction_partner_ids': needaction_partner_ids,
+            })
+
         return
-    
-        
+
     @api.constrains('name')
     def _check_bitcoin_address(self):
         if not validate_bitcoin_address(self.name):
@@ -207,7 +207,7 @@ class BitcoinRate(models.Model):
         elif order_ref:
             order = self.env['sale.order'].search([('name', '=', order_ref)])
             if not order:
-                _logger.warning(
+                _LOGGER.warning(
                     'Sale Order with ref %s is missing' % order_ref)
                 return False
             order = order[0]
@@ -221,7 +221,7 @@ class BitcoinRate(models.Model):
             addr_ids = self.env['bitcoin.address'].search(
                 [('order_id', '=', False)], limit=1)
             if not addr_ids:
-                _logger.error('No Bitcoin Address configured')
+                _LOGGER.error('No Bitcoin Address configured')
                 return False
 
         fltr_dom = [
@@ -229,8 +229,8 @@ class BitcoinRate(models.Model):
             ('currency_id', '=', currency.id),
             ('amount', '=', amount_total),
             ('create_date', '>=',
-                (datetime.now() - relativedelta(minutes=sobj.valid_minutes)).
-                strftime('%Y-%m-%d %H:%M:00')
+             (datetime.now() - relativedelta(minutes=sobj.valid_minutes)).
+             strftime('%Y-%m-%d %H:%M:00')
              ),
         ]
 
@@ -247,7 +247,7 @@ class BitcoinRate(models.Model):
             url = url.replace('{AMOUNT}', str(amount_total))
             response = requests.get(url)
             if response.status_code != 200:
-                _logger.error('can not find Bitcoin exchange rate')
+                _LOGGER.error('can not find Bitcoin exchange rate')
                 return False
 
             rate = float(response.content)
@@ -287,7 +287,7 @@ class BitcoinRateLine(models.Model):
     _name = 'bitcoin.rate.line'
     _order = 'create_date desc'
     _description = 'Bitcoin Rate Lines'
-    
+
     rate_id = fields.Many2one('bitcoin.rate', 'Bitcoin Rate')
     create_date = fields.Datetime('Create Date')
     rate = fields.Float('BTC', digits=(20, 8))

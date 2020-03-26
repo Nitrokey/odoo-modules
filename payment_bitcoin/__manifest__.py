@@ -7,7 +7,7 @@
     'license': 'AGPL-3',
     'author': 'Nitrokey GmbH, Odoo Community Association (OCA)',
     'website': 'https://github.com/OCA/payment_bitcoin',
-    'depends': ['payment', 'website_sale', 'sale_payment','base_automation'],
+    'depends': ['payment', 'website_sale', 'sale_payment', 'base_automation'],
     'data': [
         'views/bitcoin_views.xml',
         'views/payment_bitcoin_templates.xml',

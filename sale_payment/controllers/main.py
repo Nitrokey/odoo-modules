@@ -10,9 +10,15 @@ from odoo.http import request
 class WebsiteSale(ProductConfiguratorController):
 
     @http.route(['/shop/payment/transaction/',
-        '/shop/payment/transaction/<int:so_id>',
-        '/shop/payment/transaction/<int:so_id>/<string:access_token>'], type='json', auth="public", website=True)
-    def payment_transaction(self, acquirer_id, save_token=False, so_id=None, access_token=None, token=None, **kwargs):
+                 '/shop/payment/transaction/<int:so_id>',
+                 '/shop/payment/transaction/<int:so_id>/<string:access_token>'],
+                type='json', auth="public",
+                website=True)
+    def payment_transaction(self, acquirer_id,
+                            save_token=False,
+                            so_id=None,
+                            access_token=None,
+                            token=None, **kwargs):
         """ Json method that creates a payment.transaction, used to create a
         transaction when the user clicks on 'pay now' button. After having
         created the transaction, the event continues and the user is redirected
@@ -58,8 +64,10 @@ class WebsiteSale(ProductConfiguratorController):
 
         transaction = order._create_payment_transaction(vals)
         order.write({'payment_tx_id': transaction.id})
-        # store the new transaction into the transaction list and if there's an old one, we remove it
-        # until the day the ecommerce supports multiple orders at the same time
+        # store the new transaction into the transaction list
+        # and if there's an old one, we remove it
+        # until the day the ecommerce supports
+        # multiple orders at the same time
         last_tx_id = request.session.get('__website_sale_last_tx_id')
         last_tx = request.env['payment.transaction'].browse(last_tx_id).sudo().exists()
         if last_tx:
@@ -68,7 +76,11 @@ class WebsiteSale(ProductConfiguratorController):
         request.session['__website_sale_last_tx_id'] = transaction.id
         return transaction.render_sale_button(order)
 
-    @http.route('/shop/payment/token', type='http', auth='public', website=True, sitemap=False)
+    @http.route('/shop/payment/token',
+                type='http',
+                auth='public',
+                website=True,
+                sitemap=False)
     def payment_token(self, pm_id=None, **kwargs):
         """ Method that handles payment using saved tokens
 
@@ -93,7 +105,7 @@ class WebsiteSale(ProductConfiguratorController):
         # Create transaction
         vals = {'payment_token_id': pm_id, 'return_url': '/shop/payment/validate'}
 
-        tx = order._create_payment_transaction(vals)
-        order.write({'payment_tx_id': tx.id})
-        PaymentProcessing.add_payment_transaction(tx)
+        t_x = order._create_payment_transaction(vals)
+        order.write({'payment_tx_id': t_x.id})
+        PaymentProcessing.add_payment_transaction(t_x)
         return request.redirect('/payment/process')
