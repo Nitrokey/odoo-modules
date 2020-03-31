@@ -55,10 +55,14 @@ class CleanupPurgeLineModel(models.TransientModel):
             objs = self.env['cleanup.purge.line.model']\
                 .browse(self._context.get('active_ids'))
         for line in objs:
-            self.env.cr.execute(
-                "SELECT id, model from ir_model WHERE model = %s",
-                (line.name,))
-            row = self.env.cr.fetchone()
+            try:
+                row = False
+                self.env.cr.execute(
+                    "SELECT id, model from ir_model WHERE model = %s",
+                    (line.name,))
+                row = self.env.cr.fetchone()
+            except Exception as e:
+                continue
             if not row:
                 continue
             self.logger.info('Purging model %s', row[1])
@@ -94,6 +98,7 @@ class CleanupPurgeLineModel(models.TransientModel):
                 line.write({'purged': True})
             except Exception as e:
                 pass
+            self.env.cr.commit()
         return True
 
 

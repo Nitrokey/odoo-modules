@@ -71,6 +71,7 @@ class CleanupPurgeLineTable(models.TransientModel):
                 line.write({'purged': True})
             except Exception as e:
                 pass
+            self.env.cr.commit()
         return True
 
 
