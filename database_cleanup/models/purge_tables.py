@@ -63,11 +63,14 @@ class CleanupPurgeLineTable(models.TransientModel):
                             IdentifierAdapter(constraint[0])
                         ))
 
-            self.logger.info(
-                'Dropping table %s', line.name)
-            self.env.cr.execute(
-                "DROP TABLE %s", (IdentifierAdapter(line.name),))
-            line.write({'purged': True})
+            try:
+                self.logger.info(
+                    'Dropping table %s', line.name)
+                self.env.cr.execute(
+                    "DROP TABLE %s", (IdentifierAdapter(line.name),))
+                line.write({'purged': True})
+            except Exception as e:
+                pass
         return True
 
 

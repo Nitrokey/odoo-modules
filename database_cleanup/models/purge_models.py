@@ -85,12 +85,15 @@ class CleanupPurgeLineModel(models.TransientModel):
                     pass
                 except AttributeError:
                     pass
-            self.env['ir.model.relation'].search([
-                ('model', '=', line.name)
-            ]).with_context(**context_flags).unlink()
-            self.env['ir.model'].browse([row[0]])\
-                .with_context(**context_flags).unlink()
-            line.write({'purged': True})
+            try:
+                self.env['ir.model.relation'].search([
+                    ('model', '=', line.name)
+                ]).with_context(**context_flags).unlink()
+                self.env['ir.model'].browse([row[0]])\
+                    .with_context(**context_flags).unlink()
+                line.write({'purged': True})
+            except Exception as e:
+                pass
         return True
 
 
