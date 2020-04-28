@@ -63,7 +63,12 @@ class WebsiteSale(ProductConfiguratorController):
             vals['payment_token_id'] = int(token)
 
         transaction = order._create_payment_transaction(vals)
-        order.write({'payment_tx_id': transaction.id})
+        so_vals = {'payment_tx_id': transaction.id}
+        # Set Payment Method from Acquirer
+        if transaction.acquirer_id.inbound_payment_method_ids:
+            so_vals.update({'payment_method_id': transaction.acquirer_id.inbound_payment_method_ids[0].id})
+        order.write(so_vals)
+
         # store the new transaction into the transaction list
         # and if there's an old one, we remove it
         # until the day the ecommerce supports
