@@ -12,6 +12,7 @@
      """,
     'depends': [
         'website_sale',
+        'stock_picking_on_hold'
     ],
     'data': [
     ],
