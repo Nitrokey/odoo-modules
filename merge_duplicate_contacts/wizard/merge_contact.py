@@ -227,61 +227,62 @@ class MergePartnerAutomatic(models.TransientModel):
 
 class MergePartnerManualCheck(models.TransientModel):
     _name = 'merge.partner.manual.check'
+    _description = 'Merge Partner Manual Check'
     
     
     last_changes_date1 = fields.Datetime('Last Changes')
-    last_changes_date2 = fields.Datetime('Last Changes')
+    last_changes_date2 = fields.Datetime('Last Changes 2')
     
-    last_changes_uid1 = fields.Many2one('res.users','Last Changes')
-    last_changes_uid2 = fields.Many2one('res.users','Last Changes')
+    last_changes_uid1 = fields.Many2one('res.users','Last Update By')
+    last_changes_uid2 = fields.Many2one('res.users','Last Update By 2')
     
     last_order1 = fields.Datetime('Last Order')
-    last_order2 = fields.Datetime('Last Order')
+    last_order2 = fields.Datetime('Last Order 2')
     
     last_order_num1 = fields.Char('Last Order Number')
-    last_order_num2 = fields.Char('Last Order Number')
+    last_order_num2 = fields.Char('Last Order Number 2')
     
-    id1 = fields.Char('ID')
-    id2 = fields.Char('ID')
+    id1 = fields.Char('ID 1')
+    id2 = fields.Char('ID 2')
     
     partner_id_1 = fields.Many2one('res.partner','Partner')
     partner_id_2 = fields.Many2one('res.partner', 'Partner 2')
     
     company_id = fields.Many2one('res.company', 'Company')
-    company_id2 = fields.Many2one('res.company', 'Company')
+    company_id2 = fields.Many2one('res.company', 'Company 2')
     
     name = fields.Char('Name')
-    name2 = fields.Char('Name')
+    name2 = fields.Char('Name 2')
     
     email = fields.Char('Email')
-    email2 = fields.Char('Email')
+    email2 = fields.Char('Email 2')
     
     phone = fields.Char('Phone')
-    phone2 = fields.Char('Phone')
+    phone2 = fields.Char('Phone 2')
     
     street = fields.Char('Address1')
-    street2 = fields.Char('Address1')
+    street2 = fields.Char('Address1 2')
     
     street11 = fields.Char('Address2')
-    street22 = fields.Char('Address2')
+    street22 = fields.Char('Address2 2')
     
     zip = fields.Char('Zip')
-    zip2 = fields.Char('Zip')
+    zip2 = fields.Char('Zip 2')
     
     city = fields.Char('City')
-    city2 = fields.Char('City')
+    city2 = fields.Char('City 2')
     
     state_id = fields.Many2one("res.country.state", string='State')
-    state_id2 = fields.Many2one("res.country.state", string='State')
+    state_id2 = fields.Many2one("res.country.state", string='State 2')
     
     country_id = fields.Many2one('res.country', string='Country')
-    country_id2 = fields.Many2one('res.country', string='Country')
+    country_id2 = fields.Many2one('res.country', string='Country 2')
     
     is_company = fields.Boolean('Is Company ?')
-    is_company2 = fields.Boolean('Is Company ?')
+    is_company2 = fields.Boolean('Is Company 2 ?')
     
     vat_1 = fields.Char('Vat')
-    vat_2 = fields.Char('Vat')
+    vat_2 = fields.Char('Vat 2')
     
     keep1 = fields.Boolean('Keep', default=True)
     keep2 = fields.Boolean('Keep 2')
@@ -296,7 +297,7 @@ class MergePartnerManualCheck(models.TransientModel):
         ('option', 'Option'),
         ('selection', 'Selection'),
         ('finished', 'Finished')
-    ], readonly=True, required=True, string='State', default='option')
+    ], readonly=True, required=True, string='Status', default='option')
     
     line_ids = fields.One2many('base.partner.merge.line', 'wizard_id', string='Lines')
     number_group = fields.Integer('Group of Contacts', readonly=True)
