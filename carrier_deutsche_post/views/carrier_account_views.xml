@@ -16,8 +16,8 @@
             <group>
               <group>
                 <field name="name" required="1"/>
-                <field name="partner_id" required="1" /> <!-- password="1" -->
-                <field name="partner_key" required="1"/> <!--  password="1" -->
+                <field name="partner_id" required="1" />
+                <field name="partner_key" required="1" password="1" />
               </group>
               <group>
                 <field name="account" required="1"/>
