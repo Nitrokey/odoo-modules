@@ -66,7 +66,10 @@ class WebsiteSale(ProductConfiguratorController):
         so_vals = {'payment_tx_id': transaction.id}
         # Set Payment Method from Acquirer
         if transaction.acquirer_id.inbound_payment_method_ids:
-            so_vals.update({'payment_method_id': transaction.acquirer_id.inbound_payment_method_ids[0].id})
+            payment_method_id = transaction.acquirer_id.inbound_payment_method_ids[0]
+            so_vals.update({'payment_method_id': payment_method_id.id})
+            if payment_method_id.hold_picking_until_payment:
+                so_vals.update({'hold_picking_until_payment': True})
         order.write(so_vals)
 
         # store the new transaction into the transaction list
