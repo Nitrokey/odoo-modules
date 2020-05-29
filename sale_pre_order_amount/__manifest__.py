@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Nitrokey Pre-Order Amount',
+    'name': 'Sale Pre-Order Amount',
     'version': '12.0.1.0.0',
     'category': 'Inventory',
     'author': 'ERP Harbor Consulting Services',
     'website': 'http://www.erpharbor.com',
-    'summary': 'Nitrokey Pre-Order Amount',
+    'summary': 'Sale Pre-Order Amount',
     'description': """
-Nitrokey Pre-Order Amount
+Sale Pre-Order Amount
      """,
     'depends': [
         'sale_stock',
