@@ -32,7 +32,7 @@ class ProductTemplate(models.Model):
         ])
         move_tree_view = self.env.ref("stock.view_move_tree")
         return {
-            'name': 'Amount of Pre-Order',
+            'name': 'Pre-Orders',
             'type': 'ir.actions.act_window',
             'res_model': 'stock.move',
             'view_type': 'form',

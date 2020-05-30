@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="action_nitrokey_pre_order_amount" model="ir.actions.act_window">
-        <field name="name">Amount of Pre-Order</field>
+        <field name="name">Pre-Orders</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">stock.move</field>
         <field name="view_type">form</field>
@@ -17,7 +17,7 @@
 
     <menuitem
         id="menu_nitrokey_pre_order_amount"
-        name="Amount of Pre-Order"
+        name="Pre-Orders"
         action="action_nitrokey_pre_order_amount"
         parent="stock.menu_warehouse_report"
         sequence="200"/>
