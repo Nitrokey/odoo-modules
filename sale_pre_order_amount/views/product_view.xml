@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <button name="action_view_orderpoints" position="before">
                 <button class="oe_stat_button" name="action_view_pre_order_moves" type="object" icon="fa-shopping-cart">
-                    <field name="pre_order_count" widget="statinfo" string="Pre Orders"/>
+                    <field name="pre_order_count" widget="statinfo" string="Pre-Orders"/>
                 </button>
             </button>
         </field>
