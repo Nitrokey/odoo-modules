@@ -6,7 +6,7 @@ from odoo import api, fields, models
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    pre_order_count = fields.Integer(string='Pre-Order Count', compute='_compute_pre_order_count')
+    pre_order_count = fields.Float(string='Pre-Order Count', compute='_compute_pre_order_count')
 
     def _compute_pre_order_count(self):
         product_obj = self.env['product.product']
