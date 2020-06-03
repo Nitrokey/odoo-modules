@@ -18,4 +18,3 @@ Sale Pre-Order Amount
     ],
     'installable': True,
 }
-
