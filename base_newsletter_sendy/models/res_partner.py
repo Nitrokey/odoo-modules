@@ -16,9 +16,9 @@ class Partner(models.Model):
     def change_newsletter_sendy(self, email, subscribe):
         if not email:
             return
-        sendy_url = self.env['ir.config_parameter'].get_param('sendy_url')
-        sendy_list = self.env['ir.config_parameter'].get_param('sendy_list')
-        sendy_api_key = self.env['ir.config_parameter'].get_param('sendy_api_key')
+        sendy_url = self.env['ir.config_parameter'].sudo().get_param('sendy_url')
+        sendy_list = self.env['ir.config_parameter'].sudo().get_param('sendy_list')
+        sendy_api_key = self.env['ir.config_parameter'].sudo().get_param('sendy_api_key')
 
         if not sendy_url or not sendy_list or not sendy_api_key:
             _LOGGER.info('Sandy is not configured')
