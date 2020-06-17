@@ -34,6 +34,7 @@ class ProductTemplate(models.Model):
             'res_model': 'stock.move',
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'view_id': self.env.ref("stock.view_move_tree").id,
+            'views': [(self.env.ref("stock.view_move_tree").id, 'tree'),
+                      (self.env.ref("stock.view_move_form").id, 'form')],
             'domain': [('id', 'in', stock_moves.ids)],
         }
