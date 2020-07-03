@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+  	
+    <record model="ir.ui.view" id="view_mrp_production_form_initos">
+      <field name="name">view.mrp.production.form.initos</field>
+      <field name="model">mrp.production</field>
+      <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+      <field name="arch" type="xml">
+          <xpath expr="//field[@name='move_raw_ids']" position="attributes">
+          	  <attribute name="widget">section_and_note_one2many</attribute>
+          	  <attribute name="mode">tree,kanban</attribute>
+          </xpath>
+          <xpath expr="//field[@name='move_raw_ids']/tree/field[@name='product_id']" position="before">
+          	  <control>
+                  <create string="Add a product"/>
+                  <create string="Configure a product" context="{'open_product_configurator': True}" groups="product.group_product_variant"/>
+              </control>
+          </xpath>
+      </field>
+    </record>
+    
+	</data>
+</odoo>
