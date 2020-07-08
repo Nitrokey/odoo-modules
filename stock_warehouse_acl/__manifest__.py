@@ -5,8 +5,8 @@
     to see the Stock Operations of the Warehouse assigned to him/her.
     """,
     "category": "Warehouse",
-    "author": "initOS",
-    "website": "http://www.initos.com",
+    "author": "Nitrokey GmbH",
+    "website": "https://github.com/Nitrokey/odoo-modules/",
     "version": "12.0.1.0.0",
     "depends": [
         "stock",
