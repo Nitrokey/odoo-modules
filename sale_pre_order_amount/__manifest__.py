@@ -7,7 +7,7 @@
     'website': 'http://www.erpharbor.com',
     'summary': 'Sale Pre-Order Amount',
     'description': """
-Sale Pre-Order Amount
+This module adds a smart button in Product to open the confirmed/assigned Stock Moves (Sale Pre-Order Amount) of the related product.
      """,
     'depends': [
         'sale_stock',
