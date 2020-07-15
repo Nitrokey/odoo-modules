@@ -7,7 +7,7 @@
     'website': 'http://www.erpharbor.com',
     'summary': 'Partner Delivery Link',
     'description': """
-Partner Delivery Link
+This module adds a smart button in Partner to open the Delivery Orders of the related partner.
      """,
     'depends': [
         'stock',
