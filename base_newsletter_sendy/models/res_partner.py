@@ -34,8 +34,8 @@ class Partner(models.Model):
             if subscribe:
                 sendy.subscribe(
                     name=self.name, email=email, list_id=sendy_list, api_key=sendy_api_key)
-            else:
-                sendy.unsubscribe(email=email, list_id=sendy_list)
+            #else:
+            #    sendy.unsubscribe(email=email, list_id=sendy_list)
         except AlreadySubscribedException as e:
             # If the user is already subscribed, this is not a fatal error.
             _LOGGER.exception(e)
