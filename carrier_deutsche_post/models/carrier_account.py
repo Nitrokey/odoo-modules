@@ -14,6 +14,8 @@ from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval as eval
 
 from . import pypdftk
+import io
+from PyPDF2 import PdfFileWriter, PdfFileReader
 
 # please set the path as per pdftk installed on OS
 # pypdftk.PDFTK_PATH = '/usr/local/bin/pdftk'
@@ -177,7 +179,39 @@ class CarrierAccount(models.Model):
             if not file_name and data['prod_code'] in PROD_CODE_WITH_TRACKING:
                 file_name = voucher['voucherId']
             file_data = resp_data['pdf_bin']
+        ###Added this code to set file 100mm x 150mm
+        output = PdfFileWriter()
+        f = io.BytesIO(file_data)
+        input1 = PdfFileReader(f)
+        for i in range(input1.getNumPages()):
+            page = input1.getPage(i)
 
+            page.cropBox.setLowerLeft((0, 0))
+            page.cropBox.setLowerRight((283.464, 0))
+            page.cropBox.setUpperLeft((0, 425.196))
+            page.cropBox.setUpperRight((283.464, 425.196))
+            
+            page.mediaBox.setLowerLeft((0, 0))
+            page.mediaBox.setLowerRight((283.464, 0))
+            page.mediaBox.setUpperLeft((0, 425.196))
+            page.mediaBox.setUpperRight((283.464, 425.196))
+            
+            page.bleedBox.setLowerLeft((0, 0))
+            page.bleedBox.setLowerRight((283.464, 0))
+            page.bleedBox.setUpperLeft((0, 425.196))
+            page.bleedBox.setUpperRight((283.464, 425.196))
+            
+            page.trimBox.setLowerLeft((0, 0))
+            page.trimBox.setLowerRight((283.464, 0))
+            page.trimBox.setUpperLeft((0, 425.196))
+            page.trimBox.setUpperRight((283.464, 425.196))
+            output.addPage(page)
+        
+        result = io.BytesIO()
+        output.write(result)
+        file_data = result.getvalue()
+        ###End code to of file 100mm x 150mm
+        
         self.env['de.post.logs'].create({
             'prod_code': data['prod_code'],
             'format_code': self.file_format,
@@ -315,10 +349,46 @@ class CarrierForm(models.Model):
         pypdftk.fill_form(
             source_file.name, datas=datas, out_file=flatten_file.name,
             flatten=True)
+        
+        ###Added this code to set file 100mm x 150mm
+        flatten_file_scalled = NamedTemporaryFile(delete=False)
+        output = PdfFileWriter()
+        input1 = PdfFileReader(open(flatten_file.name, "rb"))
+        for i in range(input1.getNumPages()):
+            page = input1.getPage(i)
 
+            page.cropBox.setLowerLeft((0, 0))
+            page.cropBox.setLowerRight((283.464, 0))
+            page.cropBox.setUpperLeft((0, 425.196))
+            page.cropBox.setUpperRight((283.464, 425.196))
+            
+            page.mediaBox.setLowerLeft((0, 0))
+            page.mediaBox.setLowerRight((283.464, 0))
+            page.mediaBox.setUpperLeft((0, 425.196))
+            page.mediaBox.setUpperRight((283.464, 425.196))
+            
+            page.bleedBox.setLowerLeft((0, 0))
+            page.bleedBox.setLowerRight((283.464, 0))
+            page.bleedBox.setUpperLeft((0, 425.196))
+            page.bleedBox.setUpperRight((283.464, 425.196))
+            
+            page.trimBox.setLowerLeft((0, 0))
+            page.trimBox.setLowerRight((283.464, 0))
+            page.trimBox.setUpperLeft((0, 425.196))
+            page.trimBox.setUpperRight((283.464, 425.196))
+            output.addPage(page)
+        
+        
+        f = open(flatten_file_scalled.name, 'wb')
+        output.write(f)
+        f.close()
         pypdftk.concat(
-            [label_file.name, flatten_file.name], out_file=merged_file.name)
-
+            [label_file.name, flatten_file_scalled.name], out_file=merged_file.name)
+        
+        #pypdftk.concat(
+        #    [label_file.name, flatten_file.name], out_file=merged_file.name)    
+        ###End code to of file 100mm x 150mm
+        
         fp = open(merged_file.name, "rb")
         merged_file_data = fp.read()
         fp.close()
@@ -327,7 +397,8 @@ class CarrierForm(models.Model):
         os.unlink(source_file.name)
         os.unlink(flatten_file.name)
         os.unlink(merged_file.name)
-
+        os.unlink(flatten_file_scalled.name)
+        
         return base64.encodestring(merged_file_data)
 
     @api.multi
