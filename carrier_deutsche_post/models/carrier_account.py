@@ -15,7 +15,8 @@ from odoo.tools.safe_eval import safe_eval as eval
 
 from . import pypdftk
 import io
-from PyPDF2 import PdfFileWriter, PdfFileReader
+import subprocess
+from odoo.modules.module import get_resource_path
 
 # please set the path as per pdftk installed on OS
 # pypdftk.PDFTK_PATH = '/usr/local/bin/pdftk'
@@ -180,36 +181,21 @@ class CarrierAccount(models.Model):
                 file_name = voucher['voucherId']
             file_data = resp_data['pdf_bin']
         ###Added this code to set file 100mm x 150mm
-        output = PdfFileWriter()
-        f = io.BytesIO(file_data)
-        input1 = PdfFileReader(f)
-        for i in range(input1.getNumPages()):
-            page = input1.getPage(i)
-
-            page.cropBox.setLowerLeft((0, 0))
-            page.cropBox.setLowerRight((283.464, 0))
-            page.cropBox.setUpperLeft((0, 425.196))
-            page.cropBox.setUpperRight((283.464, 425.196))
+        CPDF_PATH = get_resource_path('carrier_deutsche_post', 'tools/binary/cpdf')
+        label_file = NamedTemporaryFile(delete=False)
+        label_file_out = NamedTemporaryFile(delete=False)
+        with open(label_file.name, "wb") as f:
+            f.write(file_data)
+            label_file.close()
             
-            page.mediaBox.setLowerLeft((0, 0))
-            page.mediaBox.setLowerRight((283.464, 0))
-            page.mediaBox.setUpperLeft((0, 425.196))
-            page.mediaBox.setUpperRight((283.464, 425.196))
-            
-            page.bleedBox.setLowerLeft((0, 0))
-            page.bleedBox.setLowerRight((283.464, 0))
-            page.bleedBox.setUpperLeft((0, 425.196))
-            page.bleedBox.setUpperRight((283.464, 425.196))
-            
-            page.trimBox.setLowerLeft((0, 0))
-            page.trimBox.setLowerRight((283.464, 0))
-            page.trimBox.setUpperLeft((0, 425.196))
-            page.trimBox.setUpperRight((283.464, 425.196))
-            output.addPage(page)
+        args = [CPDF_PATH,'-scale-to-fit', '100mm 150mm','-i',label_file.name,'-o',label_file_out.name]
+        subprocess.Popen(args,stdout=subprocess.PIPE)
+        fp = open(label_file_out.name, "rb")
+        file_data = fp.read()
+        fp.close()
         
-        result = io.BytesIO()
-        output.write(result)
-        file_data = result.getvalue()
+        os.unlink(label_file.name)
+        os.unlink(label_file_out.name)
         ###End code to of file 100mm x 150mm
         
         self.env['de.post.logs'].create({
@@ -351,37 +337,11 @@ class CarrierForm(models.Model):
             flatten=True)
         
         ###Added this code to set file 100mm x 150mm
+        CPDF_PATH = get_resource_path('carrier_deutsche_post', 'tools/binary/cpdf')
         flatten_file_scalled = NamedTemporaryFile(delete=False)
-        output = PdfFileWriter()
-        input1 = PdfFileReader(open(flatten_file.name, "rb"))
-        for i in range(input1.getNumPages()):
-            page = input1.getPage(i)
-
-            page.cropBox.setLowerLeft((0, 0))
-            page.cropBox.setLowerRight((283.464, 0))
-            page.cropBox.setUpperLeft((0, 425.196))
-            page.cropBox.setUpperRight((283.464, 425.196))
             
-            page.mediaBox.setLowerLeft((0, 0))
-            page.mediaBox.setLowerRight((283.464, 0))
-            page.mediaBox.setUpperLeft((0, 425.196))
-            page.mediaBox.setUpperRight((283.464, 425.196))
-            
-            page.bleedBox.setLowerLeft((0, 0))
-            page.bleedBox.setLowerRight((283.464, 0))
-            page.bleedBox.setUpperLeft((0, 425.196))
-            page.bleedBox.setUpperRight((283.464, 425.196))
-            
-            page.trimBox.setLowerLeft((0, 0))
-            page.trimBox.setLowerRight((283.464, 0))
-            page.trimBox.setUpperLeft((0, 425.196))
-            page.trimBox.setUpperRight((283.464, 425.196))
-            output.addPage(page)
-        
-        
-        f = open(flatten_file_scalled.name, 'wb')
-        output.write(f)
-        f.close()
+        args = [CPDF_PATH,'-scale-to-fit', '100mm 150mm','-i',flatten_file.name,'-o',flatten_file_scalled.name]
+        subprocess.Popen(args,stdout=subprocess.PIPE)
         pypdftk.concat(
             [label_file.name, flatten_file_scalled.name], out_file=merged_file.name)
         
