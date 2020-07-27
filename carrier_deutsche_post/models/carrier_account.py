@@ -110,6 +110,10 @@ class CarrierAccount(models.Model):
             im.authenticate(self.account, self.password)
         except Exception as e:
             raise UserError(_(str(e)))
+        
+        label_file = NamedTemporaryFile(delete=False)
+        label_file_out = NamedTemporaryFile(delete=False)
+        
         sysmo_addr = im.build_addr(
             street=data['source']['street2'],
             house='', zipcode=data['source']['zip'],
@@ -182,20 +186,22 @@ class CarrierAccount(models.Model):
             file_data = resp_data['pdf_bin']
         ###Added this code to set file 100mm x 150mm
         CPDF_PATH = get_resource_path('carrier_deutsche_post', 'tools/binary/cpdf')
-        label_file = NamedTemporaryFile(delete=False)
-        label_file_out = NamedTemporaryFile(delete=False)
         with open(label_file.name, "wb") as f:
             f.write(file_data)
             label_file.close()
+        
+        label_file_out_name = label_file_out.name
+        args = [CPDF_PATH,'-scale-to-fit', '100mm 150mm','-i',label_file.name,'-o',label_file_out_name]
+        process = subprocess.Popen(args,stdout=subprocess.PIPE)
+        
+        outs, errs = process.communicate()
+        return_code = process.wait()
             
-        args = [CPDF_PATH,'-scale-to-fit', '100mm 150mm','-i',label_file.name,'-o',label_file_out.name]
-        subprocess.Popen(args,stdout=subprocess.PIPE)
-        fp = open(label_file_out.name, "rb")
-        file_data = fp.read()
-        fp.close()
+        with open(label_file_out_name, "rb") as fp:
+            file_data = fp.read()
         
         os.unlink(label_file.name)
-        os.unlink(label_file_out.name)
+        os.unlink(label_file_out_name)
         ###End code to of file 100mm x 150mm
         
         self.env['de.post.logs'].create({
@@ -341,7 +347,10 @@ class CarrierForm(models.Model):
         flatten_file_scalled = NamedTemporaryFile(delete=False)
             
         args = [CPDF_PATH,'-scale-to-fit', '100mm 150mm','-i',flatten_file.name,'-o',flatten_file_scalled.name]
-        subprocess.Popen(args,stdout=subprocess.PIPE)
+        process = subprocess.Popen(args,stdout=subprocess.PIPE)
+        outs, errs = process.communicate()
+        return_code = process.wait()
+        
         pypdftk.concat(
             [label_file.name, flatten_file_scalled.name], out_file=merged_file.name)
         
