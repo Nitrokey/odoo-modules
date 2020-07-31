@@ -366,6 +366,7 @@ class CarrierForm(models.Model):
         #./cpdf -frombox /CropBox -tobox /MediaBox out.pdf -o out.pdf
         #./cpdf -frombox /CropBox -tobox /BleedBox out.pdf -o out.pdf
         #./cpdf -frombox /CropBox -tobox /TrimBox out.pdf -o out.pdf
+        flatten_file_scalled = None
         if picking and picking.carrier_id and picking.carrier_id.carrier_account_id.file_format=='100_150': 
             CPDF_PATH = get_resource_path('carrier_deutsche_post', 'tools/binary/cpdf')
             flatten_file_scalled = NamedTemporaryFile(delete=False)
@@ -401,7 +402,8 @@ class CarrierForm(models.Model):
         os.unlink(source_file.name)
         os.unlink(flatten_file.name)
         os.unlink(merged_file.name)
-        os.unlink(flatten_file_scalled.name)
+        if flatten_file_scalled:
+            os.unlink(flatten_file_scalled.name)
         
         return base64.encodestring(merged_file_data)
 
