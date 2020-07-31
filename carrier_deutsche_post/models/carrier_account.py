@@ -65,8 +65,10 @@ class CarrierAccount(models.Model):
     @api.model
     def _selection_file_format(self):
         resp = super(CarrierAccount, self)._selection_file_format()
+        resp.append(('100_150', 'Brother DK-11202 Versand-Etikett 100 x 150'))
         for fmt in inema.inema.formats:
             resp.append((str(fmt['id']), "[%s] %s" % (fmt['id'], fmt['name'])))
+        
         return resp
 
     def _get_carrier_type(self):
@@ -165,17 +167,22 @@ class CarrierAccount(models.Model):
             receiver=dest_naddr, layout="AddressZone",
             pdf=True, x=1, y=1, page=1)
         im.add_position(position)
-
+        
+        if self.file_format == '100_150':
+            file_format = '29'
+        else:
+            file_format = self.file_format
+            
         if preview:
             resp_data = im.retrievePreviewPDF(
-                data['prod_code'], self.file_format, layout="AddressZone")
+                data['prod_code'], file_format, layout="AddressZone")
             response = requests.get(resp_data)
 
             file_name = "Test"
             file_data = response.content
         else:
             try:
-                resp_data = im.checkoutPDF(self.file_format)
+                resp_data = im.checkoutPDF(file_format)
             except Exception as e:
                 raise UserError(_('Deutsche Post Checkout Error'), e)
 
@@ -185,23 +192,35 @@ class CarrierAccount(models.Model):
                 file_name = voucher['voucherId']
             file_data = resp_data['pdf_bin']
         ###Added this code to set file 100mm x 150mm
-        CPDF_PATH = get_resource_path('carrier_deutsche_post', 'tools/binary/cpdf')
-        with open(label_file.name, "wb") as f:
-            f.write(file_data)
-            label_file.close()
-        
-        label_file_out_name = label_file_out.name
-        args = [CPDF_PATH,'-scale-to-fit', '100mm 150mm','-i',label_file.name,'-o',label_file_out_name]
-        process = subprocess.Popen(args,stdout=subprocess.PIPE)
-        
-        outs, errs = process.communicate()
-        return_code = process.wait()
+        if self.file_format == '100_150':
+            CPDF_PATH = get_resource_path('carrier_deutsche_post', 'tools/binary/cpdf')
+            with open(label_file.name, "wb") as f:
+                f.write(file_data)
+                label_file.close()
             
-        with open(label_file_out_name, "rb") as fp:
-            file_data = fp.read()
-        
-        os.unlink(label_file.name)
-        os.unlink(label_file_out_name)
+            label_file_out_name = label_file_out.name
+            
+            args = [CPDF_PATH,'-cropbox', '10mm 7mm 45mm 80mm','-i',label_file.name,'-o',label_file_out_name]
+            process = subprocess.Popen(args,stdout=subprocess.PIPE)
+            outs, errs = process.communicate()
+            return_code = process.wait()
+            
+            
+            args = [CPDF_PATH,'-scale-page', '2.222 1.875','-i',label_file_out_name,'-o',label_file_out_name]
+            process = subprocess.Popen(args,stdout=subprocess.PIPE)
+            outs, errs = process.communicate()
+            return_code = process.wait()
+                    
+#             args = [CPDF_PATH,'-scale-to-fit', '100mm 150mm','-i',label_file.name,'-o',label_file_out_name]
+#             process = subprocess.Popen(args,stdout=subprocess.PIPE)
+#             outs, errs = process.communicate()
+#             return_code = process.wait()
+                
+            with open(label_file_out_name, "rb") as fp:
+                file_data = fp.read()
+            
+            os.unlink(label_file.name)
+            os.unlink(label_file_out_name)
         ###End code to of file 100mm x 150mm
         
         self.env['de.post.logs'].create({
@@ -343,20 +362,36 @@ class CarrierForm(models.Model):
             flatten=True)
         
         ###Added this code to set file 100mm x 150mm
-        CPDF_PATH = get_resource_path('carrier_deutsche_post', 'tools/binary/cpdf')
-        flatten_file_scalled = NamedTemporaryFile(delete=False)
+        #./cpdf -cropbox "10mm 7mm 45mm 80mm" in.pdf -o out.pdf
+        #./cpdf -frombox /CropBox -tobox /MediaBox out.pdf -o out.pdf
+        #./cpdf -frombox /CropBox -tobox /BleedBox out.pdf -o out.pdf
+        #./cpdf -frombox /CropBox -tobox /TrimBox out.pdf -o out.pdf
+        if picking and picking.carrier_id and picking.carrier_id.carrier_account_id.file_format=='100_150': 
+            CPDF_PATH = get_resource_path('carrier_deutsche_post', 'tools/binary/cpdf')
+            flatten_file_scalled = NamedTemporaryFile(delete=False)
             
-        args = [CPDF_PATH,'-scale-to-fit', '100mm 150mm','-i',flatten_file.name,'-o',flatten_file_scalled.name]
-        process = subprocess.Popen(args,stdout=subprocess.PIPE)
-        outs, errs = process.communicate()
-        return_code = process.wait()
+#             args = [CPDF_PATH,'-cropbox', '10mm 7mm 45mm 80mm','-i',flatten_file.name,'-o',flatten_file_scalled.name]
+#             process = subprocess.Popen(args,stdout=subprocess.PIPE)
+#             outs, errs = process.communicate()
+#             return_code = process.wait()
+#             
+#             
+#             args = [CPDF_PATH,'-scale-page', '2.222 1.875','-i',flatten_file_scalled.name,'-o',flatten_file_scalled.name]
+#             process = subprocess.Popen(args,stdout=subprocess.PIPE)
+#             outs, errs = process.communicate()
+#             return_code = process.wait()
+                
+            args = [CPDF_PATH,'-scale-to-fit', '100mm 150mm','-i',flatten_file.name,'-o',flatten_file_scalled.name]
+            process = subprocess.Popen(args,stdout=subprocess.PIPE)
+            outs, errs = process.communicate()
+            return_code = process.wait()
         
-        pypdftk.concat(
-            [label_file.name, flatten_file_scalled.name], out_file=merged_file.name)
-        
-        #pypdftk.concat(
-        #    [label_file.name, flatten_file.name], out_file=merged_file.name)    
-        ###End code to of file 100mm x 150mm
+            pypdftk.concat(
+                [label_file.name, flatten_file_scalled.name], out_file=merged_file.name)
+        else:
+            pypdftk.concat(
+                        [label_file.name, flatten_file.name], out_file=merged_file.name)    
+        ##End code to of file 100mm x 150mm
         
         fp = open(merged_file.name, "rb")
         merged_file_data = fp.read()
