@@ -339,7 +339,7 @@ msgstr "Nach dieser Zeit wird der Kurs erneut auf den gleichen Betrag überprüf
 #: code:addons/payment_bitcoin/controllers/main.py:85
 #, python-format
 msgid "bitcoin:%s$$amount=%s*$message=%s"
-msgstr "Bitcoin:%s$$Betrag=%s*$Nachricht=%s"
+msgstr "bitcoin:%s$$amount=%s*$message=%s"
 
 #. module: payment_bitcoin
 #: selection:bitcoin.rate,unit:0
