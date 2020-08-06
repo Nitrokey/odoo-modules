@@ -21,7 +21,7 @@ class MassMailController(MassMailController):
             mailing_list_contact = mailing_contact.subscription_list_ids.filtered(lambda c: c.list_id.id == int(list_id))
             if mailing_list_contact:
                 mailing_list_contact.write({'opt_out': True})
-                template = request.env.ref("mass_mailing_double_opt_in.newsletter_confirmation_request_template")
+                template = request.env.ref("mass_mailing_double_opt_in.newsletter_confirmation_request_template").sudo()
                 template.send_mail(mailing_list_contact.id, force_send=True)
 
         # add email to session
