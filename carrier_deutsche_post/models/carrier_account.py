@@ -65,7 +65,7 @@ class CarrierAccount(models.Model):
     @api.model
     def _selection_file_format(self):
         resp = super(CarrierAccount, self)._selection_file_format()
-        resp.append(('100_150', 'Brother DK-11202 Versand-Etikett 100 x 150'))
+        resp.append(('100_150', 'UPS 100 x 150'))
         for fmt in inema.inema.formats:
             resp.append((str(fmt['id']), "[%s] %s" % (fmt['id'], fmt['name'])))
         
