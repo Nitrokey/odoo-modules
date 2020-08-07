@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import uuid
 
 from odoo.http import route, request, Controller
 from odoo.addons.mass_mailing.controllers.main import MassMailController
@@ -20,7 +21,10 @@ class MassMailController(MassMailController):
             mailing_contact = Contacts.create({'name': name, 'email': email, 'opt_out': True, 'list_ids': [(6,0,[int(list_id)])]})
             mailing_list_contact = mailing_contact.subscription_list_ids.filtered(lambda c: c.list_id.id == int(list_id))
             if mailing_list_contact:
-                mailing_list_contact.write({'opt_out': True})
+                mailing_list_contact.write({
+                    'opt_out': True,
+                    'access_token': str(uuid.uuid4().hex),
+                })
                 template = request.env.ref("mass_mailing_double_opt_in.newsletter_confirmation_request_template").sudo()
                 template.send_mail(mailing_list_contact.id, force_send=True)
 
@@ -30,10 +34,12 @@ class MassMailController(MassMailController):
 
 
 class ConsentController(Controller):
-    @route("/newsletter/confirmation/<int:list_contact_id>",
+    @route("/newsletter/confirmation/<access_token>",
            type="http", auth="none", website=True)
-    def consent(self, list_contact_id, **kwargs):
-        mailing_list_contact = request.env['mail.mass_mailing.list_contact_rel'].browse(list_contact_id)
+    def consent(self, access_token, **kwargs):
+        mailing_list_contact = request.env['mail.mass_mailing.list_contact_rel'].sudo().search([('access_token', '=', access_token)])
         if mailing_list_contact:
-            mailing_list_contact.sudo().write({'opt_out': False})
+            mailing_list_contact.write({'opt_out': False})
+            template = request.env.ref("mass_mailing_double_opt_in.newsletter_confirmation_success_template").sudo()
+            template.send_mail(mailing_list_contact.id, force_send=True)
             return request.render("mass_mailing_double_opt_in.subscription_confirmation_template")
