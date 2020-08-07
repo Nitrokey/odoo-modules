@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<data>
+<odoo>
 
     <record id="newsletter_confirmation_request_template" model="mail.template">
         <field name="name">Newsletter Subscription</field>
@@ -7,34 +7,71 @@
         <field name="model_id" ref="mass_mailing.model_mail_mass_mailing_list_contact_rel"/>
         <field name="email_to">${object.contact_id.email}</field>
         <field name="body_html" type="xml">
-            <div style="background:#F3F5F6;color:#515166;padding:25px 0px;font-family:Arial,Helvetica,sans-serif;font-size:14px;">
-                <table style="width:600px;margin:0px auto;background:white;border:1px solid #e1e1e1;">
-                    <tbody>
-                        <tr>
-                            <td colspan="2" style="padding:15px 20px 0px 20px; font-size:16px;">
-                                <p>
-                                    We received the newsletter subscription request. Please confirm your request.
-                                </p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding:15px 20px 0px 20px; font-size:16px; text-align:center;">
-                                <a href="/newsletter/confirmation/${object.id}" style="background-color: #449d44; padding: 12px; font-weight: 12px; text-decoration: none; color: #fff; border-radius: 5px; font-size:16px;">
-                                    Confirm
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="padding:15px 20px 15px 20px; font-size:16px;">
-                                <p>
-                                    Thank you!
-                                </p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <html>
+                <head>
+                    <title></title>
+                </head>
+                <body>
+                    <div style="margin: -10px -10px; padding:50px 30px 50px 30px; height:100%;">
+                        <div style="margin:0 auto; max-width:660px;">
+                            <div style="float: left; background-color: #FFFFFF; padding:10px 30px 10px 30px; border: 1px solid #DDDDDD;">
+                                <div style="float: left; max-width:470px;">
+                                    <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">
+                                        <strong style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;">Confirm your subscription</strong>
+                                    </p>
+                                    <div style="line-height: 21px; min-height: 100px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">
+                                        <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">Thanks for subscribing to our email list.</p>
+                                        <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">You allow Nitrokey to be in touch with you via email for the purpose of news, updates and product information. If you wish to withdraw your consent and stop hearing from us, simply click the unsubscribe link at the bottom of every email. By subscribing, you agree that we may process your information in accordance with our <a href="https://www.nitrokey.com/data-privacy-policy">data privacy policy</a>.</p>
+                                        <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">Please confirm your subscription by clicking the button below:</p>
+                                        <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px; margin-bottom: 25px; background-color:#EDEDED; padding: 15px; text-align: center;">
+                                            <a href="/newsletter/confirmation/${object.access_token}"
+                                               style="background-color: #449d44; padding: 12px; font-weight: 12px; text-decoration: none; color: #fff; border-radius: 5px; font-size:16px;">Confirm</a>
+                                        </p>
+                                        <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">Thank you,<br />Nitrokey</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </body>
+            </html>
+
         </field>
     </record>
 
-</data>
+    <record id="newsletter_confirmation_success_template" model="mail.template">
+        <field name="name">Newsletter Subscribed</field>
+        <field name="subject">Newsletter Successfully Subscribed</field>
+        <field name="model_id" ref="mass_mailing.model_mail_mass_mailing_list_contact_rel"/>
+        <field name="email_to">${object.contact_id.email}</field>
+        <field name="body_html" type="xml">
+            <html>
+                <head>
+                    <title></title>
+                </head>
+                <body>
+                    <div style="margin: -10px -10px; padding:50px 30px 50px 30px; height:100%;">
+                        <div style="margin:0 auto; max-width:660px;">
+                            <div style="float: left; background-color: #FFFFFF; padding:10px 30px 10px 30px; border: 1px solid #DDDDDD;">
+                                <div style="float: left; max-width:470px;">
+                                    <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">
+                                        <strong style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;">Newsletter Subscribed.</strong>
+                                    </p>
+                                    <div style="line-height: 21px; min-height: 100px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">
+                                        <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">
+                                                You have successfully subscribed the newsletter.<br/>
+                                                You will receive the newsletter shortly.
+                                        </p>
+                                        <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">Thank you,<br />Nitrokey</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </body>
+            </html>
+
+        </field>
+    </record>
+
+</odoo>
