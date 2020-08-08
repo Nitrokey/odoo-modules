@@ -14,7 +14,6 @@ Mass Mailing Double opt-in
     ],
     'data': [
         'data/mail_template.xml',
-        'views/subscribe_confirmation_template.xml',
     ],
     'installable': True,
 }
