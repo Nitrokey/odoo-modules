@@ -17,16 +17,20 @@ class MassMailController(MassMailController):
             ('list_ids', 'in', [int(list_id)]),
             ('email', '=', email),
         ], limit=1)
-        if not existing_contact:
+        if existing_contact:
+            existing_list_contact = existing_contact.subscription_list_ids.filtered(lambda c: c.list_id.id == int(list_id))
+            if existing_list_contact.opt_out:
+                mailing_list_contact = existing_list_contact
+        else:
             mailing_contact = Contacts.create({'name': name, 'email': email, 'opt_out': True, 'list_ids': [(6,0,[int(list_id)])]})
             mailing_list_contact = mailing_contact.subscription_list_ids.filtered(lambda c: c.list_id.id == int(list_id))
-            if mailing_list_contact:
-                mailing_list_contact.write({
-                    'opt_out': True,
-                    'access_token': str(uuid.uuid4().hex),
-                })
-                template = request.env.ref("mass_mailing_double_opt_in.newsletter_confirmation_request_template").sudo()
-                template.send_mail(mailing_list_contact.id, force_send=True)
+        if mailing_list_contact:
+            mailing_list_contact.write({
+                'opt_out': True,
+                'access_token': str(uuid.uuid4().hex),
+            })
+            template = request.env.ref("mass_mailing_double_opt_in.newsletter_confirmation_request_template").sudo()
+            template.send_mail(mailing_list_contact.id, force_send=True)
 
         # add email to session
         request.session['mass_mailing_email'] = email
