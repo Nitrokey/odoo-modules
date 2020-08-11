@@ -18,7 +18,7 @@
                                 <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">Thanks for subscribing to our email list.</p>
                                 <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">You allow Nitrokey to be in touch with you via email for the purpose of news, updates and product information. If you wish to withdraw your consent and stop hearing from us, simply click the unsubscribe link at the bottom of every email. By subscribing, you agree that we may process your information in accordance with our <a href="https://www.nitrokey.com/data-privacy-policy">data privacy policy</a>.</p>
                                 <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;">Please confirm your subscription by clicking the button below:</p>
-                                <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px; margin-bottom: 25px; background-color:#EDEDED; padding: 15px; text-align: center;">
+                                <p style="line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px; margin-bottom: 25px; padding: 15px; text-align: center;">
                                     <a href="/newsletter/confirmation/${object.access_token}"
                                        style="background-color: #449d44; padding: 12px; font-weight: 12px; text-decoration: none; color: #fff; border-radius: 5px; font-size:16px;">Confirm</a>
                                 </p>
