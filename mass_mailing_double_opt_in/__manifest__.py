@@ -14,6 +14,7 @@ Mass Mailing Double opt-in
     ],
     'data': [
         'data/mail_template.xml',
+        'data/newsletter.xml',
     ],
     'installable': True,
 }

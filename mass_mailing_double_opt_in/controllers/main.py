@@ -13,6 +13,8 @@ class MassMailController(MassMailController):
         name, email = Contacts.get_name_email(email)
 
         # inline add_to_list as we've already called half of it
+        if request.lang == 'de_DE':
+            list_id = request.env.ref("mass_mailing_double_opt_in.german_newsletter_mass_mail_list").id
         existing_contact = Contacts.search([
             ('list_ids', 'in', [int(list_id)]),
             ('email', '=', email),
