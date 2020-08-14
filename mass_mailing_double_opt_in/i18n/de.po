@@ -1,0 +1,102 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* mass_mailing_double_opt_in
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-08-11 11:32+0000\n"
+"PO-Revision-Date: 2020-08-11 11:32+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: mass_mailing_double_opt_in
+#: model:mail.template,body_html:mass_mailing_double_opt_in.newsletter_confirmation_success_template
+msgid "<?xml version=\"1.0\"?>\n"
+"<data><p>Hi!</p>\n"
+"            <p>Thank you for subscribing the Nitrokey newsletter.</p>\n"
+"            <br/>\n"
+"            <p>Best regards,<br/>\n"
+"            your Nitrokey team</p>\n"
+"        </data>"
+msgstr "<?xml version=\"1.0\"?>\n"
+"<data><p>Hallo!</p>\n"
+"            <p>Vielen Dank dass Sie den Nitrokey Newsletter abonniert haben.</p>\n"
+"            <br/>\n"
+"            <p>Freundliche Grüße,<br/>\n"
+"            Ihr Nitrokey Team</p>\n"
+"        </data>"
+
+
+#. module: mass_mailing_double_opt_in
+#: model:mail.template,body_html:mass_mailing_double_opt_in.newsletter_confirmation_request_template
+msgid "<?xml version=\"1.0\"?>\n"
+"<div style=\"margin: -10px -10px; padding:50px 30px 50px 30px; height:100%;\">\n"
+"                <div style=\"margin:0 auto; max-width:660px;\">\n"
+"                    <div style=\"float: left; background-color: #FFFFFF; padding:10px 30px 10px 30px; border: 1px solid #DDDDDD;\">\n"
+"                        <div style=\"float: left; max-width:470px;\">\n"
+"                            <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">\n"
+"                                <strong style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;\">Confirm your subscription</strong>\n"
+"                            </p>\n"
+"                            <div style=\"line-height: 21px; min-height: 100px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Thanks for subscribing to our email list.</p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">You allow Nitrokey to be in touch with you via email for the purpose of news, updates and product information. If you wish to withdraw your consent and stop hearing from us, simply click the unsubscribe link at the bottom of every email. By subscribing, you agree that we may process your information in accordance with our <a href=\"https://www.nitrokey.com/data-privacy-policy\">data privacy policy</a>.</p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Please confirm your subscription by clicking the button below:</p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px; margin-bottom: 25px; padding: 15px; text-align: center;\">\n"
+"                                    <a href=\"/newsletter/confirmation/${object.access_token}\" style=\"background-color: #449d44; padding: 12px; font-weight: 12px; text-decoration: none; color: #fff; border-radius: 5px; font-size:16px;\">Confirm</a>\n"
+"                                </p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Thank you,<br/>Nitrokey</p>\n"
+"                            </div>\n"
+"                        </div>\n"
+"                    </div>\n"
+"                </div>\n"
+"            </div>\n"
+"        "
+msgstr "<?xml version=\"1.0\"?>\n"
+"<div style=\"margin: -10px -10px; padding:50px 30px 50px 30px; height:100%;\">\n"
+"                <div style=\"margin:0 auto; max-width:660px;\">\n"
+"                    <div style=\"float: left; background-color: #FFFFFF; padding:10px 30px 10px 30px; border: 1px solid #DDDDDD;\">\n"
+"                        <div style=\"float: left; max-width:470px;\">\n"
+"                            <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">\n"
+"                                <strong style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;\">Bestätigen Sie Ihr Abonnement</strong>\n"
+"                            </p>\n"
+"                            <div style=\"line-height: 21px; min-height: 100px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Danke, dass Sie sich in unsere E-Mail-Liste eingetragen hast.</p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Sie erlauben Nitrokey, sich per E-Mail mit Ihnen in Verbindung zu setzen, um Neuigkeiten, Updates und Produktinformationen zu erhalten. Wenn Sie Ihre Einwilligung widerrufen und nicht mehr von uns hören möchten, klicken Sie einfach auf den Link zum Abbestellen unten in jeder E-Mail. Mit Ihrem Abonnement erklären Sie sich damit einverstanden, dass wir Ihre Daten gemäß unseren Richtlinien verarbeiten <a href=\"https://www.nitrokey.com/de/datenschutzerklaerung\">Datenschutzrichtlinie</a>.</p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Bitte bestätigen Sie Ihr Abonnement, indem Sie auf die Schaltfläche unten klicken:</p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px; margin-bottom: 25px; padding: 15px; text-align: center;\">\n"
+"                                    <a href=\"/newsletter/confirmation/${object.access_token}\" style=\"background-color: #449d44; padding: 12px; font-weight: 12px; text-decoration: none; color: #fff; border-radius: 5px; font-size:16px;\">Bestätigen</a>\n"
+"                                </p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Vielen Dank,<br/>Nitrokey</p>\n"
+"                            </div>\n"
+"                        </div>\n"
+"                    </div>\n"
+"                </div>\n"
+"            </div>\n"
+"        "
+
+
+#. module: mass_mailing_double_opt_in
+#: model:ir.model.fields,field_description:mass_mailing_double_opt_in.field_mail_mass_mailing_list_contact_rel__access_token
+msgid "Access Token"
+msgstr "Zugriffs-Token"
+
+#. module: mass_mailing_double_opt_in
+#: model:mail.template,subject:mass_mailing_double_opt_in.newsletter_confirmation_request_template
+msgid "Confirm your subscription to Nitrokey"
+msgstr "Bestätigen Sie Ihr Abonnement für Nitrokey"
+
+#. module: mass_mailing_double_opt_in
+#: model:ir.model,name:mass_mailing_double_opt_in.model_mail_mass_mailing_list_contact_rel
+msgid "Mass Mailing Subscription Information"
+msgstr "Informationen zum Massenmailing-Abonnement"
+
+#. module: mass_mailing_double_opt_in
+#: model:mail.template,subject:mass_mailing_double_opt_in.newsletter_confirmation_success_template
+msgid "You Subscribed the Nitrokey Newsletter"
+msgstr "Sie haben den Nitrokey Newsletter abonniert"
