@@ -238,6 +238,7 @@
 			<field name='exclude_contact' position="after">
 				<field name="associate_contact"/>
 				<field name="contact_not_being_customer"/>
+				<field name="without_sales_orders"/>
 			</field>
 		</field>
 	</record>

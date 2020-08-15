@@ -23,7 +23,14 @@ class MergePartnerAutomatic(models.TransientModel):
     duplicate_position = fields.Integer('Duplicate Contact Position')
     associate_contact =fields.Boolean("Partner contacts associated to the contact",default=True)
     contact_not_being_customer =fields.Boolean("A contact not being customer",default=True)
-
+    without_sales_orders =fields.Boolean("Without sales orders",default=True)
+    
+    @api.model
+    def default_get(self, fields_list):
+        res = super(MergePartnerAutomatic, self).default_get(fields_list)
+        res.update({'exclude_contact': True, 'exclude_journal_item': True})
+        return res
+        
     @api.multi
     def _action_new_next_screen(self):
         self.invalidate_cache()
@@ -151,15 +158,15 @@ class MergePartnerAutomatic(models.TransientModel):
             "SELECT min(id), array_agg(id)",
             "FROM res_partner",
         ]
+        conditions = [criteria]
         if self.associate_contact:
-            if criteria:
-                criteria += " AND "
-            criteria += "NOT EXISTS (SELECT 1 FROM res_partner as child WHERE child.parent_id = res_partner.id)"
+            conditions.append("NOT EXISTS (SELECT 1 FROM res_partner as child WHERE child.parent_id = res_partner.id)")
         if self.contact_not_being_customer:
-            if criteria:
-                criteria += " AND "
-            criteria += "customer is TRUE"
-            
+            conditions.append("customer is TRUE")
+        if self.without_sales_orders:
+            conditions.append("EXISTS (SELECT 1 FROM sale_order as s WHERE s.partner_id = res_partner.id)")
+        
+        criteria = ' AND '.join(conditions)        
         if criteria:
             text.append('WHERE %s' % criteria)
             
