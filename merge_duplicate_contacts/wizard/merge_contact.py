@@ -28,7 +28,7 @@ class MergePartnerAutomatic(models.TransientModel):
     @api.model
     def default_get(self, fields_list):
         res = super(MergePartnerAutomatic, self).default_get(fields_list)
-        res.update({'exclude_contact': True, 'exclude_journal_item': True})
+        res.update({'exclude_contact': True}) #, 'exclude_journal_item': True
         return res
         
     @api.multi
