@@ -507,7 +507,7 @@ class MergePartnerManualCheck(models.TransientModel):
 
         for partner in src_partners:
             if hasattr(partner, 'newsletter_sendy') and partner.newsletter_sendy:
-                cr.execute('update res_partner set newsletter_sendy=false where id=%s'%(partner.id))
+                self._cr.execute('update res_partner set newsletter_sendy=false where id=%s'%(partner.id))
                 partner.refresh()
             partner.unlink()
 
@@ -588,7 +588,7 @@ class MergePartnerManualCheck(models.TransientModel):
                                            'is_company':this.is_company2 or False})
                 #To Avoid VAT Validation, updated it using query.
                 if this.vat_1:
-                    cr.execute("update res_partner set vat='%s' where id=%s"%(this.vat_1,this.dst_partner_id.id))
+                    self._cr.execute("update res_partner set vat='%s' where id=%s"%(this.vat_1,this.dst_partner_id.id))
         else:
             this.dst_partner_id = this.partner_ids and this.partner_ids[1].id or False
              
@@ -607,7 +607,7 @@ class MergePartnerManualCheck(models.TransientModel):
                 
                 #To Avoid VAT Validation, updated it using query.
                 if this.vat_2:
-                    cr.execute("update res_partner set vat='%s' where id=%s"%(this.vat_2,this.dst_partner_id.id))
+                    self._cr.execute("update res_partner set vat='%s' where id=%s"%(this.vat_2,this.dst_partner_id.id))
                     
         partner_ids = set(map(int, this.partner_ids)) #[:2]
 #         custom_partner_ids = set(map(int, this.custom_partner_ids))
