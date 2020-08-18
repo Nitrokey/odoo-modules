@@ -458,6 +458,10 @@ class MergePartnerManualCheck(models.TransientModel):
 
     def _merge(self, partner_ids, dst_partner=None, context=None):
         # super-admin can be used to bypass extra checks
+        extra_checks = True
+        if self.env.user._is_admin():
+            extra_checks = False
+            
         Partner = self.env['res.partner']
         partner_ids = Partner.browse(partner_ids).exists()
         if len(partner_ids) < 2:
@@ -485,7 +489,7 @@ class MergePartnerManualCheck(models.TransientModel):
             src_partners = ordered_partners[:-1]
         _logger.info("dst_partner: %s", dst_partner.id)
         
-        if 'account.move.line' in self.env and self.env['account.move.line'].sudo().search([('partner_id', 'in', [partner.id for partner in src_partners])]):
+        if extra_checks and 'account.move.line' in self.env and self.env['account.move.line'].sudo().search([('partner_id', 'in', [partner.id for partner in src_partners])]):
             raise UserError(_("Only the destination contact may be linked to existing Journal Items. Please ask the Administrator if you need to merge several contacts linked to existing Journal Items."))
 
         # FIXME: is it still required to make and exception for account.move.line since accounting v9.0 ?
