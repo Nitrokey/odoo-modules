@@ -13,8 +13,11 @@ Mass Mailing Double opt-in
         'website_mass_mailing',
     ],
     'data': [
+        'security/mass_mailing_security.xml',
+        'security/ir.model.access.csv',
         'data/mail_template.xml',
         'data/newsletter.xml',
+        'views/mass_mailing_view.xml',
     ],
     'installable': True,
 }
