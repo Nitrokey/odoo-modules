@@ -11,6 +11,7 @@ from odoo.exceptions import ValidationError, UserError, Warning
 from odoo.tools import mute_logger
 import itertools
 
+
 _logger = logging.getLogger('base.partner.merge')
 
 def is_integer_list(ids):
@@ -95,10 +96,14 @@ class MergePartnerAutomatic(models.TransientModel):
                        'default_email2':partner2.email,
                        'default_phone':partner1.phone,
                        'default_phone2': partner2.phone,
+                       'default_mobile':partner1.mobile,
+                       'default_mobile2': partner2.mobile,                       
                        'default_street': partner1.street,
                        'default_street2':partner2.street,
                        'default_street11':partner1.street2,
                        'default_street22':partner2.street2,
+                       'default_street_no':partner1.street_no,
+                       'default_street_no2':partner2.street_no,
                        'default_zip':partner1.zip,
                        'default_zip2':partner2.zip,
                        'default_city':partner1.city,
@@ -107,6 +112,8 @@ class MergePartnerAutomatic(models.TransientModel):
                        'default_state_id2':partner2.state_id.id,
                        'default_country_id':partner1.country_id.id,
                        'default_country_id2':partner2.country_id.id,
+                       'default_vat_1':partner1.vat,
+                       'default_vat_2':partner2.vat,                       
                        'default_is_company':partner1.is_company,
                        'default_is_company2':partner2.is_company,
                        'default_number_group':self.number_group,
@@ -267,11 +274,17 @@ class MergePartnerManualCheck(models.TransientModel):
     phone = fields.Char('Phone')
     phone2 = fields.Char('Phone 2')
     
+    mobile = fields.Char('Mobile')
+    mobile2 = fields.Char('Mobile 2')
+    
     street = fields.Char('Address1')
     street2 = fields.Char('Address1 2')
     
     street11 = fields.Char('Address2')
     street22 = fields.Char('Address2 2')
+    
+    street_no = fields.Char('Street No.')
+    street_no2 = fields.Char('Street No 2')
     
     zip = fields.Char('Zip')
     zip2 = fields.Char('Zip 2')
@@ -312,10 +325,13 @@ class MergePartnerManualCheck(models.TransientModel):
     duplicate_position = fields.Integer('Duplicate Contact Position')
     
     name_show_icon = fields.Boolean('Name Icon',compute='_compute_name_show_icon',store=True)
+    company_show_icon = fields.Boolean('Company Icon',compute='_compute_company_show_icon',store=True)
     email_show_icon = fields.Boolean('Email Icon',compute='_compute_email_show_icon',store=True)
     phone_show_icon = fields.Boolean('Phone Icon',compute='_compute_phone_show_icon',store=True)
+    mobile_show_icon = fields.Boolean('Mobile Icon',compute='_compute_mobile_show_icon',store=True)
     addr1_show_icon = fields.Boolean('Address1 Icon',compute='_compute_addr1_show_icon',store=True)
     addr2_show_icon = fields.Boolean('Address2 Icon',compute='_compute_addr2_show_icon',store=True)
+    street_no_show_icon = fields.Boolean('Street No Icon',compute='_compute_street_no_show_icon',store=True)
     zip_show_icon = fields.Boolean('Zip Icon',compute='_compute_zip_show_icon',store=True)
     city_show_icon = fields.Boolean('City Icon',compute='_compute_city_show_icon',store=True)
     state_show_icon = fields.Boolean('State Icon',compute='_compute_state_show_icon',store=True)
@@ -327,99 +343,139 @@ class MergePartnerManualCheck(models.TransientModel):
     @api.depends('name','name2')
     def _compute_name_show_icon(self):
         for record in self:
-            if not record.name == record.name2:
-                record.name_show_icon = False
-            else:
+            if (not record.name and not record.name2) or (record.name == record.name2):
                 record.name_show_icon = True
+            else:
+                record.name_show_icon = False
+            
+    
+    @api.multi
+    @api.depends('company_id','company_id')
+    def _compute_company_show_icon(self):
+        for record in self:
+            if (not record.company_id and not record.company_id2) or (record.company_id == record.company_id2):
+                record.company_show_icon = True
+            else:
+                record.company_show_icon = False
+            
     
     @api.multi
     @api.depends('email','email2')
     def _compute_email_show_icon(self):
         for record in self:
-            if not record.email == record.email2:
-                record.email_show_icon = False
-            else:
+            if (not record.email and not record.email2) or (record.email == record.email2):
                 record.email_show_icon = True
+            else:
+                record.email_show_icon = False
+            
     
     @api.multi
     @api.depends('phone','phone2')
     def _compute_phone_show_icon(self):
         for record in self:
-            if not record.phone == record.phone2:
-                record.phone_show_icon = False
-            else:
+            if (not record.phone and not record.phone2) or (record.phone == record.phone2):
                 record.phone_show_icon = True
+            else:
+                record.phone_show_icon = False
+                
+    @api.multi
+    @api.depends('mobile','mobile2')
+    def _compute_mobile_show_icon(self):
+        for record in self:
+            if (not record.mobile and not record.mobile2) or (record.mobile == record.mobile2):
+                record.mobile_show_icon = True
+            else:
+                record.mobile_show_icon = False
+            
     
     @api.multi
     @api.depends('street','street2')
     def _compute_addr1_show_icon(self):
         for record in self:
-            if not record.street == record.street2:
-                record.addr1_show_icon = False
-            else:
+            if (not record.street and not record.street2) or (record.street == record.street2):
                 record.addr1_show_icon = True
+            else:
+                record.addr1_show_icon = False
+            
     
     @api.multi
     @api.depends('street11','street22')
     def _compute_addr2_show_icon(self):
         for record in self:
-            if not record.street11 == record.street22:
-                record.addr2_show_icon = False
-            else:
+            if (not record.street11 and not record.street22) or (record.street11 == record.street22):
                 record.addr2_show_icon = True
+            else:
+                record.addr2_show_icon = False
+            
+                
+    @api.multi
+    @api.depends('street_no','street_no2')
+    def _compute_street_no_show_icon(self):
+        for record in self:
+            if (not record.street_no and not record.street_no2) or (record.street_no == record.street_no2):
+                record.street_no_show_icon = True
+            else:
+                record.street_no_show_icon = False
+            
     
     @api.multi
     @api.depends('zip','zip2')
     def _compute_zip_show_icon(self):
         for record in self:
-            if not record.zip == record.zip2:
-                record.zip_show_icon = False
-            else:
+            if (not record.zip and not record.zip2) or (record.zip == record.zip2):
                 record.zip_show_icon = True
+            else:
+                record.zip_show_icon = False
+            
     
     @api.multi
     @api.depends('city','city2')
     def _compute_city_show_icon(self):
         for record in self:
-            if not record.city == record.city2:
-                record.city_show_icon = False
-            else:
+            if (not record.city and not record.city2) or (record.city == record.city2):
                 record.city_show_icon = True
+            else:
+                record.city_show_icon = False
+            
     
     @api.multi
     @api.depends('state_id','state_id2')
     def _compute_state_show_icon(self):
         for record in self:
-            if not record.state_id == record.state_id2:
-                record.state_show_icon = False
-            else:
+            if (not record.state_id and not record.state_id2) or (record.state_id == record.state_id2):
                 record.state_show_icon = True
+            else:
+                record.state_show_icon = False
+            
     
     @api.multi
     @api.depends('country_id','country_id2')
     def _compute_country_show_icon(self):
         for record in self:
-            if not record.country_id == record.country_id2:
-                record.country_show_icon = False
-            else:
+            if (not record.country_id and not record.country_id2) or (record.country_id == record.country_id2):
                 record.country_show_icon = True
+            else:
+                record.country_show_icon = False
+            
     
     @api.multi
     @api.depends('vat_1','vat_2')
     def _compute_vat_show_icon(self):
         for record in self:
-            if not record.vat_1 == record.vat_2:
-                record.vat_show_icon = False
-            else:
+            if (not record.vat_1 and not record.vat_2) or (record.vat_1 == record.vat_2):
                 record.vat_show_icon = True
+            else:
+                record.vat_show_icon = False
+            
     @api.multi
     @api.depends('is_company','is_company2')
     def _compute_is_company_show_icon(self):
         for record in self:
-            if not record.is_company == record.is_company2:
-                record.is_company_show_icon = False
-            else:
+            if (not record.is_company and not record.is_company2) or (record.is_company == record.is_company2):
                 record.is_company_show_icon = True
+            else:
+                record.is_company_show_icon = False
+            
                 
     @api.onchange('keep1')
     def _onchange_keep1(self):
@@ -583,13 +639,17 @@ class MergePartnerManualCheck(models.TransientModel):
                                            'name':this.name or False,
                                            'email':this.email or False,
                                            'phone':this.phone or False,
+                                           'mobile':this.mobile or False,
                                            'street':this.street or False,
                                            'street2':this.street11 or False,
                                            'zip':this.zip or False,
                                            'city':this.city or False,
                                            'state_id':this.state_id and this.state_id.id or False,
                                            'country_id':this.country_id and this.country_id.id or False,
-                                           'is_company':this.is_company2 or False})
+                                           'is_company':this.is_company2 or False,
+                                           'vat':this.vat_1 or False,
+                                           'street_no':this.street_no or False,
+                                           })
                 #To Avoid VAT Validation, updated it using query.
                 if this.vat_1:
                     self._cr.execute("update res_partner set vat='%s' where id=%s"%(this.vat_1,this.dst_partner_id.id))
@@ -601,13 +661,17 @@ class MergePartnerManualCheck(models.TransientModel):
                                            'name':this.name2 or False,
                                            'email':this.email2 or False,
                                            'phone':this.phone2 or False,
+                                           'mobile':this.mobile2 or False,
                                            'street':this.street2 or False,
                                            'street2':this.street22 or False,
                                            'zip':this.zip2 or False,
                                            'city':this.city2 or False,
                                            'state_id':this.state_id2 and this.state_id2.id or False,
                                            'country_id':this.country_id2 and this.country_id2.id or False,
-                                           'is_company':this.is_company2 or False})
+                                           'is_company':this.is_company2 or False,
+                                           'vat':this.vat_2 or False,
+                                           'street_no':this.street_no2 or False,
+                                           })
                 
                 #To Avoid VAT Validation, updated it using query.
                 if this.vat_2:
@@ -651,10 +715,14 @@ class MergePartnerManualCheck(models.TransientModel):
             self.email = self.email2
         if context == 'phone2':
             self.phone = self.phone2
+        if context == 'mobile2':
+            self.mobile = self.mobile2
         if context == 'street2':
             self.street = self.street2
         if context == 'street22':
             self.street11 = self.street22
+        if context == 'street_no2':
+            self.street_no = self.street_no2
         if context == 'zip2':
             self.zip = self.zip2
         if context == 'city2':
@@ -687,10 +755,14 @@ class MergePartnerManualCheck(models.TransientModel):
             self.email2 = self.email
         if context == 'phone':
             self.phone2 = self.phone
+        if context == 'mobile':
+            self.mobile2 = self.mobile
         if context == 'street':
             self.street2 = self.street
         if context == 'street11':
             self.street22 = self.street11
+        if context == 'street_no':
+            self.street_no2 = self.street_no
         if context == 'zip':
             self.zip2 = self.zip
         if context == 'city':
