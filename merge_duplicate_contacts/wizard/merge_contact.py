@@ -90,6 +90,8 @@ class MergePartnerAutomatic(models.TransientModel):
                        'default_partner_id_2':partner2.id,
                        'default_company_id':partner1.parent_id.id,
                        'default_company_id2':partner2.parent_id.id,
+                       'default_company_name':partner1.company_name,
+                       'default_company_name2':partner2.company_name,
                        'default_name':partner1.name,
                        'default_name2':partner2.name,
                        'default_email':partner1.email,
@@ -265,6 +267,9 @@ class MergePartnerManualCheck(models.TransientModel):
     company_id = fields.Many2one('res.partner', 'Company')
     company_id2 = fields.Many2one('res.partner', 'Company 2')
     
+    company_name = fields.Char(string='Company Name')
+    company_name2 = fields.Char(string='Company Name 2')
+    
     name = fields.Char('Name')
     name2 = fields.Char('Name 2')
     
@@ -326,6 +331,7 @@ class MergePartnerManualCheck(models.TransientModel):
     
     name_show_icon = fields.Boolean('Name Icon',compute='_compute_name_show_icon',store=True)
     company_show_icon = fields.Boolean('Company Icon',compute='_compute_company_show_icon',store=True)
+    company_name_show_icon = fields.Boolean('Company Name Icon',compute='_compute_company_name_show_icon',store=True)
     email_show_icon = fields.Boolean('Email Icon',compute='_compute_email_show_icon',store=True)
     phone_show_icon = fields.Boolean('Phone Icon',compute='_compute_phone_show_icon',store=True)
     mobile_show_icon = fields.Boolean('Mobile Icon',compute='_compute_mobile_show_icon',store=True)
@@ -357,7 +363,15 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.company_show_icon = True
             else:
                 record.company_show_icon = False
-            
+                
+    @api.multi
+    @api.depends('company_name','company_name2')
+    def _compute_company_name_show_icon(self):
+        for record in self:
+            if (not record.company_name and not record.company_name2) or (record.company_name == record.company_name2):
+                record.company_name_show_icon = True
+            else:
+                record.company_name_show_icon = False
     
     @api.multi
     @api.depends('email','email2')
@@ -633,7 +647,8 @@ class MergePartnerManualCheck(models.TransientModel):
             this.dst_partner_id = this.partner_ids and this.partner_ids[0].id or False
              
             if this.dst_partner_id:
-                this.dst_partner_id.write({'company_id':this.company_id and this.company_id.id or False,
+                this.dst_partner_id.write({'parent_id':this.company_id and this.company_id.id or False,
+                                           'company_name': this.company_name or False, 
                                            'name':this.name or False,
                                            'email':this.email or False,
                                            'phone':this.phone or False,
@@ -655,7 +670,8 @@ class MergePartnerManualCheck(models.TransientModel):
             this.dst_partner_id = this.partner_ids and this.partner_ids[1].id or False
              
             if this.dst_partner_id:
-                this.dst_partner_id.write({'company_id':this.company_id2 and this.company_id2.id or False,
+                this.dst_partner_id.write({'parent_id':this.company_id2 and this.company_id2.id or False,
+                                           'company_name': this.company_name2 or False,
                                            'name':this.name2 or False,
                                            'email':this.email2 or False,
                                            'phone':this.phone2 or False,
@@ -706,7 +722,9 @@ class MergePartnerManualCheck(models.TransientModel):
     def swap_to_left(self):
         context = self._context.get('field_name')
         if context == 'company_id2':
-            self.company_id = self.company_id2            
+            self.company_id = self.company_id2   
+        if context == 'company_name2':
+            self.company_name = self.company_name2         
         if context == 'name2':
             self.name = self.name2
         if context == 'email2':
@@ -747,6 +765,8 @@ class MergePartnerManualCheck(models.TransientModel):
         context = self._context.get('field_name')
         if context == 'company_id':
             self.company_id2 = self.company_id
+        if context == 'company_name':
+            self.company_name2 = self.company_name
         if context == 'name':
             self.name2 = self.name
         if context == 'email':

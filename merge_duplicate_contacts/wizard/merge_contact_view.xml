@@ -92,6 +92,21 @@
 							</group>
 							
 							<group>
+								<label for="company_name" style="min-width: 108px;"/>
+								<div>
+									<field name="company_name" nolabel="1" class="oe_inline" style="min-width: 300px;"/>
+									<field name="company_name_show_icon" invisible="1" class="oe_inline"/>
+									<button name="swap_to_left" type="object" class="fa fa-arrow-left oe_inline" context="{'field_name':'company_name2'}"/>
+									
+									<button name="dummy_button" string="Differ" type="object" class="btn-danger oe_inline" attrs="{'invisible':[('company_name_show_icon','=',True)]}"/>
+									<button name="dummy_button" string="Same" type="object" class="oe_inline" attrs="{'invisible':[('company_name_show_icon','=',False)]}"/>
+									
+									<button name="swap_to_right" type="object" class="fa fa-arrow-right oe_inline" context="{'field_name':'company_name'}"/>
+									<field name="company_name2" nolabel="1" class="oe_inline" style="min-width: 300px;"/>
+								</div>
+							</group>
+							
+							<group>
 								<label for="email" style="min-width: 108px;"/>
 								<div>
 									<field name="email" nolabel="1" class="oe_inline" style="min-width: 300px;"/>
