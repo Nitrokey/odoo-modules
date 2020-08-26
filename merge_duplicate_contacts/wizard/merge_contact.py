@@ -88,8 +88,8 @@ class MergePartnerAutomatic(models.TransientModel):
                        'default_id2':partner2.id,
                        'default_partner_id_1':partner1.id,
                        'default_partner_id_2':partner2.id,
-                       'default_company_id':partner1.company_id.id,
-                       'default_company_id2':partner2.company_id.id,
+                       'default_company_id':partner1.parent_id.id,
+                       'default_company_id2':partner2.parent_id.id,
                        'default_name':partner1.name,
                        'default_name2':partner2.name,
                        'default_email':partner1.email,
@@ -262,8 +262,8 @@ class MergePartnerManualCheck(models.TransientModel):
     partner_id_1 = fields.Many2one('res.partner','Partner')
     partner_id_2 = fields.Many2one('res.partner', 'Partner 2')
     
-    company_id = fields.Many2one('res.company', 'Company')
-    company_id2 = fields.Many2one('res.company', 'Company 2')
+    company_id = fields.Many2one('res.partner', 'Company')
+    company_id2 = fields.Many2one('res.partner', 'Company 2')
     
     name = fields.Char('Name')
     name2 = fields.Char('Name 2')
@@ -545,8 +545,6 @@ class MergePartnerManualCheck(models.TransientModel):
             src_partners = ordered_partners[:-1]
         _logger.info("dst_partner: %s", dst_partner.id)
         
-        if extra_checks and 'account.move.line' in self.env and self.env['account.move.line'].sudo().search([('partner_id', 'in', [partner.id for partner in src_partners])]):
-            raise UserError(_("Only the destination contact may be linked to existing Journal Items. Please ask the Administrator if you need to merge several contacts linked to existing Journal Items."))
 
         # FIXME: is it still required to make and exception for account.move.line since accounting v9.0 ?
 #         if extra_checks and 'account.move.line' in self.env and self.env['account.move.line'].sudo().search([('partner_id', 'in', [partner.id for partner in src_partners])]):
