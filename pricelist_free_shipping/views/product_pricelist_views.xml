@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<record id="product_pricelist_item_form_view_ext" model="ir.ui.view">
+			<field name="name">product.pricelist.item.form.ext</field>
+			<field name="model">product.pricelist.item</field>
+			<field name="inherit_id" ref="product.product_pricelist_item_form_view" />
+			<field name="priority">24</field>
+			<field name="arch" type="xml">
+				<field name="date_end" position="after">
+					<field name="free_shipment"/>
+				</field>
+			</field>
+		</record>
+     </data>
+</odoo>
