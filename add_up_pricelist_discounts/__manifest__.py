@@ -8,7 +8,8 @@
     'summary': 'Add Up Pricelist Discounts',
     'description': """
 * Combine the discount amount based on the selected Pricelist and Base Pricelist to calculate the discount price.
-Ex: Selected pricelist has 25% discount and base pricelist has 20% discount, so total discount would be 45%
+* Ex: Selected pricelist has 25% discount and base pricelist has 20% discount, so total discount would be 45%
+
      """,
     'depends': [
         'product',
