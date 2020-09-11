@@ -17,7 +17,7 @@
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[@class='oe_button_box']" position="inside">
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
                 <field name="invoice_id" invisible='1'/>
                 <field name="return_type" invisible='0'/>
                 <button type="object" name="action_view_return_invoice" string="View Invoice" groups="account.group_account_invoice"   attrs="{'invisible':[('invoice_id','=',False)]}"  class="oe_stat_button" icon="fa-money" />
