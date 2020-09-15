@@ -31,13 +31,21 @@ class DeliveryCarrier(models.Model):
         res = super(DeliveryCarrier, self).rate_shipment(order)
         
         if order.pricelist_id and self.is_free_for_promotion:
+            
             free_ship = True
-            for product in [line.product_id for line in order.order_line.filtered(lambda x: not x.is_delivery)]:
-                item = self.env['product.pricelist.item'].search([('product_tmpl_id','=', product.product_tmpl_id.id), ('pricelist_id', '=', order.pricelist_id.id)], limit = 1)
-                if not item:
-                    item = self.env['product.pricelist.item'].search([('product_id','=', product.id), ('pricelist_id', '=', order.pricelist_id.id)], limit = 1)
-                if not item.free_shipment:
-                    free_ship = False
+            
+            for line in order.order_line:
+                if line.is_delivery:
+                    continue
+                quantity=line.product_uom_qty
+                partner=line.order_id.partner_id
+                
+                for product_id, item_rule in order.pricelist_id.get_price_rule_for_free_shipment([(line.product_id, quantity, partner)]).items():
+                    if not item_rule or not item_rule.free_shipment:
+                        free_ship = False
+                        break
+                if not free_ship:
+                    break
             if free_ship:
                 res.update({'price': 0.0})
         return res
