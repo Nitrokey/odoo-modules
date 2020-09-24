@@ -184,7 +184,7 @@ class CarrierAccount(models.Model):
             try:
                 resp_data = im.checkoutPDF(file_format)
             except Exception as e:
-                raise UserError(_('Deutsche Post Checkout Error'), e)
+                raise UserError(_('Deutsche Post Checkout Error\n %s') % (str(e)))
 
             voucher = resp_data['shoppingCart']['voucherList']['voucher'][0]
             file_name = voucher['trackId']
