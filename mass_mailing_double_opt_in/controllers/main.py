@@ -49,3 +49,5 @@ class ConsentController(Controller):
             template = request.env.ref("mass_mailing_double_opt_in.newsletter_confirmation_success_template").sudo()
             template.send_mail(mailing_list_contact.id, force_send=True)
             return request.redirect("https://www.nitrokey.com/subscribed")
+        else:
+            return request.render("mass_mailing_double_opt_in.invalid_subscription_confirmation_template")
