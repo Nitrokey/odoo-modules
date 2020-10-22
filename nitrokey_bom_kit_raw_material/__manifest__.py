@@ -15,5 +15,6 @@ This module allows to return the raw materials instead of the finish good based 
     'data': [
         'wizard/stock_picking_return_view.xml',
     ],
+    'license': 'AGPL-3',
     'installable': True,
 }
