@@ -27,12 +27,16 @@ class MassMailController(MassMailController):
             mailing_contact = Contacts.create({'name': name, 'email': email, 'opt_out': True, 'list_ids': [(6,0,[int(list_id)])]})
             mailing_list_contact = mailing_contact.subscription_list_ids.filtered(lambda c: c.list_id.id == int(list_id))
         if mailing_list_contact:
+            mail_language = request.lang
+            if post.get('language'):
+                mail_language = post.get('language')
             mailing_list_contact.write({
                 'opt_out': True,
                 'access_token': str(uuid.uuid4().hex),
+                'mail_language': mail_language,
             })
             template = request.env.ref("mass_mailing_double_opt_in.newsletter_confirmation_request_template").sudo()
-            template.send_mail(mailing_list_contact.id, force_send=True)
+            template.with_context(lang=mail_language).send_mail(mailing_list_contact.id, force_send=True)
 
         # add email to session
         request.session['mass_mailing_email'] = email
@@ -47,7 +51,7 @@ class ConsentController(Controller):
         if mailing_list_contact:
             mailing_list_contact.write({'opt_out': False})
             template = request.env.ref("mass_mailing_double_opt_in.newsletter_confirmation_success_template").sudo()
-            template.send_mail(mailing_list_contact.id, force_send=True)
+            template.with_context(lang=mailing_list_contact.mail_language).send_mail(mailing_list_contact.id, force_send=True)
             return request.redirect("https://www.nitrokey.com/subscribed")
         else:
             return request.render("mass_mailing_double_opt_in.invalid_subscription_confirmation_template")
