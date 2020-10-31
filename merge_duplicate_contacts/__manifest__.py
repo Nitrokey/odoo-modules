@@ -2,7 +2,7 @@
 {
     'name': 'Merge Duplicate Contacts',
     'category': 'Merge Duplicate Contacts',
-    'version': '12.0.0.1',
+    'version': '12.0.2.1',
     'author': 'Nitrokey GmbH',
     'description': """""",
     'sequence': '1',

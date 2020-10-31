@@ -6,9 +6,8 @@ import operator
 
 # from odoo.osv import fields as old_fields
 from odoo import api, fields, models
-from odoo import SUPERUSER_ID, _
+from odoo import  _
 from odoo.exceptions import ValidationError, UserError, Warning
-from odoo.tools import mute_logger
 import itertools
 
 
@@ -123,6 +122,8 @@ class MergePartnerAutomatic(models.TransientModel):
                        'default_state': 'selection',
                        'default_total_duplicates': self.total_duplicates,
                        'default_duplicate_position': self.duplicate_position,
+                       'default_contact_type' : partner1.type,
+                       'default_contact_type2' : partner2.type,
                        }
             
         else:
@@ -245,6 +246,23 @@ class MergePartnerManualCheck(models.TransientModel):
     _name = 'merge.partner.manual.check'
     _description = 'Merge Partner Manual Check'
     
+    contact_type = fields.Selection(
+        [('contact', 'Contact'),
+         ('invoice', 'Invoice address'),
+         ('delivery', 'Shipping address'),
+         ('other', 'Other address'),
+         ("private", "Private Address"),
+        ], string='Address Type',
+        help="Used by Sales and Purchase Apps to select the relevant address depending on the context.")
+    
+    contact_type2 = fields.Selection(
+        [('contact', 'Contact'),
+         ('invoice', 'Invoice address'),
+         ('delivery', 'Shipping address'),
+         ('other', 'Other address'),
+         ("private", "Private Address"),
+        ], string='Address Type',
+        help="Used by Sales and Purchase Apps to select the relevant address depending on the context.")
     
     last_changes_date1 = fields.Datetime('Last Changes')
     last_changes_date2 = fields.Datetime('Last Changes 2')
