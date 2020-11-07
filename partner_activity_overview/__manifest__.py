@@ -12,5 +12,6 @@
     'depends': [
         'sale_crm', 'purchase_stock', 'nitrokey_helpdesk_mgmt', 'calendar', 'crm_phonecall',
     ],
+    'license': 'AGPL-3',
     'installable': True,
 }
