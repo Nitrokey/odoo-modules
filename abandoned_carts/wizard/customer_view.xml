@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+        <record id="customer_wizard_line_form_view" model="ir.ui.view">
+            <field name="name">customer.wizard.line.form.view</field>
+            <field name="model">customer.wizard.line</field>
+            <field name="arch" type="xml">
+                <form string="Customer Line" create="false" write="false">
+                	<group>
+                		<group>
+                			<field name='name' />
+                			<field name='partner_id' />
+                		</group>
+                		<group>
+                			<field name='email' />
+                			<field name='phone' />
+                		</group>
+                	</group>
+                </form>
+            </field>
+        </record>
         <record id="customer_wizard_form_view" model="ir.ui.view">
             <field name="name">customer.wizard.form.view</field>
             <field name="model">customer.wizard</field>

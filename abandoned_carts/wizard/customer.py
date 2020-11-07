@@ -66,12 +66,15 @@ WHERE
         self._cr.execute(qry)
         data = self._cr.fetchall()
         customer_ids = [p[0] for p in data]
+        wizard_line_obj = self.env['customer.wizard.line']
         lines = []
         for customer in partner_obj.browse(customer_ids):
-            lines.append((0, 0, {'partner_id': customer.id, 'email': customer.email,
-                                 'phone': customer.phone, 'name': customer.name}))
+            line = wizard_line_obj.create({'partner_id': customer.id, 'email': customer.email, 'phone': customer.phone, 'name': customer.name})
+            lines.append(line.id)
+#             lines.append((0, 0, {'partner_id': customer.id, 'email': customer.email,
+#                                  'phone': customer.phone, 'name': customer.name}))
         res.update(
-            {'customer_ids': lines, 'max_delete_limit': max_delete_batch_limit})
+            {'customer_ids': [(6,0,lines)], 'max_delete_limit': max_delete_batch_limit})
         return res
 
     @api.multi
