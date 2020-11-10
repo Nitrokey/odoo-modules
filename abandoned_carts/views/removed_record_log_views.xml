@@ -18,6 +18,7 @@
                                 <field name='res_id' />
                             </group>
                         </group>
+                        <field name='error' />
                     </sheet>
                 </form>
             </field>

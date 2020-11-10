@@ -34,14 +34,23 @@
                     <group>
                         <field name="customer_ids" nolabel="1" widget="one2many_list">
                             <tree string="Customer" create='false' edit='false'>
+                                <field name="id" invisible="1"/>
                                 <field name="name"/>
                                 <field name="phone"/>
                                 <field name="email"/>
+                            	<button name="action_view_customer"
+		                            type="object"
+		                            class="oe_stat_button"
+		                            icon="fa-pencil-square-o"
+		                            attrs="{'invisible': [('name', '=', False)]}">
+                        		</button>    
                             </tree>
+                            
                         </field>
                     </group>
                     <footer>
-                        <button name="action_remove_customer" string="Remove" type="object" class="oe_highlight"/>
+                        <button name="action_remove_customer_manual" string="Remove from List" type="object" class="oe_highlight"/>
+                        <button name="action_remove_customer" string="Delete partner records" type="object" class="oe_highlight"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>

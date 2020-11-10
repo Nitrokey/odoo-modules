@@ -20,6 +20,23 @@ class CustomerWizardLine(models.TransientModel):
     phone = fields.Char('Phone')
     wizard_id = fields.Many2one('customer.wizard', 'Wizard')
 
+    def action_view_customer(self):
+        try:
+            form_id = self.env['ir.model.data'].sudo().get_object_reference('base', 'view_partner_form')[1]
+        except ValueError:
+            form_id = False
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'res.partner',
+            'res_id': self.partner_id.id,
+            'views': [(form_id, 'form')],
+            'view_id': form_id,
+            'target': 'new',
+        }
+        
 
 class CustomerWizard(models.TransientModel):
     """Abandoned Customer Popup"""
@@ -29,37 +46,35 @@ class CustomerWizard(models.TransientModel):
     customer_ids = fields.One2many(
         'customer.wizard.line', 'wizard_id', string='Customers')
     max_delete_limit = fields.Integer("Max Record delete limit")
-
+    
+    
+    
+    
     @api.model
     def default_get(self, fields):
 
         res = super(CustomerWizard, self).default_get(fields)
         max_delete_batch_limit = safe_eval(self.env['ir.config_parameter'].get_param(
             'abandoned_carts.max_delete_batch_limit', '2000'))
-
+        
         qry = """SELECT p.id
 FROM res_partner p
-    LEFT JOIN crm_lead lead ON lead.partner_id = p.id
-    LEFT JOIN calendar_event_res_partner_rel ce ON ce.res_partner_id = p.id
-    LEFT JOIN account_invoice inv ON inv.partner_id = p.id
-    LEFT JOIN sale_order o ON o.partner_id = p.id
-    LEFT JOIN account_move move ON move.partner_id = p.id
-    LEFT JOIN account_move_line line ON line.partner_id = p.id
-    LEFT JOIN project_task task ON task.partner_id = p.id
 WHERE
-    lead.partner_id is null and 
-    ce.res_partner_id is null and
-    inv.partner_id is null and
-    o.partner_id is null and
-    move.partner_id is null and
-    line.partner_id is null and
-    task.partner_id is null and 
-    p.active and
+    NOT EXISTS (SELECT 1 FROM crm_lead as lead WHERE lead.partner_id = p.id) and
+    NOT EXISTS (SELECT 1 FROM calendar_event_res_partner_rel ce WHERE ce.res_partner_id = p.id) and
+    NOT EXISTS (SELECT 1 FROM crm_phonecall call WHERE call.partner_id=p.id) and
+    NOT EXISTS (SELECT 1 FROM account_invoice inv WHERE inv.partner_id = p.id) and
+    NOT EXISTS (SELECT 1 FROM sale_order o  WHERE o.partner_id = p.id or o.partner_invoice_id=p.id or o.partner_shipping_id=p.id) and
+    NOT EXISTS (SELECT 1 FROM account_move move  WHERE move.partner_id = p.id) and
+    NOT EXISTS (SELECT 1 FROM account_move_line line  WHERE line.partner_id = p.id) and
+    NOT EXISTS (SELECT 1 FROM project_task task  WHERE task.partner_id = p.id) and 
+    p.active is not true and
     p.customer and
     p.id not in (select partner_id from res_users union all select partner_id from res_company order by partner_id)
     order by p.id desc
     limit %d
     """ % max_delete_batch_limit
+    
         partner_obj = self.env['res.partner']
         #         if hasattr(partner_obj, 'newsletter_sendy'):
         #             qry += " and not p.newsletter_sendy"
@@ -78,11 +93,16 @@ WHERE
         return res
 
     @api.multi
-    def action_remove_customer(self):
+    def action_remove_customer(self, selected_ids=[]):
 
         max_delete_batch_limit = safe_eval(self.env['ir.config_parameter'].get_param(
             'abandoned_carts.max_delete_batch_limit', '2000'))
-        if len(self.customer_ids) > max_delete_batch_limit:
+        if selected_ids:
+            customers = self.env['customer.wizard.line'].browse(selected_ids)
+        else:
+            customers = self.customer_ids
+            
+        if len(customers) > max_delete_batch_limit:
             raise Warning(
                 'For safety reasons, you cannot delete more than %d Customer together. \
                 You can re-open the wizard several times if needed.' % max_delete_batch_limit)
@@ -92,7 +112,7 @@ WHERE
         user = self.env.user
         user_id = user.id
 
-        customer_ids = self.customer_ids.mapped('partner_id').ids
+        customer_ids = customers.mapped('partner_id').ids
         partner_obj = self.env['res.partner']
         newsletter_sendy = hasattr(
             partner_obj, 'newsletter_sendy') and True or False
@@ -104,17 +124,20 @@ WHERE
             line = partner_obj.browse(partner_id)
             record_name = line.name
             record_id = line.id
+            error = ''
             try:
                 if newsletter_sendy and line.newsletter_sendy:
                     self._cr.execute(
                         "update res_partner set newsletter_sendy=false where id=%d" % partner_id)
                     line.refresh()
                 line.unlink()
-            except Exception:
+            except Exception as e:
                 self._cr.execute('ROLLBACK TO SAVEPOINT remove_partner')
                 self._cr.execute('SAVEPOINT remove_partner')
                 line = partner_obj.browse(partner_id)
                 line.write({'active': False})
+                error = str(e)
+                
 
             log_obj.create({
                 'name': record_name,
@@ -122,7 +145,18 @@ WHERE
                 'res_model': 'res.partner',
                 'res_id': record_id,
                 'user_id': user_id,
+                'error' : error
             })
             _LOGGER.info('name %s, date %s, model %s, res_id %s, user %s',
                          (record_name, current_date, 'res.partner', record_id, user.name))
             self._cr.execute('RELEASE SAVEPOINT remove_partner')
+    
+    @api.multi
+    def action_remove_customer_manual(self):
+        ctx = self._context or {}
+        deleting_ids = ctx.get('deleting_ids',[])
+        self.action_remove_customer(deleting_ids)
+        
+        return True
+    
+    
