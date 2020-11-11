@@ -57,6 +57,10 @@ class CustomerWizard(models.TransientModel):
         max_delete_batch_limit = safe_eval(self.env['ir.config_parameter'].get_param(
             'abandoned_carts.max_delete_batch_limit', '2000'))
         
+        system_user = self.sudo().env.ref('base.user_root', False)
+        system_user_filter = ''
+        if system_user:
+            system_user_filter = 'and p.create_uid='+str(system_user.id)
         qry = """SELECT p.id
 FROM res_partner p
 WHERE
@@ -71,9 +75,10 @@ WHERE
     p.active is not true and
     p.customer and
     p.id not in (select partner_id from res_users union all select partner_id from res_company order by partner_id)
+    %s
     order by p.id desc
     limit %d
-    """ % max_delete_batch_limit
+    """ %(system_user_filter,max_delete_batch_limit)
     
         partner_obj = self.env['res.partner']
         #         if hasattr(partner_obj, 'newsletter_sendy'):

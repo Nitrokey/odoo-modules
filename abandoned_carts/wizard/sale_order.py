@@ -67,9 +67,15 @@ class SaleOrderWizard(models.TransientModel):
 
         # sales_team = self.env['crm.team'].
         # search([('name','in',['Website Sales','Website'])], limit=1)
+        
+        
+        system_user = self.sudo().env.ref('base.user_root', False)
         domain = [('state', '=', 'draft'),
-                  ('create_date', '<', date.strftime(DF))]
-
+                  ('create_date', '<', date.strftime(DF)),
+                  ]
+        if system_user:
+            domain.append(('create_uid','=',system_user.id))
+            
         sales_team = self.env.ref('sales_team.salesteam_website_sales', False)
         if sales_team:
             domain.append(('team_id', '=', sales_team.id))
