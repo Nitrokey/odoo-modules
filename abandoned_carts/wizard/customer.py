@@ -98,11 +98,13 @@ WHERE
         return res
 
     @api.multi
-    def action_remove_customer(self, selected_ids=[]):
+    def action_remove_customer(self):
 
         max_delete_batch_limit = safe_eval(self.env['ir.config_parameter'].get_param(
             'abandoned_carts.max_delete_batch_limit', '2000'))
-        if selected_ids:
+        ctx = self._context or {}
+        selected_ids = ctx.get('deleting_ids',[])
+        if selected_ids and ctx.get('manual_remove'):
             customers = self.env['customer.wizard.line'].browse(selected_ids)
         else:
             customers = self.customer_ids
@@ -157,9 +159,9 @@ WHERE
     
     @api.multi
     def action_remove_customer_manual(self):
-        ctx = self._context or {}
-        deleting_ids = ctx.get('deleting_ids',[])
-        self.action_remove_customer(deleting_ids)
+        #ctx = self._context or {}
+        #deleting_ids = ctx.get('deleting_ids',[])
+        self.with_context(manual_remove=True).action_remove_customer()
         
         return True
     
