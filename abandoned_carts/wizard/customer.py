@@ -159,9 +159,10 @@ WHERE
     
     @api.multi
     def action_remove_customer_manual(self):
-        #ctx = self._context or {}
-        #deleting_ids = ctx.get('deleting_ids',[])
-        self.with_context(manual_remove=True).action_remove_customer()
+        ctx = self._context or {}
+        deleting_ids = ctx.get('deleting_ids',[])
+        if deleting_ids:
+            self.with_context(manual_remove=True).action_remove_customer()
         
         return True
     
