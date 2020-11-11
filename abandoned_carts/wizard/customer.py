@@ -152,8 +152,7 @@ WHERE
                 'user_id': user_id,
                 'error' : error
             })
-            _LOGGER.info('name %s, date %s, model %s, res_id %s, user %s',
-                         (record_name, current_date, 'res.partner', record_id, user.name))
+            _LOGGER.info('name %s, date %s, model %s, res_id %s, user %s'%(record_name, current_date, 'res.partner', record_id, user.name))
             self._cr.execute('RELEASE SAVEPOINT remove_partner')
     
     @api.multi
