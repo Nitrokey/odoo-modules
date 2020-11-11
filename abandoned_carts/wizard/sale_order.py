@@ -85,16 +85,19 @@ class SaleOrderWizard(models.TransientModel):
         current_quotation = self.env['sale.order'].search(
             domain, limit=max_delete_batch_limit)
         lines = []
+        wizard_line_obj = self.env['sale.order.wizard.line']
         for order in current_quotation:
-            lines.append((0, 0, {'partner_id': order.partner_id.id,
+            line = wizard_line_obj.create({'partner_id': order.partner_id.id,
                                  'date_order': order.date_order,
                                  'user_id': order.user_id.id,
                                  'name': order.name,
                                  'amount_total': order.amount_total,
                                  'state': order.state,
                                  'order_id': order.id,
-                                 }))
-        res.update({'sale_order_ids': lines,
+                                 })
+            lines.append(line.id)
+            
+        res.update({'sale_order_ids': [(6,0,lines)],
                     'max_delete_limit': max_delete_batch_limit})
         return res
 
