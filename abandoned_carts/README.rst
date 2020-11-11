@@ -62,6 +62,8 @@ Under Settings -> Configuration -> Sales -> Retention Period set hours and maxim
 
 Go to settings -> Activate the developer mode, Technical: Automation -> Scheduled Actions.
 
+Select "Remove Abandoned cart orders and Customers"
+
 Type in Name, Interval Number, Next Execution Date and Inverval Unit. The cron job will be executed at Next Execution Date. In Number of calls you can determine how many intervals it has to run. 
 
 For example:
