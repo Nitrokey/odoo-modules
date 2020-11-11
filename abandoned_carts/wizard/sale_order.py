@@ -123,7 +123,6 @@ class SaleOrderWizard(models.TransientModel):
                 'res_id': line.id,
                 'user_id': user_id,
             })
-            _LOGGER.info('name %s, date %s, model %s, res_id %s, user %s',
-                         (line.name, current_date, 'sale.order', line.id, user.name))
+            _LOGGER.info('name %s, date %s, model %s, res_id %s, user %s'%(line.name, current_date, 'sale.order', line.id, user.name))
             line.unlink()
         return True
