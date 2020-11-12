@@ -37,13 +37,13 @@ Algorithm
 
 This module identifies orders as abandoned (and to be deleted) if all of the following is true:
 
-`"state = draft" and "sales = website_sales" and "date_of_order <= hours_from_retention_period"`
+`"state = draft" and "sales = website_sales" and "date_of_order <= hours_from_retention_period" and Created by System User`
 
 These orders will be displayed in "Abandoned orders" and can be deleted manually. 
 
 Customers, which have
 
-`"orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "invoice = 0" and "tasks = 0" and "active = 0" and "is_customer = true"`
+`"orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "invoice = 0" and "account moves = 0" and "tasks = 0" and "active = 0" and "is_customer = true" and Created by System User`
 
 will be displayed in "Abandoned customers" and can be deleted manually.
 
