@@ -4,6 +4,12 @@
     'name': "Abandoned Carts",
     'version': '12.0.1.2',
     'depends': ['website_sale', 'crm', 'account', 'project', 'calendar'],
+    'description': """
+- User can delete Abandoned Customers & Orders
+- User can see deleted Customers or Orders log in Removed Log menu inside Sales --> Abandoned Log menu.
+- Abandoned customers are identify based on customer those have no Lead, no Calendar Event, no Phone call, no Invoice, no Sale order, no Account move, no Project task,is customer, is inactive and that record is created with system user.
+- Abandoned Orders are identify based on order those are created by system user, its status is Quotation, and its create date is before order retention period.
+    """,
     'data': [
         'security/ir.model.access.csv',
         'data/ir_cron.xml',
