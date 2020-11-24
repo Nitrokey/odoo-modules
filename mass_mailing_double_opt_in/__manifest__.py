@@ -19,6 +19,7 @@ Mass Mailing Double opt-in
         'data/newsletter.xml',
         'views/mass_mailing_view.xml',
         'views/invalid_confirmation.xml',
+        'views/unsubscribe_templates.xml',
     ],
     'installable': True,
 }
