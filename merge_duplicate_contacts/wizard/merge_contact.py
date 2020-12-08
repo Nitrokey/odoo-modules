@@ -260,7 +260,7 @@ class MergePartnerManualCheck(models.TransientModel):
          ('invoice', 'Invoice address'),
          ('delivery', 'Shipping address'),
          ('other', 'Other address'),
-         ("private", "Private Address"),
+         ("private", "Private Address 2"),
         ], string='Address Type',
         help="Used by Sales and Purchase Apps to select the relevant address depending on the context.")
     
