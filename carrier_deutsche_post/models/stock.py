@@ -44,7 +44,7 @@ class Picking(models.Model):
             'prod_code': product_code,
             'dest': {
                 'first': '',
-                'last': self.partner_id.name,
+                'last': self.partner_id.name or '',
                 'street': self.partner_id.street or '',
                 'street2': self.partner_id.street2 or '',
                 'zip': self.partner_id.zip or '',
@@ -64,11 +64,11 @@ class Picking(models.Model):
                          or '',
             },
             'source': {
-                'name': self.company_id.name,
+                'name': self.company_id.name or '',
                 'street': self.company_id.street or '',
                 'street2': self.company_id.street2 or '',
                 'zip': self.company_id.zip or '',
-                'city': "%s - %s" % (self.company_id.city, self.company_id.country_id.name),
+                'city': "%s - %s" % (self.company_id.city or '', self.company_id.country_id.name or ''),
                 'country': self.company_id.country_id.code_iso or '',
             }
         }
