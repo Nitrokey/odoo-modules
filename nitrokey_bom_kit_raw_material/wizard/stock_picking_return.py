@@ -6,7 +6,7 @@ from odoo import api, fields, models, _
 class ReturnPicking(models.TransientModel):
     _inherit = 'stock.return.picking'
 
-    is_return_raw_materials = fields.Boolean('Return Raw Materials Instead of Finish Product.')
+    is_return_raw_materials = fields.Boolean('Return Raw Materials Instead of Finished Product.')
     show_return_raw_material = fields.Boolean("Show Return Raw Materials")
 
     @api.model
@@ -29,7 +29,7 @@ class ReturnPicking(models.TransientModel):
 
     def _create_returns(self):
         # Overwrite the method to create the return incoming shipment with 
-        # raw material instead of the finished good based on the selected option by the user.
+        # raw material instead of the finished product based on the selected option by the user.
         for return_move in self.product_return_moves.mapped('move_id'):
             return_move.move_dest_ids.filtered(lambda m: m.state not in ('done', 'cancel'))._do_unreserve()
 
