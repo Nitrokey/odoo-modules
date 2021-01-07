@@ -11,6 +11,7 @@ This module allows to return the raw materials instead of the finish good based 
      """,
     'depends': [
         'stock',
+        'sale_mrp_link',
     ],
     'data': [
         'wizard/stock_picking_return_view.xml',

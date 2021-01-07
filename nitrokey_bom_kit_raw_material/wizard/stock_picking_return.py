@@ -57,7 +57,9 @@ class ReturnPicking(models.TransientModel):
                     product = return_line.product_id
                     product_tmpl = product.product_tmpl_id
                     mrp_bom = self.env['mrp.bom'].search([('product_tmpl_id', '=', product_tmpl.id)], limit=1)
-                    for bom_line in mrp_bom.bom_line_ids:
+                    production_id = self.env['mrp.production'].search([('sale_order_id', '=', self.picking_id.sale_id.id)], limit=1)
+                    used_components = production_id.move_raw_ids.mapped('product_id').ids
+                    for bom_line in mrp_bom.bom_line_ids.filtered(lambda b: b.product_id.id in used_components):
                         vals = self.get_return_raw_material_values(return_line, bom_line, new_picking)
                         r = return_line.move_id.copy(vals)
                         vals = {}
