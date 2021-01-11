@@ -14,6 +14,7 @@ This module allows to return the raw materials instead of the finish good based 
         'sale_mrp_link',
     ],
     'data': [
+        'views/stock_picking_view.xml',
         'wizard/stock_picking_return_view.xml',
     ],
     'license': 'AGPL-3',
