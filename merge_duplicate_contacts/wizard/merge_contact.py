@@ -24,6 +24,7 @@ class MergePartnerAutomatic(models.TransientModel):
     associate_contact =fields.Boolean("Partner contacts associated to the contact",default=True)
     contact_not_being_customer =fields.Boolean("A contact not being customer",default=True)
     without_sales_orders =fields.Boolean("Without sales orders",default=True)
+    group_by_domain_email = fields.Boolean('Domain Email')
     
     @api.model
     def default_get(self, fields_list):
@@ -147,8 +148,13 @@ class MergePartnerAutomatic(models.TransientModel):
     def _generate_query(self, fields, maximum_group=100):
         sql_fields = []
         for field in fields:
-            if field in ['email', 'name']:
+            if field == 'domain_email':
+                field = 'email'
+            if field == 'name':
                 sql_fields.append('lower(%s)' % field)
+            elif field == 'email':
+                if not "lower(email)" in sql_fields:
+                    sql_fields.append('lower(%s)' % field)        
             elif field in ['vat']:
                 sql_fields.append("replace(%s, ' ', '')" % field)
             else:
@@ -158,16 +164,22 @@ class MergePartnerAutomatic(models.TransientModel):
 
         filters = []
         for field in fields:
+            if field == 'domain_email':
+                field = 'email'
             if field in ['email', 'name', 'vat']:
-                filters.append((field, 'IS NOT', 'NULL'))
+                if field in ['name', 'vat']:
+                    filters.append((field, 'IS NOT', 'NULL'))
+                elif not ('email', 'IS NOT', 'NULL') in filters:
+                    filters.append((field, 'IS NOT', 'NULL'))
 
         criteria = ' AND '.join('%s %s %s' % (field, operator, value)
                                 for field, operator, value in filters)
-
+        
         text = [
             "SELECT min(id), array_agg(id)",
             "FROM res_partner",
         ]
+        
         conditions = [criteria]
         if self.associate_contact:
             conditions.append("NOT EXISTS (SELECT 1 FROM res_partner as child WHERE child.parent_id = res_partner.id)")
@@ -178,13 +190,19 @@ class MergePartnerAutomatic(models.TransientModel):
         
         criteria = ' AND '.join(conditions)        
         if criteria:
+            if self.group_by_domain_email:
+                if self.group_by_email:
+                    criteria = criteria
+                    group_fields = group_fields
+                else:    
+                    criteria=(criteria).replace('email IS NOT NULL',"SUBSTRING(email FROM POSITION('@' IN email)+1) IS NOT NULL")
+                    group_fields =(group_fields).replace('lower(email)',"SUBSTRING(email FROM POSITION('@' IN email)+1)")
             text.append('WHERE %s' % criteria)
-            
         text.extend([
             "GROUP BY %s" % group_fields,
             "HAVING COUNT(*) >= 2",
             "ORDER BY min(id)",
-        ])
+        ])    
 
         if maximum_group:
             text.extend([

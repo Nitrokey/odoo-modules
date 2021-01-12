@@ -307,6 +307,9 @@
 				<field name="contact_not_being_customer"/>
 				<field name="without_sales_orders"/>
 			</field>
+			<field name="group_by_parent_id" position="after">
+				<field name="group_by_domain_email"/>
+			</field>
 		</field>
 	</record>
 </odoo>
