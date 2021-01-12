@@ -222,7 +222,9 @@ class MergePartnerAutomatic(models.TransientModel):
 
         counter = 0
         total_duplicates = 0
-        for min_id, aggr_ids in self._cr.fetchall():
+        data = self._cr.fetchall()
+        data = sorted(data, key=lambda x: len(x[1]))
+        for min_id, aggr_ids in data:
             if models and self._partner_use_in(aggr_ids, models):
                 continue
             values = {
