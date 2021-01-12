@@ -6,6 +6,17 @@ from odoo import api, fields, models, _
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    is_display_unbuild = fields.Boolean(string='Is Display Unbuild', compute='_compute_display_unbuild', store=True)
+
+    @api.multi
+    @api.depends('picking_type_id', 'picking_type_id.code')
+    def _compute_display_unbuild(self):
+        for picking in self:
+            if picking.picking_type_id.code == 'incoming':
+                picking.is_display_unbuild = True
+            else:
+                picking.is_display_unbuild = False
+
     @api.multi
     def action_generate_unbuild_order(self):
         mo_id = self.env['mrp.production'].search([
@@ -18,6 +29,8 @@ class StockPicking(models.Model):
             'product_qty': quantity,
             'product_uom_id': mo_id.product_uom_id.id,
             'bom_id': mo_id.bom_id.id,
+            'location_id': self.location_dest_id.id,
+            'location_dest_id': self.location_dest_id.id,
         }
         unbuild_order = self.env['mrp.unbuild'].create(unbuild_vals)
         return {
