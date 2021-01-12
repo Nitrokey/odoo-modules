@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="product_variants_extended" inherit_id="sale.variants">
+        <xpath expr="//strong[@t-field='variant_id.attribute_id.name']" position="after">
+            <t t-if="variant_id.attribute_id.description">
+                <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" t-att-title="variant_id.attribute_id.description"/>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>
