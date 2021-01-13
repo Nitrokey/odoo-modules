@@ -16,6 +16,20 @@ _logger = logging.getLogger('base.partner.merge')
 def is_integer_list(ids):
     return all(isinstance(i, (int, long)) for i in ids)
 
+class MergePartnerLine(models.TransientModel):
+    _inherit = 'base.partner.merge.line'
+    _order = 'len_aggr_ids asc, min_id asc'
+    
+    len_aggr_ids = fields.Integer('Total Aggr IDs', compute='_compute_len_aggr_ids',store=True)
+    
+    @api.multi
+    @api.depends('aggr_ids')
+    def _compute_len_aggr_ids(self):
+        for record in self:
+            record.len_aggr_ids = len(record.aggr_ids)
+            
+            
+    
 class MergePartnerAutomatic(models.TransientModel):
     _inherit = 'base.partner.merge.automatic.wizard'
 
