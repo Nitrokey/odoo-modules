@@ -28,13 +28,14 @@ class ProductTemplate(models.Model):
             ('picking_id.picking_type_id.code', '=', 'outgoing'),
             ('picking_id.state', 'in', ['confirmed', 'assigned'])
         ])
+        picking = stock_moves.mapped('picking_id')
         return {
             'name': 'Pre-Orders',
             'type': 'ir.actions.act_window',
-            'res_model': 'stock.move',
+            'res_model': 'stock.picking',
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'views': [(self.env.ref("stock.view_move_tree").id, 'tree'),
-                      (self.env.ref("stock.view_move_form").id, 'form')],
-            'domain': [('id', 'in', stock_moves.ids)],
+            'views': [(self.env.ref("stock.vpicktree").id, 'tree'),
+                      (self.env.ref("stock.view_picking_form").id, 'form')],
+            'domain': [('id', 'in', picking.ids)],
         }
