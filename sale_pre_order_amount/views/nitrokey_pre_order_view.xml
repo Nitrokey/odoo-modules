@@ -4,14 +4,13 @@
     <record id="action_nitrokey_pre_order_amount" model="ir.actions.act_window">
         <field name="name">Pre-Orders</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">stock.move</field>
+        <field name="res_model">stock.picking</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree</field>
-        <field name="view_id" ref="stock.view_move_tree"/>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="stock.vpicktree"/>
         <field name="domain">[
-            ('picking_id', '!=', False),
-            ('picking_id.picking_type_id.code', '=', 'outgoing'),
-            ('picking_id.state', 'in', ['confirmed', 'assigned'])
+            ('picking_type_id.code', '=', 'outgoing'),
+            ('state', 'in', ['confirmed', 'assigned'])
         ]</field>
     </record>
 
