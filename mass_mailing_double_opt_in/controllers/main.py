@@ -19,6 +19,7 @@ class MassMailController(MassMailController):
             ('list_ids', 'in', [int(list_id)]),
             ('email', '=', email),
         ], limit=1)
+        mailing_list_contact = None
         if existing_contact:
             existing_list_contact = existing_contact.subscription_list_ids.filtered(lambda c: c.list_id.id == int(list_id))
             if existing_list_contact.opt_out:
