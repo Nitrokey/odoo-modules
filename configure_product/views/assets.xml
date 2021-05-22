@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="configure_product_assests" name="configure_product assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+        	<script type="text/javascript" src="/configure_product/static/src/js/relational_fields.js"/>
+        </xpath>
+    </template>	
+</odoo>

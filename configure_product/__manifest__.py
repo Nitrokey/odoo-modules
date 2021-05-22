@@ -6,11 +6,13 @@
     """,
     'version': '12.0.1.0',
     'depends': [
-        'stock','mrp'
+        'stock','mrp','purchase'
     ],
     'data': [
              'views/stock_picking_view.xml',
              'views/production_order_view.xml',
+             'views/purchase_view.xml',
+             'views/assets.xml',
              ],
     'author': "Nitrokey GmbH",
     'website': "",
