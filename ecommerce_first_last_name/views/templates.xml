@@ -21,7 +21,8 @@
     <template id="website_sale.address_b2b" inherit_id="website_sale.address" name="Show b2b fields" customize_show="True" active="True">
         <xpath expr="//form[@class='checkout_autoformat']/div/div[2]" position="after">
             <div t-attf-class="form-group col-lg-6">
-            	<input type="radio" t-att-checked="'company_type' in checkout and checkout['company_type']=='person'" id='company_type' name="company_type" class="individual" value="person"/> Individual
+            	<input type="radio" t-att-checked="('company_type' in checkout and checkout['company_type']!='company') or 'company_type' not in checkout" id='company_type' name="company_type" class="individual" value="person"/> Individual
+            	
             	<span style="margin-right: 20px;"></span>
             	<input type="radio" t-att-checked="'company_type' in checkout and checkout['company_type']=='company'" id='company_type' name="company_type" class="company" value="company" /> Company
             </div>
