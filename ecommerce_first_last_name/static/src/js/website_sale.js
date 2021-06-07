@@ -4,12 +4,11 @@ odoo.define('ecommerce_first_last_name.website_state', function(require) {
 	var sAnimations = require('website.content.snippets.animation');
 	sAnimations.registry.WebsiteSale.include({
 		read_events: _.extend({}, sAnimations.registry.WebsiteSale.prototype.read_events, {
-    	'change #company_type': '_onChangeCompanyType',
-		
+    	'change #company_type_individual': '_onChangeCompanyType',
+		'change #company_type_company': '_onChangeCompanyType',
     	}),
 		_onChangeCompanyType: function (ev) {
-	        debugger;
-			var company = document.getElementById("address_company_name");
+	        var company = document.getElementById("address_company_name");
            	var vat = document.getElementById("address_tin_vat");
 
 			if ($(ev.currentTarget).val()=='company'){

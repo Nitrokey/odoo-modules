@@ -6,6 +6,18 @@ from odoo.addons.website_sale.controllers.main import WebsiteSale
 _logger = logging.getLogger(__name__)
 
 class WebsiteSaleFirstLastname(WebsiteSale):
+    def checkout_form_validate(self, mode, all_form_values, data):
+        error, error_message = super(WebsiteSaleFirstLastname, self).\
+            checkout_form_validate(mode, all_form_values, data)
+        if 'name' in data and not data.get('name'):
+            error['name'] = 'missing'
+        if 'last_name' in data and not data.get('last_name'):
+            error['last_name'] = 'missing'
+        if data.get('company_type','')=='company' and not data.get('company_name'):
+            error['company_name'] = 'missing'
+            
+        return error, error_message
+    
     def values_postprocess(self, order, mode, values, errors, error_msg):
         last_name = values.get('last_name')
         if last_name and values.get('name'):
