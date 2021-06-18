@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo noupdate="1">
+        <!-- Cron job for Bitcoin payment reconciliation-->
+        <record id="ir_cron_bitcoin_payment_reconciliation" model="ir.cron">
+            <field name="name">Bitcoin: Addresses Checking</field>
+            <field name="user_id" ref="base.user_root" />
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="model_id" ref="model_bitcoin_address"/>
+            <field eval="False" name="doall" />
+            <field name="state">code</field>
+            <field name="code">model.cron_bitcoin_payment_reconciliation()</field>
+            <field eval="True" name="active" />
+        </record>
+        
+        
+        <record id="mail_template_data_bit_coin_order_notification" model="mail.template">
+            <field name="name">Bitcoin: Order Notification</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="subject">Don't Validate Order ${object.name}</field>
+            <field name="partner_to">${', '.join(map(str, object.team_id.member_ids.mapped('partner_id.id')))}</field>
+            <field name="body_html" type="xml">
+				<div style="margin: 0px; padding: 0px;">
+				    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+				        Dear ,<br/><br/>
+				        The Amount received for Order ${object.name} is less than actual order amount.Please verify
+				    </p>
+				</div>
+			</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="user_signature" eval="False"/>
+        </record>
+</odoo>
