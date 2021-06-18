@@ -23,7 +23,7 @@ class StockPicking(models.Model):
             ('sale_order_id', '=', self.sale_id.id)
         ], limit=1)
         quantity = self.move_ids_without_package[0].quantity_done
-        lot = mo_id.finished_move_line_ids[0].lot_id
+        lot = mo_id.finished_move_line_ids and mo_id.finished_move_line_ids[0].lot_id
         unbuild_vals = {
             'mo_id': mo_id.id,
             'product_id': mo_id.product_id.id,
@@ -32,7 +32,7 @@ class StockPicking(models.Model):
             'bom_id': mo_id.bom_id.id,
             'location_id': self.location_dest_id.id,
             'location_dest_id': self.location_dest_id.id,
-            'lot_id': lot.id,
+            'lot_id': lot and lot.id,
         }
         unbuild_order = self.env['mrp.unbuild'].create(unbuild_vals)
         return {
