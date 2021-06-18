@@ -50,14 +50,14 @@ class Picking(models.Model):
                 'zip': self.partner_id.zip or '',
                 'city': self.partner_id.city or '',
                 'country': self.partner_id.country_id.code_iso or '',
-                'company': self.partner_id.parent_id and
-                           self.partner_id.name !=
-                           self.partner_id.parent_id.name and
-                           self.partner_id.parent_id.name or
-                           self.partner_id.company_name and
-                           self.partner_id.name !=
-                           self.partner_id.company_name and
-                           self.partner_id.company_name or '',
+#                 'company': (self.partner_id.parent_id and
+#                            self.partner_id.name !=
+#                            self.partner_id.parent_id.name and
+#                            self.partner_id.parent_id.name) or
+#                            (self.partner_id.company_name and
+#                            self.partner_id.name !=
+#                            self.partner_id.company_name and
+#                            self.partner_id.company_name) or '',
                 'title': self.partner_id.title.shortcut if
                          self.partner_id.title else '',
                 'state': self.partner_id.state_id.name
