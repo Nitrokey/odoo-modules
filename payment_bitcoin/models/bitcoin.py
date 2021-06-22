@@ -178,7 +178,10 @@ class BitcoinAddress(models.Model):
             address_info = check_received(bit_add_obj.name)
             bit_coin_rate = self.env['bitcoin.rate'].get_rate(order_id=bit_add_obj.order_id.id)
             if address_info and bit_coin_rate:
-                if address_info['received'] >= bit_coin_rate[1]:
+                amount_received = address_info['received']
+                if bit_coin_rate[2] == 'mBTC':
+                    amount_received = amount_received * 1000.0
+                if amount_received >= bit_coin_rate[1]:
                     if bit_add_obj.order_id.state not in ('cancel'):
                         if bit_add_obj.order_id.state not in ('done', 'sale'):
                             bit_add_obj.order_id.action_confirm()
