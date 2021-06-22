@@ -215,7 +215,7 @@ class BitcoinAddress(models.Model):
                             
                             (line_to_reconcile + payment_line).reconcile()
                 else:
-                    template_obj = self.env.ref('payment_bitcoin_customization.mail_template_data_bit_coin_order_notification')
+                    template_obj = self.env.ref('payment_bitcoin.mail_template_data_bit_coin_order_notification')
                     template_obj.send_mail(bit_add_obj.order_id.id, force_send=True, raise_exception=True)   
     
     
