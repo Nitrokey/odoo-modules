@@ -360,7 +360,7 @@ class BitcoinRate(models.Model):
                 'name': order.name,
             })
             order.message_post(body=_("""
-                Bitcoin Address: <span><a target="_blank" href="https://www.blockchain.com/btc/address/%s">%s</a></span>, <span>%s </span> BTC"""% 
+                Bitcoin Address: <span><a target="_blank" href="https://www.blockchain.com/btc/address/%s?filter=5">%s</a></span>, <span>%s </span> BTC"""% 
                 (addr_ids[0].name,addr_ids[0].name,rate)))
         if addr_ids and rate:
             addr_ids[0].sudo().write({'order_id': order.id})
