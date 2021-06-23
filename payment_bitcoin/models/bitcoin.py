@@ -176,9 +176,14 @@ class BitcoinAddress(models.Model):
         
         for bit_add_obj in self.search([('create_date', '>=', check_date)]):
             address_info = check_received(bit_add_obj.name)
-            bit_coin_rate = self.env['bitcoin.rate'].get_rate(order_id=bit_add_obj.order_id.id)
-            if address_info and bit_coin_rate:
-                if address_info['received'] >= bit_coin_rate[1]:
+            if address_info:
+                valid_rate_exists = self.env['bitcoin.rate.line'].sudo().search(
+                    [('order_id', '=', bit_add_obj.order_id.id), ('name', '=', bit_add_obj.order_id.name)], limit=1)
+                order_valid_rate = 0.0
+                if valid_rate_exists:
+                    order_valid_rate = valid_rate_exists.rate
+                    
+                if order_valid_rate and address_info['received'] >= order_valid_rate:
                     if bit_add_obj.order_id.state not in ('cancel'):
                         if bit_add_obj.order_id.state not in ('done', 'sale'):
                             bit_add_obj.order_id.action_confirm()
@@ -354,6 +359,9 @@ class BitcoinRate(models.Model):
                 'order_id': order.id,
                 'name': order.name,
             })
+            order.message_post(body=_("""
+                Bitcoin Address: <span><a target="_blank" href="https://www.blockchain.com/btc/address/%s?filter=5">%s</a></span>, <span>%s </span> BTC"""% 
+                (addr_ids[0].name,addr_ids[0].name,rate)))
         if addr_ids and rate:
             addr_ids[0].sudo().write({'order_id': order.id})
             b_addr = addr_ids[0].name
