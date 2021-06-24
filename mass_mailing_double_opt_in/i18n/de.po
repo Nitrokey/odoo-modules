@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-11 11:32+0000\n"
-"PO-Revision-Date: 2020-08-11 11:32+0000\n"
+"POT-Creation-Date: 2021-06-24 08:48+0000\n"
+"PO-Revision-Date: 2021-06-24 08:48+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,6 @@ msgstr "<?xml version=\"1.0\"?>\n"
 "            Ihr Nitrokey Team</p>\n"
 "        </data>"
 
-
 #. module: mass_mailing_double_opt_in
 #: model:mail.template,body_html:mass_mailing_double_opt_in.newsletter_confirmation_request_template
 msgid "<?xml version=\"1.0\"?>\n"
@@ -41,7 +40,7 @@ msgid "<?xml version=\"1.0\"?>\n"
 "                    <div style=\"float: left; background-color: #FFFFFF; padding:10px 30px 10px 30px; border: 1px solid #DDDDDD;\">\n"
 "                        <div style=\"float: left; max-width:470px;\">\n"
 "                            <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">\n"
-"                                <strong style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;\">Confirm your subscription</strong>\n"
+"                                <strong style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;\">Confirm your newsletter subscription</strong>\n"
 "                            </p>\n"
 "                            <div style=\"line-height: 21px; min-height: 100px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">\n"
 "                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Thanks for subscribing to our email list.</p>\n"
@@ -63,7 +62,7 @@ msgstr "<?xml version=\"1.0\"?>\n"
 "                    <div style=\"float: left; background-color: #FFFFFF; padding:10px 30px 10px 30px; border: 1px solid #DDDDDD;\">\n"
 "                        <div style=\"float: left; max-width:470px;\">\n"
 "                            <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">\n"
-"                                <strong style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;\">Bestätigen Sie Ihr Abonnement</strong>\n"
+"                                <strong style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;\">Bestätigen Sie Ihr Newsletter Abonnement</strong>\n"
 "                            </p>\n"
 "                            <div style=\"line-height: 21px; min-height: 100px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">\n"
 "                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Danke, dass Sie sich in unsere E-Mail-Liste eingetragen hast.</p>\n"
@@ -80,6 +79,14 @@ msgstr "<?xml version=\"1.0\"?>\n"
 "            </div>\n"
 "        "
 
+#. module: mass_mailing_double_opt_in
+#: model_terms:mail.mass_mailing.list,popup_content:mass_mailing_double_opt_in.german_newsletter_mass_mail_list
+msgid "<font>7</font>\n"
+"    <strong>Business Hacks</strong>\n"
+"    <span> to<br>boost your marketing</span>"
+msgstr "<font>7</font>\n"
+"    <strong>Business-Hacks</strong>\n"
+"    <span> für<br>Ihren Marketing-Erfolg</span>"
 
 #. module: mass_mailing_double_opt_in
 #: model:ir.model.fields,field_description:mass_mailing_double_opt_in.field_mail_mass_mailing_list_contact_rel__access_token
@@ -88,8 +95,23 @@ msgstr "Zugriffs-Token"
 
 #. module: mass_mailing_double_opt_in
 #: model:mail.template,subject:mass_mailing_double_opt_in.newsletter_confirmation_request_template
-msgid "Confirm your subscription to Nitrokey"
-msgstr "Bestätigen Sie Ihr Abonnement für Nitrokey"
+msgid "Confirm your newsletter subscription"
+msgstr "Bestätigen Sie Ihr Newsletter Abonnement"
+
+#. module: mass_mailing_double_opt_in
+#: model:res.groups,name:mass_mailing_double_opt_in.group_mass_mailing_editor
+msgid "Editor"
+msgstr ""
+
+#. module: mass_mailing_double_opt_in
+#: model_terms:mail.mass_mailing.list,popup_content:mass_mailing_double_opt_in.german_newsletter_mass_mail_list
+msgid "Join our Marketing newsletter and get <strong>this white paper instantly</strong>"
+msgstr "Abonnieren Sie unseren Marketing-Newsletter und erhalten Sie <strong>dieses Whitepaper sofort</strong>"
+
+#. module: mass_mailing_double_opt_in
+#: model:ir.model.fields,field_description:mass_mailing_double_opt_in.field_mail_mass_mailing_list_contact_rel__mail_language
+msgid "Mail Language"
+msgstr ""
 
 #. module: mass_mailing_double_opt_in
 #: model:ir.model,name:mass_mailing_double_opt_in.model_mail_mass_mailing_list_contact_rel
@@ -97,6 +119,17 @@ msgid "Mass Mailing Subscription Information"
 msgstr "Informationen zum Massenmailing-Abonnement"
 
 #. module: mass_mailing_double_opt_in
+#: model_terms:mail.mass_mailing.list,popup_content:mass_mailing_double_opt_in.german_newsletter_mass_mail_list
+msgid "Odoo Presents"
+msgstr "Odoo präsentiert"
+
+#. module: mass_mailing_double_opt_in
+#: model_terms:ir.ui.view,arch_db:mass_mailing_double_opt_in.invalid_subscription_confirmation_template
+msgid "This confirmation link is invalid."
+msgstr ""
+
+#. module: mass_mailing_double_opt_in
 #: model:mail.template,subject:mass_mailing_double_opt_in.newsletter_confirmation_success_template
 msgid "You Subscribed the Nitrokey Newsletter"
 msgstr "Sie haben den Nitrokey Newsletter abonniert"
+
