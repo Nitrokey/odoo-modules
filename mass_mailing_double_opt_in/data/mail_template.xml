@@ -26,7 +26,35 @@
                             </div>
                         </div>
                     </div>
+                    <div style="max-width: 532px; background-color: #14212D;">
+				        <table style="margin-left: 15px;">
+				            <tr>
+				                <td class="text" colspan="2" style="color: #FFFFFF;font-family: Arial;font-size: 13px;letter-spacing: 0;line-height: 17px;"> 
+				                    <br/>
+				                    <strong>${user.company_id.name}</strong><br/>
+				                    
+				                    % if user.company_id.street:
+							            ${user.company_id.street},
+							        % endif
+				                    % if user.company_id.street2:
+							            ${user.company_id.street2},
+							        % endif
+				                    % if user.company_id.city or user.company_id.zip:
+							            ${user.company_id.zip} ${user.company_id.city},
+							        % endif
+				                    % if user.company_id.country_id:
+							            ${user.company_id.state_id and user.company_id.state_id.name or ''} ${user.company_id.country_id.name or ''}
+							        % endif
+				                    <br/><br/>
+				                    <strong>CEO: </strong>${user.company_id.ceo or ''}<br/>
+				                    <strong>Company register: </strong>${user.company_id.company_registry or ''}<br/>
+				                    <strong>VAT ID: </strong>${user.company_id.vat or ''}<br/><br/>
+				                </td>
+				            </tr>
+				        </table>
+				    </div><br/>
                 </div>
+                
             </div>
         </field>
     </record>
@@ -42,6 +70,34 @@
             <br/>
             <p>Best regards,<br />
             your Nitrokey team</p>
+            
+            <div style="background-color: #14212D;">
+		        <table style="margin-left: 15px;">
+		            <tr>
+		                <td class="text" colspan="2" style="color: #FFFFFF;font-family: Arial;font-size: 13px;letter-spacing: 0;line-height: 17px;"> 
+		                    <br/>
+		                    <strong>${user.company_id.name}</strong><br/>
+		                    
+		                    % if user.company_id.street:
+					            ${user.company_id.street},
+					        % endif
+		                    % if user.company_id.street2:
+					            ${user.company_id.street2},
+					        % endif
+		                    % if user.company_id.city or user.company_id.zip:
+					            ${user.company_id.zip} ${user.company_id.city},
+					        % endif
+		                    % if user.company_id.country_id:
+					            ${user.company_id.state_id and user.company_id.state_id.name or ''} ${user.company_id.country_id.name or ''}
+					        % endif
+		                    <br/><br/>
+		                    <strong>CEO: </strong>${user.company_id.ceo or ''}<br/>
+		                    <strong>Company register: </strong>${user.company_id.company_registry or ''}<br/>
+		                    <strong>VAT ID: </strong>${user.company_id.vat or ''}<br/><br/>
+		                </td>
+		            </tr>
+		        </table>
+		    </div><br/>
         </field>
     </record>
 
