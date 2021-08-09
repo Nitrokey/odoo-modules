@@ -24,7 +24,7 @@ class WebsiteSaleFirstLastname(WebsiteSale):
             values['name'] = values.get('name')+' '+last_name
         elif last_name:
             values['name'] = last_name
-        company_type = values.get('company_type')
+        company_type = "person"
         new_values, errors, error_msg = super(WebsiteSaleFirstLastname, self).values_postprocess(order, mode, values, errors, error_msg)
         if company_type:
             new_values['company_type'] = company_type
