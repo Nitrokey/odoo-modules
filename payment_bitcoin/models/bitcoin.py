@@ -144,7 +144,7 @@ def check_received(addr):
     # let's define the "transaction-finalized" when the last transaction reached needed_confirms confirmations
     # so the time when this happened is ~ 10minutes * )confirmations - needed_confirms)
     out["when"] = datetime.now() - td(minutes=10) * (min_conf - needed_confirms)
-    
+    _LOGGER.info("\n\n Payment Details:-  BitcoinAddress: %s , Date: %s, Amount: %s" % (addr, out["when"], out["received"]))
     return out
 
 class BitcoinAddress(models.Model):
