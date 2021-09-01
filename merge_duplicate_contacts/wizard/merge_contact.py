@@ -429,7 +429,7 @@ class MergePartnerManualCheck(models.TransientModel):
     @api.depends('email','email2')
     def _compute_email_show_icon(self):
         for record in self:
-            if (not record.email and not record.email2) or (record.email == record.email2):
+            if (not record.email and not record.email2) or (record.email.lower() == record.email2.lower()):
                 record.email_show_icon = True
             else:
                 record.email_show_icon = False
