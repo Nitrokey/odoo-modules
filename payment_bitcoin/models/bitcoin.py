@@ -6,7 +6,6 @@ from hashlib import sha256
 
 import requests
 from dateutil.relativedelta import relativedelta
-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.safe_eval import safe_eval
@@ -170,12 +169,16 @@ class BitcoinAddress(models.Model):
     
     @api.model
     def cron_bitcoin_payment_reconciliation(self):
+        _LOGGER.info("\n\n*************** cron_bitcoin_payment_reconciliation ***************")
         acquirer_obj = self.env['payment.acquirer'].search([('provider', '=', 'bitcoin')])
         payment_journal_obj = acquirer_obj.journal_id
         
         check_hours = self.env['ir.config_parameter'].sudo().get_param('payment_bitcoin.bit_coin_order_older_than', '6')
         check_date = (datetime.now() - td(hours=int(check_hours))).strftime("%Y-%m-%d %H:%M:%S")
+        _LOGGER.info("\n\n*************** check_hours ***************%s",check_hours)
+        _LOGGER.info("\n\n*************** check_date ***************%s",check_date)
         
+
         for bit_add_obj in self.search([('create_date', '>=', check_date)]):
             _LOGGER.info("\n\n*************** bit_add_obj  Before check_received method *************** %s", bit_add_obj)
             address_info = check_received(bit_add_obj.name)
