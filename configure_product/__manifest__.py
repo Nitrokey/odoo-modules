@@ -4,9 +4,9 @@
     'category': 'Hidden',
     'description': """System will add Configure Product button after Add a product button in Delivery order and Production order form. 
     """,
-    'version': '12.0.1.0',
+    'version': '12.0.1.2',
     'depends': [
-        'stock','mrp','purchase'
+        'stock','mrp','purchase', 'sale_management',
     ],
     'data': [
              'views/stock_picking_view.xml',

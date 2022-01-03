@@ -3,6 +3,7 @@
     <template id="configure_product_assests" name="configure_product assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
         	<script type="text/javascript" src="/configure_product/static/src/js/relational_fields.js"/>
+        	<script type="text/javascript" src="/configure_product/static/src/js/product_configure.js"/>
         </xpath>
     </template>	
 </odoo>
