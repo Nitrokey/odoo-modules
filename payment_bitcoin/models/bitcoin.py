@@ -173,11 +173,13 @@ class BitcoinAddress(models.Model):
         acquirer_obj = self.env['payment.acquirer'].search([('provider', '=', 'bitcoin')])
         payment_journal_obj = acquirer_obj.journal_id
         
+        _LOGGER.info("\n\n***************Before config_parameter ***************")
         check_hours = self.env['ir.config_parameter'].sudo().get_param('payment_bitcoin.bit_coin_order_older_than', '6')
         check_date = (datetime.now() - td(hours=int(check_hours))).strftime("%Y-%m-%d %H:%M:%S")
         _LOGGER.info("\n\n*************** check_hours ***************%s",check_hours)
         _LOGGER.info("\n\n*************** check_date ***************%s",check_date)
         
+        _LOGGER.info("\n\n*************** After check_date **********************")
 
         for bit_add_obj in self.search([('create_date', '>=', check_date)]):
             _LOGGER.info("\n\n*************** bit_add_obj  Before check_received method *************** %s", bit_add_obj)
