@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+		<template id="report_simple_barcode_with_image" inherit_id="product.report_simple_barcode">
+			<xpath expr="//div" position="after">
+				<t t-if="product.image_medium">
+		      	  <div style="width: 32%; display: inline-table; border:2px solid; height:13.35rem;">
+		      	    <table class="table table-bordered mb-0">
+		      	       <tr>
+		      	         <td class="text-center align-middle" style="height: 10rem;">
+		      	         	<img t-att-src="'data:image/png;base64,%s' % to_text(product.image_medium)"/>
+		      	         </td>
+		      	       </tr>
+		      	    </table>
+		      	  </div>
+		      	</t>
+			</xpath>
+		</template>
+    </data>
+</odoo>
