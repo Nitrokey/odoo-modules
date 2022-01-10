@@ -4,6 +4,7 @@
         <xpath expr="." position="inside">
         	<script type="text/javascript" src="/configure_product/static/src/js/relational_fields.js"/>
         	<script type="text/javascript" src="/configure_product/static/src/js/product_configure.js"/>
+        	<script type="text/javascript" src="/configure_product/static/src/js/formview_button.js"/>
         </xpath>
     </template>	
 </odoo>

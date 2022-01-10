@@ -12,7 +12,6 @@
       	  	<div class="o_row">
                 <field name="product_id" attrs="{'readonly': [('has_moves', '=', True)]}" domain="[('bom_ids', '!=', False), ('bom_ids.active', '=', True), ('bom_ids.type', '=', 'normal')]"/>
                 <field name='id' invisible="1" />
-                <button type="object" name="product_config_wizard" string="Configure a product" class="oe_link oe_edit_only" attrs="{'invisible' : [('id', 'not in', [0,None,False])]}"/>
             </div>
       	  </xpath>
           <xpath expr="//field[@name='move_raw_ids']" position="attributes">

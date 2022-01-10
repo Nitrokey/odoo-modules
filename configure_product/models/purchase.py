@@ -14,3 +14,4 @@ class PurchaseOrderLine(models.Model):
         if self._context.get('configure_product_quantity') and self._context.get('default_product_qty'):
             self.product_qty = self._context.get('default_product_qty')
         return res
+    
