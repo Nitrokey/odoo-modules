@@ -48,23 +48,58 @@ class ExportInvoicePdfZip(models.TransientModel):
         
         invoices=  self.env['account.invoice'].search(domain)
         report = self.env.ref("account.account_invoices")
+        
         fp = io.BytesIO()
         zf = zipfile.ZipFile(fp, mode="w")
         for invoice in invoices:
             data, format = report.render_qweb_pdf([invoice.id])
             report_name = safe_eval(report.print_report_name, {'object': invoice, 'time': time})
+            if invoice.date:
+                report_name = report_name[:report_name.rfind('/')] + '/'+ invoice.date.strftime("%m") + report_name[report_name.rfind('/'):]
             file_name = "%s.%s" % (report_name, format)
             zf.writestr(file_name, data)
         
         zf.close()
         self.write({'zip_data':base64.b64encode(fp.getvalue())})
         file_name = 'Invoices_'+datetime.now().strftime('%Y%m%d%H%S')+'.zip'
-        action = {
-            'name': 'Export Invoices Zip',
-            'type': 'ir.actions.act_url',
-            'url': "/web/content/?model="+self._name+"&id=" + str(self.id) + "&field=zip_data&download=true&filename="+file_name,
-            'target': 'self',
-            }
         
-        return action
+        # action = {
+            # 'name': 'Export Invoices Zip',
+            # 'type': 'ir.actions.act_url',
+            # 'url': "/web/content/?model="+self._name+"&id=" + str(self.id) + "&field=zip_data&download=true&filename="+file_name,
+            # 'target': 'self',
+            # }
+        # return action
+        
+        try:
+            form_id = self.env['ir.model.data'].get_object_reference('account_invoice_pdf_export', 'view_export_invoice_pdf_zip_form_wizard')[1]
+        except ValueError:
+            form_id = False
+        ctx = self._context.copy()
+        
+        return {
+              'type': 'ir.actions.act_multi_print',
+              'actions': [
+                          {
+                            'name': 'Export Invoices Zip',
+                            'type' : 'ir.actions.act_url',
+                            'url': "/web/content/?model="+self._name+"&id=" + str(self.id) + "&field=zip_data&download=true&filename="+file_name,
+                            'target':'self',
+                          },
+                          {
+                            'type': 'ir.actions.act_window',
+                            'view_type': 'form',
+                            'view_mode': 'form',
+                            'res_model': 'export.invoice.pdf.zip',
+                            'views': [(form_id, 'form')],
+                            'view_id': form_id,
+                            'target': 'new',
+                            'res_id': self.id,
+                            'context': ctx,
+                        }
+              ]
+           }
+             
+        
+        
 
