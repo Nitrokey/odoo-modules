@@ -10,11 +10,13 @@
 This module adds the information icon next to the attribute name in the website and display the related description on mouse hover.
      """,
     'depends': [
-        'sale',
+        'sale'
     ],
     'data': [
+        
         'views/product_attribute_view.xml',
         'views/template.xml',
+        'views/website_template.xml',
     ],
     'license': 'AGPL-3',
     'installable': True,

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <template id="assets_website_links_attr" inherit_id="website.assets_frontend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/product_attribute_description/static/src/js/tooltip.js"/>
+            </xpath>
+        </template>
+</odoo>
