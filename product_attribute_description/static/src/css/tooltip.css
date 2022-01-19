@@ -1,0 +1,23 @@
+
+
+.tooltip-inner {
+    max-width: 200px;
+    padding: 0.12rem 0.5rem;
+    color: #FFFFFF;
+    text-align: center;
+    background-color: #000000;
+    border-radius: 0rem;
+    font-size: 14px;
+    /* font-weight: 700; */
+    /* color: white; */
+    border: 1px solid white;
+    position: relative;
+	left: 60px;
+    bottom: 5px;
+}
+
+.bs-tooltip-bottom .arrow::before, .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+    bottom: 0;
+    border-width: 0 0.4rem 0.4rem;
+    border-bottom-color: #00000000;
+}
