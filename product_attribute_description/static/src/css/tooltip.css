@@ -19,5 +19,5 @@
 .bs-tooltip-bottom .arrow::before, .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
     bottom: 0;
     border-width: 0 0.4rem 0.4rem;
-    border-bottom-color: #00000000;
+    border-bottom-color: #000000;
 }
