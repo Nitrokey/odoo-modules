@@ -6,6 +6,7 @@ odoo.define('configure_product.product_configure', function (require) {
 	
 	ProductConfiguratorFormController.include({
 		_handleAdd: function ($modal) {
+		    var self = this;
 			var context = this.model.get(this.handle, {raw: true});
 			var ctx = context.getContext();
 			
@@ -17,17 +18,19 @@ odoo.define('configure_product.product_configure', function (require) {
 
 				var product_id = parseInt($modal.find(productSelector.join(', ')).first().val(), 10);
 				var quantity = parseFloat($modal.find('input[name="add_qty"]').val() || 1)
-				
-				if (ctx.active_id){
+				debugger;
+				var active_id = $(document).find('.o_form_button_configure_product1').data('active-id');
+				if (active_id){
 					this._rpc({
 			            route: '/product_configure',
 			            params: {
 			                product_id: product_id,
-							active_id: ctx.active_id,
+							active_id: active_id,
 							quantity: quantity,
 			            }
-			        }).then(function () {
-						window.location.reload();
+			        }).then(function (url) {
+//						window.location.reload();
+                        window.location.href = url;
 			        });
 				} else {
 					this._rpc({
