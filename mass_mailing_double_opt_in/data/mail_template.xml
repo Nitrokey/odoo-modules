@@ -61,7 +61,7 @@
 
     <record id="newsletter_confirmation_success_template" model="mail.template">
         <field name="name">Newsletter Subscribed</field>
-        <field name="subject">You Subscribed the Nitrokey Newsletter</field>
+        <field name="subject">You Have Subscribed to the Nitrokey Newsletter</field>
         <field name="model_id" ref="mass_mailing.model_mail_mass_mailing_list_contact_rel"/>
         <field name="email_to">${object.contact_id.email}</field>
         <field name="body_html" type="xml">

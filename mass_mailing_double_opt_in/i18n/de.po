@@ -130,6 +130,6 @@ msgstr ""
 
 #. module: mass_mailing_double_opt_in
 #: model:mail.template,subject:mass_mailing_double_opt_in.newsletter_confirmation_success_template
-msgid "You Subscribed the Nitrokey Newsletter"
+msgid "You Have Subscribed to the Nitrokey Newsletter"
 msgstr "Sie haben den Nitrokey Newsletter abonniert"
 
