@@ -6,7 +6,7 @@
 		</xpath>
 	</template>
 	<template id="address_inherit" inherit_id="website_sale.address">
-		<xpath expr="//form[@class='checkout_autoformat']/div/div[1]" position="replace">
+		<xpath expr="//form[hasclass('checkout_autoformat')]/div/div[1]" position="replace">
 			<div t-attf-class="form-group #{error.get('name') and 'o_has_error' or ''} col-lg-6 div_name">
 			    <label class="col-form-label" for="name">First Name</label>
 			    <input type="text" name="name" t-attf-class="form-control #{error.get('name') and 'is-invalid' or ''}" t-att-value="'name' in checkout and ' '.join(checkout['name'].split(' ')[:1])" />
