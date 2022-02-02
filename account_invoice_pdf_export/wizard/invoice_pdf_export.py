@@ -58,7 +58,7 @@ class ExportInvoicePdfZip(models.TransientModel):
             data, format = report.render_qweb_pdf([invoice.id])
             report_name = safe_eval(report.print_report_name, {'object': invoice, 'time': time})
             if invoice.state in ['draft', 'cancel']:
-                report_name = f"{report_name}/{report_name}_{invoice.id}"
+                report_name = '%s/%s_%s' % (report_name, report_name, invoice.id)
             if invoice.date:
                 report_name = report_name[:report_name.rfind('/')] + '/' + invoice.date.strftime("%m") + report_name[
                                                                                                          report_name.rfind(
