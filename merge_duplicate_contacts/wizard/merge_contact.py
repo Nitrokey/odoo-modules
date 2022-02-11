@@ -1,35 +1,61 @@
 # -*- coding: utf-8 -*-
 
-from ast import literal_eval
+import itertools
 import logging
 import operator
+from ast import literal_eval
 
+from odoo import _
 # from odoo.osv import fields as old_fields
 from odoo import api, fields, models
-from odoo import  _
 from odoo.exceptions import ValidationError, UserError, Warning
-import itertools
-
 
 _logger = logging.getLogger('base.partner.merge')
 
 def is_integer_list(ids):
     return all(isinstance(i, (int, long)) for i in ids)
 
+
+class Partner(models.Model):
+    _inherit = "res.partner"
+
+    def open_wizard_action(self):
+        context = {}
+        data = {
+                'group_by_name': True,
+                'state': 'option',
+                'number_group': 0,
+                'current_line_id': False,
+                'line_ids': [],
+                'partner_ids': [],
+                'exclude_contact': True,
+                'maximum_group': 0,
+                'total_duplicates': 0,
+                'duplicate_position': 0,
+                'associate_contact': True,
+                'contact_not_being_customer': True,
+                'without_sales_orders': True,
+                }
+        wizard = self.env['base.partner.merge.automatic.wizard'].create(data)
+        wizard.with_context(context=context)._process_query(
+            "select min(id), array_agg(id) from res_partner where id in %s" % (tuple(self.ids), ), ignore_occurence=False)
+        return wizard._action_new_next_screen()
+
+
 class MergePartnerLine(models.TransientModel):
     _inherit = 'base.partner.merge.line'
     _order = 'len_aggr_ids asc, min_id asc'
-    
+
     len_aggr_ids = fields.Integer('Total Aggr IDs', compute='_compute_len_aggr_ids',store=True)
-    
+
     @api.multi
     @api.depends('aggr_ids')
     def _compute_len_aggr_ids(self):
         for record in self:
             record.len_aggr_ids = len(record.aggr_ids)
-            
-            
-    
+
+
+
 class MergePartnerAutomatic(models.TransientModel):
     _inherit = 'base.partner.merge.automatic.wizard'
 
@@ -39,13 +65,16 @@ class MergePartnerAutomatic(models.TransientModel):
     contact_not_being_customer =fields.Boolean("A contact not being customer",default=True)
     without_sales_orders =fields.Boolean("Without sales orders",default=True)
     group_by_domain_email = fields.Boolean('Domain Email')
-    
+
+    group_by_phone = fields.Boolean('Phone')
+    group_by_mobile = fields.Boolean('Mobile')
+
     @api.model
     def default_get(self, fields_list):
         res = super(MergePartnerAutomatic, self).default_get(fields_list)
         res.update({'exclude_contact': True}) #, 'exclude_journal_item': True
         return res
-        
+
     @api.multi
     def _action_new_next_screen(self):
         self.invalidate_cache()
@@ -55,13 +84,13 @@ class MergePartnerAutomatic(models.TransientModel):
             current_line = self.line_ids[0]
             current_partner_ids = literal_eval(current_line.aggr_ids)[-2:]
             current_partner_ids.sort()
-            
+
             orders = self.env['sale.order'].search([('partner_id','in',current_partner_ids)], order = 'date_order desc, id desc', limit=1)
             if orders:
                 first_partner_id = [orders[0].partner_id.id]
                 new_current_partner_ids = list(set(current_partner_ids) - set(first_partner_id))
                 current_partner_ids = first_partner_id + new_current_partner_ids
-                
+
             values.update({
                 'current_line_id': current_line.id,
                 'partner_ids': [(6, 0, current_partner_ids)],
@@ -69,17 +98,17 @@ class MergePartnerAutomatic(models.TransientModel):
                 'state': 'selection',
             })
             self.write(values)
-            
+
             partner1 = self.env['res.partner'].browse(current_partner_ids[0]) #self.partner_ids[0]
             partner2 = self.env['res.partner'].browse(current_partner_ids[1]) #self.partner_ids[1]
-            
+
             partner_last_order1 = self.env['sale.order'].search([('partner_id','=',partner1.id)], order = 'date_order desc, id desc', limit=1)
             sale_order_date1 = False
             sale_order_num1 = False
             if partner_last_order1:
                 sale_order_date1 = partner_last_order1.date_order
                 sale_order_num1 = partner_last_order1.name
-                
+
             partner_last_order2 = self.env['sale.order'].search([('partner_id','=',partner2.id)], order = 'date_order desc, id desc', limit=1)
             sale_order_date2 = False
             sale_order_num2 = False
@@ -113,7 +142,7 @@ class MergePartnerAutomatic(models.TransientModel):
                        'default_phone':partner1.phone,
                        'default_phone2': partner2.phone,
                        'default_mobile':partner1.mobile,
-                       'default_mobile2': partner2.mobile,                       
+                       'default_mobile2': partner2.mobile,
                        'default_street': partner1.street,
                        'default_street2':partner2.street,
                        'default_street11':partner1.street2,
@@ -129,7 +158,7 @@ class MergePartnerAutomatic(models.TransientModel):
                        'default_country_id':partner1.country_id.id,
                        'default_country_id2':partner2.country_id.id,
                        'default_vat_1':partner1.vat,
-                       'default_vat_2':partner2.vat,                       
+                       'default_vat_2':partner2.vat,
                        'default_is_company':partner1.is_company,
                        'default_is_company2':partner2.is_company,
                        'default_number_group':self.number_group,
@@ -140,16 +169,16 @@ class MergePartnerAutomatic(models.TransientModel):
                        'default_contact_type' : partner1.type,
                        'default_contact_type2' : partner2.type,
                        }
-            
+
         else:
             values.update({
                 'current_line_id': False,
                 'partner_ids': [],
                 'state': 'finished',
             })
-            
-            return 
- 
+
+            return
+
         return {
             'type': 'ir.actions.act_window',
             'name': 'Merge Contacts',
@@ -158,7 +187,7 @@ class MergePartnerAutomatic(models.TransientModel):
             'target': 'new',
             'context': context,
         }
-    
+
     def _generate_query(self, fields, maximum_group=100):
         sql_fields = []
         for field in fields:
@@ -168,9 +197,13 @@ class MergePartnerAutomatic(models.TransientModel):
                 sql_fields.append('lower(%s)' % field)
             elif field == 'email':
                 if not "lower(email)" in sql_fields:
-                    sql_fields.append('lower(%s)' % field)        
+                    sql_fields.append('lower(%s)' % field)
             elif field in ['vat']:
                 sql_fields.append("replace(%s, ' ', '')" % field)
+            elif field in ['phone']:
+                sql_fields.append("lower(%s)" % field)
+            elif field in ['mobile']:
+                sql_fields.append("lower(%s)" % field)
             else:
                 sql_fields.append(field)
 
@@ -180,20 +213,20 @@ class MergePartnerAutomatic(models.TransientModel):
         for field in fields:
             if field == 'domain_email':
                 field = 'email'
-            if field in ['email', 'name', 'vat']:
-                if field in ['name', 'vat']:
+            if field in ['email', 'name', 'vat', 'phone', 'mobile']:
+                if field in ['name', 'vat', 'phone', 'mobile']:
                     filters.append((field, 'IS NOT', 'NULL'))
                 elif not ('email', 'IS NOT', 'NULL') in filters:
                     filters.append((field, 'IS NOT', 'NULL'))
 
         criteria = ' AND '.join('%s %s %s' % (field, operator, value)
                                 for field, operator, value in filters)
-        
+
         text = [
             "SELECT min(id), array_agg(id)",
             "FROM res_partner",
         ]
-        
+
         conditions = [criteria]
         if self.associate_contact:
             conditions.append("NOT EXISTS (SELECT 1 FROM res_partner as child WHERE child.parent_id = res_partner.id)")
@@ -201,14 +234,14 @@ class MergePartnerAutomatic(models.TransientModel):
             conditions.append("customer is TRUE")
         if self.without_sales_orders:
             conditions.append("EXISTS (SELECT 1 FROM sale_order as s WHERE s.partner_id = res_partner.id)")
-        
-        criteria = ' AND '.join(conditions)        
+
+        criteria = ' AND '.join(conditions)
         if criteria:
             if self.group_by_domain_email:
                 if self.group_by_email:
                     criteria = criteria
                     group_fields = group_fields
-                else:    
+                else:
                     criteria=(criteria).replace('email IS NOT NULL',"SUBSTRING(email FROM POSITION('@' IN email)+1) IS NOT NULL")
                     group_fields =(group_fields).replace('lower(email)',"SUBSTRING(email FROM POSITION('@' IN email)+1)")
             text.append('WHERE %s' % criteria)
@@ -216,21 +249,21 @@ class MergePartnerAutomatic(models.TransientModel):
             "GROUP BY %s" % group_fields,
             "HAVING COUNT(*) >= 2",
             "ORDER BY min(id)",
-        ])    
+        ])
 
         if maximum_group:
             text.extend([
                 "LIMIT %s" % maximum_group,
             ])
 
-        return ' '.join(text)    
-    
-    def _process_query(self, query):
+        return ' '.join(text)
+
+    def _process_query(self, query, ignore_occurence=True):
         """
         Execute the select request and write the result in this wizard
         """
         proxy = self.env['base.partner.merge.line']
-        
+
         models = self._compute_models()
         self._cr.execute(query)
 
@@ -239,7 +272,7 @@ class MergePartnerAutomatic(models.TransientModel):
         data = self._cr.fetchall()
         data = sorted(data, key=lambda x: len(x[1]))
         for min_id, aggr_ids in data:
-            if models and self._partner_use_in(aggr_ids, models):
+            if models and self._partner_use_in(aggr_ids, models) and ignore_occurence:
                 continue
             values = {
                 'wizard_id': self.id,
@@ -255,7 +288,7 @@ class MergePartnerAutomatic(models.TransientModel):
                 proxy.create(values)
                 counter += 1
                 total_duplicates += len(partner_ids)-1
-                
+
         values = {
             'state': 'selection',
             'number_group': counter,
@@ -265,7 +298,7 @@ class MergePartnerAutomatic(models.TransientModel):
 
         self.write(values)
         _logger.info("counter: %s", counter)
-     
+
     @api.multi
     def action_start_manual_process(self):
         self.ensure_one()
@@ -279,7 +312,7 @@ class MergePartnerAutomatic(models.TransientModel):
 class MergePartnerManualCheck(models.TransientModel):
     _name = 'merge.partner.manual.check'
     _description = 'Merge Partner Manual Check'
-    
+
     contact_type = fields.Selection(
         [('contact', 'Contact'),
          ('invoice', 'Invoice address'),
@@ -288,7 +321,7 @@ class MergePartnerManualCheck(models.TransientModel):
          ("private", "Private Address"),
         ], string='Address Type',
         help="Used by Sales and Purchase Apps to select the relevant address depending on the context.")
-    
+
     contact_type2 = fields.Selection(
         [('contact', 'Contact'),
          ('invoice', 'Invoice address'),
@@ -297,90 +330,90 @@ class MergePartnerManualCheck(models.TransientModel):
          ("private", "Private Address"),
         ], string='Address Type 2',
         help="Used by Sales and Purchase Apps to select the relevant address depending on the context.")
-    
+
     last_changes_date1 = fields.Datetime('Last Changes')
     last_changes_date2 = fields.Datetime('Last Changes 2')
-    
+
     last_changes_uid1 = fields.Many2one('res.users','Last Update By')
     last_changes_uid2 = fields.Many2one('res.users','Last Update By 2')
-    
+
     last_order1 = fields.Datetime('Last Order')
     last_order2 = fields.Datetime('Last Order 2')
-    
+
     last_order_num1 = fields.Char('Last Order Number')
     last_order_num2 = fields.Char('Last Order Number 2')
-    
+
     id1 = fields.Char('ID 1')
     id2 = fields.Char('ID 2')
-    
+
     partner_id_1 = fields.Many2one('res.partner','Partner')
     partner_id_2 = fields.Many2one('res.partner', 'Partner 2')
-    
+
     company_id = fields.Many2one('res.partner', 'Company')
     company_id2 = fields.Many2one('res.partner', 'Company 2')
-    
+
     company_name = fields.Char(string='Company Name')
     company_name2 = fields.Char(string='Company Name 2')
-    
+
     name = fields.Char('Name')
     name2 = fields.Char('Name 2')
-    
+
     email = fields.Char('Email')
     email2 = fields.Char('Email 2')
-    
+
     phone = fields.Char('Phone')
     phone2 = fields.Char('Phone 2')
-    
+
     mobile = fields.Char('Mobile')
     mobile2 = fields.Char('Mobile 2')
-    
+
     street = fields.Char('Address1')
     street2 = fields.Char('Address1 2')
-    
+
     street11 = fields.Char('Address2')
     street22 = fields.Char('Address2 2')
-    
+
     street_no = fields.Char('Street No.')
     street_no2 = fields.Char('Street No 2')
-    
+
     zip = fields.Char('Zip')
     zip2 = fields.Char('Zip 2')
-    
+
     city = fields.Char('City')
     city2 = fields.Char('City 2')
-    
+
     state_id = fields.Many2one("res.country.state", string='State')
     state_id2 = fields.Many2one("res.country.state", string='State 2')
-    
+
     country_id = fields.Many2one('res.country', string='Country')
     country_id2 = fields.Many2one('res.country', string='Country 2')
-    
+
     is_company = fields.Boolean('Is Company ?')
     is_company2 = fields.Boolean('Is Company 2 ?')
-    
+
     vat_1 = fields.Char('Vat')
     vat_2 = fields.Char('Vat 2')
-    
+
     keep1 = fields.Boolean('Keep', default=True)
     keep2 = fields.Boolean('Keep 2')
-    
+
     partner_wizard_id = fields.Many2one('base.partner.merge.automatic.wizard', 'Wizard')
     partner_ids = fields.Many2many('res.partner', 'partner_merge_manual_check_rel','marge_id','partner_id', string='Contacts')
-    
+
     current_line_id = fields.Many2one('base.partner.merge.line', string='Current Line')
     dst_partner_id = fields.Many2one('res.partner', string='Destination Contact')
-    
+
     state = fields.Selection([
         ('option', 'Option'),
         ('selection', 'Selection'),
         ('finished', 'Finished')
     ], readonly=True, required=True, string='Status', default='option')
-    
+
     line_ids = fields.One2many('base.partner.merge.line', 'wizard_id', string='Lines')
     number_group = fields.Integer('Group of Contacts', readonly=True)
     total_duplicates = fields.Integer('Total Duplicates')
     duplicate_position = fields.Integer('Duplicate Contact Position')
-    
+
     name_show_icon = fields.Boolean('Name Icon',compute='_compute_name_show_icon',store=True)
     company_show_icon = fields.Boolean('Company Icon',compute='_compute_company_show_icon',store=True)
     company_name_show_icon = fields.Boolean('Company Name Icon',compute='_compute_company_name_show_icon',store=True)
@@ -396,7 +429,7 @@ class MergePartnerManualCheck(models.TransientModel):
     country_show_icon = fields.Boolean('Country Icon',compute='_compute_country_show_icon',store=True)
     vat_show_icon = fields.Boolean('Vat Icon',compute='_compute_vat_show_icon',store=True)
     is_company_show_icon = fields.Boolean('Is Company Icon',compute='_compute_is_company_show_icon',store=True)
-    
+
     @api.multi
     @api.depends('name','name2')
     def _compute_name_show_icon(self):
@@ -405,8 +438,8 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.name_show_icon = True
             else:
                 record.name_show_icon = False
-            
-    
+
+
     @api.multi
     @api.depends('company_id','company_id')
     def _compute_company_show_icon(self):
@@ -415,7 +448,7 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.company_show_icon = True
             else:
                 record.company_show_icon = False
-                
+
     @api.multi
     @api.depends('company_name','company_name2')
     def _compute_company_name_show_icon(self):
@@ -424,17 +457,17 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.company_name_show_icon = True
             else:
                 record.company_name_show_icon = False
-    
+
     @api.multi
     @api.depends('email','email2')
     def _compute_email_show_icon(self):
         for record in self:
-            if (not record.email and not record.email2) or (record.email.lower() == record.email2.lower()):
+            if (not record.email and not record.email2) or (record.email2 and record.email and record.email.lower() == record.email2.lower()):
                 record.email_show_icon = True
             else:
                 record.email_show_icon = False
-            
-    
+
+
     @api.multi
     @api.depends('phone','phone2')
     def _compute_phone_show_icon(self):
@@ -443,7 +476,7 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.phone_show_icon = True
             else:
                 record.phone_show_icon = False
-                
+
     @api.multi
     @api.depends('mobile','mobile2')
     def _compute_mobile_show_icon(self):
@@ -452,8 +485,8 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.mobile_show_icon = True
             else:
                 record.mobile_show_icon = False
-            
-    
+
+
     @api.multi
     @api.depends('street','street2')
     def _compute_addr1_show_icon(self):
@@ -462,8 +495,8 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.addr1_show_icon = True
             else:
                 record.addr1_show_icon = False
-            
-    
+
+
     @api.multi
     @api.depends('street11','street22')
     def _compute_addr2_show_icon(self):
@@ -472,8 +505,8 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.addr2_show_icon = True
             else:
                 record.addr2_show_icon = False
-            
-                
+
+
     @api.multi
     @api.depends('street_no','street_no2')
     def _compute_street_no_show_icon(self):
@@ -482,8 +515,8 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.street_no_show_icon = True
             else:
                 record.street_no_show_icon = False
-            
-    
+
+
     @api.multi
     @api.depends('zip','zip2')
     def _compute_zip_show_icon(self):
@@ -492,8 +525,8 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.zip_show_icon = True
             else:
                 record.zip_show_icon = False
-            
-    
+
+
     @api.multi
     @api.depends('city','city2')
     def _compute_city_show_icon(self):
@@ -502,8 +535,8 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.city_show_icon = True
             else:
                 record.city_show_icon = False
-            
-    
+
+
     @api.multi
     @api.depends('state_id','state_id2')
     def _compute_state_show_icon(self):
@@ -512,8 +545,8 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.state_show_icon = True
             else:
                 record.state_show_icon = False
-            
-    
+
+
     @api.multi
     @api.depends('country_id','country_id2')
     def _compute_country_show_icon(self):
@@ -522,8 +555,8 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.country_show_icon = True
             else:
                 record.country_show_icon = False
-            
-    
+
+
     @api.multi
     @api.depends('vat_1','vat_2')
     def _compute_vat_show_icon(self):
@@ -532,7 +565,7 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.vat_show_icon = True
             else:
                 record.vat_show_icon = False
-            
+
     @api.multi
     @api.depends('is_company','is_company2')
     def _compute_is_company_show_icon(self):
@@ -541,33 +574,33 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.is_company_show_icon = True
             else:
                 record.is_company_show_icon = False
-            
-                
+
+
     @api.onchange('keep1')
     def _onchange_keep1(self):
         if self.keep1:
             self.keep2=False
             self.dst_partner_id = self.partner_ids and self.partner_ids[0].id or False
-        
+
     @api.onchange('keep2')
     def _onchange_keep2(self):
         if self.keep2:
             self.keep1=False
             self.dst_partner_id = self.partner_ids and self.partner_ids[1].id or False
-    
-    
+
+
     @api.multi
-    def action_skip(self):    
+    def action_skip(self):
         if self.partner_wizard_id.current_line_id:
             skipped_partner_ids = self.partner_ids.ids
             new_aggr_ids = list(set(literal_eval(self.partner_wizard_id.current_line_id.aggr_ids)) - set(skipped_partner_ids))
             if not new_aggr_ids or len(new_aggr_ids)==1:
                 self.partner_wizard_id.current_line_id.unlink()
-            else:    
+            else:
                 self.partner_wizard_id.current_line_id.write({'aggr_ids': new_aggr_ids})
         else:
             raise Warning(_("No duplicates found")) #osv.except_osv(_('Error'), _("No dublicates found"))
-                
+
         self.partner_wizard_id.write({'duplicate_position': self.partner_wizard_id.duplicate_position + 1,})
         return self.partner_wizard_id._action_new_next_screen()
 
@@ -583,7 +616,7 @@ class MergePartnerManualCheck(models.TransientModel):
         extra_checks = True
         if self.env.user._is_admin():
             extra_checks = False
-            
+
         Partner = self.env['res.partner']
         partner_ids = Partner.browse(partner_ids).exists()
         if len(partner_ids) < 2:
@@ -598,19 +631,19 @@ class MergePartnerManualCheck(models.TransientModel):
             child_ids |= Partner.search([('id', 'child_of', [partner_id.id])]) - partner_id
         if partner_ids & child_ids:
             raise UserError(_("You cannot merge a contact with one of his parent."))
-        
+
         if len(set(partner.email for partner in partner_ids)) > 1:
             raise UserError(_("All contacts must have the same email. Only the Administrator can merge contacts with different emails."))
 
         # remove dst_partner from partners to merge
-        if dst_partner and dst_partner in partner_ids:            
+        if dst_partner and dst_partner in partner_ids:
             src_partners = partner_ids - dst_partner
         else:
             ordered_partners = self._get_ordered_partner(partner_ids.ids)
             dst_partner = ordered_partners[-1]
             src_partners = ordered_partners[:-1]
         _logger.info("dst_partner: %s", dst_partner.id)
-        
+
 
         # FIXME: is it still required to make and exception for account.move.line since accounting v9.0 ?
 #         if extra_checks and 'account.move.line' in self.env and self.env['account.move.line'].sudo().search([('partner_id', 'in', [partner.id for partner in src_partners])]):
@@ -626,7 +659,7 @@ class MergePartnerManualCheck(models.TransientModel):
         self._update_foreign_keys(src_partners, dst_partner)
         self._update_reference_fields(src_partners, dst_partner)
         self._update_values(src_partners, dst_partner)
-        
+
         self._log_merge_operation(src_partners, dst_partner)
 
         for partner in src_partners:
@@ -637,19 +670,19 @@ class MergePartnerManualCheck(models.TransientModel):
 
         # delete source partner, since they are merged
 #         src_partners.unlink()
-    
+
     @api.multi
     def _log_merge_operation(self, src_partners, dst_partner):
         _logger.info('(uid = %s) merged the partners %r with %s', self._uid, src_partners.ids, dst_partner.id)
-    
+
     def _update_foreign_keys(self, src_partners, dst_partner, context=None):
         res = self.env['base.partner.merge.automatic.wizard']._update_foreign_keys(src_partners, dst_partner)
         return res
-    
+
     def _update_reference_fields(self, src_partners, dst_partner, context=None):
         res = self.env['base.partner.merge.automatic.wizard']._update_reference_fields(src_partners, dst_partner)
         return res
-    
+
     @api.model
     def _update_values(self, src_partners, dst_partner):
         _logger.debug('_update_values for dst_partner: %s for src_partners: %r', dst_partner.id, src_partners.ids)
@@ -663,7 +696,7 @@ class MergePartnerManualCheck(models.TransientModel):
                 return item
         # get all fields that are not computed or x2many
         values = dict()
-        
+
         form_fields = ['name','email', 'phone', 'street','street2', 'zip','city','state_id','country_id','is_company','vat']
         for column in model_fields:
             field = dst_partner._fields[column]
@@ -671,7 +704,7 @@ class MergePartnerManualCheck(models.TransientModel):
                 for item in itertools.chain(src_partners, [dst_partner]):
                     if item[column]:
                         values[column] = write_serializer(item[column])
-                        
+
         # remove fields that can not be updated (id and parent_id)
         values.pop('id', None)
         parent_id = values.pop('parent_id', None)
@@ -684,8 +717,8 @@ class MergePartnerManualCheck(models.TransientModel):
                 dst_partner.write({'parent_id': parent_id})
             except ValidationError:
                 _logger.info('Skip recursive partner hierarchies for parent_id %s of partner: %s', parent_id, dst_partner.id)
-    
-    
+
+
     @api.multi
     def action_merge(self, context=None):
 #         assert is_integer_list(ids)
@@ -697,10 +730,10 @@ class MergePartnerManualCheck(models.TransientModel):
             raise Warning(_("Please select a contact to keep."))
         if this.keep1:
             this.dst_partner_id = this.partner_ids and this.partner_ids[0].id or False
-             
+
             if this.dst_partner_id:
                 this.dst_partner_id.write({'parent_id':this.company_id and this.company_id.id or False,
-                                           'company_name': this.company_name or False, 
+                                           'company_name': this.company_name or False,
                                            'name':this.name or False,
                                            'email':this.email or False,
                                            'phone':this.phone or False,
@@ -720,7 +753,7 @@ class MergePartnerManualCheck(models.TransientModel):
                     self._cr.execute("update res_partner set vat='%s' where id=%s"%(this.vat_1,this.dst_partner_id.id))
         else:
             this.dst_partner_id = this.partner_ids and this.partner_ids[1].id or False
-             
+
             if this.dst_partner_id:
                 this.dst_partner_id.write({'parent_id':this.company_id2 and this.company_id2.id or False,
                                            'company_name': this.company_name2 or False,
@@ -738,11 +771,11 @@ class MergePartnerManualCheck(models.TransientModel):
                                            'vat':this.vat_2 or False,
                                            'street_no':this.street_no2 or False,
                                            })
-                
+
                 #To Avoid VAT Validation, updated it using query.
                 if this.vat_2:
                     self._cr.execute("update res_partner set vat='%s' where id=%s"%(this.vat_2,this.dst_partner_id.id))
-                    
+
         partner_ids = set(map(int, this.partner_ids)) #[:2]
 #         custom_partner_ids = set(map(int, this.custom_partner_ids))
         if not partner_ids:
@@ -756,15 +789,15 @@ class MergePartnerManualCheck(models.TransientModel):
             }
 
         self._merge(partner_ids, this.dst_partner_id, context=context)
-    
+
         if this.partner_wizard_id.current_line_id:
             deleted_partner_ids = list(set(partner_ids) - set([this.dst_partner_id.id]))
             new_aggr_ids = list(set(literal_eval(this.partner_wizard_id.current_line_id.aggr_ids)) - set(deleted_partner_ids))
             if not new_aggr_ids or len(new_aggr_ids)==1:
                 this.partner_wizard_id.current_line_id.unlink()
-            else:    
+            else:
                 this.partner_wizard_id.current_line_id.write({'aggr_ids': new_aggr_ids})
-                    
+
         this.partner_wizard_id.write({'duplicate_position': this.partner_wizard_id.duplicate_position + 1,})
 
         return this.partner_wizard_id._action_new_next_screen()
@@ -774,9 +807,9 @@ class MergePartnerManualCheck(models.TransientModel):
     def swap_to_left(self):
         context = self._context.get('field_name')
         if context == 'company_id2':
-            self.company_id = self.company_id2   
+            self.company_id = self.company_id2
         if context == 'company_name2':
-            self.company_name = self.company_name2         
+            self.company_name = self.company_name2
         if context == 'name2':
             self.name = self.name2
         if context == 'email2':
@@ -801,9 +834,9 @@ class MergePartnerManualCheck(models.TransientModel):
             self.country_id = self.country_id2
         if context == 'is_company2':
             self.is_company = self.is_company2
-        if context == 'vat_2':    
+        if context == 'vat_2':
             self.vat_1 = self.vat_2
-                
+
         return {
                 'type': 'ir.actions.act_window',
                 'res_model': self._name,
@@ -811,7 +844,7 @@ class MergePartnerManualCheck(models.TransientModel):
                 'view_mode': 'form',
                 'target': 'new',
             }
-    
+
     @api.multi
     def swap_to_right(self):
         context = self._context.get('field_name')
@@ -843,9 +876,9 @@ class MergePartnerManualCheck(models.TransientModel):
             self.country_id2 = self.country_id.id
         if context == 'is_company':
             self.is_company2 = self.is_company
-        if context == 'vat_1':    
+        if context == 'vat_1':
             self.vat_2 = self.vat_1
-                
+
         return {
                 'type': 'ir.actions.act_window',
                 'res_model': self._name,
