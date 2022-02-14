@@ -69,11 +69,11 @@ class MergePartnerAutomatic(models.TransientModel):
     group_by_phone = fields.Boolean('Phone')
     group_by_mobile = fields.Boolean('Mobile')
 
-    @api.model
-    def default_get(self, fields_list):
-        res = super(MergePartnerAutomatic, self).default_get(fields_list)
-        res.update({'exclude_contact': True}) #, 'exclude_journal_item': True
-        return res
+    #@api.model
+    #def default_get(self, fields_list):
+    #    res = super(MergePartnerAutomatic, self).default_get(fields_list)
+    #    res.update({'exclude_contact': True}) #, 'exclude_journal_item': True
+    #    return res
 
     @api.multi
     def _action_new_next_screen(self):
