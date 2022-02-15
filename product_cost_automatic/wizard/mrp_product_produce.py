@@ -8,6 +8,6 @@ class MrpProductProduce(models.TransientModel):
     @api.multi
     def do_produce(self):
         res = super(MrpProductProduce, self).do_produce()
-        if self.product_id.is_automatically:
+        if self.product_id.is_automatically or self.product_id.product_tmpl_id.is_automatically:
             self.product_id.write({'standard_price':self.product_id._get_price_from_bom()}) 
         return res

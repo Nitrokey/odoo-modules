@@ -9,6 +9,6 @@ class Picking(models.Model):
         if res:
             for purchase in self.mapped('purchase_id'):
                 for line in purchase.order_line:
-                    if line.product_id.is_automatically:
+                    if line.product_id.is_automatically or line.product_id.product_tmpl_id.is_automatically:
                         line.product_id.write({'standard_price':line.price_unit or 0.0})
         return res
