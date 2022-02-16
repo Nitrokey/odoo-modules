@@ -11,10 +11,8 @@ class ProductTemplate(models.Model):
 
     
     def button_po_cost(self):
-        templates = self.filtered(lambda t: t.product_variant_count == 1 and t.purchased_product_qty > 0)
-        if templates:
-            return templates.mapped('product_variant_id').button_po_cost()
-        
+        return self.mapped('product_variant_ids').button_po_cost()
+               
     
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
@@ -42,6 +40,9 @@ class ProductProduct(models.Model):
                 for po_l in stock_id.purchase_id.order_line:
                     if po_l.product_id == product:
                         product.standard_price = po_l.price_unit
+            elif product.bom_count > 0:
+                    product.standard_price = product._get_price_from_bom()
+                
                         
 
     
