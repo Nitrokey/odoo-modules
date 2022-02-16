@@ -1,32 +1,13 @@
-from odoo import fields, models,api
-from lxml import etree
-
-from odoo.osv.orm import setup_modifiers
-
+from odoo import fields, models
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
     
-    is_automatically = fields.Boolean(string='Automatically',default=True)
+    is_automatically = fields.Boolean(string='Automatic',default=True)
 
-    
     def button_po_cost(self):
         return self.mapped('product_variant_ids').button_po_cost()
-               
     
-    @api.model
-    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        res = super(ProductTemplate, self).fields_view_get(view_id, view_type, toolbar, submenu)
-        if res.get('model') == "product.template":
-            doc = etree.XML(res['arch'])
-            for node in doc.xpath("//field[@name='is_automatically']"):
-                node.set('invisible', "[('product_variant_count', '&gt;', 1),('is_product_variant', '=', False)]")
-                setup_modifiers(node, None)
-            res['arch'] = etree.tostring(doc)
-        return res
-    
-    
-
 class ProductProduct(models.Model):
     _inherit = 'product.product'
     

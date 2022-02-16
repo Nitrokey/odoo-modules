@@ -2,17 +2,50 @@
 <odoo>
 
 	<!--Product.template -->
+	  <record id="product_product_ext_form_view2_nitrokey" model="ir.ui.view">
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="mrp_bom_cost.product_product_ext_form_view2" />
+        <field name="arch" type="xml">
+        	<xpath expr="//button[@name='button_bom_cost']" position="replace"/>
+        </field>
+      </record>
+      <record id="product_product_view_form_normal_inherit_extended_nitrokey" model="ir.ui.view">
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="mrp_bom_cost.product_product_view_form_normal_inherit_extended" />
+        <field name="arch" type="xml">
+        	<xpath expr="//button[@name='button_bom_cost']" position="replace"/>
+        </field>
+      </record>
+      <record id="product_variant_easy_edit_view_bom_inherit_nitrokey" model="ir.ui.view">
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="mrp_bom_cost.product_variant_easy_edit_view_bom_inherit" />
+        <field name="arch" type="xml">
+        	<xpath expr="//button[@name='button_bom_cost']" position="replace"/>
+        	<xpath expr="//div[@name='standard_price_div']" position="after">
+        		<field name='bom_count' invisible="1"/>
+            	<label for="is_automatically" attrs="{'readonly': [('standard_price', '!=', 0.0)]}"/>
+                <div name="is_automatically_div">
+                    <field name="is_automatically" attrs="{'readonly': [('standard_price', '!=', 0.0)]}" />
+                    <button name="button_bom_cost" string="Compute Price from BoM" type="object" attrs="{'invisible': ['|', ('bom_count', '=', 0), '&amp;', ('valuation', '=', 'real_time'), ('cost_method', '=', 'fifo')]}" help="Compute the price of the product using products and operations of related bill of materials, for manufactured products only." class="oe_link oe_read_only" />
+                    <button name="button_po_cost" string="Compute Price from PO" attrs="{'readonly': [('standard_price', '!=', 0.0)]}" type="object" class="oe_link oe_read_only" />
+                    
+                </div>
+        	</xpath>
+        </field>
+      </record>
+      
 	  <record id="product_template_form_is_automatically_inherit" model="ir.ui.view">
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view" />
         <field name="arch" type="xml">
-        	
-        	<xpath expr="//field[@name='standard_price']" position="after"> 
-                <button name="button_po_cost" string="Compute Price from PO" type="object" class="oe_link oe_read_only"/> 
-            </xpath>
-            <xpath expr="//field[@name='company_id']" position="before">
-            	
-                <field name="is_automatically" string="Automatic" attrs="{'invisible': [('standard_price', '!=', 0.0)]}"/> 
+        	<xpath expr="//field[@name='company_id']" position="before">
+            	<field name='bom_count' invisible="1"/>
+            	<label for="is_automatically" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)],'readonly': [('standard_price', '!=', 0.0)]}"/>
+                <div name="is_automatically_div">
+                    <field name="is_automatically" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)],'readonly': [('standard_price', '!=', 0.0)]}" />
+                    <button name="button_bom_cost" string="Compute Price from BoM" type="object" attrs="{'invisible': ['|', ('bom_count', '=', 0), '&amp;', ('valuation', '=', 'real_time'), ('cost_method', '=', 'fifo')]}" help="Compute the price of the product using products and operations of related bill of materials, for manufactured products only." class="oe_link oe_read_only" />
+                    <button name="button_po_cost" string="Compute Price from PO" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)],'readonly': [('standard_price', '!=', 0.0)]}" type="object" class="oe_link oe_read_only" />
+                </div>
             </xpath>
             <field name="standard_price" position="attributes">
           		<attribute name="attrs">{'readonly':[('is_automatically','=',True)]}</attribute>
@@ -20,6 +53,7 @@
         	
         </field>
      </record>
+     
 	 
 	<record id="action_compute_price_po_template" model="ir.actions.server">
             <field name="name">Compute Price from PO</field>
