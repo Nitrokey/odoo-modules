@@ -7,6 +7,19 @@ class ProductTemplate(models.Model):
         'Automatic', compute='_compute_is_automatically',
         inverse='_set_is_automatically', store=True)
     
+    purchase_line_ids = fields.One2many('purchase.order.line',sting='Purchase Lines',compute='_compute_purchase_line_ids',inverse="_set_purchase_line_ids",)
+    
+    @api.depends('product_variant_ids', 'product_variant_ids.purchase_line_ids')
+    def _compute_purchase_line_ids(self):
+        for p in self:
+            if len(p.product_variant_ids) == 1:
+                p.purchase_line_ids = p.product_variant_ids.purchase_line_ids
+    
+    def _set_purchase_line_ids(self):
+        for p in self:
+            if len(p.product_variant_ids) == 1:
+                p.product_variant_ids.purchase_line_ids = p.purchase_line_ids
+                
     @api.depends('product_variant_ids', 'product_variant_ids.is_automatically')
     def _compute_is_automatically(self):
         unique_variants = self.filtered(lambda template: len(template.product_variant_ids) == 1)
@@ -27,7 +40,7 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
     
     is_automatically = fields.Boolean(string='Automatically')
-    
+    purchase_line_ids = fields.One2many('purchase.order.line','product_id','Purchase Lines')
     
     def button_po_cost(self):
         for product in self:
