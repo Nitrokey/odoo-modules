@@ -1,17 +1,32 @@
-from odoo import fields, models
+from odoo import fields, models, api
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
     
-    is_automatically = fields.Boolean(string='Automatic',default=True)
-
+    is_automatically = fields.Boolean(
+        'Automatic', compute='_compute_is_automatically',
+        inverse='_set_is_automatically', store=True)
+    
+    @api.depends('product_variant_ids', 'product_variant_ids.is_automatically')
+    def _compute_is_automatically(self):
+        unique_variants = self.filtered(lambda template: len(template.product_variant_ids) == 1)
+        for template in unique_variants:
+            template.is_automatically = template.product_variant_ids.is_automatically
+        for template in (self - unique_variants):
+            template.is_automatically = False
+            
+    @api.one
+    def _set_is_automatically(self):
+        if len(self.product_variant_ids) == 1:
+            self.product_variant_ids.is_automatically = self.is_automatically
+            
     def button_po_cost(self):
         return self.mapped('product_variant_ids').button_po_cost()
     
 class ProductProduct(models.Model):
     _inherit = 'product.product'
     
-    is_automatically = fields.Boolean(string='Automatically',default=True)
+    is_automatically = fields.Boolean(string='Automatically')
     
     
     def button_po_cost(self):

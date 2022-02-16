@@ -11,4 +11,5 @@
         'views/product_view.xml',
     ],
     'installable': True,
+    'post_init_hook': '_set_is_automatically',
 }

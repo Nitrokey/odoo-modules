@@ -23,11 +23,11 @@
         	<xpath expr="//button[@name='button_bom_cost']" position="replace"/>
         	<xpath expr="//div[@name='standard_price_div']" position="after">
         		<field name='bom_count' invisible="1"/>
-            	<label for="is_automatically" attrs="{'readonly': [('standard_price', '!=', 0.0)]}"/>
+            	<label for="is_automatically" />
                 <div name="is_automatically_div">
-                    <field name="is_automatically" attrs="{'readonly': [('standard_price', '!=', 0.0)]}" />
+                    <field name="is_automatically"  />
                     <button name="button_bom_cost" string="Compute Price from BoM" type="object" attrs="{'invisible': ['|', ('bom_count', '=', 0), '&amp;', ('valuation', '=', 'real_time'), ('cost_method', '=', 'fifo')]}" help="Compute the price of the product using products and operations of related bill of materials, for manufactured products only." class="oe_link oe_read_only" />
-                    <button name="button_po_cost" string="Compute Price from PO" attrs="{'readonly': [('standard_price', '!=', 0.0)]}" type="object" class="oe_link oe_read_only" />
+                    <button name="button_po_cost" string="Compute Price from PO" attrs="{'invisible': [('is_automatically', '!=', True)]}" type="object" class="oe_link oe_read_only" />
                     
                 </div>
         	</xpath>
@@ -40,11 +40,11 @@
         <field name="arch" type="xml">
         	<xpath expr="//field[@name='company_id']" position="before">
             	<field name='bom_count' invisible="1"/>
-            	<label for="is_automatically" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)],'readonly': [('standard_price', '!=', 0.0)]}"/>
+            	<label for="is_automatically" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}"/>
                 <div name="is_automatically_div">
-                    <field name="is_automatically" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)],'readonly': [('standard_price', '!=', 0.0)]}" />
+                    <field name="is_automatically" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" />
                     <button name="button_bom_cost" string="Compute Price from BoM" type="object" attrs="{'invisible': ['|', ('bom_count', '=', 0), '&amp;', ('valuation', '=', 'real_time'), ('cost_method', '=', 'fifo')]}" help="Compute the price of the product using products and operations of related bill of materials, for manufactured products only." class="oe_link oe_read_only" />
-                    <button name="button_po_cost" string="Compute Price from PO" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)],'readonly': [('standard_price', '!=', 0.0)]}" type="object" class="oe_link oe_read_only" />
+                    <button name="button_po_cost" string="Compute Price from PO" attrs="{'invisible': ['|',('is_automatically', '!=', True),'&amp;',('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" type="object" class="oe_link oe_read_only" />
                 </div>
             </xpath>
             <field name="standard_price" position="attributes">
@@ -66,9 +66,6 @@
             </field>
     </record>
 
-
-
-<!-- product.product -->
     <record id="action_compute_price_po_product" model="ir.actions.server">
             <field name="name">Compute Price from PO</field>
             <field name="model_id" ref="product.model_product_product"/>
@@ -80,17 +77,5 @@
             </field>
     </record>
 	
- <!--<record id="view_product_product_form_inherit" model="ir.ui.view">
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_normal_form_view" />
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='standard_price']/ancestor::*[1]" position="after"> 
-                <field name="is_automatically"/> 
-            </xpath>
-            <field name="standard_price" position="attributes">
-          		<attribute name="attrs">{'readonly':[('is_automatically','=',True)]}</attribute>
-        	</field>
-        </field>
-    </record> -->
-
+ 
 </odoo>
