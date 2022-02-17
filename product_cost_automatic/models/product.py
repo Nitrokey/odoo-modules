@@ -48,7 +48,11 @@ class ProductProduct(models.Model):
             if stock_id.purchase_id:
                 for po_l in stock_id.purchase_id.order_line:
                     if po_l.product_id == product:
-                        product.standard_price = po_l.price_unit
+                        price = po_l.price_unit
+                        if po_l.product_id.product_tmpl_id.uom_po_id != po_l.product_uom:
+                            default_uom = po_l.product_id.product_tmpl_id.uom_po_id
+                            price = po_l.product_uom._compute_price(po_l.price_unit, default_uom)
+                        product.standard_price = price
             elif product.bom_count > 0:
                     product.standard_price = product._get_price_from_bom()
                 
