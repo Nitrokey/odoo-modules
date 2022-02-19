@@ -663,9 +663,9 @@ class MergePartnerManualCheck(models.TransientModel):
         self._log_merge_operation(src_partners, dst_partner)
 
         for partner in src_partners:
-            if hasattr(partner, 'newsletter_sendy') and partner.newsletter_sendy:
-                self._cr.execute('update res_partner set newsletter_sendy=false where id=%s'%(partner.id))
-                partner.refresh()
+            # if hasattr(partner, 'newsletter_sendy') and partner.newsletter_sendy:
+            #     self._cr.execute('update res_partner set newsletter_sendy=false where id=%s'%(partner.id))
+            #     partner.refresh()
             partner.unlink()
 
         # delete source partner, since they are merged

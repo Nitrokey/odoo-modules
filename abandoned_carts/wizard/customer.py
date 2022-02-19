@@ -121,8 +121,8 @@ WHERE
 
         customer_ids = customers.mapped('partner_id').ids
         partner_obj = self.env['res.partner']
-        newsletter_sendy = hasattr(
-            partner_obj, 'newsletter_sendy') and True or False
+        # newsletter_sendy = hasattr(
+        #     partner_obj, 'newsletter_sendy') and True or False
 
         for partner_id in customer_ids:
             # Browse one record only, because if partner linked to some record and \
@@ -133,10 +133,10 @@ WHERE
             record_id = line.id
             error = ''
             try:
-                if newsletter_sendy and line.newsletter_sendy:
-                    self._cr.execute(
-                        "update res_partner set newsletter_sendy=false where id=%d" % partner_id)
-                    line.refresh()
+                # if newsletter_sendy and line.newsletter_sendy:
+                #     self._cr.execute(
+                #         "update res_partner set newsletter_sendy=false where id=%d" % partner_id)
+                #     line.refresh()
                 line.unlink()
             except Exception as e:
                 self._cr.execute('ROLLBACK TO SAVEPOINT remove_partner')
