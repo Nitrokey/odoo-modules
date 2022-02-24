@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="assets_frontend" inherit_id="website.assets_frontend">
-		<xpath expr="script[last()]" position="after">
-			<script type="text/javascript" src="/ecommerce_first_last_name/static/src/js/website_sale.js"></script>
-		</xpath>
-	</template>
 	<template id="address_inherit" inherit_id="website_sale.address">
 		<xpath expr="//form[hasclass('checkout_autoformat')]/div/div[1]" position="replace">
 			<div t-attf-class="form-group #{error.get('name') and 'o_has_error' or ''} col-lg-6 div_name">
