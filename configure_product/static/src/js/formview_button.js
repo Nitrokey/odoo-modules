@@ -23,7 +23,6 @@ odoo.define('configure_product.product_configure_wizard', function (require) {
 	        });
         },
 		_updateView: function ($newContent) {
-		    debugger;
 		    if(this.state.model == "mrp.production" && this.state.data.state == "confirmed"){
                 var $configure_button1 = $("<button type='button' class='btn btn-link o_form_button_configure_product1' accesskey='cf'>Configure a product</button>");
                 $configure_button1.attr('data-active-id', this.state.res_id);

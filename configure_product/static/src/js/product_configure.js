@@ -18,7 +18,6 @@ odoo.define('configure_product.product_configure', function (require) {
 
 				var product_id = parseInt($modal.find(productSelector.join(', ')).first().val(), 10);
 				var quantity = parseFloat($modal.find('input[name="add_qty"]').val() || 1)
-				debugger;
 				var active_id = $(document).find('.o_form_button_configure_product1').data('active-id');
 				if (active_id){
 					this._rpc({

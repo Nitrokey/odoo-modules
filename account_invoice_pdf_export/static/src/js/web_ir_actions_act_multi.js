@@ -10,7 +10,7 @@ odoo.define('account_invoice_pdf_export.ir_actions_act_multi_print', function (r
             }
             return this._super.apply(this, arguments);
         },
-        _executeMultiAction: function(action, options){
+        _executeMultiPrintAction: function(action, options){
             var self = this;
 
             var i = 0;
