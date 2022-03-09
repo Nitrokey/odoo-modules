@@ -6,7 +6,7 @@ odoo.define('account_invoice_pdf_export.ir_actions_act_multi_print', function (r
     ActionManager.include({
     	_handleAction: function (action, options) {
             if (action.type === 'ir.actions.act_multi_print') {
-                return this._executeMultiAction(action, options);
+                return this._executeMultiPrintAction(action, options);
             }
             return this._super.apply(this, arguments);
         },
