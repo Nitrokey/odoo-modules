@@ -9,12 +9,12 @@
     'description': """Export multiple invoices PDF in Zip 
     """,
     'category': '',
-    'version': '1.2',
+    'version': '15.0.1.0.0',
     'depends': [
         'account',
     ],
     'data': [
-        'views/templates.xml',
+        'security/ir.model.access.csv',
         'wizard/invoice_pdf_export_view.xml',
         
     ],
