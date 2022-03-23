@@ -36,6 +36,19 @@ class ProductTemplate(models.Model):
     def button_po_cost(self):
         return self.mapped('product_variant_ids').button_po_cost()
     
+    
+    @api.multi
+    def _create_product_variant(self, combination, log_warning=False):
+        self.ensure_one()
+        Product= super(ProductTemplate, self)._create_product_variant(combination,log_warning=log_warning)
+        
+        if not Product.is_automatically:
+            Product.sudo().write({
+                'is_automatically':True,
+            })
+        return Product
+    
+    
 class ProductProduct(models.Model):
     _inherit = 'product.product'
     
