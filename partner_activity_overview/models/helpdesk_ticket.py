@@ -19,9 +19,9 @@ class HelpdeskTicket(models.Model):
         if not self.partner_id:
             return msg
         part_msg_body = msg.body
-        partner_msg = msg.copy(default={'res_id': self.partner_id.id, 'model': 'res.partner', 'body': part_msg_body})
+        partner_msg = msg.sudo().copy(default={'res_id': self.partner_id.id, 'model': 'res.partner', 'body': part_msg_body})
         flag = False
-        for line in msg.tracking_value_ids:
+        for line in msg.sudo().tracking_value_ids:
             default_vals = {'mail_message_id': partner_msg.id}
             line.copy(default=default_vals)
         return msg
