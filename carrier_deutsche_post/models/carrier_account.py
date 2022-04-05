@@ -103,7 +103,7 @@ class CarrierAccount(models.Model):
         if not data.get('prod_code'):
             raise UserError(_("Product Code required"))
 
-        if data['prod_code'] not in [k for k in inema.inema.marke_products]:
+        if data['prod_code'] not in [k for k in inema.inema.default_products]:
             raise UserError(_("Product Code %s does not exist") % (data['prod_code']))
 
         logging.basicConfig(level=logging.INFO)
