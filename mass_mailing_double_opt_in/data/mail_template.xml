@@ -4,7 +4,7 @@
     <record id="newsletter_confirmation_request_template" model="mail.template">
         <field name="name">Newsletter Subscription</field>
         <field name="subject">Confirm your newsletter subscription</field>
-        <field name="model_id" ref="mass_mailing.model_mail_mass_mailing_list_contact_rel"/>
+        <field name="model_id" ref="mass_mailing.model_mailing_contact_subscription"/>
         <field name="email_to">${object.contact_id.email}</field>
         <field name="body_html" type="xml">
             <div style="margin: -10px -10px; padding:50px 30px 50px 30px; height:100%;">
@@ -62,7 +62,7 @@
     <record id="newsletter_confirmation_success_template" model="mail.template">
         <field name="name">Newsletter Subscribed</field>
         <field name="subject">You Have Subscribed to the Nitrokey Newsletter</field>
-        <field name="model_id" ref="mass_mailing.model_mail_mass_mailing_list_contact_rel"/>
+        <field name="model_id" ref="mass_mailing.model_mailing_contact_subscription"/>
         <field name="email_to">${object.contact_id.email}</field>
         <field name="body_html" type="xml">
             <p>Hi!</p>

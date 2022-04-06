@@ -9,24 +9,28 @@ class MassMailController(MassMailController):
 
     @route('/website_mass_mailing/subscribe', type='json', website=True, auth="public")
     def subscribe(self, list_id, email, **post):
-        Contacts = request.env['mail.mass_mailing.contact'].sudo()
+        Contacts = request.env['mailing.contact'].sudo()
+        if not request.env['ir.http']._verify_request_recaptcha_token('website_mass_mailing_subscribe'):
+            return {
+                'toast_type': 'danger',
+                'toast_content': ("Suspicious activity detected by Google reCaptcha."),
+            }
+        ContactSubscription = request.env['mailing.contact.subscription'].sudo()
         name, email = Contacts.get_name_email(email)
-
-        # inline add_to_list as we've already called half of it
-        if request.lang == 'de_DE':
+        if request.lang.code == 'de_DE':
             list_id = request.env.ref("mass_mailing_double_opt_in.german_newsletter_mass_mail_list").id
-        existing_contact = Contacts.search([
-            ('list_ids', 'in', [int(list_id)]),
-            ('email', '=', email),
-        ], limit=1)
+        existing_contact = Contacts.search([('list_ids', '=', int(list_id)), ('email', '=', email)], limit=1)
         mailing_list_contact = None
-        if existing_contact:
-            existing_list_contact = existing_contact.subscription_list_ids.filtered(lambda c: c.list_id.id == int(list_id))
-            if existing_list_contact.opt_out:
-                mailing_list_contact = existing_list_contact
-        else:
-            mailing_contact = Contacts.create({'name': name, 'email': email, 'opt_out': True, 'list_ids': [(6,0,[int(list_id)])]})
-            mailing_list_contact = mailing_contact.subscription_list_ids.filtered(lambda c: c.list_id.id == int(list_id))
+        if not existing_contact:
+            # inline add_to_list as we've already called half of it
+            contact_id = Contacts.search([('email', '=', email)], limit=1)
+            if not contact_id:
+                contact_id = Contacts.create({'name': name, 'email': email, 'opt_out': True })
+                mailing_list_contact = contact_id.subscription_list_ids.filtered(
+                    lambda c: c.list_id.id == int(list_id))
+            ContactSubscription.create({'contact_id': contact_id.id, 'list_id': list_id})
+        elif existing_contact.opt_out:
+            existing_contact.opt_out = False
         if mailing_list_contact:
             mail_language = request.lang
             if post.get('language'):
@@ -41,14 +45,16 @@ class MassMailController(MassMailController):
 
         # add email to session
         request.session['mass_mailing_email'] = email
-        return True
-
+        return {
+            'toast_type': 'success',
+            'toast_content': ("Thanks for subscribing!"),
+        }
 
 class ConsentController(Controller):
     @route("/newsletter/confirmation/<access_token>",
            type="http", auth="none", website=True)
     def consent(self, access_token, **kwargs):
-        mailing_list_contact = request.env['mail.mass_mailing.list_contact_rel'].sudo().search([('access_token', '=', access_token)])
+        mailing_list_contact = request.env['mailing.contact.subscription'].sudo().search([('access_token', '=', access_token)])
         if mailing_list_contact:
             mailing_list_contact.write({'opt_out': False})
             template = request.env.ref("mass_mailing_double_opt_in.newsletter_confirmation_success_template").sudo()

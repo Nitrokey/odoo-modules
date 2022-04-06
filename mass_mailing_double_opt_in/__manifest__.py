@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Mass Mailing Double opt-in',
-    'version': '12.0.1.0.0',
+    'version': '15.0.1.0.0',
     'category': 'Website',
     'author': 'ERP Harbor Consulting Services',
     'website': 'http://www.erpharbor.com',
