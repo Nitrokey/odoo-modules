@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="restrict_portal_users_view_task_form2" model="ir.ui.view">
+        <field name="name">restrict.portal.users.view.task.form2</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="domain">[('share', '=', False)]"</attribute>
+            </xpath>
+
+        </field>
+    </record>
+    <record id="restrict_portal_users_view_task_kanban" model="ir.ui.view">
+        <field name="name">restrict.portal.users.view.task.kanban</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.quick_create_task_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="domain">[('share', '=', False)]"</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

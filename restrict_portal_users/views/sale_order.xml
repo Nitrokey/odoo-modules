@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="restrict_portal_users_view_order_form" model="ir.ui.view">
+        <field name="name">restrict.portal.users.view.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="domain">[('share', '=', False)]"</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
