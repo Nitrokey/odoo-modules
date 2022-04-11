@@ -4,9 +4,9 @@
     'summary': '',
     'description': """Added Users field in Partner form view""",
     'category': 'Tools',
-    'author': "initOS GmbH",
+    'author': "Nitrokey GmbH",
     'license': 'AGPL-3',
-    'website': "http://www.initos.com",
+    'website': "http://www.nitrokey.com",
     'depends': ['base'],
     'data': [
         'view/partner.xml',
