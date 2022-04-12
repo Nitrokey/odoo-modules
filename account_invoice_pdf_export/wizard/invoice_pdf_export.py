@@ -54,8 +54,10 @@ class ExportInvoicePdfZip(models.TransientModel):
 
         fp = io.BytesIO()
         zf = zipfile.ZipFile(fp, mode="w")
-        for invoice in invoices:
-            data, format = report.render_qweb_pdf([invoice.id])
+        datas, format = report.with_context(invoice_pdf_export_zip=True).render_qweb_pdf(invoices.ids)
+        for index, invoice in enumerate(invoices):
+            #data, format = report.render_qweb_pdf([invoice.id])
+            data = datas[index]
             report_name = safe_eval(report.print_report_name, {'object': invoice, 'time': time})
             if invoice.state in ['draft', 'cancel']:
                 report_name = '%s/%s_%s' % (report_name, report_name, invoice.id)

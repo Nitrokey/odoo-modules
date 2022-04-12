@@ -9,7 +9,7 @@
     'description': """Export multiple invoices PDF in Zip 
     """,
     'category': '',
-    'version': '1.2',
+    'version': '1.3',
     'depends': [
         'account',
     ],
