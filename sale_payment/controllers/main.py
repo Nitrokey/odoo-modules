@@ -1,119 +1,50 @@
 # -*- coding: utf-8 -*-
 
 from odoo import http
-from odoo.addons.payment.controllers.portal import PaymentProcessing
-from odoo.addons.sale.controllers.product_configurator import \
-    ProductConfiguratorController
+from odoo.fields import Command
+from odoo.exceptions import AccessError, MissingError, ValidationError
+from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
+from odoo.addons.website_sale.controllers.main import WebsiteSale, PaymentPortal
 from odoo.http import request
 
+class PaymentPortal(PaymentPortal):
 
-class WebsiteSale(ProductConfiguratorController):
-
-    @http.route(['/shop/payment/transaction/',
-                 '/shop/payment/transaction/<int:so_id>',
-                 '/shop/payment/transaction/<int:so_id>/<string:access_token>'],
-                type='json', auth="public",
-                website=True)
-    def payment_transaction(self, acquirer_id,
-                            save_token=False,
-                            so_id=None,
-                            access_token=None,
-                            token=None, **kwargs):
-        """ Json method that creates a payment.transaction, used to create a
-        transaction when the user clicks on 'pay now' button. After having
-        created the transaction, the event continues and the user is redirected
-        to the acquirer website.
-
-        :param int acquirer_id: id of a payment.acquirer record. If not set the
-                                user is redirected to the checkout page
-        """
-        # Ensure a payment acquirer is selected
-        if not acquirer_id:
-            return False
-
+    @http.route(
+        '/shop/payment/transaction/<int:order_id>', type='json', auth='public', website=True
+    )
+    def shop_payment_transaction(self, order_id, access_token, **kwargs):
         try:
-            acquirer_id = int(acquirer_id)
-        except:
-            return False
+            self._document_check_access('sale.order', order_id, access_token)
+        except MissingError as error:
+            raise error
+        except AccessError:
+            raise ValidationError("The access token is invalid.")
+        kwargs.update({
+            'reference_prefix': None,  # Allow the reference to be computed based on the order
+            'sale_order_id': order_id,  # Include the SO to allow Subscriptions to tokenize the tx
+        })
+        kwargs.pop('custom_create_values', None)  # Don't allow passing arbitrary create values
+        tx_sudo = self._create_transaction(
+            custom_create_values={'sale_order_ids': [Command.set([order_id])]}, **kwargs,
+        )
 
-        # Retrieve the sale order
-        if so_id:
-            env = request.env['sale.order']
-            domain = [('id', '=', so_id)]
-            if access_token:
-                env = env.sudo()
-                domain.append(('access_token', '=', access_token))
-            order = env.search(domain, limit=1)
-        else:
-            order = request.website.sale_get_order()
-
-        # Ensure there is something to proceed
-        if not order or (order and not order.order_line):
-            return False
-
-        assert order.partner_id.id != request.website.partner_id.id
-
-        # Create transaction
-        vals = {'acquirer_id': acquirer_id,
-                'return_url': '/shop/payment/validate'}
-
-        if save_token:
-            vals['type'] = 'form_save'
-        if token:
-            vals['payment_token_id'] = int(token)
-
-        transaction = order._create_payment_transaction(vals)
-        so_vals = {'payment_tx_id': transaction.id}
+        default_payment_method_id = tx_sudo.acquirer_id._get_default_payment_method_id()
+        payment_method_id = request.env['account.payment.method'].browse(default_payment_method_id)
+        so_vals = {'payment_tx_id': tx_sudo.id}
         # Set Payment Method from Acquirer
-        if transaction.acquirer_id.inbound_payment_method_ids:
-            payment_method_id = transaction.acquirer_id.inbound_payment_method_ids[0]
+        if payment_method_id:
             so_vals.update({'payment_method_id': payment_method_id.id})
             if payment_method_id.hold_picking_until_payment:
                 so_vals.update({'hold_picking_until_payment': True})
-        order.write(so_vals)
+        sale_order_id = request.env['sale.order'].browse(order_id)
+        sale_order_id.write(so_vals)
 
-        # store the new transaction into the transaction list
-        # and if there's an old one, we remove it
-        # until the day the ecommerce supports
-        # multiple orders at the same time
+        # Store the new transaction into the transaction list and if there's an old one, we remove
+        # it until the day the ecommerce supports multiple orders at the same time.
         last_tx_id = request.session.get('__website_sale_last_tx_id')
         last_tx = request.env['payment.transaction'].browse(last_tx_id).sudo().exists()
         if last_tx:
-            PaymentProcessing.remove_payment_transaction(last_tx)
-        PaymentProcessing.add_payment_transaction(transaction)
-        request.session['__website_sale_last_tx_id'] = transaction.id
-        return transaction.render_sale_button(order)
+            PaymentPostProcessing.remove_transactions(last_tx)
+        request.session['__website_sale_last_tx_id'] = tx_sudo.id
 
-    @http.route('/shop/payment/token',
-                type='http',
-                auth='public',
-                website=True,
-                sitemap=False)
-    def payment_token(self, pm_id=None, **kwargs):
-        """ Method that handles payment using saved tokens
-
-        :param int pm_id: id of the payment.token that we want to use to pay.
-        """
-        order = request.website.sale_get_order()
-        # do not crash if the user has already paid and try to pay again
-        if not order:
-            return request.redirect('/shop/?error=no_order')
-
-        assert order.partner_id.id != request.website.partner_id.id
-
-        try:
-            pm_id = int(pm_id)
-        except ValueError:
-            return request.redirect('/shop/?error=invalid_token_id')
-
-        # We retrieve the token the user want to use to pay
-        if not request.env['payment.token'].sudo().search_count([('id', '=', pm_id)]):
-            return request.redirect('/shop/?error=token_not_found')
-
-        # Create transaction
-        vals = {'payment_token_id': pm_id, 'return_url': '/shop/payment/validate'}
-
-        t_x = order._create_payment_transaction(vals)
-        order.write({'payment_tx_id': t_x.id})
-        PaymentProcessing.add_payment_transaction(t_x)
-        return request.redirect('/payment/process')
+        return tx_sudo._get_processing_values()
