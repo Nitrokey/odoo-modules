@@ -25,7 +25,7 @@
         		<field name='bom_count' invisible="1"/>
             	<label for="is_automatically" />
                 <div name="is_automatically_div">
-                    <field name="is_automatically"  />
+                    <field name="is_automatically"  help="Price will be updated from PO when validating its incoming shipment."/>
                     <field name='purchase_line_ids' invisible='1'/>
                     <button name="button_bom_cost" string="Compute Price from BoM" type="object" attrs="{'invisible': ['|', ('bom_count', '=', 0), '&amp;', ('valuation', '=', 'real_time'), ('cost_method', '=', 'fifo')]}" help="Compute the price of the product using products and operations of related bill of materials, for manufactured products only." class="oe_link oe_read_only" style="padding-top: 0px"/>
                     <button name="button_po_cost" string="Compute Price from PO" attrs="{'invisible': [('purchase_line_ids', '=', [])]}" type="object" class="oe_link oe_read_only" style="padding-top: 0px"/>
@@ -44,7 +44,7 @@
             	<field name='purchase_line_ids' invisible='1'/>
             	<label for="is_automatically" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}"/>
                 <div name="is_automatically_div">
-                    <field name="is_automatically" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" />
+                    <field name="is_automatically" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" help="Price will be updated from PO when validating its incoming shipment."/>
                     <button name="button_bom_cost" string="Compute Price from BoM" type="object" attrs="{'invisible': ['|', ('bom_count', '=', 0), '&amp;', ('valuation', '=', 'real_time'), ('cost_method', '=', 'fifo')]}" help="Compute the price of the product using products and operations of related bill of materials, for manufactured products only." class="oe_link oe_read_only" style="padding-top: 0px"/>
                     <button name="button_po_cost" string="Compute Price from PO" attrs="{'invisible': ['|',('purchase_line_ids', '=', []),'&amp;',('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" type="object" class="oe_link oe_read_only" style="padding-top: 0px"/>
                 </div>
