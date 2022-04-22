@@ -6,6 +6,8 @@
         <field name="subject">Confirm your newsletter subscription</field>
         <field name="model_id" ref="mass_mailing.model_mail_mass_mailing_list_contact_rel"/>
         <field name="email_to">${object.contact_id.email}</field>
+		<field name="lang">${object.contact_id.partner_id.lang or ''}</field>
+
         <field name="body_html" type="xml">
             <div style="margin: -10px -10px; padding:50px 30px 50px 30px; height:100%;">
                 <div style="margin:0 auto; max-width:660px;">
@@ -64,6 +66,7 @@
         <field name="subject">You Have Subscribed to the Nitrokey Newsletter</field>
         <field name="model_id" ref="mass_mailing.model_mail_mass_mailing_list_contact_rel"/>
         <field name="email_to">${object.contact_id.email}</field>
+		<field name="lang">${object.contact_id.partner_id.lang or ''}</field>
         <field name="body_html" type="xml">
             <p>Hi!</p>
             <p>Thank you for subscribing the Nitrokey newsletter.</p>
