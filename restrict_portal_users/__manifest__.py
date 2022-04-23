@@ -23,7 +23,7 @@
     'license': 'AGPL-3',
     'website': "https://www.nitrokey.com",
 
-    'version': '12.0.1.0',
+    'version': '12.0.1.1',
 
     # any module necessary for this one to work correctly
     'depends': ['purchase', 'sale_management', 'helpdesk_mgmt', 'project','mrp'],
