@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Restrict Portal Users",
+    'name': "Limit To Employees",
 
     'summary': """
-        Restrict the portal user""",
+        Limit To Employees""",
 
     'description': """
        When user do following action in odoo, it only shows internal users contacts in dropdown.

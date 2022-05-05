@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="restrict_portal_users_view_task_form2" model="ir.ui.view">
-        <field name="name">restrict.portal.users.view.task.form2</field>
+    <record id="limit_to_employees_view_task_form2" model="ir.ui.view">
+        <field name="name">limit.to.employees.view.task.form2</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.view_task_form2"/>
         <field name="arch" type="xml">
@@ -12,8 +12,8 @@
 
         </field>
     </record>
-    <record id="restrict_portal_users_view_task_kanban" model="ir.ui.view">
-        <field name="name">restrict.portal.users.view.task.kanban</field>
+    <record id="limit_to_employees_view_task_kanban" model="ir.ui.view">
+        <field name="name">limit.to.employees.view.task.kanban</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.quick_create_task_form"/>
         <field name="arch" type="xml">
