@@ -8,13 +8,8 @@
     'description': """
        When user do following action in odoo, it only shows internal users contacts in dropdown.
             Chatter mentioning (@username)
-            Project task assignment
             Helpdesk ticket assignments
-            Sales order assignments (Salesperson)
             Invoicing, Salesperson
-            Purchase Representative
-            Manufacturing Responsible
-
     """,
 
     # Author
