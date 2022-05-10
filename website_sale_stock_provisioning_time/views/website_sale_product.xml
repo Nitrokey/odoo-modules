@@ -4,7 +4,7 @@
         <xpath expr="//a[@id='add_to_cart']" position="after">
                 <div class="add_atribute" style="margin-top:10px;">
                 <t t-if="product.provisioning_time_in_workdays">
-                    <span>Provisioning time: </span><span t-esc="product.provisioning_time_in_workdays"/>  Work days </t>
+                    <span>Provisioning time until shipment: </span><span t-esc="product.provisioning_time_in_workdays"/>  Work days </t>
                 </div>
         </xpath>
     </template>
