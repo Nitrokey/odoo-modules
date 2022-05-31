@@ -1,0 +1,9 @@
+<odoo>
+	<template id="mandatory_product_frontend_inherit" name="mandatory assets frontend" inherit_id="web.assets_frontend">
+		<xpath expr="script[last()]" position="after">
+			<script type="text/javascript" src="/product_mandatory_products/static/src/js/product_configurator_modal.js"/>
+			<script type="text/javascript" src="/product_mandatory_products/static/src/js/website_sale_options.js"/>
+			
+		</xpath>
+	</template>
+</odoo>
