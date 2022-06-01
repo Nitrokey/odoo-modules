@@ -10,5 +10,6 @@
     'data': [
         'reports/product_report_layout.xml',
         'reports/product_template_report.xml',
+
         ],
 }
