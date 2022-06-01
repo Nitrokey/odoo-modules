@@ -7,6 +7,7 @@ from odoo.exceptions import UserError
 
 
 class ProductConfiguratorController(ProductConfiguratorController):
+
     def _show_optional_products(self, product_id, variant_values, pricelist, handle_stock, **kw):
         if kw.get('is_mandatory',False):
             add_qty = int(kw.get('add_qty', 1))
@@ -41,6 +42,7 @@ class ProductConfiguratorController(ProductConfiguratorController):
     
 
 class WebsiteSale(WebsiteSale):
+    
     KW = {}
     
     @http.route(['/shop/cart/update_option'], type='http', auth="public", methods=['POST'], website=True, multilang=False)
@@ -53,11 +55,9 @@ class WebsiteSale(WebsiteSale):
             self.KW.update(kw)
         return res
 
-    @http.route(['/shop/check_mendatory_product'], type='json', auth='user')
+    @http.route(['/shop/check_mendatory_product'], type='json', auth='public')
     def check_mendatory_product(self, **product_data):
-        print(product_data)
         if product_data.get('product_id')[0].get('product_id') or False:
-           
             product_id = request.env['product.product'].sudo().browse(int(product_data.get('product_id')[0].get('product_id')))
             if product_id.mandatory_product_ids:
                 
@@ -74,14 +74,13 @@ class WebsiteSale(WebsiteSale):
             return True
     
     
-    @http.route(['/shop/is_mendatory_product'], type='json', auth='user')
+    @http.route(['/shop/is_mendatory_product'], type='json', auth='public')
     def is_mendatory_product(self, **product_data):
         print(product_data)
         if product_data.get('product_id'):
             product_id = request.env['product.product'].sudo().browse(int(product_data.get('product_id')))
             if product_id.mandatory_product_ids:
                 return True
-                
             else:
                 return False
         else:

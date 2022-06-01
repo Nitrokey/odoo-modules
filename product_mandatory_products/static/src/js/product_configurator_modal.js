@@ -1,10 +1,10 @@
 odoo.define('product_mandatory_products.MandatoryProductsModal', function (require) {
     "use strict";
 	var core = require('web.core');
-        var _t = core._t;
+    var _t = core._t;
 	var rpc = require('web.rpc');
-	var optionalproductsmodal =require('sale.OptionalProductsModal');
-
+	var optionalproductsmodal =require('sale.OptionalProductsModal');	
+	
 	var ajax = require('web.ajax');
 	var Dialog = require('web.Dialog');
 	var ServicesMixin = require('web.ServicesMixin');
@@ -306,6 +306,8 @@ odoo.define('product_mandatory_products.MandatoryProductsModal', function (requi
 				return false
 			}
 		})
+		
+	
     },
 
     /**
@@ -551,5 +553,5 @@ odoo.define('product_mandatory_products.MandatoryProductsModal', function (requi
 });
 
 return MandatoryProductsModal;
-
+		
 });

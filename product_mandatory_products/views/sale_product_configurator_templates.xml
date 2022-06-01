@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>    
+<odoo>
+    
     <template id="mandatory_products_modal" name="Optional Products">
         <main class="modal-body">
             <t t-call="product_mandatory_products.product_configurator_configure_optional_productsss" />
