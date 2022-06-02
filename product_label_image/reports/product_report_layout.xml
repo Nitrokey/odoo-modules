@@ -4,10 +4,10 @@
         <record id="paperformat_label_layout" model="report.paperformat">
             <field name="name"> Label Sheet</field>
             <field name="default" eval="True" />
-            <field name="format">A4</field>
-<!--            <field name="orientation">horizontal</field>-->
-            <field name="margin_top">0</field>
-            <field name="margin_bottom">0</field>
+            <field name="format">A6</field>
+			<field name="orientation">Landscape</field>
+            <field name="margin_top">28</field>
+            <field name="margin_bottom">20</field>
             <field name="margin_left">0</field>
             <field name="margin_right">0</field>
 <!--            <field name="dpi">96</field>-->
@@ -20,6 +20,9 @@
             <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
             <field name="binding_model_id" ref="product.model_product_template"/>
             <field name="binding_type">report</field>
+        </record>
+        <record id="product.report_product_product_barcode" model="ir.actions.report">
+		<field name="paperformat_id" ref="product_label_image.paperformat_label_layout"/>
         </record>
     </data>
 </odoo>
