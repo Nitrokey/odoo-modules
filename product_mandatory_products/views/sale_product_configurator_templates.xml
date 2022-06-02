@@ -83,13 +83,13 @@
                         }'/>
                 </td>
             </tr>
-            <tr t-if="product.mandatory_product_ids" class="o_select_options"><td colspan="4"><h4>Mandatory Products:</h4></td></tr>
+            <tr t-if="product.mandatory_product_ids" class="o_select_options"><td colspan="4"><h4 style="font-weight: bold;">Please choose exactly one mandatory product:</h4></td></tr>
             <t t-call="product_mandatory_products.mandatory_product_items">
                 <t t-set="parent_combination" t-value="combination"/>
             </t>
         </tbody>
         </table>
-        <p class="alert alert-danger" id="mandatory_msg" role="alert" style="display: none;">Please select at list one Mandatory Product...!</p>
+        <p class="alert alert-danger" id="mandatory_msg" role="alert" style="display: none;">Please choose exactly one mandatory product.</p>
     </template>
     
    

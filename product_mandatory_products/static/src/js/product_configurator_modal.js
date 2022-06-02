@@ -287,19 +287,27 @@ odoo.define('product_mandatory_products.MandatoryProductsModal', function (requi
                 quantity: quantity,
             });
         });
-		this.mandatory_products = products
-		
+		this.mandatory_products = products;
 		rpc.query({
             route: '/shop/check_mendatory_product',
             params: {product_id: products}
         })
         .then(function (res) {
-			if(res){
+			if(res.mendatory_product){
 				
 				$("#mandatory_msg").css("display", "none");
-				self.trigger('confirm');
-				self.close();
-				$("#add_to_cart").click();
+				
+				if(res.optional_product){
+					self.optonal_product = res.optional_product;
+					self.trigger('confirm');
+					self.close();
+					$("#add_to_cart").click();
+				}else{
+					self.optonal_product = res.optional_product;
+					self.trigger('confirm');
+					self.close();
+				}
+				
 				
 			}else{
 				$("#mandatory_msg").css("display", "block");

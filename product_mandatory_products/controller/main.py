@@ -55,6 +55,7 @@ class WebsiteSale(WebsiteSale):
             self.KW.update(kw)
         return res
 
+
     @http.route(['/shop/check_mendatory_product'], type='json', auth='public')
     def check_mendatory_product(self, **product_data):
         if product_data.get('product_id')[0].get('product_id') or False:
@@ -64,10 +65,12 @@ class WebsiteSale(WebsiteSale):
                 add_cart_product_ids = [i.get('product_id') for i in product_data.get('product_id')]
                 
                 if any([l in add_cart_product_ids for l in product_id.mandatory_product_ids.mapped('product_variant_id').ids]):
-                
-                    return True
+                    if product_id.optional_product_ids:
+                        return {'mendatory_product':True,'optional_product':True}
+                    else:
+                        return {'mendatory_product':True,'optional_product':False}
                 else:
-                    return False
+                    return {'mendatory_product':False}
             else:   
                 return True
         else:

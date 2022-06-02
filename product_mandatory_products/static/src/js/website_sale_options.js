@@ -95,7 +95,11 @@ odoo.define('product_mandatory_products.website_sale_extend', function (require)
 
 		_onModalConfirm: function () {
 			if(this.optionalProductsModal.mandatory_products){
-				this._onModalSubmit(false);
+				if(this.optionalProductsModal.optonal_product){
+					this._onModalSubmit(false);
+				}else{
+					this._onModalSubmit(true);
+				} 
 			}else{
 				this._onModalSubmit(true);
 			}
