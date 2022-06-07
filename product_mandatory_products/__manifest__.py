@@ -2,7 +2,7 @@
     'name': 'Product Mandatory Products',
     'version': '12.0.1.0.1',
     'category': 'Product',
-    'summary': 'This module allows you to set a product as a Pack',
+    'summary': 'Mandatory product selection while checkout',
     'license': 'AGPL-3',
     'depends': [
         'product','website_sale',

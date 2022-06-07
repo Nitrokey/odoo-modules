@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-02 08:57+0000\n"
-"PO-Revision-Date: 2022-06-02 08:57+0000\n"
+"POT-Creation-Date: 2022-06-06 13:57+0000\n"
+"PO-Revision-Date: 2022-06-06 13:57+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -40,16 +40,10 @@ msgstr ""
 
 #. module: product_mandatory_products
 #. openerp-web
+#: code:addons/product_mandatory_products/static/src/js/website_sale_options.js:56
 #: code:addons/product_mandatory_products/static/src/js/website_sale_options.js:77
 #, python-format
 msgid "Continue Shopping"
-msgstr ""
-
-#. module: product_mandatory_products
-#. openerp-web
-#: code:addons/product_mandatory_products/static/src/js/website_sale_options.js:56
-#, python-format
-msgid "Continue Shopping aa"
 msgstr ""
 
 #. module: product_mandatory_products
@@ -64,6 +58,18 @@ msgid "Mandatory Products"
 msgstr "Obligatorische Produkte"
 
 #. module: product_mandatory_products
+#: code:addons/product_mandatory_products/models/sale_order.py:21
+#, python-format
+msgid "Mandatory for"
+msgstr "Verpflichtend für"
+
+#. module: product_mandatory_products
+#: code:addons/product_mandatory_products/models/sale_order.py:19
+#, python-format
+msgid "Mandatory:"
+msgstr "Verpflichtend:"
+
+#. module: product_mandatory_products
 #. openerp-web
 #: code:addons/product_mandatory_products/static/src/js/website_sale_options.js:55
 #, python-format
@@ -71,14 +77,26 @@ msgid "Next"
 msgstr ""
 
 #. module: product_mandatory_products
+#: code:addons/product_mandatory_products/models/sale_order.py:21
+#, python-format
+msgid "Option for"
+msgstr "Option für"
+
+#. module: product_mandatory_products
 #: model_terms:ir.ui.view,arch_db:product_mandatory_products.mandatory_product_items
 msgid "Option not available"
 msgstr "Option nicht verfügbar"
 
 #. module: product_mandatory_products
+#: code:addons/product_mandatory_products/models/sale_order.py:19
+#, python-format
+msgid "Option:"
+msgstr ""
+
+#. module: product_mandatory_products
 #: model_terms:ir.ui.view,arch_db:product_mandatory_products.product_configurator_configure_optional_productsss
 msgid "Please choose exactly one mandatory product."
-msgstr "Bitte wählen Sie genau ein Pflichtprodukt aus:"
+msgstr "Bitte wählen Sie genau ein Pflichtprodukt aus."
 
 #. module: product_mandatory_products
 #: model_terms:ir.ui.view,arch_db:product_mandatory_products.product_configurator_configure_optional_productsss
@@ -122,4 +140,9 @@ msgstr "Anzahl"
 #: model_terms:ir.ui.view,arch_db:product_mandatory_products.product_configurator_configure_optional_productsss
 msgid "Remove one"
 msgstr "Entfernen"
+
+#. module: product_mandatory_products
+#: model:ir.model,name:product_mandatory_products.model_sale_order
+msgid "Sale Order"
+msgstr "Verkaufsauftrag"
 

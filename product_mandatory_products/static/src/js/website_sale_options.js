@@ -53,7 +53,7 @@ odoo.define('product_mandatory_products.website_sale_extend', function (require)
 		                rootProduct: self.rootProduct,
 		                isWebsite: true,
 		                okButtonText: _t('Next'),
-		                cancelButtonText: _t('Continue Shopping aa'),
+		                cancelButtonText: _t('Continue Shopping'),
 		                title: _t('Add to cart'),
 						is_mandatory:true,
 			            }).open();

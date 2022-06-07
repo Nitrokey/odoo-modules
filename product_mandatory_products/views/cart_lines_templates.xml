@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+		<template id="cutomized_cart_line_description_following_lines" inherit_id="website_sale.cart_line_description_following_lines" name="Shopping Cart Lines inheirt">
+			<xpath expr="//div" position="replace">
+				<div t-if="line.get_description_following_lines()" t-attf-class="text-muted {{div_class}} small">
+		            <t t-foreach="line.get_description_following_lines()" t-as="name_line">
+		                <!-- <span class="aaa"><t t-esc="name_line"/></span> -->
+		                <t t-if="name_line.strip().find('Option:') == 0">
+		                	<span>
+		                	<t t-esc="name_line.strip().replace('Option:','Mandatory:')" />
+		                	</span>
+		                </t>
+		                 <t t-if="name_line.strip().find('Option for:') == 0">
+		                	<span>
+		                	<t t-esc="name_line.strip().replace('Option for:','Mandatory for:')" />
+		                	</span>
+		                </t>
+		         
+		                <br t-if="not name_line_last" />
+		            </t>
+        		 </div>
+			</xpath>
+		</template>
+	
+</odoo>

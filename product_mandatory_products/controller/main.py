@@ -64,7 +64,7 @@ class WebsiteSale(WebsiteSale):
                 
                 add_cart_product_ids = [i.get('product_id') for i in product_data.get('product_id')]
                 
-                if any([l in add_cart_product_ids for l in product_id.mandatory_product_ids.mapped('product_variant_id').ids]):
+                if sum([l in add_cart_product_ids for l in product_id.mandatory_product_ids.mapped('product_variant_id').ids]) == 1:
                     if product_id.optional_product_ids:
                         return {'mendatory_product':True,'optional_product':True}
                     else:
