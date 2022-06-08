@@ -8,11 +8,10 @@
 	      
 		<xpath expr="//div[1]" position="after">
 			<t t-if="product.image">
-		  <div style="width: 49.5%; display: inline-table; border:2px solid; height:13.35rem;">
+		  <div style="width: 49.5%; display: inline-table; border:2px solid; height: 10rem;">
 		    <table class="table table-bordered mb-0">
 		       <tr>
-		       
-		       	 <td t-att-style="'background-image:url(\'/web/image/product.product/' + str(product.id) + '/image/\');background-repeat:no-repeat;background-size:contain;width: 100%; height: 11rem;'">
+                         <td t-att-style="'background-image:url(\'/web/image/' + product._name + '/' + str(product.id) + '/image/\');background-repeat:no-repeat;background-size: 100% 210px;width: 100%; height: 11.47rem;'">
 		       	 </td>
 		       </tr>
 		    </table>
