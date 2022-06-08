@@ -19,7 +19,12 @@ class SaleOrder(models.Model):
            
             if linked_line.product_id.mandatory_product_ids and order_line.browse(values.get('line_id')).product_id.id in linked_line.product_id.mandatory_product_ids.mapped('product_variant_id').ids:
                 name = linked_line.name.split('\n')
-                new_name = name[-1].replace('Option', _('Mandatory'))
+                
+                if self._context.get('lang','')=='de_DE':
+                    new_name = name[-1].replace('Option', _('Verpflichtend'))
+                else:
+                    new_name = name[-1].replace('Option', _('Mandatory'))
+
                 name.pop()
                 name.append(new_name)
                 linked_line.write({"name":'\n'.join(name)})
