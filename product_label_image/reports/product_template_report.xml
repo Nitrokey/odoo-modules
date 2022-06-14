@@ -3,21 +3,21 @@
     <data>
 	<template id="report_simple_barcode_with_image" inherit_id="product.report_simple_barcode">
 		<xpath expr="//div[1]" position="attributes">
-			<attribute name="style">width: 49.5%; display: inline-table; height: 10rem;</attribute>
+			<attribute name="style">width: 100%; display: inline-table; height: 10rem;</attribute>
 		</xpath>
 	      
-		<xpath expr="//div[1]" position="after">
-			<t t-if="product.image">
-		  <div style="width: 49.5%; display: inline-table; border:2px solid; height: 10rem;">
-		    <table class="table table-bordered mb-0">
-		       <tr>
-                         <td t-att-style="'background-image:url(\'/web/image/' + product._name + '/' + str(product.id) + '/image/\');background-repeat:no-repeat;background-size: 100% 210px;width: 100%; height: 11.47rem;'">
-		       	 </td>
-		       </tr>
-		    </table>
-		  </div>
-		</t>
-		</xpath>
+     <xpath expr="//tr[1]/th" position="after">
+        <t t-if="product.image">
+            <th width="50%;" rowspan="2" t-att-style="'background-image:url(\'/web/image/' + product._name + '/' + str(product.id) + '/image/\');background-repeat:no-repeat;background-size: contain;background-position: center center;max-width: 100%; height: auto;transform: scale(0.5, 0.5);border-left: 2px solid black;'"/>
+            
+        </t>
+        <t t-else="">
+          <th rowspan="2" style="width:50%;border-left: 2px solid black;">
+            <span class="text-muted">No image available</span>
+          </th>
+            
+        </t>
+      </xpath>
 	</template>
     </data>
 </odoo>
