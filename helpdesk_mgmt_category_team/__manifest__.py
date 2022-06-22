@@ -13,7 +13,7 @@ User will set Team in Helpdesk Category. Based on that, when user create ticket 
     'category': '',
     'version': '15.0.1.0',
     'depends': [
-        'helpdesk_mgmt',
+        'helpdesk_mgmt','base'
     ],
     'data': [
         'views/helpdesk_ticket_category.xml',
