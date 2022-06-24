@@ -7,7 +7,7 @@ MASS_MAILING_BUSINESS_MODELS.append('stock.picking')
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    delivery_count = fields.Integer(string='Amount of Deliveries', compute='_compute_picking_ids',store=True)
+    delivery_count = fields.Integer(string='Delivery Count', compute='_compute_picking_ids',store=True)
     sale_order_count = fields.Integer(compute='_compute_sale_order_count', string='Sale Order Count',search='_search_sale_order_count')
 
 
