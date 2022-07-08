@@ -1,8 +1,7 @@
-from odoo import fields,models
-
+from odoo import fields, models
 
 
 class HelpdeskTicketCategory(models.Model):
-    _inherit='helpdesk.ticket.category'
+    _inherit = "helpdesk.ticket.category"
 
-    team_id = fields.Many2one('helpdesk.ticket.team', string = "Team")
+    team_id = fields.Many2one("helpdesk.ticket.team", string="Team")
