@@ -1,5 +1,5 @@
 from odoo.addons.website_sale.controllers.main import WebsiteSale
-from .phone_validation import phone_format
+from ..models.phone_validation_mixin import phone_format
 from werkzeug.exceptions import Forbidden
 
 from odoo import fields, http, tools, _
