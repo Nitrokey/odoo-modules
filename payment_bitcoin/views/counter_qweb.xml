@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <template name="counter_tamplate_name_new" id="party_gift_confirmation_new_inhrit"
+                  inherit_id="website_sale.confirmation">
+            <xpath expr="//t[@t-esc='order.get_portal_last_transaction().acquirer_id.name']" position="after">
+                <t t-if="order.get_portal_last_transaction().acquirer_id.name == 'Bitcoin' and order.get_portal_last_transaction().duration > 0">
+                <t t-name="Counter_name">
+                    <div class="flex-row" id="countdown_element">
+                        <div>
+                        <strong>Pay Within:</strong>
+                        </div>
+                        <div id="timecounter" class="btn btn-info cols-xs-6 " style="min-width:30%"></div>
+                    </div>
+                    <html>
+                        <body>
+                            <script>
+
+                                var seconds = <t t-esc="order.get_portal_last_transaction().duration"/>
+                                document.getElementById("timecounter").style.fontSize = '60px';
+                                function updateClock() {
+                                var seconds1 = seconds - 1
+                                seconds = Number(seconds1);
+
+                                var h = Math.floor(seconds / 3600);
+                                var m = Math.floor(((seconds / 3600) % 1).toFixed(4) * 60);
+                                var s = parseInt((((((seconds / 3600) % 1).toFixed(4) * 60) - Math.floor(((seconds /
+                                3600) %
+                                1).toFixed(4) * 60) ) * 60).toFixed())
+
+                                var hDisplay = h >= 0 ? ""+("0" + h).slice(-2)+"":"";
+                                var mDisplay = m >= 0 ? ""+("0" + m).slice(-2)+"":"";
+                                var sDisplay = s >= 0 ? ""+("0" + s).slice(-2)+"":"";
+
+                                (document.getElementById('timecounter').innerHTML = hDisplay+":"+ mDisplay
+                                +":"+ sDisplay);
+                                setTimeout(updateClock, 1000);
+                                seconds = seconds1
+
+                               var x = document.getElementById("countdown_element");
+                                      if (seconds === 0) {
+                                        x.style.display = "none";
+                                            seconds = None
+                                      }
+                                }
+                                this.updateClock();
+                            </script>
+                        </body>
+                    </html>
+                </t>
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>

@@ -12,8 +12,10 @@
         'views/bitcoin_views.xml',
         'views/payment_bitcoin_templates.xml',
         'views/templates.xml',
+        'views/counter_qweb.xml',
         'views/cart.xml',
         'views/res_config_settings_view.xml',
+        'views/payment_acquirer.xml',
         'data/payment_acquirer_data.xml',
         'data/base_automation.xml',
         'data/ir_cron_data.xml',
@@ -22,4 +24,8 @@
     ],
     'installable': True,
     'auto_install': False,
+
+
+
+
 }
