@@ -6,6 +6,7 @@ import werkzeug
 import odoo.addons.website_sale.controllers.main
 from odoo import _, http
 from odoo.http import request
+from datetime import timedelta
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -84,10 +85,12 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
                 order.payment_tx_id.bitcoin_address, bitcoin_amount,
                 order.name)
 
-            info = _("Please send %s %s to the following address: %s") % (
+            info = _("Please send %s %s to the following address: %s , until %s UTC") % (
                 order.payment_tx_id.bitcoin_amount,
                 order.payment_tx_id.bitcoin_unit,
-                order.payment_tx_id.bitcoin_address)
+                order.payment_tx_id.bitcoin_address,
+                order.payment_tx_id.date + timedelta(minutes=order.payment_tx_id.acquirer_id.deadline),
+            )
 
             if after_panel_heading:
                 after_panel_heading += 6
@@ -97,10 +100,12 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
                     b'</div>'
                     b'<div class="panel-body" style="padding-top:5px; '
                     b'padding-bottom:0px;">'
-                    b'<center><img src="/report/barcode/bitcoin/?type=QR&amp;'
-                    b'value=%s&amp;width=300&amp;height=300"></center>'
+                    b'<div><img src="/report/barcode/bitcoin/?type=QR&amp;'
+                    b'value=%s&amp;width=300&amp;height=300"></div>'
                     b'</div>'
                 ) % (info.encode(), uri.encode())
+
+
 
                 resp['message'] = resp['message'][:after_panel_heading] +\
                     msg + resp['message'][after_panel_heading:]
