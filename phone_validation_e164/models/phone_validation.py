@@ -6,10 +6,7 @@ import phonenumbers
 
 from odoo.exceptions import UserError
 
-from odoo.addons.phone_validation.tools.phone_validation import (
-    phone_format,
-    phone_parse,
-)
+from odoo.addons.phone_validation.tools.phone_validation import phone_parse
 
 _logger = logging.getLogger(__name__)
 
