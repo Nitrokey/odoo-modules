@@ -85,12 +85,13 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
                 order.payment_tx_id.bitcoin_address, bitcoin_amount,
                 order.name)
 
-            info = _("Please send %s %s to the following address: %s , until %s UTC") % (
-                order.payment_tx_id.bitcoin_amount,
-                order.payment_tx_id.bitcoin_unit,
-                order.payment_tx_id.bitcoin_address,
-                order.payment_tx_id.date + timedelta(minutes=order.payment_tx_id.acquirer_id.deadline),
-            )
+            info = _("Please send %(amount)s %(unit)s to the address %(address)s until %(deadline_date)s UTC.")%{
+                'amount' : order.payment_tx_id.bitcoin_amount,
+                'unit' : order.payment_tx_id.bitcoin_unit,
+                'address' : order.payment_tx_id.bitcoin_address,
+                'deadline_date' : order.payment_tx_id.date + timedelta(minutes=order.payment_tx_id.acquirer_id.deadline)
+            }
+
 
             if after_panel_heading:
                 after_panel_heading += 6

@@ -29,6 +29,19 @@ class BitcoinPaymentAcquirer(models.Model):
 class BitcoinPaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
 
+    duration = fields.Integer(string="time remaining", compute="_computue_time_remaning")
+
+    def _computue_time_remaning(self):
+        for transaction in self:
+            deadline = transaction.date + timedelta(
+                minutes=transaction.acquirer_id.deadline)
+            current_dattime = fields.Datetime.now()
+            if deadline > current_dattime:
+                remaining_time = deadline - fields.Datetime.now()
+                transaction.duration = remaining_time.seconds
+            else:
+                transaction.duration = 0
+
     @api.model
     def create(self, values):
         values['date'] = fields.Datetime.now()
@@ -85,19 +98,3 @@ class BitcoinPaymentTransaction(models.Model):
         self._set_transaction_pending()
         return self.write({'state': 'pending'})
 
-
-class PaymentTransactionBitcoin(models.Model):
-    _inherit = 'payment.transaction'
-
-    duration = fields.Integer(string="time remaining", compute="_computue_time_remaning")
-
-    def _computue_time_remaning(self):
-        for transaction in self:
-            deadline = transaction.date + timedelta(
-                minutes=transaction.acquirer_id.deadline)
-            current_dattime = fields.Datetime.now()
-            if deadline > current_dattime:
-                remaining_time = deadline - fields.Datetime.now()
-                transaction.duration = remaining_time.seconds
-            else:
-                transaction.duration = 0
