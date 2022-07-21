@@ -3,8 +3,8 @@ Phone Validation 164
 ====================
 
 
-This module was written to provide common legal page needed in any website.
-This legal page must be edited using the website builder.
+There are three types of formator 1) International 2) national and 3) E164
+By using we have added default e164 phone formator for partner form.
 
 Authors
 ~~~~~~~
