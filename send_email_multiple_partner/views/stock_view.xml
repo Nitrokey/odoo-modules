@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="stock.action_lead_mass_mail" model="ir.actions.act_window">
+        <field
+      name="context"
+      eval="{
+                'default_composition_mode': 'mass_mail',
+                'default_model': 'stock.picking',
+                'default_use_template': False,
+                'default_template_id': False,
+                'default_hide_no_auto_thread': True,
+            }"
+    />
+    </record>
+</odoo>
