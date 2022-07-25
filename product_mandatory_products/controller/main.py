@@ -50,8 +50,8 @@ class ProductConfigurator(ProductConfiguratorController):
 
             no_variant_attribute_values = combination.filtered(
                 lambda product_template_attribute_value:
-            product_template_attribute_value.attribute_id.create_variant
-            == "no_variant"
+                product_template_attribute_value.attribute_id.create_variant
+                == "no_variant"
             )
             if no_variant_attribute_values:
                 product = product.with_context(
