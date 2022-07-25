@@ -15,7 +15,7 @@
     ],
     # Author
     "author": "Nitrokey GmbH",
-    "website": "https://www.nitrokey.com",
+    "website": "https://github.com/OCA/server-tools",
     "maintainer": "Nitrokey GmbH",
     "assets": {
         "web.assets_frontend": [
