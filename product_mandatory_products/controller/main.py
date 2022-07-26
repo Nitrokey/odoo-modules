@@ -49,8 +49,7 @@ class ProductConfigurator(ProductConfiguratorController):
             add_qty = int(kw.get("add_qty", 1))
 
             no_variant_attribute_values = combination.filtered(
-                lambda product_template_attribute_value:
-                product_template_attribute_value.attribute_id.create_variant
+                lambda product_template_attribute_value: product_template_attribute_value.attribute_id.create_variant  # noqa : E501
                 == "no_variant"
             )
             if no_variant_attribute_values:
