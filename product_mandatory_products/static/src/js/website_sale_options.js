@@ -14,7 +14,7 @@ odoo.define("product_mandatory_products.website_sale_options", function (require
     //        return res
     //    },
     _getContext: function (extra, extraContext) {
-      var res = this._super.apply(this, arguments);
+      var res = this._super(extra, extraContext);
       if (this.optionalProductsModal && this.optionalProductsModal.display_optional) {
         res.display_optional = this.optionalProductsModal.display_optional;
       }
@@ -23,7 +23,7 @@ odoo.define("product_mandatory_products.website_sale_options", function (require
     //    Overwrite to add `goToShop` custom value in ajax call
     _onModalSubmit: function (goToShop) {
       let currency = "";
-      goToShop = !this.optionalProductsModal.display_optional;
+      goToShop = !this.optionalProductsModal.display_optional; // eslint-disable-line no-param-reassign
       const $product = $("#product_detail");
       if ($product.length) {
         currency = $product.data("product-tracking-info").currency;
@@ -74,7 +74,7 @@ odoo.define("product_mandatory_products.website_sale_options", function (require
       var products = [];
       this.$modal.find(".js_product.in_cart:not(.main_product)").each(function () {
         var $item = $(this);
-        products.push(parseInt($item.find("input.product_id").val()));
+        products.push(parseInt($item.find("input.product_id").val(), 10));
       });
       rpc
         .query({
