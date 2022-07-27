@@ -1,5 +1,4 @@
 from odoo.addons.website_sale.controllers.main import WebsiteSale
-from ..models.phone_validation_mixin import phone_format
 from werkzeug.exceptions import Forbidden
 
 from odoo import fields, http, tools, _
@@ -36,17 +35,6 @@ class WebsiteSaleExt(WebsiteSale):
 
         # IF POSTED
         if 'submitted' in kw:
-            if kw.get('phone') and kw.get('country_id'):
-                country_id = request.env['res.country'].browse(int(kw.get('country_id')))
-                formated_vals = phone_format(
-                    kw.get('phone'),
-                    country_id.code if country_id else None,
-                    country_id.phone_code if country_id else None,
-                    always_international=False,
-                    raise_exception=False,
-                )
-                kw.update({'phone': formated_vals})
-
             pre_values = self.values_preprocess(order, mode, kw)
             errors, error_msg = self.checkout_form_validate(mode, kw, pre_values)
             post, errors, error_msg = self.values_postprocess(order, mode, pre_values, errors, error_msg)
