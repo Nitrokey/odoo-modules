@@ -112,7 +112,7 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
                     b'src="/report/barcode/bitcoin/?br_type=QR&amp;'
                     b'value=%s&amp;width=300&amp;height=300"></div>'
                     b'<div><div class="flex-row" id="countdown_element">'
-                    b"<div><strong>Pay Within:</strong></div><div"
+                    b"<div><strong>Pay Within:</strong></div><div "
                     b'id="timecounter" class="btn btn-info cols-xs-6 "></div></div></div>'
                     b"</div>"
                 ) % (info.encode(), uri.encode())
