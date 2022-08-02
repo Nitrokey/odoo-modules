@@ -270,7 +270,7 @@ msgstr ""
 #. module: payment_bitcoin
 #: code:addons/payment_bitcoin/controllers/main.py:89
 #, python-format
-msgid "Please send %(amount)s %(unit)s to the address %(address)s until %(deadline_date)s UTC."
+msgid "Please send %(amount)s %(unit)s to the address %(address)s by %(deadline_date)s UTC."
 msgstr "Bitte senden Sie den Betrag von %(amount)s %(unit)s bis um %(deadline_date)s UTC an die Adresse %(address)s."
 
 #. module: payment_bitcoin
