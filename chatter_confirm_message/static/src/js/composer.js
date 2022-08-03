@@ -9,14 +9,22 @@ const rpc = require('web.rpc');
     BasicComposer.include({
     _sendMessage: function () {
         var _super =  this._super.bind(this);
+        var follower_ids = null;
+        var rec_id = null;
+        var model = null;
         if (this.__parentedParent.record &&	this.options.isLog == false){
-        var follower_ids =  this.__parentedParent.record.data.message_follower_ids.res_ids
-        if (follower_ids.length != 0){
+            var follower_ids =  this.__parentedParent.record.data.message_follower_ids.res_ids
+        }
+        if(!follower_ids && this.__parentedParent.action.display_name == 'Discuss'){
+            var rec_id = $(".o_document_link").data('oe-id');
+            var model = $(".o_document_link").data('oe-model');
+        }
+         if (follower_ids != null || rec_id){
 	         var self = this;
 	         var def = rpc.query({
 	                    model: 'res.partner',
 	                    method: 'check_users',
-	                    args: [follower_ids],
+	                    args: [follower_ids, rec_id, model],
 	                    }).then(function (resposne) {
 	                        if (resposne == true){
 	                            dialog.open()
@@ -43,9 +51,7 @@ const rpc = require('web.rpc');
         else{
          _super();
         }
-    }
-    else{ _super();
-    }
+
     },
 
 });

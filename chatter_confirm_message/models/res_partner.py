@@ -6,9 +6,12 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     @api.model
-    def check_users(self, follower_ids):
+    def check_users(self, follower_ids, rec_id, model):
         # partners = self.browse(partner_ids)
-        followers = self.env['mail.followers'].browse(follower_ids)
+        if follower_ids:
+            followers = self.env['mail.followers'].browse(follower_ids)
+        else:
+            followers = self.env[model].browse(rec_id).message_follower_ids
         for follower in followers:
             for partner in follower.partner_id:
                 if not partner.user_ids:
