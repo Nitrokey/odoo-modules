@@ -9,6 +9,7 @@ const rpc = require('web.rpc');
     BasicComposer.include({
     _sendMessage: function () {
         var _super =  this._super.bind(this);
+        
         var follower_ids = null;
         var rec_id = null;
         var model = null;
@@ -16,8 +17,8 @@ const rpc = require('web.rpc');
             var follower_ids =  this.__parentedParent.record.data.message_follower_ids.res_ids
         }
         if(!follower_ids && this.__parentedParent.action.display_name == 'Discuss'){
-            var rec_id = $(".o_document_link").data('oe-id');
-            var model = $(".o_document_link").data('oe-model');
+            var rec_id = this.__parentedParent._selectedMessage._documentID
+            var model = this.__parentedParent._selectedMessage._documentModel
         }
          if (follower_ids != null || rec_id){
 	         var self = this;
