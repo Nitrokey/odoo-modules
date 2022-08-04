@@ -9,14 +9,13 @@ const rpc = require('web.rpc');
     BasicComposer.include({
     _sendMessage: function () {
         var _super =  this._super.bind(this);
-        
         var follower_ids = null;
         var rec_id = null;
         var model = null;
         if (this.__parentedParent.record &&	this.options.isLog == false){
             var follower_ids =  this.__parentedParent.record.data.message_follower_ids.res_ids
         }
-        if(!follower_ids && this.__parentedParent.action.display_name == 'Discuss'){
+        if(!follower_ids && this.options.isLog != true && 'action' in this.__parentedParent && this.__parentedParent.action.display_name == 'Discuss'){
             var rec_id = this.__parentedParent._selectedMessage._documentID
             var model = this.__parentedParent._selectedMessage._documentModel
         }

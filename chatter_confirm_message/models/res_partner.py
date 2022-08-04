@@ -8,9 +8,10 @@ class ResPartner(models.Model):
     @api.model
     def check_users(self, follower_ids, rec_id, model):
         # partners = self.browse(partner_ids)
+        followers=self.env['mail.followers']
         if follower_ids:
             followers = self.env['mail.followers'].browse(follower_ids)
-        else:
+        if rec_id and model:
             followers = self.env[model].browse(rec_id).message_follower_ids
         for follower in followers:
             for partner in follower.partner_id:
