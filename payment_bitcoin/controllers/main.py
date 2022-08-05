@@ -71,7 +71,7 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
     def payment_get_status(self, sale_order_id, **post):
         resp = super(WebsiteSale, self).payment_get_status(sale_order_id)
         order = request.env["sale.order"].sudo().browse(sale_order_id)
-        language = order.partner_id.lang or 'en_US'
+        language = request.env.context.get('lang') or order.partner_id.lang or 'en_US'
         lang_id = request.env["res.lang"].search([("code", "=", language)])
         if order.payment_acquirer_id.provider == "bitcoin":
             after_panel_heading = resp["message"].find(
