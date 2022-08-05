@@ -71,6 +71,8 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
     def payment_get_status(self, sale_order_id, **post):
         resp = super(WebsiteSale, self).payment_get_status(sale_order_id)
         order = request.env["sale.order"].sudo().browse(sale_order_id)
+        language = order.partner_id.lang or 'en_US'
+        lang_id = request.env["res.lang"].search([("code", "=", language)])
         if order.payment_acquirer_id.provider == "bitcoin":
             after_panel_heading = resp["message"].find(
                 b"</div>", resp["message"].find(b'<div class="panel-heading">')
@@ -86,12 +88,12 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
                 "bt_amt": bitcoin_amount,
                 "msg": order.name,
             }
-
+            decimal_places = len(str(order.payment_tx_id.bitcoin_amount).split('.')[1])
             info = _(
                 "Please send %(amount)s %(unit)s to the address"
                 " %(address)s by %(deadline_date)s UTC."
             ) % {
-                "amount": order.payment_tx_id.bitcoin_amount,
+                "amount": lang_id.format(f"%.{decimal_places}f", float(order.payment_tx_id.bitcoin_amount), True, True),
                 "unit": order.payment_tx_id.bitcoin_unit,
                 "address": order.payment_tx_id.bitcoin_address,
                 "deadline_date": order.payment_tx_id.date

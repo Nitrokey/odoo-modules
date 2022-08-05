@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <data>
 
-        <template
-      name="counter_tamplate_name_new"
-      id="party_gift_confirmation_new_inhrit"
-      inherit_id="website_sale.payment_confirmation_status"
+    <template
+            name="counter_tamplate_name_new"
+            id="party_gift_confirmation_new_inhrit"
+            inherit_id="website_sale.payment_confirmation_status"
     >
-<!--            <xpath expr="//t[@t-esc='order.get_portal_last_transaction().acquirer_id.name']" position="after">-->
-            <xpath
-        expr="//div[hasclass('oe_website_sale_tx_status')]/div[hasclass('card')]/div[2]"
-        position="after"
-      >
-                <t
-          t-if="order.get_portal_last_transaction().acquirer_id.name == 'Bitcoin' and order.get_portal_last_transaction().duration > 0"
+        <!--            <xpath expr="//t[@t-esc='order.get_portal_last_transaction().acquirer_id.name']" position="after">-->
+        <xpath
+                expr="//div[hasclass('oe_website_sale_tx_status')]/div[hasclass('card')]/div[2]"
+                position="after"
         >
+            <t
+                    t-if="order.get_portal_last_transaction().acquirer_id.name == 'Bitcoin' and order.get_portal_last_transaction().duration > 0"
+            >
                 <t t-name="Counter_name">
                     <html>
                         <body>
                             <script>
 
-                                var seconds = <t
-                    t-esc="order.get_portal_last_transaction().duration"
-                  />
+                                var seconds =
+                                <t
+                                        t-esc="order.get_portal_last_transaction().duration"
+                                />
                                 document.getElementById("timecounter").style.fontSize = '60px';
                                 function updateClock() {
                                 var seconds1 = seconds - 1
@@ -43,19 +43,18 @@
                                 setTimeout(updateClock, 1000);
                                 seconds = seconds1
 
-                               var x = document.getElementById("countdown_element");
-                                      if (seconds === 0) {
-                                        x.style.display = "none";
-                                            seconds = None
-                                      }
+                                var x = document.getElementById("countdown_element");
+                                if (seconds === 0) {
+                                x.style.display = "none";
+                                seconds = None
+                                }
                                 }
                                 this.updateClock();
                             </script>
                         </body>
                     </html>
                 </t>
-                </t>
-            </xpath>
-        </template>
-    </data>
+            </t>
+        </xpath>
+    </template>
 </odoo>
