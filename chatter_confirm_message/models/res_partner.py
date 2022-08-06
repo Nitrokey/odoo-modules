@@ -1,5 +1,3 @@
-import re
-
 from odoo import api, models
 
 
@@ -7,14 +5,10 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     @api.model
-    def check_users(self, follower_ids):
-        mail = []
-        for i in follower_ids:
-
-            str_id = re.search(r"\d+", i)
-            mail.append(int(str_id.group()))
-
-        followers = self.env["mail.followers"].browse(mail)
+    def check_users(self, rec_id, model):
+        followers = self.env["mail.followers"]
+        if rec_id and model:
+            followers = self.env[model].browse(rec_id).message_follower_ids
         for follower in followers:
             for partner in follower.partner_id:
                 if not partner.user_ids:

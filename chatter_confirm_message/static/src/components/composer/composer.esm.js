@@ -1,14 +1,12 @@
-/** @odoo-module **/
-
-import {useDragVisibleDropZone} from "@mail/component_hooks/use_drag_visible_dropzone/use_drag_visible_dropzone";
-import {registerMessagingComponent} from "@mail/utils/messaging_component";
-var core = require("web.core");
-var Dialog = require("web.Dialog");
 import {isEventHandled, markEventHandled} from "@mail/utils/utils";
+import {_t} from "web.core";
+import {registerMessagingComponent} from "@mail/utils/messaging_component";
+import {useDragVisibleDropZone} from "@mail/component_hooks/use_drag_visible_dropzone/use_drag_visible_dropzone";
+import Dialog from "web.Dialog";
 import rpc from "web.rpc";
-var _t = core._t;
-const {Component} = owl;
+
 const {useRef} = owl.hooks;
+const {Component} = owl;
 
 export class Composer extends Component {
   /**
@@ -43,9 +41,9 @@ export class Composer extends Component {
     document.removeEventListener("click", this._onClickCaptureGlobal, true);
   }
 
-  //--------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
   // Public
-  //--------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
 
   /**
    * @returns {mail.composer_view}
@@ -62,10 +60,10 @@ export class Composer extends Component {
    * the emoji popover.
    *
    * @param {Node} node
-   * @returns {boolean}
+   * @returns {Boolean}
    */
   contains(node) {
-    // emoji popover is outside but should be considered inside
+    // Emoji popover is outside but should be considered inside
     const emojisPopover = this._emojisPopoverRef.comp;
     if (emojisPopover && emojisPopover.contains(node)) {
       return true;
@@ -76,7 +74,7 @@ export class Composer extends Component {
   /**
    * Get the current partner image URL.
    *
-   * @returns {string}
+   * @returns {String}
    */
   get currentPartnerAvatar() {
     const avatar = this.messaging.currentUser
@@ -92,7 +90,7 @@ export class Composer extends Component {
   /**
    * Determine whether composer should display a footer.
    *
-   * @returns {boolean}
+   * @returns {Boolean}
    */
   get hasFooter() {
     if (!this.composerView) {
@@ -109,7 +107,7 @@ export class Composer extends Component {
   /**
    * Determine whether the composer should display a header.
    *
-   * @returns {boolean}
+   * @returns {Boolean}
    */
   get hasHeader() {
     if (!this.composerView) {
@@ -123,9 +121,9 @@ export class Composer extends Component {
     );
   }
 
-  //--------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
   // Private
-  //--------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
 
   /**
    * Post a message in the composer on related thread.
@@ -136,10 +134,9 @@ export class Composer extends Component {
    * @private
    */
   _sendPostMessage() {
-    debugger;
     if (!this.composerView.composer.canPostMessage) {
       if (this.composerView.composer.hasUploadingAttachment) {
-        this.env.services["notification"].notify({
+        this.env.services.notification.notify({
           message: this.env._t("Please wait while the file is uploading."),
           type: "warning",
         });
@@ -155,62 +152,56 @@ export class Composer extends Component {
 
   _postMessage() {
     var self = this;
+    var res_id = null;
+    var model = null;
     if (
-      this.composerView.composer.thread.followers &&
-      this.composerView.composer.__values.isLog == false
+      this.composerView.composer.thread.__values.fetchMessagesParams.thread_id &&
+      this.composerView.composer.thread.__values.fetchMessagesParams.thread_model &&
+      this.composerView.composer.__values.isLog === false
     ) {
-      var follower_ids = this.composerView.composer.thread.followers;
-      var partner_ids = [];
-      let start_point = 0;
+      res_id = this.composerView.composer.thread.__values.fetchMessagesParams.thread_id;
+      model =
+        this.composerView.composer.thread.__values.fetchMessagesParams.thread_model;
 
-      let len = follower_ids.length;
-      if (follower_ids.length != 0) {
-        var self = this;
-        for (; start_point < len; start_point++) {
-          partner_ids.push(follower_ids[start_point]["localId"]);
-        }
-        var def = rpc
-          .query({
-            model: "res.partner",
-            method: "check_users",
-            args: [partner_ids],
-          })
-          .then(function (resposne) {
-            if (resposne == true) {
-              dialog.open();
-            } else {
+      var dialog = new Dialog(self, {
+        title: "Confirmation For Chatter",
+        size: "medium",
+        $content: _t(
+          "<p>Your message will be sent to external partners (e.g. customers).</p>"
+        ),
+        buttons: [
+          {
+            text: _t("Send"),
+            click: function () {
               self._sendPostMessage();
-            }
-          });
-        var dialog = new Dialog(self, {
-          title: "Confirmation For Chatter",
-          size: "medium",
-          $content: _t(
-            "<p>Your message will be sent to external partners (e.g. customers).</p>"
-          ),
-          buttons: [
-            {
-              text: _t("Send"),
-              click: function () {
-                self._sendPostMessage();
-                dialog.close();
-              },
-              classes: "btn-primary",
+              dialog.close();
             },
-            {text: _t("Cancel"), close: true, classes: "btn-primary"},
-          ],
+            classes: "btn-primary",
+          },
+          {text: _t("Cancel"), close: true, classes: "btn-primary"},
+        ],
+      });
+      rpc
+        .query({
+          model: "res.partner",
+          method: "check_users",
+          args: [res_id, model],
+        })
+        .then(function (resposne) {
+          if (resposne === true) {
+            dialog.open();
+          } else {
+            self._sendPostMessage();
+          }
         });
-      } else {
-        self._sendPostMessage();
-      }
     } else {
       self._sendPostMessage();
     }
   }
 
-  //--------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
   // Handlers
-  //--------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
 
   /**
    * Called when clicking on attachment button.
@@ -261,6 +252,7 @@ export class Composer extends Component {
    * @param {MouseEvent} ev
    */
   _onClickDiscard(ev) {
+    ev.stopPropagation();
     this.composerView.discard();
   }
 
@@ -301,7 +293,7 @@ export class Composer extends Component {
    * @private
    * @param {CustomEvent} ev
    * @param {Object} ev.detail
-   * @param {string} ev.detail.unicode
+   * @param {String} ev.detail.unicode
    */
   _onEmojiSelection(ev) {
     ev.stopPropagation();

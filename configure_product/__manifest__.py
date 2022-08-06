@@ -1,7 +1,8 @@
 {
     "name": "Configure Product",
     "category": "Hidden",
-    "summary": """The system will display Configure Product wizard after Adding a product to the sale order and purchase order form.
+    "summary": """The system will display Configure Product wizard after Adding a
+product to the sale order and purchase order form.
     """,
     "version": "15.0.1.0.0",
     "depends": [
