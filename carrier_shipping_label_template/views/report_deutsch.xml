@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+<report
+        id="deutsch_shipping_label"
+        model="stock.picking"
+        string="Deutsch Shipping Label"
+        report_type="qweb-pdf"
+        name="carrier_shipping_label_template.deutsch_report"
+        file="carrier_shipping_label_template.deutsch_report"
+        />
+
+  </data>
+</openerp>

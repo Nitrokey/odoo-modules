@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+       <record id="report_qweb_paperformat_ups" model="report.paperformat">
+        <field name="name">UPS paperformat</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">290</field>
+        <field name="page_width">200</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">2</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">90</field>
+    </record>
+
+
+
+<report
+        id="ups_shipping_label"
+        model="stock.picking"
+        string="UPS Shipping Label"
+        report_type="qweb-pdf"
+        name="carrier_shipping_label_template.ups_label_report"
+        file="carrier_shipping_label_template.ups_label_report"
+        />
+             <record id="ups_shipping_label" model="ir.actions.report">
+            <field name="paperformat_id" ref="carrier_shipping_label_template.report_qweb_paperformat_ups"/>
+        </record>
+
+
+       <template id="ups_label_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <div style="overflow:hidden;height:1250px;weight:800px;">
+                   <img t-attf-src="data:image/*;base64,{{o.ups_image}}" style="margin-bottom:320px;margin-top:320px;-webkit-transform:rotate(90deg);overflow:hidden;margin-left:-270;margin-bottom:-600px;"/>
+                    </div>
+                </t>
+            </t>
+        </template>
+  </data>
+</openerp>
