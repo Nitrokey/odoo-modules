@@ -5,7 +5,7 @@
 <report
         id="deutsch_shipping_label"
         model="stock.picking"
-        string="Deutsch Shipping Label"
+        string="Deutsche Post Shipping Label"
         report_type="qweb-pdf"
         name="carrier_shipping_label_template.deutsch_report"
         file="carrier_shipping_label_template.deutsch_report"

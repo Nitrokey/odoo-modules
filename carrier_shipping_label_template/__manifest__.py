@@ -11,7 +11,7 @@
  ],
  'data': [
      "views/report_ups.xml",
-     'views/report_deutsch.xml',
+     'views/report_deutsch_post.xml',
  ],
  'auto_install': False,
  'installable': True,
