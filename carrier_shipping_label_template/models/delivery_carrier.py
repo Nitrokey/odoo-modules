@@ -1,5 +1,4 @@
 import base64
-
 from odoo import fields, models, api
 
 
@@ -19,4 +18,4 @@ class UPSReturnDeliveryCarrier(models.Model):
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    ups_image = fields.Binary(string='image')
+    ups_image = fields.Binary(string='UPS Image')

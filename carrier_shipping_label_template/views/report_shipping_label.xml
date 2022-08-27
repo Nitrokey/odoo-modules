@@ -20,19 +20,19 @@
 
 
         <report
-                id="ups_shipping_label"
+                id="action_report_shipping_label"
                 model="stock.picking"
-                string="UPS Shipping Label"
+                string="Shipping Label"
                 report_type="qweb-pdf"
-                name="carrier_shipping_label_template.ups_label_report"
-                file="carrier_shipping_label_template.ups_label_report"
+                name="carrier_shipping_label_template.report_shipping_label"
+                file="carrier_shipping_label_template.report_shipping_label"
         />
-        <record id="ups_shipping_label" model="ir.actions.report">
+        <record id="action_report_shipping_label" model="ir.actions.report">
             <field name="paperformat_id" ref="carrier_shipping_label_template.report_qweb_paperformat_ups"/>
         </record>
 
 
-        <template id="ups_label_report">
+        <template id="report_shipping_label">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="o">
                     <div style="overflow:hidden;weight:800px;">
@@ -42,6 +42,5 @@
                 </t>
             </t>
         </template>
-
     </data>
 </openerp>

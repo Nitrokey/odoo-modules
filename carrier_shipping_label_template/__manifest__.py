@@ -5,13 +5,11 @@
  'author': "Nitrokey GmbH",
  'license': 'AGPL-3',
  'depends': [
-     'nitrokey_ups_delivery_carrier',
+     'ups_delivery_carrier',
      'carrier_deutsche_post',
-
  ],
  'data': [
-     "views/report_ups.xml",
-     'views/report_deutsch_post.xml',
+     "views/report_shipping_label.xml"
  ],
  'auto_install': False,
  'installable': True,
