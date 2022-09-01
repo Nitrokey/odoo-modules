@@ -3,11 +3,11 @@
     <data>
 
         <record id="report_qweb_paperformat_ups" model="report.paperformat">
-            <field name="name">UPS paperformat</field>
+            <field name="name">100 x 150 mm thermal label (e.g. Zebra GK420D)</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
-            <field name="page_height">148</field>
-            <field name="page_width">105</field>
+            <field name="page_height">150</field>
+            <field name="page_width">100</field>
             <field name="orientation">Portrait</field>
             <field name="margin_top">3</field>
             <field name="margin_bottom">0</field>
