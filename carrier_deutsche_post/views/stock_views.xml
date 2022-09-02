@@ -6,8 +6,8 @@
       <field name="model">stock.picking</field>
       <field name="inherit_id" ref="stock.view_picking_form"/>
       <field name="arch" type="xml">
-        <button name="do_unreserve" position="after">
-          <!-- <button name="get_deutsche_post_label" string="Buy Deutsche Post Label" type="object"  attrs="{'invisible': ['|','|','|',('carrier_type','!=','deutsche_post'),('picking_type_code', '!=', 'outgoing'),('state','not in',['assigned','done']),('label_de_attach_id','!=',False)]}"/>
+        <!-- <button name="do_unreserve" position="after">
+          <button name="get_deutsche_post_label" string="Buy Deutsche Post Label" type="object"  attrs="{'invisible': ['|','|','|',('carrier_type','!=','deutsche_post'),('picking_type_code', '!=', 'outgoing'),('state','not in',['assigned','done']),('label_de_attach_id','!=',False)]}"/>
         </button> -->
         <xpath expr="//page[@name='extra']/group/group/field[@name='picking_type_code']" position="after">
           <field name="carrier_type" invsible="1"/>
