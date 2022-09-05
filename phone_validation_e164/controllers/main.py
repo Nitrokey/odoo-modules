@@ -18,7 +18,7 @@ class WebsiteSaleExt(WebsiteSale):
         sitemap=False,
     )
     def address(self, **kw):
-        resposnse = super(WebsiteSaleExt, self).address(**kw)
+        response = super(WebsiteSaleExt, self).address(**kw)
         Partner = request.env["res.partner"].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()
         errors = {}
@@ -89,4 +89,4 @@ class WebsiteSaleExt(WebsiteSale):
                 if not errors:
                     return request.redirect(kw.get("callback") or "/shop/confirm_order")
 
-        return resposnse
+        return response

@@ -2,8 +2,11 @@
 {
     "name": "Phone Validation E164",
     "summary": """
-    There are three types of formator 1) International 2) national and 3) E164
-    By using we have added default e164 phone formator for partner form.
+    There are formatters for the three types of phone number formats:
+     1. The international format
+     2. The national format
+     3. The E164 format
+    By default the E164 format we have added for partner form while checkout in the website.
     """,
     "category": "Phone",
     "license": "AGPL-3",
