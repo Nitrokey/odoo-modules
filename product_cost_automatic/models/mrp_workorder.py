@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
+from odoo import api, models
 
-from odoo import models, api
 
 class MrpWorkorder(models.Model):
     _inherit = "mrp.workorder"

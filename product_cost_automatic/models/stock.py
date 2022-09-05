@@ -1,4 +1,5 @@
-from odoo import models, api
+from odoo import api, models
+
 
 class Picking(models.Model):
     _inherit = "stock.picking"

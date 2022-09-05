@@ -1,7 +1,7 @@
 {
-    'name': 'Calculate product cost',
-    'summary': "Calculate product cost from purchase order and Manufacuring order.",
-    'version': '15.0.1.0',
+    'name': 'Product Automatic Cost',
+    'summary': "Calculate product cost automatically from purchase order or Manufacuring order.",
+    'version': '15.0.1.0.0',
     'author': "Nitrokey GmbH",
     'category': 'Product',
     'depends': [

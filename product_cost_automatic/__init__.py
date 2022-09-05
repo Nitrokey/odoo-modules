@@ -1,6 +1,6 @@
+from odoo import SUPERUSER_ID, api
+
 from . import models
-# from . import wizard
-from odoo import api, SUPERUSER_ID
 
 
 def _set_is_automatically(cr, registry):
