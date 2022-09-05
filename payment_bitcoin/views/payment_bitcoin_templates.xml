@@ -11,19 +11,7 @@
       <input type='hidden' name='amount' t-att-value='amount'/>
       <input type='hidden' name='currency' t-att-value='currency.name'/>
     </template>
-
-  <template id="payment_tokens_list_bitcoin" inherit_id="payment.payment_tokens_list">
-    <xpath expr="//span[@t-field='pm_icon.image_payment_form']" position="replace">
-          <t t-if="acq.provider == 'bitcoin'">
-            <span/>
-          </t>
-          <t t-else="">
-            <span t-field="pm_icon.image_payment_form"
-                  t-options='{"widget": "image", "alt-field": "name"}'/>
-          </t>
-    </xpath>
-  </template>
-
+  
     <record id="transaction_form_bitcoin" model="ir.ui.view">
       <field name="model">payment.transaction</field>
       <field name="inherit_id" ref="payment.transaction_form"/>

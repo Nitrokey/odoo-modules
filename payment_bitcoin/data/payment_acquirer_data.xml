@@ -11,7 +11,6 @@
         <field name="image" type="base64" file="payment_bitcoin/static/src/img/bitcoin_icon.png"/>
     </record>
 
-
     <record id="payment_acquirer_bitcoin" model="payment.acquirer">
         <field name="name">Bitcoin</field>
         <field name="image" type="base64" file="payment_bitcoin/static/src/img/bitcoin_icon.png"/>
@@ -24,7 +23,7 @@
         <p>Transfer information will be provided after choosing the payment mode.</p>]]>
         </field>
         <field name="post_msg"></field>
-        <field name="payment_icon_ids" eval='[(6, 0, [ref("payment_icon_bitcoin")])]'/>
+        <field name="payment_icon_ids" eval='[(6, 0, [ref("payment_bitcoin.payment_icon_bitcoin")])]'/>
     </record>
 
 </odoo>
