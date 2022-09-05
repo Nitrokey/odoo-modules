@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="mail.action_partner_mass_mail" model="ir.actions.act_window">
+        <field
+      name="context"
+      eval="{
+                'default_composition_mode': 'mass_mail',
+                'default_model': 'res.partner',
+                'default_use_template': False,
+                'default_template_id': False,
+                'default_hide_no_auto_thread': True,
+            }"
+    />
+    </record>
+
+    <record id="email_compose_message_wizard_form_hide_fields" model="ir.ui.view">
+        <field name="name">mail.compose.message.form.hide.fields</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form" />
+        <field name="arch" type="xml">
+            <field name="reply_to_force_new" position="attributes">
+                <attribute
+          name="invisible"
+        >context.get('hide_no_auto_thread')</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
