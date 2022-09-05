@@ -2,7 +2,7 @@
 Limit To Employees
 ===========================
 
-When user do following action in odoo, it only shows internal users contacts in dropdown.
+When users do the following actions in odoo, it only shows internal users contacts in dropdown.
   * Chatter mentioning (@username)
   * Helpdesk ticket assignments
   * Invoicing, Salesperson
