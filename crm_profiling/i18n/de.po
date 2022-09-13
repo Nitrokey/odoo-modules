@@ -1,0 +1,462 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * crm_profiling
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-21 06:51+0000\n"
+"PO-Revision-Date: 2020-03-21 06:51+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: crm_profiling
+#: model:ir.model,name:crm_profiling.model_crm_profiling_answer
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_answer__name
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire_line__answer_id
+msgid "Answer"
+msgstr "Antwort"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_res_partner__answers_ids
+#: model:ir.model.fields,field_description:crm_profiling.field_res_users__answers_ids
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_answer
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_answer_form
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_question_form
+msgid "Answers"
+msgstr "Antwort"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_question__answers_ids
+msgid "Available Answers"
+msgstr "Antwortauswahl"
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_question_form
+msgid "Avalaible Answers"
+msgstr "Verfügbare Antworten"
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.open_questionnaire_form
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_open_questionnaire_form
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#. module: crm_profiling
+#: model:ir.model.fields,help:crm_profiling.field_crm_segmentation__exclusif
+msgid "Check if the category is limited to partners that match the segmentation criterions.\n"
+"If checked, remove the category from partners that doesn't match segmentation criterions"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,help:crm_profiling.field_crm_segmentation__sales_purchase_active
+msgid "Check if you want to use this tab as part of the segmentation rule. If not checked, the criteria beneath will be ignored"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,help:crm_profiling.field_crm_segmentation__profiling_active
+msgid "Check this box if you want to use this tab as part of the segmentation rule. If not checked, the criteria beneath will be ignored"
+msgstr "Aktiviere diese Option, wenn Sie die Einstellungen auf diesem Reiter für die Bildung Ihrer Kundensegmente anwenden möchten. Falls diese Option nicht aktiv ist, werden die Einstellungen unten ignoriert."
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__child_ids
+msgid "Child Profiles"
+msgstr "Untergeordnete Profile"
+
+#. module: crm_profiling
+#: model_terms:ir.actions.act_window,help:crm_profiling.crm_segmentation_tree-act
+msgid "Click to define a new customer segmentation."
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Compute Segmentation"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model,name:crm_profiling.model_res_partner
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: crm_profiling
+#: model:ir.actions.act_window,name:crm_profiling.crm_segmentation_tree-act
+#: model:ir.ui.menu,name:crm_profiling.menu_crm_segmentation-act
+msgid "Contacts Segmentation"
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Continue Process"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__expr_name
+msgid "Control Variable"
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.actions.act_window,help:crm_profiling.crm_segmentation_tree-act
+msgid "Create specific categories which you can assign to your\n"
+"                contacts to better manage your interactions with them. The\n"
+"                segmentation tool is able to assign categories to contacts\n"
+"                according to criteria you set."
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_answer__create_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_question__create_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_questionnaire__create_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__create_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__create_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire__create_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire_line__create_uid
+msgid "Created by"
+msgstr "Erstellt von"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_answer__create_date
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_question__create_date
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_questionnaire__create_date
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__create_date
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__create_date
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire__create_date
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire_line__create_date
+msgid "Created on"
+msgstr "Erstellt am"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__segmentation_line
+msgid "Criteria"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_questionnaire__description
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__description
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_questionnaire_form
+msgid "Description"
+msgstr "Beschreibung"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_answer__display_name
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_question__display_name
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_questionnaire__display_name
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__display_name
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__display_name
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire__display_name
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire_line__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: crm_profiling
+#: constraint:crm.segmentation:0
+msgid "Error ! You cannot create recursive profiles."
+msgstr "Fehler! Sie können keine rekursiven Profile anlegen."
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__answer_no
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Excluded Answers"
+msgstr "Ausgeschlossene Antworten"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__exclusif
+msgid "Exclusive"
+msgstr "Exklusiv"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__state
+msgid "Execution Status"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_answer__id
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_question__id
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_questionnaire__id
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__id
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__id
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire__id
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire_line__id
+msgid "ID"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__answer_yes
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Included Answers"
+msgstr "Eingeschlossen Antworten"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_answer____last_update
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_question____last_update
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_questionnaire____last_update
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation____last_update
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line____last_update
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire____last_update
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire_line____last_update
+msgid "Last Modified on"
+msgstr "Zuletzt geändert am"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_answer__write_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_question__write_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_questionnaire__write_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__write_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__write_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire__write_uid
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire_line__write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert durch"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_answer__write_date
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_question__write_date
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_questionnaire__write_date
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__write_date
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__write_date
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire__write_date
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire_line__write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__operator
+msgid "Mandatory / Optional"
+msgstr ""
+
+#. module: crm_profiling
+#: selection:crm.segmentation.line,operator:0
+msgid "Mandatory Expression"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__partner_id
+msgid "Max Partner ID processed"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__name
+msgid "Name"
+msgstr ""
+
+#. module: crm_profiling
+#: selection:crm.segmentation,state:0
+msgid "Not Running"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.actions.act_window,name:crm_profiling.action_open_questionnaire
+#: model:ir.model,name:crm_profiling.model_open_questionnaire
+#: model_terms:ir.ui.view,arch_db:crm_profiling.open_questionnaire_form
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_open_questionnaire_form
+msgid "Open Questionnaire"
+msgstr "Fragebogen öffnen"
+
+#. module: crm_profiling
+#: model:ir.model,name:crm_profiling.model_open_questionnaire_line
+msgid "Open Questionnaire Line"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__expr_operator
+msgid "Operator"
+msgstr "Ausführender"
+
+#. module: crm_profiling
+#: selection:crm.segmentation.line,operator:0
+msgid "Optional Expression"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__parent_id
+msgid "Parent Profile"
+msgstr "Übergeordnete Profile"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__categ_id
+msgid "Partner Category"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model,name:crm_profiling.model_crm_segmentation
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Partner Segmentation"
+msgstr "Partner-Segmentierung"
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation_line-view
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation_line_tree-view
+msgid "Partner Segmentation Lines"
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation_tree-view
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_partner_crm_segmentation_tree
+msgid "Partner Segmentations"
+msgstr "Partner-Segmentierung"
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_partner_form
+msgid "Profiling"
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Profiling Options"
+msgstr ""
+
+#. module: crm_profiling
+#: selection:crm.segmentation.line,expr_name:0
+msgid "Purchase Amount"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model,name:crm_profiling.model_crm_profiling_question
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_answer__question_id
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_question__name
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire_line__question_id
+msgid "Question"
+msgstr "Frage"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire__question_ans_ids
+msgid "Question / Answers"
+msgstr "Fragen / Antworten"
+
+#. module: crm_profiling
+#: code:addons/crm_profiling/wizard/open_questionnaire.py:68
+#: model:ir.model,name:crm_profiling.model_crm_profiling_questionnaire
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_questionnaire__name
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire_line__wizard_id
+#: model_terms:ir.ui.view,arch_db:crm_profiling.open_questionnaire_form
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_open_questionnaire_line_form
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_open_questionnaire_line_tree
+#, python-format
+msgid "Questionnaire"
+msgstr "Fragebogen"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_open_questionnaire__questionnaire_id
+msgid "Questionnaire name"
+msgstr "Name des Fragebogens"
+
+#. module: crm_profiling
+#: model:ir.actions.act_window,name:crm_profiling.open_questionnaires
+#: model:ir.ui.menu,name:crm_profiling.menu_segm_questionnaire
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_open_questionnaire_form
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_questionnaire_form
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_questionnaire_tree
+msgid "Questionnaires"
+msgstr "Fragebögen"
+
+#. module: crm_profiling
+#: model:ir.actions.act_window,name:crm_profiling.open_questions
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_profiling_questionnaire__questions_ids
+#: model:ir.ui.menu,name:crm_profiling.menu_segm_answer
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_question_form
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_question_tree
+msgid "Questions"
+msgstr "Vertriebsfragen"
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_questionnaire_form
+msgid "Questions List"
+msgstr "Fragenliste"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__name
+msgid "Rule Name"
+msgstr "Regelbezeichnung"
+
+#. module: crm_profiling
+#: selection:crm.segmentation,state:0
+msgid "Running"
+msgstr ""
+
+#. module: crm_profiling
+#: selection:crm.segmentation.line,expr_name:0
+msgid "Sale Amount"
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Sales Purchase"
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.open_questionnaire_form
+msgid "Save Data"
+msgstr "Daten speichern"
+
+#. module: crm_profiling
+#: model:ir.actions.act_window,name:crm_profiling.crm_segmentation-act
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__segmentation_id
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Segmentation"
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Segmentation Description"
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Segmentation Test"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model,name:crm_profiling.model_crm_segmentation_line
+msgid "Segmentation line"
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.crm_segmentation-view
+msgid "Stop Process"
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,help:crm_profiling.field_crm_segmentation__name
+msgid "The name of the segmentation."
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,help:crm_profiling.field_crm_segmentation__categ_id
+msgid "The partner category that will be  added to partners that match the segmentation criterions after computation."
+msgstr ""
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__profiling_active
+msgid "Use The Profiling Rules"
+msgstr "Aktiviere Profile Segmentierung"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation__sales_purchase_active
+msgid "Use The Sales Purchase Rules"
+msgstr ""
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_partner_form
+msgid "Use a questionnaire"
+msgstr "Fragebogen verwenden"
+
+#. module: crm_profiling
+#: model:ir.model.fields,field_description:crm_profiling.field_crm_segmentation_line__expr_value
+msgid "Value"
+msgstr "Wert"
+
+#. module: crm_profiling
+#: model_terms:ir.actions.act_window,help:crm_profiling.open_questionnaires
+msgid "You can create specific topic-related questionnaires to guide your team(s) in the sales cycle by helping them to ask the right questions. The segmentation tool allows you to automatically assign a partner to a category according to his answers to the different questionnaires."
+msgstr "Um ihr(e) Team(s) beim Verkaufsablauf zu unterstützen können Sie themenbezogene Fragebögen mit den passenden Fragestellungen erstellen. Die Funktionen für die Segmentierung ermöglichen eine automatische Einordnung des Partners in eine Kategorie entsprechend seiner Anworten auf verschiedene Fragebögen."
+
+#. module: crm_profiling
+#: model_terms:ir.ui.view,arch_db:crm_profiling.open_questionnaire_form
+#: model_terms:ir.ui.view,arch_db:crm_profiling.view_open_questionnaire_form
+msgid "or"
+msgstr "oder"

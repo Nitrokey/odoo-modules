@@ -1,0 +1,162 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record model="ir.actions.act_window" id="open_questionnaires">
+        <field name="name">Questionnaires</field>
+        <field name="res_model">crm_profiling.questionnaire</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help">
+            You can create specific topic-related questionnaires to guide your team(s) in the sales cycle
+            by helping them to ask the right questions. The segmentation tool allows you to automatically assign a
+            partner to a category according to his answers to the different questionnaires.
+        </field>
+    </record>
+
+    <menuitem
+    parent="sale.menu_sale_config"
+    id="menu_segm_questionnaire"
+    action="open_questionnaires"
+    sequence="7"
+  />
+
+    <record model="ir.actions.act_window" id="open_questions">
+        <field name="name">Questions</field>
+        <field name="res_model">crm_profiling.question</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+    parent="sale.menu_sale_config"
+    id="menu_segm_answer"
+    action="open_questions"
+    sequence="8"
+    groups="base.group_no_one"
+  />
+
+    <!-- Profiling Questionnaire Tree view  -->
+    <record model="ir.ui.view" id="view_questionnaire_tree">
+        <field name="name">Questionnaires</field>
+        <field name="model">crm_profiling.questionnaire</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" colspan="4" />
+                <field name="description" colspan="4" />
+                <field name="questions_ids" colspan="4" nolabel="1" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Profiling Questionnaire Form view  -->
+    <record model="ir.ui.view" id="view_questionnaire_form">
+        <field name="name">Questionnaires</field>
+        <field name="model">crm_profiling.questionnaire</field>
+        <field name="arch" type="xml">
+            <form string="Questionnaires">
+                <group col="4">
+                    <field name="name" />
+                    <newline />
+                    <separator string="Questions List" colspan="4" />
+                    <field name="questions_ids" colspan="4" nolabel="1" />
+                    <newline />
+                    <separator string="Description" colspan="4" />
+                    <field name="description" colspan="4" nolabel="1" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Profiling Answer Tree view  -->
+    <record model="ir.ui.view" id="view_answer_tree">
+        <field name="name">view.answer.tree</field>
+        <field name="model">crm_profiling.answer</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="question_id" />
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Profiling Answer Form view  -->
+    <record model="ir.ui.view" id="view_answer_form">
+        <field name="name">view.answer.form</field>
+        <field name="model">crm_profiling.answer</field>
+        <field name="arch" type="xml">
+            <form string="Answers">
+                <group col="4">
+                    <field name="question_id" />
+                    <field name="name" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Profiling Questions Tree view  -->
+    <record model="ir.ui.view" id="view_question_tree">
+        <field name="name">view.question.tree</field>
+        <field name="model">crm_profiling.question</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" colspan="4" />
+                <field name="answers_ids" colspan="4" nolabel="1" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Profiling Questions Form view  -->
+    <record model="ir.ui.view" id="view_question_form">
+        <field name="name">view.question.form</field>
+        <field name="model">crm_profiling.question</field>
+        <field name="arch" type="xml">
+            <form string="Questions">
+                <group col="4">
+                    <newline />
+                    <field name="name" />
+                    <newline />
+                    <separator string="Avalaible Answers" colspan="4" />
+                    <field name="answers_ids" colspan="4" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="name" />
+                        </tree>
+                        <form string="Answers">
+                            <field name="name" />
+                        </form>
+                    </field>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_partner_form">
+        <field name="name">res.partner.profile.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Profiling" groups="base.group_user">
+                    <button
+            string="Use a questionnaire"
+            name="%(action_open_questionnaire)d"
+            type="action"
+            colspan="1"
+            icon="fa-wpforms"
+          />
+                    <newline />
+                    <field name="answers_ids" colspan="4" nolabel="1" />
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_partner_crm_segmentation_tree">
+        <field name="name">crm.segmentation.tree</field>
+        <field name="model">crm.segmentation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="description" />
+                <field name="categ_id" />
+            </tree>
+        </field>
+    </record>
+
+</odoo>
