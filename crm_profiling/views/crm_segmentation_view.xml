@@ -1,0 +1,150 @@
+<?xml version="1.0" ?>
+<odoo>
+
+    <record id="crm_segmentation_line_tree_view" model="ir.ui.view">
+        <field name="name">crm.segmentation.line.tree</field>
+        <field name="model">crm.segmentation.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="expr_name" />
+                <field name="expr_operator" />
+                <field name="expr_value" />
+                <field name="operator" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Segmentation line Form View  -->
+
+    <record id="crm_segmentation_line_view" model="ir.ui.view">
+        <field name="name">crm.segmentation.line.form</field>
+        <field name="model">crm.segmentation.line</field>
+        <field name="arch" type="xml">
+            <form string="Partner Segmentation Lines">
+                <group col="4">
+                    <field colspan="4" name="name" />
+                    <group col="2" colspan="4">
+                        <field name="expr_name" />
+                        <field name="expr_operator" />
+                        <field name="expr_value" />
+                    </group>
+                    <field name="operator" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- CRM Segmentation  Form View  -->
+
+    <record id="crm_segmentation_view" model="ir.ui.view">
+        <field name="name">crm.segmentation.form</field>
+        <field name="model">crm.segmentation</field>
+        <field name="arch" type="xml">
+            <form string="Partner Segmentation">
+                <header>
+                    <button
+            name="process_start"
+            states="not running"
+            string="Compute Segmentation"
+            type="object"
+            icon="gtk-execute"
+          />
+                    <button
+            name="process_stop"
+            string="Stop Process"
+            type="object"
+            icon="gtk-cancel"
+          />
+                    <button
+            name="process_continue"
+            string="Continue Process"
+            type="object"
+            icon="gtk-go-forward"
+          />
+                    <field name="state" widget="statusbar" />
+                </header>
+                <group col="4">
+                    <field name="name" />
+                    <field name="categ_id" />
+                    <field name="exclusif" />
+                </group>
+                <notebook>
+                    <page string="Segmentation">
+                        <group col="4">
+                            <field name="name" />
+                            <field name="exclusif" />
+                            <field name="categ_id" />
+                        </group>
+                        <separator string="Segmentation Description" />
+                        <field name="description" nolabel="1" />
+                    </page>
+                    <page string="Sales Purchase">
+                        <group>
+                            <field name="sales_purchase_active" />
+                        </group>
+                        <separator string="Segmentation Test" />
+                        <field name="segmentation_line" widget="one2many_list" />
+                    </page>
+                    <page string="Profiling">
+                        <group>
+                            <group>
+                                <field name="profiling_active" />
+                                <separator string="Profiling Options" colspan="4" />
+                                <field name="parent_id" />
+                            </group>
+                            <newline />
+                            <group>
+                                <separator string="Included Answers" />
+                                <field name="answer_yes" nolabel="1" colspan="2" />
+                            </group>
+                            <group>
+                                <separator string="Excluded Answers" />
+                                <field name="answer_no" nolabel="1" colspan="2" />
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+
+    <!-- CRM Segmentation  Tree View  -->
+
+    <record id="crm_segmentation_tree_view" model="ir.ui.view">
+        <field name="name">crm.segmentation.tree</field>
+        <field name="model">crm.segmentation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="description" />
+                <field name="categ_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="crm_segmentation_act" model="ir.actions.act_window">
+        <field name="name">Contacts Segmentation</field>
+        <field name="res_model">crm.segmentation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to define a new customer segmentation.
+            </p>
+            <p>
+                Create specific categories which you can assign to your
+                contacts to better manage your interactions with them. The
+                segmentation tool is able to assign categories to contacts
+                according to criteria you set.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+    action="crm_segmentation_act"
+    id="menu_crm_segmentation_act"
+    groups="base.group_no_one"
+    sequence="15"
+    parent="sale.menu_sale_config"
+  />
+</odoo>
