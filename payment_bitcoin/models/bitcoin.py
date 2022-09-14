@@ -111,14 +111,14 @@ def check_received(addr):
     addr_info_url = "https://blockchain.info/rawaddr/{addr}"
     tx_info_url = "https://blockchain.info/rawtx/{tx}"
     latest_block_url = "https://blockchain.info/latestblock"
-    
+
     needed_confirms = 3
-    
+
     current_height = requests.get(latest_block_url).json()["height"]
-    
+
     addr_info = requests.get(addr_info_url.format(addr=addr))
     _LOGGER.info("\n\n *********** Check received **********************%s", addr_info)
-    
+
     txs = addr_info.json()["txs"]
     # no transactions -> nothing received
     if not txs:
@@ -129,7 +129,7 @@ def check_received(addr):
     min_conf = None
     for tx in txs:
         tx_info = requests.get(tx_info_url.format(tx=tx["hash"]))
-        
+
         b_height = tx_info.json()["block_height"]
         # confirmations = current_block_height - transaction_block_height - 1
         conf = current_height - b_height - 1 if b_height else 0
@@ -140,13 +140,15 @@ def check_received(addr):
 
     # here all transactions are >= 10 times confirmed,
     # we consider total_received" as "received" btc
-    out = {"received": addr_info.json()["total_received"]/1e8, "min_conf": min_conf}
-    
+    out = {"received": addr_info.json()["total_received"] / 1e8, "min_conf": min_conf}
+
     # let's define the "transaction-finalized" when the last transaction reached needed_confirms confirmations
     # so the time when this happened is ~ 10minutes * )confirmations - needed_confirms)
     out["when"] = datetime.now() - td(minutes=10) * (min_conf - needed_confirms)
-    _LOGGER.info("\n\n *********** Payment Details:-  BitcoinAddress: %s , Date: %s, Amount: %s ************" % (addr, out["when"], out["received"]))
+    _LOGGER.info("\n\n *********** Payment Details:-  BitcoinAddress: %s , Date: %s, Amount: %s ************" % (
+    addr, out["when"], out["received"]))
     return out
+
 
 class BitcoinAddress(models.Model):
     # Store Bitcoin addresses,  address will be checked for Unique and Valid
@@ -165,24 +167,24 @@ class BitcoinAddress(models.Model):
     _sql_constraints = [
         ('name_uniq', 'unique(name)', 'Bitcoin Address must be unique'),
     ]
-    
-    
+
     @api.model
     def cron_bitcoin_payment_reconciliation(self):
         _LOGGER.info("\n\n*************** cron_bitcoin_payment_reconciliation ***************")
         acquirer_obj = self.env['payment.acquirer'].search([('provider', '=', 'bitcoin')])
         payment_journal_obj = acquirer_obj.journal_id
-        
+
         _LOGGER.info("\n\n***************Before config_parameter ***************")
         check_hours = self.env['ir.config_parameter'].sudo().get_param('payment_bitcoin.bit_coin_order_older_than', '6')
         check_date = (datetime.now() - td(hours=int(check_hours))).strftime("%Y-%m-%d %H:%M:%S")
-        _LOGGER.info("\n\n*************** check_hours ***************%s",check_hours)
-        _LOGGER.info("\n\n*************** check_date ***************%s",check_date)
-        
+        _LOGGER.info("\n\n*************** check_hours ***************%s", check_hours)
+        _LOGGER.info("\n\n*************** check_date ***************%s", check_date)
+
         _LOGGER.info("\n\n*************** After check_date **********************")
 
         for bit_add_obj in self.search([('create_date', '>=', check_date)]):
-            _LOGGER.info("\n\n*************** bit_add_obj  Before check_received method *************** %s", bit_add_obj)
+            _LOGGER.info("\n\n*************** bit_add_obj  Before check_received method *************** %s",
+                         bit_add_obj)
             address_info = check_received(bit_add_obj.name)
             _LOGGER.info("\n\n*************** Address Info *************** %s", address_info)
             if address_info:
@@ -191,25 +193,27 @@ class BitcoinAddress(models.Model):
                 order_valid_rate = 0.0
                 if valid_rate_exists:
                     order_valid_rate = valid_rate_exists.rate
-                _LOGGER.info ("\n\n ************ order_valid_rate ************%s", order_valid_rate)
+                _LOGGER.info("\n\n ************ order_valid_rate ************%s", order_valid_rate)
                 if order_valid_rate and address_info['received'] >= order_valid_rate:
                     if bit_add_obj.order_id.state not in ('cancel'):
                         if bit_add_obj.order_id.state not in ('done', 'sale'):
                             bit_add_obj.order_id.action_confirm()
-                        
+
                         if not bit_add_obj.order_id.invoice_ids:
                             bit_add_obj.order_id.action_invoice_create()
-                            
-                        invoice_objs = bit_add_obj.order_id.mapped('invoice_ids').filtered(lambda r: r.state in ['draft'])
+
+                        invoice_objs = bit_add_obj.order_id.mapped('invoice_ids').filtered(
+                            lambda r: r.state in ['draft'])
                         if invoice_objs:
                             invoice_objs.action_invoice_open()
-                            
-                        open_invoice_objs = bit_add_obj.order_id.mapped('invoice_ids').filtered(lambda r: r.state in ['open'])
+
+                        open_invoice_objs = bit_add_obj.order_id.mapped('invoice_ids').filtered(
+                            lambda r: r.state in ['open'])
                         _LOGGER.info("\n\n *************** open_invoice_objs ************** %s", open_invoice_objs)
                         if open_invoice_objs:
                             line_to_reconcile = self.env['account.move.line']
                             payment_line = self.env['account.move.line']
-                            
+
                             payment_methods = payment_journal_obj.inbound_payment_method_ids.ids
                             payment_vals = {
                                 'partner_id': bit_add_obj.order_id.partner_id.id,
@@ -219,21 +223,23 @@ class BitcoinAddress(models.Model):
                                 'payment_date': fields.Date.today(),
                                 'journal_id': payment_journal_obj.id,
                                 'payment_method_id': payment_methods and payment_methods[0] or False
-                                }
+                            }
                             payment_obj = self.env['account.payment'].sudo().create(payment_vals)
                             payment_obj.post()
                             payment_move = payment_obj.move_line_ids.mapped('move_id')
-                            payment_line = payment_move.line_ids.filtered(lambda r: not r.reconciled and r.account_id.internal_type in ('payable', 'receivable'))
-                            
+                            payment_line = payment_move.line_ids.filtered(
+                                lambda r: not r.reconciled and r.account_id.internal_type in ('payable', 'receivable'))
+
                             for inv in open_invoice_objs:
-                                line_to_reconcile += inv.move_id.line_ids.filtered(lambda r: not r.reconciled and r.account_id.internal_type in ('payable', 'receivable'))
-                            
+                                line_to_reconcile += inv.move_id.line_ids.filtered(
+                                    lambda r: not r.reconciled and r.account_id.internal_type in (
+                                    'payable', 'receivable'))
+
                             (line_to_reconcile + payment_line).reconcile()
                 else:
                     template_obj = self.env.ref('payment_bitcoin.mail_template_data_bit_coin_order_notification')
-                    template_obj.send_mail(bit_add_obj.order_id.id, force_send=True, raise_exception=True)   
-    
-    
+                    template_obj.send_mail(bit_add_obj.order_id.id, force_send=True, raise_exception=True)
+
     @api.model
     def send_bitcoin_address_goes_low_notification(self):
         unused_address_count = self.search_count([('order_id', '=', False)])
@@ -292,7 +298,7 @@ class BitcoinRate(models.Model):
 
     markup = fields.Float('Markup (%)')
     unit = fields.Selection(
-        [('BTC', 'BTC'), ('mBTC', 'mBTC')], 'Display Unit', default='mBTC'
+        [('BTC', 'BTC'), ('mBTC', 'mBTC')], 'Display Unit', default='BTC'
     )
     digits = fields.Integer('Round to Digits', default=4)
     valid_minutes = fields.Integer(
@@ -370,8 +376,8 @@ class BitcoinRate(models.Model):
                 'name': order.name,
             })
             order.message_post(body=_("""
-                Bitcoin Address: <span><a target="_blank" href="https://www.blockchain.com/btc/address/%s?filter=5">%s</a></span>, <span>%s </span> BTC"""% 
-                (addr_ids[0].name,addr_ids[0].name,rate)))
+                Bitcoin Address: <span><a target="_blank" href="https://www.blockchain.com/btc/address/%s?filter=5">%s</a></span>, <span>%s </span> BTC""" %
+                                      (addr_ids[0].name, addr_ids[0].name, rate)))
         if addr_ids and rate:
             addr_ids[0].sudo().write({'order_id': order.id})
             b_addr = addr_ids[0].name

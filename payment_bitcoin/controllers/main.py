@@ -80,8 +80,10 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
             if order.payment_tx_id.bitcoin_unit == "mBTC":
                 bitcoin_amount = order.payment_tx_id.bitcoin_amount / 1000.0
+                m_bitcoin_amount = order.payment_tx_id.bitcoin_amount
             else:
                 bitcoin_amount = order.payment_tx_id.bitcoin_amount
+                m_bitcoin_amount = order.payment_tx_id.bitcoin_amount * 1000.0
 
             uri = _("bitcoin:%(address)s$$amount=%(bt_amt)s*$message=%(msg)s") % {
                 "address": order.payment_tx_id.bitcoin_address,
@@ -89,12 +91,11 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
                 "msg": order.name,
             }
             decimal_places = len(str(order.payment_tx_id.bitcoin_amount).split('.')[1])
-            info = _(
-                "Please send %(amount)s %(unit)s to the address"
-                " %(address)s by %(deadline_date)s UTC."
-            ) % {
-                "amount": lang_id.format(f"%.{decimal_places}f", float(order.payment_tx_id.bitcoin_amount), True, True),
-                "unit": order.payment_tx_id.bitcoin_unit,
+            info = _("Please send %(amount_btc)s %(unit_btc)s (%(amount_mbtc)s %(unit_mbtc)s) to the address %(address)s by %(deadline_date)s UTC.") % {
+                "amount_btc": lang_id.format(f"%.{decimal_places}f", bitcoin_amount, True, True),
+                "amount_mbtc": lang_id.format(f"%.{decimal_places}f", m_bitcoin_amount, True, True),
+                "unit_btc": 'BTC',
+                "unit_mbtc": 'mBTC',
                 "address": order.payment_tx_id.bitcoin_address,
                 "deadline_date": order.payment_tx_id.date
                 + timedelta(minutes=order.payment_tx_id.acquirer_id.deadline),

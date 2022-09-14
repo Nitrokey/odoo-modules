@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-21 09:14+0000\n"
-"PO-Revision-Date: 2020-03-21 09:14+0000\n"
+"POT-Creation-Date: 2022-09-14 15:26+0000\n"
+"PO-Revision-Date: 2022-09-14 15:26+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,42 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: payment_bitcoin
+#: code:addons/payment_bitcoin/models/bitcoin.py:380
+#, python-format
+msgid "\n"
+"                Bitcoin Address: <span><a target=\"_blank\" href=\"https://www.blockchain.com/btc/address/%s?filter=5\">%s</a></span>, <span>%s </span> BTC"
+msgstr ""
+
+#. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.transaction_form_bitcoin
 msgid "&amp;nbsp;"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:mail.template,body_html:payment_bitcoin.mail_template_data_bit_coin_order_notification
+msgid "<?xml version=\"1.0\"?>\n"
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"                <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
+"                    Dear ,\n"
+"                    <br/>\n"
+"                    <br/>\n"
+"                    The Amount received for Order ${object.name} is less than actual order amount.Please verify\n"
+"                </p>\n"
+"            </div>\n"
+"        "
+msgstr ""
+
+#. module: payment_bitcoin
+#: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin
+msgid "<span class=\"o_form_label\">Hours</span>\n"
+"                            <span class=\"fa fa-lg fa-building-o\" aria-label=\"Addresses checking for orders which are not older than\" role=\"img\"/>"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model_terms:ir.ui.view,arch_db:payment_bitcoin.payment_bitcoin_acquirer_form
+msgid "<span>\n"
+"                        <strong>In Minutes</strong>\n"
+"                    </span>"
 msgstr ""
 
 #. module: payment_bitcoin
@@ -32,7 +66,7 @@ msgstr "<span><i>Erledigt,</i> Ihre Onlinezahlung wurde erfolgreich verarbeitet.
 
 #. module: payment_bitcoin
 #: model_terms:payment.acquirer,error_msg:payment_bitcoin.payment_acquirer_bitcoin
-msgid "<span><i>Error,</i> Please be aware that an error occurred during the transaction. The order has been confirmed but will not be paid. Do not hesitate to contact us if you have any questions on the status of your order.</span>"
+msgid "<span><i>Error,</i> Please be aware that an error occurred during the transaction. The order has been confirmed but won't be paid. Don't hesitate to contact us if you have any questions on the status of your order.</span>"
 msgstr "<span><i>Fehler,</i> Bitte beachten Sie, dass während der Transaktion ein Fehler aufgetreten ist. Die Bestellung wurde bestätigt, wird aber nicht bezahlt. Zögern Sie nicht, uns zu kontaktieren, wenn Sie Fragen zum Status Ihrer Bestellung haben.</Span>"
 
 #. module: payment_bitcoin
@@ -41,7 +75,12 @@ msgid "<span><i>Pending,</i> Your online payment has been successfully processed
 msgstr "<span><i>Ausstehend,</i> Ihre Onlinezahlung wurde erfolgreich verarbeitet. Aber Ihre Bestellung wurde noch nicht bestätigt.</span>"
 
 #. module: payment_bitcoin
-#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_address__name
+#: model:ir.model.fields,help:payment_bitcoin.field_payment_acquirer__deadline
+msgid "Add deadline to bitcoin payment, within this deadline payment should be done"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_address_name
 msgid "Address"
 msgstr "Adresse"
 
@@ -51,13 +90,25 @@ msgid "Address Link"
 msgstr "Adresslink"
 
 #. module: payment_bitcoin
-#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line__amount
+#: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin
+msgid "Addresses checking for orders which are not older than"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:ir.model.fields,help:payment_bitcoin.field_res_config_settings__bit_coin_order_older_than
+#: model:ir.model.fields,help:payment_bitcoin.field_webkul_website_addons__bit_coin_order_older_than
+#: model:ir.model.fields,help:payment_bitcoin.field_website_country_config__bit_coin_order_older_than
+msgid "Addresses checking for orders which are not older than."
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line_amount
 msgid "Amount"
 msgstr "Betrag"
 
 #. module: payment_bitcoin
 #: selection:bitcoin.rate,unit:0
-#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line__rate
+#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line_rate
 #: selection:payment.transaction,bitcoin_unit:0
 msgid "BTC"
 msgstr ""
@@ -81,7 +132,7 @@ msgid "Bitcoin Address"
 msgstr "Bitcoin Adresse"
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/models/bitcoin.py:164
+#: code:addons/payment_bitcoin/models/bitcoin.py:277
 #, python-format
 msgid "Bitcoin Address '%s' doesn't seem to valid Bitcoin Address"
 msgstr "Bitcoin Adresse '%s' scheint keine gültige Bitcoin Adresse zu sein"
@@ -96,6 +147,11 @@ msgstr "Bitcoin Adresse muss eindeutig sein"
 #: model:ir.ui.menu,name:payment_bitcoin.menu_bitcoin_address
 msgid "Bitcoin Addresses"
 msgstr "Bitcoin Adressen"
+
+#. module: payment_bitcoin
+#: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin
+msgid "Bitcoin Addresses checking"
+msgstr ""
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_payment_transaction__bitcoin_amount
@@ -116,8 +172,15 @@ msgid "Bitcoin Rate Lines"
 msgstr ""
 
 #. module: payment_bitcoin
-#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate__url
+#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_url
 msgid "Bitcoin Rate URL"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:ir.actions.server,name:payment_bitcoin.ir_cron_bitcoin_payment_reconciliation_ir_actions_server
+#: model:ir.cron,cron_name:payment_bitcoin.ir_cron_bitcoin_payment_reconciliation
+#: model:ir.cron,name:payment_bitcoin.ir_cron_bitcoin_payment_reconciliation
+msgid "Bitcoin: Addresses Checking"
 msgstr ""
 
 #. module: payment_bitcoin
@@ -153,6 +216,11 @@ msgid "Currency"
 msgstr "Währung"
 
 #. module: payment_bitcoin
+#: model:ir.model.fields,field_description:payment_bitcoin.field_payment_acquirer__deadline
+msgid "Deadline"
+msgstr "Frist"
+
+#. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_address__display_name
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate__display_name
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line__display_name
@@ -160,15 +228,27 @@ msgid "Display Name"
 msgstr "Anzeigename"
 
 #. module: payment_bitcoin
-#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate__unit
+#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_unit
 #: model:ir.model.fields,field_description:payment_bitcoin.field_payment_transaction__bitcoin_unit
 msgid "Display Unit"
 msgstr "Bildschirm"
 
 #. module: payment_bitcoin
-#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_address__id
-#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate__id
-#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line__id
+#: model:mail.template,subject:payment_bitcoin.mail_template_data_bit_coin_order_notification
+msgid "Don't Validate Order ${object.name}"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:ir.model.fields,field_description:payment_bitcoin.field_res_config_settings__bit_coin_order_older_than
+#: model:ir.model.fields,field_description:payment_bitcoin.field_webkul_website_addons__bit_coin_order_older_than
+#: model:ir.model.fields,field_description:payment_bitcoin.field_website_country_config__bit_coin_order_older_than
+msgid "Hours"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_address_id
+#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_id
+#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line_id
 msgid "ID"
 msgstr "ICH WÜRDE"
 
@@ -206,7 +286,7 @@ msgid "Manual Configuration"
 msgstr "Manuelle Konfiguration"
 
 #. module: payment_bitcoin
-#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate__markup
+#: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_markup
 msgid "Markup (%)"
 msgstr "Aufschlag (%)"
 
@@ -249,9 +329,7 @@ msgstr "Zahlungstransaktion"
 
 #. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_bitcoin_address_form
-#: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_bitcoin_address_list
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_bitcoin_rate_form
-#: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_bitcoin_rate_list
 msgid "Payment Transactions"
 msgstr "Zahlungstransaktionen"
 
@@ -268,10 +346,15 @@ msgid "Paypal"
 msgstr ""
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/controllers/main.py:89
+#: selection:payment.acquirer,provider:0
+msgid "Paypal Checkout"
+msgstr ""
+
+#. module: payment_bitcoin
+#: code:addons/payment_bitcoin/controllers/main.py:94
 #, python-format
-msgid "Please send %(amount)s %(unit)s to the address %(address)s by %(deadline_date)s UTC."
-msgstr "Bitte senden Sie den Betrag von %(amount)s %(unit)s bis um %(deadline_date)s UTC an die Adresse %(address)s."
+msgid "Please send %(amount_btc)s %(unit_btc)s (%(amount_mbtc)s %(unit_mbtc)s) to the address %(address)s by %(deadline_date)s UTC."
+msgstr "Bitte senden Sie den Betrag von %(amount_btc)s %(unit_btc)s (%(amount_mbtc)s %(unit_mbtc)s) bis um %(deadline_date)s UTC an die Adresse %(address)s"
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_payment_acquirer__provider
@@ -285,7 +368,6 @@ msgstr "Rate gültig für (Minuten)"
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate__rate_lines
-#: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_bitcoin_rate_form
 msgid "Rates"
 msgstr "Kurse"
 
@@ -295,14 +377,15 @@ msgid "Round to Digits"
 msgstr "Auf Ziffern runden"
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/models/bitcoin.py:205
+#: code:addons/payment_bitcoin/models/bitcoin.py:318
 #, python-format
 msgid "Sale Order reference required"
 msgstr "Verkaufsauftragsreferenz erforderlich"
 
 #. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin
-msgid "Send notification to users when amount of unused Bitcoin addresses are less than or equal"
+msgid "Send notification to users when amount of unused Bitcoin\n"
+"                                        addresses are less than or equal"
 msgstr ""
 
 #. module: payment_bitcoin
@@ -336,14 +419,19 @@ msgid "after this minutes rate will be checked again for same amount"
 msgstr "Nach dieser Zeit wird der Kurs erneut auf den gleichen Betrag überprüft"
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/controllers/main.py:85
+#: code:addons/payment_bitcoin/controllers/main.py:88
 #, python-format
-msgid "bitcoin:%s$$amount=%s*$message=%s"
-msgstr "bitcoin:%s$$amount=%s*$message=%s"
+msgid "bitcoin:%(address)s$$amount=%(bt_amt)s*$message=%(msg)s"
+msgstr ""
 
 #. module: payment_bitcoin
 #: selection:bitcoin.rate,unit:0
 #: selection:payment.transaction,bitcoin_unit:0
 msgid "mBTC"
+msgstr ""
+
+#. module: payment_bitcoin
+#: model:ir.model.fields,field_description:payment_bitcoin.field_payment_transaction__duration
+msgid "time remaining"
 msgstr ""
 
