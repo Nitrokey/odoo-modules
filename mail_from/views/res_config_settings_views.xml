@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form_mail_from_inherited" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.mail.from.inherited</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="mail.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@id='emails']//div[hasclass('o_setting_box')]" position="after">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Email From Settings</span>
+                            <span class="fa fa-lg fa-building-o" title="Values set here are email specific."
+                                  aria-label="Values set here are email-specific."
+                                  />
+                            <div class="text-muted">
+                                Choose your Models and Emails From Where Changes Made
+                            </div>
+                            <div class="content-group">
+                                <div class="mt16" groups="base.group_no_one">
+                                    <label for="from_email_model_ids" string="Models"
+                                           class="col-3 col-lg-3 o_light_label"/>
+                                    <field name="from_email_model_ids"
+                                           class="oe_inline"
+                                           widget="many2many_tags"/>
+                                </div>
+                                <div class="mt16">
+                                    <label for="email_from" string="Email From:"
+                                           class="col-3 col-lg-3 o_light_label"/>
+                                    <field name="email_from"
+                                           class="oe_inline"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
