@@ -25,6 +25,7 @@
                 string="Shipping Label"
                 report_type="qweb-pdf"
                 attachment_use="True"
+                menu="False"
                 name="carrier_shipping_label_template.report_shipping_label"
                 file="carrier_shipping_label_template.report_shipping_label"
         />
