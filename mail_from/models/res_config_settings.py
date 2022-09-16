@@ -1,5 +1,6 @@
 import ast
 from odoo import fields, models
+from ast import literal_eval
 
 
 class ResConfigSettings(models.TransientModel):
