@@ -1,66 +1,103 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <data>
-        <template id="report_simple_barcode_with_image" inherit_id="product.report_simple_label2x7">
-            <xpath expr="//td" position="attributes">
-                <attribute name="style">{'display': inline-block;}</attribute>
-            </xpath>
-            <xpath expr="//div" position="after">
-                <t t-if="product.image_512">
-                    <div style="width: 97mm; border:1px solid #555555; height:37.1mm;" class="o_label_full">
-                        <div class="text-center align-middle" style="height: 10rem;">
-                            <img t-att-src="'data:image/png;base64,%s' % to_text(product.image_512)"
-                                 style="height:109px;width:auto;"/>
+    <record id="paperformat_label_layout" model="report.paperformat">
+        <field name="name">Label Sheet</field>
+        <field name="default" eval="True" />
+        <field name="format">A6</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">29</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+    </record>
+
+    <template id="report_simple_label_image_4x6">
+        <tr>
+            <td t-att-style="make_invisible and 'visibility:hidden;'">
+                <div style="width:100%;margin-bottom:200px;" class="row">
+
+                    <div
+            style="width:310px;height:210px; border:2px solid #555555 !important;padding: 2px 4px;"
+          >
+                        <div
+              style="height:86px;margin-bottom: 18px;overflow:hidden;background-color: ghostwhite;"
+            >
+                            <strong
+                t-field="product.display_name"
+                style="font-size: 16px;"
+              />
+                        </div>
+
+                        <div class="text-center">
+                            <t t-if="barcode">
+                                <div
+                  t-out="barcode"
+                  style="padding:5px;"
+                  t-options="{'widget': 'barcode', 'symbology': 'auto', 'img_style': 'width:71mm;height:15mm;'}"
+                />
+                                <span class="text-center" t-out="barcode" />
+                            </t>
                         </div>
                     </div>
-                </t>
-            </xpath>
-        </template>
-
-        <template id="report_simple_barcode_with_image" inherit_id="product.report_simple_label4x7">
-            <xpath expr="//td" position="attributes">
-                <attribute name="style">{'display': inline-block;}</attribute>
-            </xpath>
-            <xpath expr="//div" position="after">
-                <t t-if="product.image_512">
-                    <div style="width: 47mm; border:1px solid #555555; height:37.1mm;" class="o_label_full">
-                        <div class="text-center align-middle" style="height: 10rem;">
-                            <img t-att-src="'data:image/png;base64,%s' % to_text(product.image_512)"
-                                 style="height:109px;width:auto;"/>
+                    <t t-if="product.image_512">
+                        <div
+              style="width:310px;height:210px; border:2px solid #555555;border-left:1px;"
+            >
+                            <div
+                class="text-center align-middle"
+                style="height: 10rem;"
+              >
+                                <img
+                  t-att-src="'data:image/png;base64,%s' % to_text(product.image_512)"
+                  style="height:190px;width:auto;"
+                />
+                            </div>
                         </div>
-                    </div>
-                </t>
-            </xpath>
-        </template>
+                    </t>
+                </div>
+            </td>
+        </tr>
+    </template>
 
-        <template id="report_simple_barcode_with_image" inherit_id="product.report_simple_label4x12">
-            <xpath expr="//td" position="attributes">
-                <attribute name="style">{'display': inline-block;}</attribute>
-            </xpath>
-            <xpath expr="//div" position="after">
-                <t t-if="product.image_512">
-                    <div style="width: 43mm; border:1px solid #555555; height:19mm;" class="o_label_full">
-                        <div class="text-center align-middle" style="height: 10rem;">
-                            <img t-att-src="'data:image/png;base64,%s' % to_text(product.image_512)"
-                                 style="height:63px;width:auto;"/>
-                        </div>
-                    </div>
+    <template id="report_productlabel_image_4x6">
+        <t t-call="web.html_container">
+            <t t-foreach="quantity.items()" t-as="barcode_and_qty_by_product">
+                <t t-set="product" t-value="barcode_and_qty_by_product[0]" />
+                <t t-foreach="barcode_and_qty_by_product[1]" t-as="barcode_and_qty">
+                    <t t-set="barcode" t-value="barcode_and_qty[0]" />
+                    <t t-foreach="range(barcode_and_qty[1])" t-as="qty">
+                        <t t-call="product_label_image.report_simple_label_image_4x6" />
+                    </t>
                 </t>
-            </xpath>
-        </template>
+            </t>
+        </t>
+    </template>
 
-        <template id="report_simple_barcode_with_image" inherit_id="product.report_simple_label_dymo">
-            <xpath expr="//div[@class='o_label_left_column']" position="after">
-                <t t-if="product.image_512">
-                    <div style="width: 10mm;" class="o_label_left_column">
-                        <div class="text-center align-middle">
-                            <img t-att-src="'data:image/png;base64,%s' % to_text(product.image_512)"
-                                 style="height:20px;width:auto;"/>
-                        </div>
-                    </div>
+    <template id="producttemplatelabel_image_4x6">
+        <t t-call="web.basic_layout">
+            <div class="page">
+                <t t-call="product_label_image.report_productlabel_image_4x6">
+                    <t t-set="products" t-value="products" />
                 </t>
-            </xpath>
-        </template>
+            </div>
+        </t>
+    </template>
+    <record id="report_product_label_image_4x6" model="ir.actions.report">
+        <field name="name">Product Label (PDF)</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field
+      name="report_name"
+    >product_label_image.producttemplatelabel_image_4x6</field>
+        <field
+      name="report_file"
+    >product_label_image.producttemplatelabel_image_4x6</field>
+        <field
+      name="paperformat_id"
+      ref="product_label_image.paperformat_label_layout"
+    />
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
 
-    </data>
 </odoo>
