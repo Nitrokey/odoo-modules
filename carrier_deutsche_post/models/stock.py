@@ -38,13 +38,13 @@ class Picking(models.Model):
             raise Warning(
                 _('Please configure Product Code along with Carrier account '
                   'in Carrier or Grid configuration'))
-
+        last_name = self.partner_id.parent_id.name+ ", "+ self.partner_id.name if self.partner_id.parent_id and self.partner_id.name != self.partner_id.parent_id.name else self.partner_id.name
         data = {
             'name': self.name,
             'prod_code': product_code,
             'dest': {
                 'first': '',
-                'last': self.partner_id.name or '',
+                'last': last_name or '',
                 'street': self.partner_id.street or '',
                 'street2': self.partner_id.street2 or '',
                 'zip': self.partner_id.zip or '',
