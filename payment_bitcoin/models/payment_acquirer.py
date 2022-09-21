@@ -33,6 +33,9 @@ class BitcoinPaymentTransaction(models.Model):
 
     def _compute_time_remaining(self):
         for transaction in self:
+            if not transaction.date:
+                transaction.duration = 0
+                continue  
             deadline = transaction.date + timedelta(
                 minutes=transaction.acquirer_id.deadline)
             current_dattime = fields.Datetime.now()
