@@ -81,7 +81,7 @@ class Segmentation(models.Model):
                         """
                         DELETE FROM res_partner_res_partner_category_rel
                         WHERE category_id=%s""",
-                        (seg.categ_id[0],),
+                        (seg.categ_id.id,),
                     )
                     partner_obj.invalidate_cache(["category_id"])
 
@@ -121,7 +121,7 @@ class Segmentation(models.Model):
                         INSERT INTO res_partner_res_partner_category_rel
                         (category_id,partner_id)
                         VALUES (%s,%s) ON CONFLICT DO NOTHING""",
-                        (seg.categ_id[0].id, partner.id),
+                        (seg.categ_id.id, partner.id),
                     )
                     partner_obj.invalidate_cache(["category_id"], [partner.id])
 
