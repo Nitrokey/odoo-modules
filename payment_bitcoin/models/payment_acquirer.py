@@ -29,9 +29,9 @@ class BitcoinPaymentAcquirer(models.Model):
 class BitcoinPaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
 
-    duration = fields.Integer(string="time remaining", compute="_computue_time_remaning")
+    duration = fields.Integer(string="time remaining", compute="_compute_time_remaning")
 
-    def _computue_time_remaning(self):
+    def _compute_time_remaning(self):
         for transaction in self:
             deadline = transaction.date + timedelta(
                 minutes=transaction.acquirer_id.deadline)
