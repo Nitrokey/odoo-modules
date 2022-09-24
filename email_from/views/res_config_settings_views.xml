@@ -9,12 +9,12 @@
                 <xpath expr="//div[@id='emails']//div[hasclass('o_setting_box')]" position="after">
                     <div class="col-12 col-lg-6 o_setting_box">
                         <div class="o_setting_right_pane">
-                            <span class="o_form_label">Email From Settings</span>
+                            <span class="o_form_label">Send E-Mails From</span>
                             <span class="fa fa-lg fa-building-o" title="Values set here are email specific."
                                   aria-label="Values set here are email-specific."
                             />
                             <div class="text-muted">
-                                Choose your Models and Emails From Where Changes Made
+                                For particular Models configure addresses from which e-mails should be sent.
                             </div>
                             <div class="content-group">
                                 <field name="email_from_ids" style="width:100%;">
