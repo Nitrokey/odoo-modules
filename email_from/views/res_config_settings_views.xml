@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+        <record
+    id="res_config_settings_view_form_mail_from_inherited"
+    model="ir.ui.view"
+  >
+            <field
+      name="name"
+    >res.config.settings.view.form.inherit.mail.from.inherited</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="mail.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath
+        expr="//div[@id='emails']//div[hasclass('o_setting_box')]"
+        position="after"
+      >
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Send E-Mails From</span>
+                            <span
+              class="fa fa-lg fa-building-o"
+              title="Values set here are email specific."
+              aria-label="Values set here are email-specific."
+            />
+                            <div class="text-muted">
+                                For particular Models configure addresses from which e-mails should be sent.
+                            </div>
+                            <div class="content-group">
+                                <field name="email_from_ids" style="width:100%;">
+                                    <tree editable="bottom">
+                                        <field name="email_from" string="Email From" />
+                                        <field
+                    name="from_email_model_ids"
+                    string="Models"
+                    widget="many2many_tags"
+                  />
+                                    </tree>
+                                </field>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+</odoo>

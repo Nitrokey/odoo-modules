@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="email_from_view_tree" model="ir.ui.view">
+        <field name="name">email.from.tree</field>
+        <field name="model">email.from</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="email_from" />
+                <field name="from_email_model_ids" widget="many2many_tags" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="email_from_view_form" model="ir.ui.view">
+        <field name="name">email.from.form</field>
+        <field name="model">email.from</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="email_from" required="True" />
+                    </group>
+                    <group>
+                        <field
+              name="from_email_model_ids"
+              widget="many2many_tags"
+              required="True"
+            />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>
