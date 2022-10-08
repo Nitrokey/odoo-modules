@@ -1,3 +1,4 @@
+/** @odoo-module **/
 import {isEventHandled, markEventHandled} from "@mail/utils/utils";
 import {_t} from "web.core";
 import {registerMessagingComponent} from "@mail/utils/messaging_component";
