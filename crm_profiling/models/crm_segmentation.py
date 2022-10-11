@@ -263,7 +263,8 @@ class SegmentationLine(models.Model):
                         FROM account_move_line l, account_move i
                         WHERE (l.move_id = i.id) AND
                         i.partner_id = %s AND
-                        i.move_type = 'out_invoice'
+                        i.move_type = 'out_invoice' and
+                        l.exclude_from_invoice_tab is false
                         """,
                         (partner_id,),
                     )
@@ -273,7 +274,8 @@ class SegmentationLine(models.Model):
                         FROM account_move_line l, account_move i
                         WHERE (l.move_id = i.id)
                         AND i.partner_id = %s
-                        AND i.move_type = 'out_refund'
+                        AND i.move_type = 'out_refund' and
+                        l.exclude_from_invoice_tab is false
                         """,
                         (partner_id,),
                     )
@@ -284,7 +286,8 @@ class SegmentationLine(models.Model):
                         FROM account_move_line l, account_move i
                         WHERE (l.move_id = i.id)
                         AND i.partner_id = %s
-                        AND i.move_type = 'in_invoice'
+                        AND i.move_type = 'in_invoice' and
+                        l.exclude_from_invoice_tab is false
                         """,
                         (partner_id,),
                     )
@@ -294,7 +297,8 @@ class SegmentationLine(models.Model):
                         FROM account_move_line l, account_move i
                         WHERE (l.move_id = i.id)
                         AND i.partner_id = %s
-                        AND i.move_type = 'in_refund'
+                        AND i.move_type = 'in_refund' and
+                        l.exclude_from_invoice_tab is false
                         """,
                         (partner_id,),
                     )
