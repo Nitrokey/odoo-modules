@@ -48,19 +48,19 @@
             states="not running"
             string="Compute Segmentation"
             type="object"
-            icon="gtk-execute"
+            icon="fa-play-circle-o"
           />
                     <button
             name="process_stop"
             string="Stop Process"
             type="object"
-            icon="gtk-cancel"
+            icon="fa-archive"
           />
                     <button
             name="process_continue"
             string="Continue Process"
             type="object"
-            icon="gtk-go-forward"
+            icon="fa-forward"
           />
                     <field name="state" widget="statusbar" />
                 </header>
