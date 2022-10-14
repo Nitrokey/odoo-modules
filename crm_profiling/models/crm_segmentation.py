@@ -93,7 +93,7 @@ class Segmentation(models.Model):
                 lines = self.segmentation_line
 
                 for pid in partners:
-                    if not lines.test(pid):
+                    if not all(lines.test(pid)):
                         to_remove_list.append(pid)
                 for pid in to_remove_list:
                     partners.remove(pid)
@@ -248,6 +248,7 @@ class SegmentationLine(models.Model):
             "=": lambda x, y: x == y,
             ">": lambda x, y: x > y,
         }
+        data = []
         for line in self:
             self.env.cr.execute(
                 """
@@ -306,7 +307,7 @@ class SegmentationLine(models.Model):
                 res = expression[line["expr_operator"]](value, line["expr_value"])
 
                 if not res and (line["operator"] == "and"):
-                    return False
+                    data.append(False)
                 elif res:
-                    return True
-        return True
+                    data.append(True)
+        return data
