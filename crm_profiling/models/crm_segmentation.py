@@ -115,7 +115,7 @@ class Segmentation(models.Model):
                     partners.remove(pid)
             for partner in partner_obj.browse(partners):
                 category_ids = partner.category_id.ids
-                if seg.categ_id[0].ids not in category_ids:
+                if seg.categ_id.id not in category_ids:
                     self._cr.execute(
                         """
                         INSERT INTO res_partner_res_partner_category_rel
