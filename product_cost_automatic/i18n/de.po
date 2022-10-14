@@ -64,12 +64,12 @@ msgstr "Produktvorlage"
 #. module: product_cost_automatic
 #: model:ir.model.fields,field_description:product_cost_automatic.field_product_template__purchase_line_ids
 msgid "Purchase Line"
-msgstr ""
+msgstr "Beschaffungszeilen"
 
 #. module: product_cost_automatic
 #: model:ir.model.fields,field_description:product_cost_automatic.field_product_product__purchase_line_ids
 msgid "Purchase Lines"
-msgstr ""
+msgstr "Beschaffungszeilen"
 
 #. module: product_cost_automatic
 #: model:ir.model,name:product_cost_automatic.model_mrp_product_produce
