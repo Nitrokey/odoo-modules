@@ -71,11 +71,6 @@
                 </group>
                 <notebook>
                     <page string="Segmentation">
-                        <group col="4">
-                            <field name="name" />
-                            <field name="exclusif" />
-                            <field name="categ_id" />
-                        </group>
                         <separator string="Segmentation Description" />
                         <field name="description" nolabel="1" />
                     </page>
@@ -144,7 +139,7 @@
     action="crm_segmentation_act"
     id="menu_crm_segmentation_act"
     groups="base.group_no_one"
-    sequence="15"
-    parent="sale.menu_sale_config"
+    sequence="5"
+    parent="contacts.res_partner_menu_config"
   />
 </odoo>
