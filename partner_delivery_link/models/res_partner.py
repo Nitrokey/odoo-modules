@@ -16,7 +16,7 @@ class ResPartner(models.Model):
                 ('picking_type_id.code', '=', 'outgoing'),
             ])
 
-    @api.multi
+    #@api.multi
     def action_view_partner_delivery(self):
         delivery_orders = self.env['stock.picking'].search([
             ('partner_id', '=', self.id),
