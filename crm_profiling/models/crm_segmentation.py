@@ -1,6 +1,9 @@
-from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+import time
 
+from odoo import _, api, fields, models, registry
+from odoo.exceptions import ValidationError
+import threading
+import numpy as np
 
 class Segmentation(models.Model):
     """
@@ -72,7 +75,6 @@ class Segmentation(models.Model):
         :param self:      The current crm.segmentation.
         :param start:     start boolean flag
         """
-
         partner_obj = self.env["res.partner"]
         for seg in self:
             if start:
@@ -91,10 +93,13 @@ class Segmentation(models.Model):
             if seg.sales_purchase_active:
                 to_remove_list = []
                 lines = self.segmentation_line
+                partner_chunks = np.array_split(partners, 20)
 
-                for pid in partners:
-                    if not all(lines.test(pid)):
-                        to_remove_list.append(pid)
+                for pids in partner_chunks:
+                    threaded_calculation = threading.Thread(target=lines.test, args=[pids, to_remove_list])
+                    threaded_calculation.start()
+                    threaded_calculation.join()
+
                 for pid in to_remove_list:
                     partners.remove(pid)
 
@@ -237,77 +242,82 @@ class SegmentationLine(models.Model):
         default="and",
     )
 
-    def test(self, partner_id):
+    def test(self, partners, to_remove_list):
         """
         :param self:            The current crm.segmentation.line.
         :param partner_id:      The partner object.
         """
 
-        expression = {
-            "<": lambda x, y: x < y,
-            "=": lambda x, y: x == y,
-            ">": lambda x, y: x > y,
-        }
-        data = []
-        for line in self:
-            self.env.cr.execute(
-                """
-                SELECT * FROM ir_module_module WHERE name=%s AND state=%s
-                """,
-                ("account", "installed"),
-            )
+        with api.Environment.manage():
+            with registry(self.env.registry.db_name).cursor() as new_cr:
+                for partner_id in map(int, partners):
+                    expression = {
+                        "<": lambda x, y: x < y,
+                        "=": lambda x, y: x == y,
+                        ">": lambda x, y: x > y,
+                    }
+                    data = []
+                    for line in self:
+                        new_cr.execute(
+                            """
+                            SELECT * FROM ir_module_module WHERE name=%s AND state=%s
+                            """,
+                            ("account", "installed"),
+                        )
+                        if new_cr.fetchone():
+                            if line["expr_name"] == "sale":
+                                new_cr.execute(
+                                    """SELECT SUM(l.price_unit * l.quantity)
+                                    FROM account_move_line l, account_move i
+                                    WHERE (l.move_id = i.id) AND
+                                    i.partner_id = %s AND
+                                    i.move_type = 'out_invoice' and
+                                    l.exclude_from_invoice_tab is false
+                                    """,
+                                    (partner_id,),
+                                )
+                                value = new_cr.fetchone()[0] or 0.0
+                                new_cr.execute(
+                                    """SELECT SUM(l.price_unit * l.quantity)
+                                    FROM account_move_line l, account_move i
+                                    WHERE (l.move_id = i.id)
+                                    AND i.partner_id = %s
+                                    AND i.move_type = 'out_refund' and
+                                    l.exclude_from_invoice_tab is false
+                                    """,
+                                    (partner_id,),
+                                )
+                                value -= new_cr.fetchone()[0] or 0.0
+                            elif line["expr_name"] == "purchase":
+                                new_cr.execute(
+                                    """SELECT SUM(l.price_unit * l.quantity)
+                                    FROM account_move_line l, account_move i
+                                    WHERE (l.move_id = i.id)
+                                    AND i.partner_id = %s
+                                    AND i.move_type = 'in_invoice' and
+                                    l.exclude_from_invoice_tab is false
+                                    """,
+                                    (partner_id,),
+                                )
+                                value = new_cr.fetchone()[0] or 0.0
+                                new_cr.execute(
+                                    """SELECT SUM(l.price_unit * l.quantity)
+                                    FROM account_move_line l, account_move i
+                                    WHERE (l.move_id = i.id)
+                                    AND i.partner_id = %s
+                                    AND i.move_type = 'in_refund' and
+                                    l.exclude_from_invoice_tab is false
+                                    """,
+                                    (partner_id,),
+                                )
+                                value -= new_cr.fetchone()[0] or 0.0
+                            res = expression[line["expr_operator"]](value, line["expr_value"])
 
-            if self.env.cr.fetchone():
-                if line["expr_name"] == "sale":
-                    self._cr.execute(
-                        """SELECT SUM(l.price_unit * l.quantity)
-                        FROM account_move_line l, account_move i
-                        WHERE (l.move_id = i.id) AND
-                        i.partner_id = %s AND
-                        i.move_type = 'out_invoice' and
-                        l.exclude_from_invoice_tab is false
-                        """,
-                        (partner_id,),
-                    )
-                    value = self.env.cr.fetchone()[0] or 0.0
-                    self.env.cr.execute(
-                        """SELECT SUM(l.price_unit * l.quantity)
-                        FROM account_move_line l, account_move i
-                        WHERE (l.move_id = i.id)
-                        AND i.partner_id = %s
-                        AND i.move_type = 'out_refund' and
-                        l.exclude_from_invoice_tab is false
-                        """,
-                        (partner_id,),
-                    )
-                    value -= self.env.cr.fetchone()[0] or 0.0
-                elif line["expr_name"] == "purchase":
-                    self.env.cr.execute(
-                        """SELECT SUM(l.price_unit * l.quantity)
-                        FROM account_move_line l, account_move i
-                        WHERE (l.move_id = i.id)
-                        AND i.partner_id = %s
-                        AND i.move_type = 'in_invoice' and
-                        l.exclude_from_invoice_tab is false
-                        """,
-                        (partner_id,),
-                    )
-                    value = self.env.cr.fetchone()[0] or 0.0
-                    self.env.cr.execute(
-                        """SELECT SUM(l.price_unit * l.quantity)
-                        FROM account_move_line l, account_move i
-                        WHERE (l.move_id = i.id)
-                        AND i.partner_id = %s
-                        AND i.move_type = 'in_refund' and
-                        l.exclude_from_invoice_tab is false
-                        """,
-                        (partner_id,),
-                    )
-                    value -= self._cr.fetchone()[0] or 0.0
-                res = expression[line["expr_operator"]](value, line["expr_value"])
+                            if not res and (line["operator"] == "and"):
+                                data.append(False)
+                            elif res:
+                                data.append(True)
+                    if not all(data):
+                        to_remove_list.append(partner_id)
+                new_cr.commit()
 
-                if not res and (line["operator"] == "and"):
-                    data.append(False)
-                elif res:
-                    data.append(True)
-        return data
