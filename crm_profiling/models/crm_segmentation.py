@@ -1,9 +1,10 @@
-import time
+import threading
+
+import numpy as np
 
 from odoo import _, api, fields, models, registry
 from odoo.exceptions import ValidationError
-import threading
-import numpy as np
+
 
 class Segmentation(models.Model):
     """
@@ -96,7 +97,9 @@ class Segmentation(models.Model):
                 partner_chunks = np.array_split(partners, 20)
 
                 for pids in partner_chunks:
-                    threaded_calculation = threading.Thread(target=lines.test, args=[pids, to_remove_list])
+                    threaded_calculation = threading.Thread(
+                        target=lines.test, args=[pids, to_remove_list]
+                    )
                     threaded_calculation.start()
                     threaded_calculation.join()
 
@@ -311,7 +314,9 @@ class SegmentationLine(models.Model):
                                     (partner_id,),
                                 )
                                 value -= new_cr.fetchone()[0] or 0.0
-                            res = expression[line["expr_operator"]](value, line["expr_value"])
+                            res = expression[line["expr_operator"]](
+                                value, line["expr_value"]
+                            )
 
                             if not res and (line["operator"] == "and"):
                                 data.append(False)
@@ -320,4 +325,3 @@ class SegmentationLine(models.Model):
                     if not all(data):
                         to_remove_list.append(partner_id)
                 new_cr.commit()
-
