@@ -8,11 +8,6 @@ odoo.define("product_mandatory_products.website_sale_options", function (require
   require("website_sale_options.website_sale");
 
   publicWidget.registry.WebsiteSale.include({
-    //    _onProductReady: function () {
-    //        debugger;
-    //        var res =  this._super.apply(this, arguments);
-    //        return res
-    //    },
     _getContext: function (extra, extraContext) {
       var res = this._super(extra, extraContext);
       if (this.optionalProductsModal && this.optionalProductsModal.display_optional) {
