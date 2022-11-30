@@ -1,18 +1,14 @@
 {
-    'name': 'Product Creation Prevention',
-    'version': '15.0.1.0.0',
-    'description': """Product Creation Prevention
+    "name": "Product Creation Prevention",
+    "version": "15.0.1.0.0",
+    "summary": """Product Creation Prevention
     By adding access right we are preventing users to create products 'on the fly'
     """,
-    'depends': [
-        'account',
-        'stock',
-        'sale_management',
-        'mrp',
-        'purchase'
+    "depends": ["account", "stock", "sale_management", "mrp", "purchase"],
+    "data": [
+        "security/ir.model.access.csv",
     ],
-    'data': [
-        'security/ir.model.access.csv',
-        ],
-    'installable': True,
+    "website": "https://github.com/OCA/server-tools",
+    "license": "LGPL-3",
+    "installable": True,
 }
