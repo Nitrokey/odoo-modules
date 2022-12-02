@@ -16,7 +16,7 @@ class StockPicking(models.Model):
 
     def action_generate_unbuild_order(self):
         mo_id = self.env["mrp.production"].search(
-            [("sale_order_id", "=", self.sale_id.id)], limit=1
+            [("origin", "=", self.sale_id.name)], limit=1
         )
         quantity = self.move_ids_without_package[0].quantity_done
         lot = mo_id.finished_move_line_ids and mo_id.finished_move_line_ids[0].lot_id

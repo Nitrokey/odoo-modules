@@ -9,7 +9,6 @@ This module allows to create the Unbuild Order from the return picking.
      """,
     "depends": [
         "stock",
-        "sale_mrp_link",
     ],
     "data": [
         "views/stock_picking_view.xml",
