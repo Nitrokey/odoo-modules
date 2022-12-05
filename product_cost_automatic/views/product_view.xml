@@ -22,7 +22,9 @@
       ref="mrp_account.product_product_view_form_normal_inherit_extended"
     />
         <field name="arch" type="xml">
-            <xpath expr="//button[@name='button_bom_cost']" position="replace" />
+            <xpath expr="//button[@name='button_bom_cost']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
 

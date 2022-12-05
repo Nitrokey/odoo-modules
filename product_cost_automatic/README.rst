@@ -22,10 +22,10 @@ Contributors
 
 * Nikunj Antala <nikunj.antala@gmail.com>
 
-Sponsors
+Authors
 --------
 
-* Sponsored by Nitrokey: www.nitrokey.com
+* Authored by Nitrokey: www.nitrokey.com
 
 Maintainer
 ----------
