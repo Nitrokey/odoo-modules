@@ -1,9 +1,8 @@
 {
     "name": "Product Creation Prevention",
     "version": "15.0.1.0.0",
-    "summary": """Product Creation Prevention
-    By adding access right we are preventing users to create products 'on the fly'
-    """,
+    "summary": """Using this module we can prevent to create new products by
+    users except admin user""",
     "depends": ["account", "stock", "sale_management", "mrp", "purchase"],
     "data": [
         "security/ir.model.access.csv",
