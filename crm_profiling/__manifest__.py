@@ -19,7 +19,10 @@ it's the same which has been renamed.
     """,
     "author": "OpenERP SA",
     "website": "https://github.com/OCA/server-tools",
-    "depends": ["account", "contacts"],
+    "depends": ["account", "contacts", "sales_team"],
+    "external_dependencies": {
+        "python": ["numpy"],
+    },
     "data": [
         "security/ir.model.access.csv",
         "wizard/open_questionnaire_view.xml",
