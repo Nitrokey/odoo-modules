@@ -1,9 +1,8 @@
 import threading
 
-import numpy as np
-
 from odoo import _, api, fields, models, registry
 from odoo.exceptions import ValidationError
+from odoo.tools.misc import split_every
 
 
 class Segmentation(models.Model):
@@ -94,9 +93,7 @@ class Segmentation(models.Model):
             if seg.sales_purchase_active:
                 to_remove_list = []
                 lines = self.segmentation_line
-                partner_chunks = np.array_split(partners, 20)
-
-                for pids in partner_chunks:
+                for pids in split_every(100, partners):
                     threaded_calculation = threading.Thread(
                         target=lines.test, args=[pids, to_remove_list]
                     )
