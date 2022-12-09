@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 from datetime import timedelta as td
 from hashlib import sha256
-
+from ..models.bitcoin import validate_bitcoin_address, check_received
 
 DIGITS58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
@@ -77,23 +77,6 @@ def convertbits(self, data, frombits, tobits, pad=True):
         return None
     return ret
 
-
-def validate_bitcoin_address(self, addr):
-    """Decode a segwit address."""
-    hrpgot, data = self.bech32_decode(addr)
-    if hrpgot not in ["bc", "tb"]:
-        return False
-
-    decoded = self.convertbits(data[1:], 5, 8, False)
-    if decoded is None or len(decoded) < 2 or len(decoded) > 40:
-        return False
-    if data[0] > 16:
-        return False
-    if data[0] == 0 and len(decoded) != 20 and len(decoded) != 32:
-        return False
-    return True  # (data[0], decoded)
-
-
 def decode_base58(bc, length):
     n = 0
     for char in bc:
@@ -104,39 +87,6 @@ def decode_base58(bc, length):
 def validate_bitcoin_address_old_format(self, address):
     bcbytes = self.decode_base58(address, 25)
     return bcbytes[-4:] == sha256(sha256(bcbytes[:-4]).digest()).digest()[:4]
-
-
-def check_received(addr):
-    addr_info_url = "https://blockchain.info/rawaddr/{addr}"
-    tx_info_url = "https://blockchain.info/rawtx/{tx}"
-    latest_block_url = "https://blockchain.info/latestblock"
-
-    needed_confirms = 3
-
-    current_height = requests.get(latest_block_url).json()["height"]
-
-    addr_info = requests.get(addr_info_url.format(addr=addr))
-
-    txs = addr_info.json()["txs"]
-    # no transactions -> nothing received
-    if not txs:
-        return {"received": 0, "min_conf": 0, "when": None}
-
-    received = 0
-    min_conf = None
-    for tx in txs:
-        tx_info = requests.get(tx_info_url.format(tx=tx["hash"]))
-
-        b_height = tx_info.json()["block_height"]
-        conf = current_height - b_height - 1 if b_height else 0
-        if conf < needed_confirms:
-            _LOGGER.info("\n\n ******* if Conf < needed_confirms *********************")
-            return {"received": 0, "min_conf": 0, "when": None}
-        min_conf = min(conf, min_conf) if min_conf is not None else conf
-
-    out = {"received": addr_info.json()["total_received"] / 1e8, "min_conf": min_conf}
-    out["when"] = datetime.now() - td(minutes=10) * (min_conf - needed_confirms)
-    return out
 
 
 class TestBitcoinNoPayment(BitcoinCommon):
