@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_mrp_product_produce_wizard_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.form.view.addon.tracking</field>
+            <field name="model">mrp.product.produce</field>
+            <field name="inherit_id" ref="mrp.view_mrp_product_produce_wizard" />
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='do_produce']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='do_produce']" position="after">
+                    <button name="open_stock_tracking_wizard" type="object" string="Record Production" class="btn-primary"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
