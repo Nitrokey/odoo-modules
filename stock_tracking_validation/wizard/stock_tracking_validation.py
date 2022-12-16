@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo import fields, models
 from odoo.tools.float_utils import float_is_zero
 
 class StockTrackingValidation(models.TransientModel):
     _name = 'stock.tracking.validation'
     _description = 'Stock tracking validation'
 
-    product_data = fields.Text()
+    product_data = fields.Html()
 
     def confirm_stock_tracking_validate(self):
         active_id = self.env.context.get('active_ids')

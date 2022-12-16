@@ -5,8 +5,8 @@
         <field name="model">stock.tracking.validation</field>
         <field name="arch" type="xml">
             <form string="Stock Tracking Validation">
-                    <h5>Please verify the Lot/Serial before confirming. You can not change Lot/Serial after confirmed.</h5>
-                    <h6><field name="product_data" readonly="1"/></h6>
+                <h5>Please verify the Lot/Serial, You will not able to change Lot/Serial after confirmed.</h5>
+                <h6><field name="product_data" readonly="1" widget="html"/></h6>
                 <footer>
                     <button name="confirm_stock_tracking_validate" 
                         string="Confirm" 
