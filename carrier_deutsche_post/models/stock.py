@@ -105,8 +105,8 @@ class Picking(models.Model):
 
     @api.multi
     def action_done(self):
-        res = super(Picking, self).action_done()
         for pick in self:
             if pick.picking_type_id.code == 'outgoing' and pick.carrier_id.type == 'deutsche_post':
                 pick.get_deutsche_post_label()
+        res = super(Picking, self).action_done()
         return res
