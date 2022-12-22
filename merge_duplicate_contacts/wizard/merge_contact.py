@@ -632,8 +632,9 @@ class MergePartnerManualCheck(models.TransientModel):
         if partner_ids & child_ids:
             raise UserError(_("You cannot merge a contact with one of his parent."))
 
-        if len(set(partner.email.lower() for partner in partner_ids)) > 1:
-            raise UserError(_("All contacts must have the same email. Only the Administrator can merge contacts with different emails."))
+        if len(set(partner.email.lower() for partner in partner_ids if partner.email)) > 1:
+            raise UserError(
+                 _("All contacts must have the same email. Only the Administrator can merge contacts with different emails."))
 
         # remove dst_partner from partners to merge
         if dst_partner and dst_partner in partner_ids:
@@ -726,7 +727,7 @@ class MergePartnerManualCheck(models.TransientModel):
         context = dict(context or {}, active_test=False)
 #         this = self.browse(ids[0], context=context)
         this = self
-        if this.keep1 ==False and this.keep2 == False:
+        if this.keep1 == False and this.keep2 == False:
             raise Warning(_("Please select a contact to keep."))
         if this.keep1:
             this.dst_partner_id = this.partner_ids and this.partner_ids[0].id or False

@@ -1,5 +1,6 @@
 import logging
 import pprint  # from odoo import models, fields, api
+from datetime import timedelta
 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
@@ -12,6 +13,8 @@ class BitcoinPaymentAcquirer(models.Model):
     _inherit = 'payment.acquirer'
 
     provider = fields.Selection(selection_add=[('bitcoin', 'Bitcoin')])
+    deadline = fields.Float(string="Deadline",
+                            help="Add deadline to bitcoin payment, within this deadline payment should be done")
 
     @api.multi
     def bitcoin_form_generate_values(self, values):
@@ -25,6 +28,22 @@ class BitcoinPaymentAcquirer(models.Model):
 
 class BitcoinPaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
+
+    duration = fields.Integer(string="time remaining", compute="_compute_time_remaining")
+
+    def _compute_time_remaining(self):
+        for transaction in self:
+            if not transaction.date:
+                transaction.duration = 0
+                continue  
+            deadline = transaction.date + timedelta(
+                minutes=transaction.acquirer_id.deadline)
+            current_dattime = fields.Datetime.now()
+            if deadline > current_dattime:
+                remaining_time = deadline - fields.Datetime.now()
+                transaction.duration = remaining_time.seconds
+            else:
+                transaction.duration = 0
 
     @api.model
     def create(self, values):
@@ -81,3 +100,4 @@ class BitcoinPaymentTransaction(models.Model):
             'Validated . payment for tx %s: set as pending' % self.reference)
         self._set_transaction_pending()
         return self.write({'state': 'pending'})
+

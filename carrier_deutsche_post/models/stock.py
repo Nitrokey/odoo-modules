@@ -38,29 +38,29 @@ class Picking(models.Model):
             raise Warning(
                 _('Please configure Product Code along with Carrier account '
                   'in Carrier or Grid configuration'))
-
+        last_name = self.partner_id.parent_id.name+ ", "+ self.partner_id.name if self.partner_id.parent_id and self.partner_id.name != self.partner_id.parent_id.name else self.partner_id.name
         data = {
             'name': self.name,
             'prod_code': product_code,
             'dest': {
                 'first': '',
-                'last': self.partner_id.name or '',
+                'last': last_name or '',
                 'street': self.partner_id.street or '',
                 'street2': self.partner_id.street2 or '',
                 'zip': self.partner_id.zip or '',
                 'city': self.partner_id.city or '',
                 'country': self.partner_id.country_id.code_iso or '',
                 'company': '',
-#                             (self.partner_id.parent_id and
-#                            self.partner_id.name !=
-#                            self.partner_id.parent_id.name and
-#                            self.partner_id.parent_id.name) or
-#                            (self.partner_id.company_name and
-#                            self.partner_id.name !=
-#                            self.partner_id.company_name and
-#                            self.partner_id.company_name) or '',
+                #                             (self.partner_id.parent_id and
+                #                            self.partner_id.name !=
+                #                            self.partner_id.parent_id.name and
+                #                            self.partner_id.parent_id.name) or
+                #                            (self.partner_id.company_name and
+                #                            self.partner_id.name !=
+                #                            self.partner_id.company_name and
+                #                            self.partner_id.company_name) or '',
                 'title': self.partner_id.title.shortcut if
-                         self.partner_id.title else '',
+                self.partner_id.title else '',
                 'state': self.partner_id.state_id.name
                          or '',
             },
@@ -102,3 +102,11 @@ class Picking(models.Model):
                 self.label_de_attach_id.id) + "&field=datas&filename_field=name&download=true",
             'target': 'download',
         }
+
+    @api.multi
+    def action_done(self):
+        for pick in self:
+            if pick.picking_type_id.code == 'outgoing' and pick.carrier_id.type == 'deutsche_post':
+                pick.get_deutsche_post_label()
+        res = super(Picking, self).action_done()
+        return res

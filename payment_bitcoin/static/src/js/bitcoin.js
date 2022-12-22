@@ -44,6 +44,4 @@ odoo.define('payment_bitcoin.bitcoin', function(require) {
             });
         }
     });
-
-
 });

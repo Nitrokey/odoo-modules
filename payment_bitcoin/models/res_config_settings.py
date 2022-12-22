@@ -35,7 +35,7 @@ class ResConfigSettings(models.TransientModel):
         super(ResConfigSettings, self).set_values()
         config = self.env['ir.config_parameter'].sudo()
         config.set_param('payment_bitcoin.min_unused_bitcoin', repr(self.min_unused_bitcoin))
-        config.set_param('payment_bitcoin.bit_coin_order_older_than',repr(self.bit_coin_order_older_than))
+        config.set_param('payment_bitcoin.bit_coin_order_older_than', repr(self.bit_coin_order_older_than))
 
 
 

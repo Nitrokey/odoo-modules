@@ -3,8 +3,9 @@
 <odoo>
 
     <template id="order_reference" inherit_id="website_sale.total">
-      <xpath expr="//tr[@id='order_total']" position="after">
-        <input name="reference" type="hidden" t-att-value="website_sale_order.name"/>
-      </xpath>
+        <xpath expr="//tr[@id='order_total']" position="after">
+            <input name="reference" type="hidden" t-att-value="website_sale_order.name"/>
+        </xpath>
     </template>
+
 </odoo>
