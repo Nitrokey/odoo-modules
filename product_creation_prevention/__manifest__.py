@@ -5,11 +5,7 @@
     By adding access right we are preventing users to create products 'on the fly'
     """,
     'depends': [
-        'account',
-        'stock',
-        'sale_management',
-        'mrp',
-        'purchase'
+        'product',
     ],
     'data': [
         'security/ir.model.access.csv',
