@@ -1,91 +1,8 @@
-import codecs
-from datetime import datetime
-from datetime import timedelta as td
-from hashlib import sha256
 from ..models.bitcoin import validate_bitcoin_address, check_received
-
-DIGITS58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
-
-import requests
 from .common import BitcoinCommon
 
-_no_payment_addr = "3FNJPXykZ38UkFBTGLncMQaHxaS7xjm83X"
-_payment_addr = "3NYbDtMSN84qz71WLaZu1unXrkjew2KrEq"
-
-def bech32_polymod(values):
-    """Internal function that computes the Bech32 checksum."""
-    generator = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3]
-    chk = 1
-    for value in values:
-        top = chk >> 25
-        chk = (chk & 0x1ffffff) << 5 ^ value
-        for i in range(5):
-            chk ^= generator[i] if ((top >> i) & 1) else 0
-    return chk
-
-
-def bech32_hrp_expand(hrp):
-    """Expand the HRP into values for checksum computation."""
-    return [ord(x) >> 5 for x in hrp] + [0] + [ord(x) & 31 for x in hrp]
-
-
-def bech32_verify_checksum(self, hrp, data):
-    """Verify a checksum given HRP and converted data characters."""
-    return self.bech32_polymod(self.bech32_hrp_expand(hrp) + data) == 1
-
-
-def bech32_decode(self, bech):
-    """Validate a Bech32 string, and determine HRP and data."""
-    if ((any(ord(x) < 33 or ord(x) > 126 for x in bech)) or
-            (bech.lower() != bech and bech.upper() != bech)):
-        return (None, None)
-    bech = bech.lower()
-    pos = bech.rfind("1")
-    if pos < 1 or pos + 7 > len(bech) or len(bech) > 90:
-        return (None, None)
-    if not all(x in CHARSET for x in bech[pos + 1:]):
-        return (None, None)
-    hrp = bech[:pos]
-    data = [CHARSET.find(x) for x in bech[pos + 1:]]
-    if not self.bech32_verify_checksum(hrp, data):
-        return (None, None)
-    return (hrp, data[:-6])
-
-
-def convertbits(self, data, frombits, tobits, pad=True):
-    """General power-of-2 base conversion."""
-    acc = 0
-    bits = 0
-    ret = []
-    maxv = (1 << tobits) - 1
-    max_acc = (1 << (frombits + tobits - 1)) - 1
-    for value in data:
-        if value < 0 or (value >> frombits):
-            return None
-        acc = ((acc << frombits) | value) & max_acc
-        bits += frombits
-        while bits >= tobits:
-            bits -= tobits
-            ret.append((acc >> bits) & maxv)
-    if pad:
-        if bits:
-            ret.append((acc << (tobits - bits)) & maxv)
-    elif bits >= frombits or ((acc << (tobits - bits)) & maxv):
-        return None
-    return ret
-
-def decode_base58(bc, length):
-    n = 0
-    for char in bc:
-        n = n * 58 + DIGITS58.index(char)
-    return codecs.decode(("%%0%dx" % (length << 1) % n), "hex_codec")[-length:]
-
-
-def validate_bitcoin_address_old_format(self, address):
-    bcbytes = self.decode_base58(address, 25)
-    return bcbytes[-4:] == sha256(sha256(bcbytes[:-4]).digest()).digest()[:4]
-
+no_payment_addr = "3FNJPXykZ38UkFBTGLncMQaHxaS7xjm83X"
+payment_addr = "3NYbDtMSN84qz71WLaZu1unXrkjew2KrEq"
 
 class TestBitcoinNoPayment(BitcoinCommon):
     def setUp(self):
@@ -136,8 +53,8 @@ class TestBitcoinNoPayment(BitcoinCommon):
     def test_bitcoin_no_payment(self):
         '''This method tests when no payment is received from bitcoin'''
         partner_id = self.env.user.partner_id
-        so = self._create_sale_order(500, partner_id.id)
-        self.btc_adr = self.create_bitcoin_address_data(_no_payment_addr, so)
+        so = self._create_sale_order(590, partner_id.id) # 590 = 0.0443296 ~=(0.044366 BTC)
+        self.btc_adr = self.create_bitcoin_address_data(no_payment_addr, so)
         tx = self.env["payment.transaction"].create({
             "reference": so.name,
             "currency_id": self.currency_euro.id,
@@ -145,12 +62,12 @@ class TestBitcoinNoPayment(BitcoinCommon):
             "partner_id": partner_id.id,
             "type": "form",
             "sale_order_ids": [(6, 0, [so.id])],
-            "bitcoin_address_link": f"https://www.blockchain.com/btc/address{_no_payment_addr}",
+            "bitcoin_address_link": f"https://www.blockchain.com/btc/address{no_payment_addr}",
             "callback_res_id": so.id,
             "tx_url": "/payment/bitcoin/feedback",
             "amount": so.amount_total
         })
-        address_id = self.env["bitcoin.address"].search([("name", "=", _no_payment_addr)])
+        address_id = self.env["bitcoin.address"].search([("name", "=", no_payment_addr)])
 
         # Executing cron for bitcoin payment
         if address_id:
@@ -163,8 +80,8 @@ class TestBitcoinNoPayment(BitcoinCommon):
     def test_bitcoin_payment(self):
         '''This method tests payment is received from bitcoin'''
         partner_id = self.env.user.partner_id
-        so = self._create_sale_order(500, partner_id.id)
-        self.btc_adr = self.create_bitcoin_address_data(_payment_addr, so)
+        so = self._create_sale_order(590, partner_id.id) # 590 = 0.0443296 ~=(0.044366 BTC)
+        self.btc_adr = self.create_bitcoin_address_data(payment_addr, so)
         tx = self.env["payment.transaction"].create({
             "reference": so.name,
             "currency_id": self.currency_euro.id,
@@ -172,12 +89,12 @@ class TestBitcoinNoPayment(BitcoinCommon):
             "partner_id": partner_id.id,
             "type": "form",
             "sale_order_ids": [(6, 0, [so.id])],
-            "bitcoin_address_link": f"https://www.blockchain.com/btc/address{_payment_addr}",
+            "bitcoin_address_link": f"https://www.blockchain.com/btc/address{payment_addr}",
             "callback_res_id": so.id,
             "return_url": "/shop/payment/validate",
             "amount": so.amount_total,
         })
-        address_id = self.env["bitcoin.address"].search([("name","=",_payment_addr)])
+        address_id = self.env["bitcoin.address"].search([("name","=",payment_addr)])
 
         # Executing cron for bitcoin payment
         if address_id:
@@ -191,7 +108,7 @@ class TestBitcoinNoPayment(BitcoinCommon):
         '''This method checks if insufficient payment received from bitcoin'''
         partner_id = self.env.user.partner_id
         so = self._create_sale_order(800, partner_id.id)
-        self.btc_adr = self.create_bitcoin_address_data(_payment_addr, so)
+        self.btc_adr = self.create_bitcoin_address_data(payment_addr, so)
         tx = self.env["payment.transaction"].create({
             "reference": so.name,
             "currency_id": self.currency_euro.id,
@@ -199,12 +116,12 @@ class TestBitcoinNoPayment(BitcoinCommon):
             "partner_id": partner_id.id,
             "type": "form",
             "sale_order_ids": [(6, 0, [so.id])],
-            "bitcoin_address_link": f"https://www.blockchain.com/btc/address{_payment_addr}",
+            "bitcoin_address_link": f"https://www.blockchain.com/btc/address{payment_addr}",
             "callback_res_id": so.id,
             "return_url": "/shop/payment/validate",
             "amount": so.amount_total,
         })
-        address_id = self.env["bitcoin.address"].search([("name", "=", _payment_addr)])
+        address_id = self.env["bitcoin.address"].search([("name", "=", payment_addr)])
 
         # Executing cron for bitcoin payment
         if address_id:
