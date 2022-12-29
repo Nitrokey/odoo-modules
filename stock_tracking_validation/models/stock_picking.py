@@ -5,6 +5,9 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     def open_stock_tracking_wizard(self):
+        move_line_has_lot = self.move_ids_without_package.filtered(lambda m : m.active_move_line_ids.mapped('lot_id'))
+        if not move_line_has_lot:
+            return self.button_validate()
         action = self.env.ref('stock_tracking_validation.action_product_stock_validation').read()[0]
         product_data = '''<table class="table table-sm w-50 table-bordered table-striped table-hover m-2"><tr>
                             <thead class="class="thead-light"">
@@ -17,6 +20,8 @@ class StockPicking(models.Model):
         for produce_line in self.move_ids_without_package:
             name = produce_line.product_id.name
             lot = produce_line.active_move_line_ids.mapped('lot_id').name
+            if not lot:
+                continue
             product_data +="""
                 <tr>
                     <td class="border">%s</td>
