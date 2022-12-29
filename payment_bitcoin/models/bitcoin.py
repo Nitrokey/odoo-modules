@@ -117,10 +117,11 @@ def check_received(addr):
     current_height = requests.get(latest_block_url).json()["height"]
 
     addr_info = requests.get(addr_info_url.format(addr=addr))
-
+    _LOGGER.info("\n\n *********** Bitcoin Payment (Method: check_received) ********** addr_info = %s", addr_info)
     txs = addr_info.json()["txs"]
     # no transactions -> nothing received
     if not txs:
+        _LOGGER.info("\n\n *** Bitcoin Payment **** if not txs ********************* {received: 0, min_conf: 0, when: None}")
         return {"received": 0, "min_conf": 0, "when": None}
 
     received = 0
@@ -142,6 +143,7 @@ def check_received(addr):
     # let's define the "transaction-finalized" when the last transaction reached needed_confirms confirmations
     # so the time when this happened is ~ 10minutes * )confirmations - needed_confirms)
     out["when"] = datetime.now() - td(minutes=10) * (min_conf - needed_confirms)
+    _LOGGER.info("\n\n *********** Bitcoin Payment Details:-  BitcoinAddress: %s , Date: %s, Amount: %s ************" % (addr, out["when"], out["received"]))
     return out
 
 
@@ -165,18 +167,22 @@ class BitcoinAddress(models.Model):
 
     @api.model
     def cron_bitcoin_payment_reconciliation(self):
+        _LOGGER.info("\n\n****** Bitcoin Payment ********* cron_bitcoin_payment_reconciliation ***************")
         acquirer_obj = self.env['payment.acquirer'].search([('provider', '=', 'bitcoin')])
         payment_journal_obj = acquirer_obj.journal_id
         check_hours = self.env['ir.config_parameter'].sudo().get_param('payment_bitcoin.bit_coin_order_older_than','6')
+        _LOGGER.info("\n\n***************Bitcoin Payment check_hours ***************%s",check_hours)
         check_date = (datetime.now() - td(hours=int(check_hours))).strftime("%Y-%m-%d %H:%M:%S")
         for bit_add_obj in self.search([('create_date', '>=', check_date)]):
             address_info = check_received(bit_add_obj.name)
+            _LOGGER.info("\n\n*************** Bitcoin Payment Address Info *************** %s \n\n", address_info)
             if address_info:
                 valid_rate_exists = self.env['bitcoin.rate.line'].sudo().search(
                     [('order_id', '=', bit_add_obj.order_id.id), ('name', '=', bit_add_obj.order_id.name)], limit=1)
                 order_valid_rate = 0.0
                 if valid_rate_exists:
                     order_valid_rate = valid_rate_exists.rate
+                _LOGGER.info("\n\n\n Bitcoin payment ====[Received Bitcoin] >= [Sale order Aount] ==== %s >= %s \n\n\n", address_info['received'], order_valid_rate)
                 if order_valid_rate and address_info['received'] >= order_valid_rate:
                     if bit_add_obj.order_id.state not in ('cancel'):
                         if bit_add_obj.order_id.state not in ('done', 'sale'):
