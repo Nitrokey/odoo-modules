@@ -17,17 +17,25 @@ class StockPicking(models.Model):
                                 </tr>
                             </thead>
                             <tbody>'''
-        for produce_line in self.move_ids_without_package:
-            name = produce_line.product_id.name
-            lot = produce_line.active_move_line_ids.mapped('lot_id').name
-            if not lot:
+        for move_line in self.move_ids_without_package:
+            name = move_line.product_id.name
+            if not move_line.active_move_line_ids.mapped('lot_id'):
                 continue
+            lot_name = ''
+            for lot_line in move_line.active_move_line_ids:
+                if len(move_line.move_line_ids) == 1:
+                    lot_name = lot_line.lot_id.name
+                else:
+                    if lot_line == move_line.move_line_ids[-1]:
+                        lot_name += lot_line.lot_id.name
+                    else:
+                        lot_name += lot_line.lot_id.name + ", "
             product_data +="""
                 <tr>
                     <td class="border">%s</td>
                     <td>%s</td>
                 </tr>
-            """% (name, lot)
+            """% (name, lot_name)
         product_data += '''
                         </tbody>
                         </table>
