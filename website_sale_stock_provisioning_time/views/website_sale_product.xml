@@ -2,10 +2,10 @@
 <odoo>
 
     <template
-        id="product_website_sale_privious"
-        name="product_sale"
-        inherit_id="website_sale.product"
-    >
+    id="product_website_sale_privious"
+    name="product_sale"
+    inherit_id="website_sale.product"
+  >
         <xpath expr="//a[@id='add_to_cart']" position="after">
             <div class="add_atribute" style="margin-top:10px;">
                 <t t-if="product.provisioning_time_in_workdays">
