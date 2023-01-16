@@ -10,4 +10,9 @@
     "data": [
         "reports/product_template_report.xml",
     ],
+    "assets": {
+        "web.report_assets_common": [
+            "product_label_image/static/src/scss/product_label_image.scss"
+        ],
+    },
 }
