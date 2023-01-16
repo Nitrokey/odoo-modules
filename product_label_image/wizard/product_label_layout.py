@@ -6,17 +6,8 @@ class ProductLabelLayout(models.TransientModel):
     _inherit = "product.label.layout"
 
     print_format = fields.Selection(
-        [
-            ("4x6", "4x6"),
-            ("dymo", "Dymo"),
-            ("2x7xprice", "2 x 7 with price"),
-            ("4x7xprice", "4 x 7 with price"),
-            ("4x12", "4 x 12"),
-            ("4x12xprice", "4 x 12 with price"),
-        ],
-        string="Format",
+        selection_add=[("4x6", "4x6")],
         default="4x6",
-        required=True,
     )
 
     def _prepare_report_data(self):
