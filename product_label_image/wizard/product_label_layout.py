@@ -8,7 +8,7 @@ class ProductLabelLayout(models.TransientModel):
     print_format = fields.Selection(
         selection_add=[("4x6", "4x6")],
         default="4x6",
-        ondelete={"square_si": "set default"},
+        ondelete={"4x6": "set default"},
     )
 
     def _prepare_report_data(self):
