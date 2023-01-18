@@ -72,7 +72,6 @@ WHERE
     NOT EXISTS (SELECT 1 FROM account_move move  WHERE move.partner_id = p.id) and
     NOT EXISTS (SELECT 1 FROM account_move_line line  WHERE line.partner_id = p.id) and
     NOT EXISTS (SELECT 1 FROM project_task task  WHERE task.partner_id = p.id) and 
-    p.active is not true and
     p.customer and
     p.id not in (select partner_id from res_users union all select partner_id from res_company order by partner_id)
     %s
