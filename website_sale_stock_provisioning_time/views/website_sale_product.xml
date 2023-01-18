@@ -11,7 +11,12 @@
                 <t t-if="product.provisioning_time_in_workdays">
                     <span>Provisioning time until shipment:</span>
                     <span t-esc="product.provisioning_time_in_workdays" />
-                    Work days
+                    <t t-if="product.provisioning_time_in_workdays == 1">
+                        Work day
+                    </t>
+                    <t t-else="">
+                        Work days
+                    </t>
                 </t>
             </div>
         </xpath>
