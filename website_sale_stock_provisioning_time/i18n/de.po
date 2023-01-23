@@ -33,6 +33,11 @@ msgstr "Bereitstellungsdauer in Arbeitstagen"
 
 #. module: website_sale_stock_provisioning_time
 #: model_terms:ir.ui.view,arch_db:website_sale_stock_provisioning_time.product_website_sale_privious
+msgid "Work day"
+msgstr "Arbeitstag"
+
+#. module: website_sale_stock_provisioning_time
+#: model_terms:ir.ui.view,arch_db:website_sale_stock_provisioning_time.product_website_sale_privious
 msgid "Work days"
 msgstr "Arbeitstage"
 
