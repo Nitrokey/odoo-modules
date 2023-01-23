@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="product_stock_tracking_validation_popup" model="ir.ui.view">
+        <field name="name">Stock Tracking Validation</field>
+        <field name="model">stock.tracking.validation</field>
+        <field name="arch" type="xml">
+            <form string="Stock Tracking Validation">
+                <h5
+        >Please verify the lot/serial number. You will not able to change it after confirmation.</h5>
+                <h6><field name="product_data" readonly="1" widget="html" /></h6>
+                <footer>
+                    <button
+            name="confirm_stock_tracking_validate"
+            string="Confirm"
+            type="object"
+            class="btn-primary"
+          />
+                    <button string="Discard" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_product_stock_validation" model="ir.actions.act_window">
+        <field name="name">Stock Tracking Validation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.tracking.validation</field>
+        <field name="view_mode">form</field>
+        <field
+      name="view_id"
+      ref="stock_tracking_validation.product_stock_tracking_validation_popup"
+    />
+        <field name="target">new</field>
+    </record>
+</odoo>
