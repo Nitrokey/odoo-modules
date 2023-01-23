@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <template
+    id="product_website_sale_privious"
+    name="product_sale"
+    inherit_id="website_sale.product"
+  >
+        <xpath expr="//a[@id='add_to_cart']" position="after">
+            <div class="add_atribute" style="margin-top:10px;">
+                <t t-if="product.provisioning_time_in_workdays">
+                    <span>Provisioning time until shipment:</span>
+                    <span t-esc="product.provisioning_time_in_workdays" />
+                    <t t-if="product.provisioning_time_in_workdays == 1">
+                        Work day
+                    </t>
+                    <t t-else="">
+                        Work days
+                    </t>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>
