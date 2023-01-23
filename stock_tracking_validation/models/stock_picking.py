@@ -14,8 +14,8 @@ class StockPicking(models.Model):
             "stock_tracking_validation.action_product_stock_validation"
         ).read()[0]
         product_data = """<table class="table table-sm w-50 table-bordered
-                            table-striped table-hover m-2"><tr>
-                            <thead class="class="thead-light"">
+                            table-striped table-hover m-2">
+                            <thead class="thead-light"">
                                 <tr>
                                     <th>Product Name</th>
                                     <th>Lot/Serial</th>
