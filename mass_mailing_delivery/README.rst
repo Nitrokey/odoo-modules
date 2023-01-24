@@ -1,6 +1,6 @@
-====================
+======================
 Mass mailing delivery
-====================
+======================
 
 
 Added delivery_count field in Contact,
