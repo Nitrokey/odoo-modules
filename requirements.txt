@@ -1,3 +1,2 @@
 # generated from manifests external_dependencies
 phonenumbers
-#Require queue_job_batch OCA module for crm_profiling
