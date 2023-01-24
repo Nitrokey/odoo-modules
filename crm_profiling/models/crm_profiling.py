@@ -76,11 +76,12 @@ class ResPartner(models.Model):
             FROM crm_segmentation
             WHERE profiling_active = true"""
         if ok != []:
-            query + "%s AND categ_id NOT IN (%s)" % (
+            query += "%s AND categ_id NOT IN (%s)" % (
                 query,
                 ",".join(str(i) for i in ok),
             )
         query = query + """ ORDER BY id """
+
         self.env.cr.execute(query)
         segm_cat_ids = self.env.cr.fetchall()
         segm_obj = self.env["crm.segmentation"]

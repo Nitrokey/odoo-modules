@@ -1,6 +1,6 @@
-import threading
+from datetime import datetime
 
-from odoo import _, api, fields, models, registry
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools.misc import split_every
 
@@ -34,6 +34,8 @@ class Segmentation(models.Model):
         "Execution Status",
         readonly=True,
         default="not running",
+        store=True,
+        compute="_compute_selection",
     )
     partner_id = fields.Integer("Max Partner ID processed", default=0)
     segmentation_line = fields.One2many(
@@ -69,12 +71,28 @@ class Segmentation(models.Model):
         help="Check this box if you want to use this tab as part of the segmentation rule. "
         "If not checked, the criteria beneath will be ignored",
     )
+    job_batch_ids = fields.One2many("queue.job.batch", "segmentation_id", readonly=True)
+    last_batch_id = fields.Many2one("queue.job.batch", readonly=True)
+
+    @api.depends(
+        "last_batch_id", "last_batch_id.job_ids", "last_batch_id.job_ids.state"
+    )
+    def _compute_selection(self):
+        for rec in self:
+            jobs = rec.last_batch_id.job_ids.filtered(
+                lambda x: x.state not in ["done", "cancelled"]
+            )
+            if jobs:
+                rec.state = "running"
+            else:
+                rec.state = "not running"
 
     def process_continue(self, start=False):
         """
         :param self:      The current crm.segmentation.
         :param start:     start boolean flag
         """
+
         partner_obj = self.env["res.partner"]
         for seg in self:
             if start:
@@ -93,48 +111,27 @@ class Segmentation(models.Model):
             if seg.sales_purchase_active:
                 to_remove_list = []
                 lines = self.segmentation_line
+                now = datetime.now()
+                batch_name = "Batch " + now.strftime("%Y-%m-%d %H:%M:%S")
+                batch = self.env["queue.job.batch"].get_new_batch(batch_name)
                 for pids in split_every(100, partners):
-                    threaded_calculation = threading.Thread(
-                        target=lines.test, args=[pids, to_remove_list]
+                    lines.with_context(job_batch=batch).with_delay().test(
+                        pids, to_remove_list
                     )
-                    threaded_calculation.start()
-                    threaded_calculation.join()
-
-                for pid in to_remove_list:
-                    partners.remove(pid)
-
-            if seg.profiling_active:
-                to_remove_list = []
-                for pid in partners:
-                    self.env.cr.execute(
-                        """
-                        SELECT DISTINCT(answer) FROM partner_question_rel
-                        WHERE partner=%s""",
-                        (pid,),
-                    )
-                    answers_ids = [x[0] for x in self.env.cr.fetchall()]
-
-                    if not self.test_prof(pid, answers_ids):
-                        to_remove_list.append(pid)
-                for pid in to_remove_list:
-                    partners.remove(pid)
-            for partner in partner_obj.browse(partners):
-                category_ids = partner.category_id.ids
-                if seg.categ_id.id not in category_ids:
-                    self._cr.execute(
-                        """
-                        INSERT INTO res_partner_res_partner_category_rel
-                        (category_id,partner_id)
-                        VALUES (%s,%s) ON CONFLICT DO NOTHING""",
-                        (seg.categ_id.id, partner.id),
-                    )
-                    partner_obj.invalidate_cache(["category_id"], [partner.id])
-
-            seg.write({"state": "not running", "partner_id": 0})
+                seg.write({"job_batch_ids": [(4, batch.id)], "last_batch_id": batch.id})
         return True
 
     def process_stop(self):
-        return self.write({"state": "not running", "partner_id": 0})
+        batch = self.last_batch_id
+        if not batch:
+            batches = self.job_batch_ids.sort(key=lambda x: x.id, reverse=True)
+            if batches:
+                batch = batches[0]
+                self.last_batch_id = batch.id
+        jobs = batch.job_ids.filtered(lambda x: x.state not in ["done", "cancelled"])
+        jobs.button_cancelled()
+        self.write({"partner_id": 0})
+        return True
 
     def process_start(self):
         """
@@ -241,84 +238,105 @@ class SegmentationLine(models.Model):
         required=True,
         default="and",
     )
-
+    # @Job
     def test(self, partners, to_remove_list):
         """
         :param self:            The current crm.segmentation.line.
         :param partner_id:      The partner object.
         """
+        for partner_id in map(int, partners):
+            expression = {
+                "<": lambda x, y: x < y,
+                "=": lambda x, y: x == y,
+                ">": lambda x, y: x > y,
+            }
+            data = []
+            for line in self:
+                self.env.cr.execute(
+                    """
+                    SELECT * FROM ir_module_module WHERE name=%s AND state=%s
+                    """,
+                    ("account", "installed"),
+                )
 
-        with api.Environment.manage():
-            with registry(self.env.registry.db_name).cursor() as new_cr:
-                for partner_id in map(int, partners):
-                    expression = {
-                        "<": lambda x, y: x < y,
-                        "=": lambda x, y: x == y,
-                        ">": lambda x, y: x > y,
-                    }
-                    data = []
-                    for line in self:
-                        new_cr.execute(
-                            """
-                            SELECT * FROM ir_module_module WHERE name=%s AND state=%s
+                if self.env.cr.fetchone():
+                    if line["expr_name"] == "sale":
+                        self._cr.execute(
+                            """SELECT SUM(l.price_unit * l.quantity)
+                            FROM account_move_line l, account_move i
+                            WHERE (l.move_id = i.id) AND
+                            i.partner_id = %s AND
+                            i.move_type = 'out_invoice'
                             """,
-                            ("account", "installed"),
+                            (partner_id,),
                         )
-                        if new_cr.fetchone():
-                            if line["expr_name"] == "sale":
-                                new_cr.execute(
-                                    """SELECT SUM(l.price_unit * l.quantity)
-                                    FROM account_move_line l, account_move i
-                                    WHERE (l.move_id = i.id) AND
-                                    i.partner_id = %s AND
-                                    i.move_type = 'out_invoice' and
-                                    l.exclude_from_invoice_tab is false
-                                    """,
-                                    (partner_id,),
-                                )
-                                value = new_cr.fetchone()[0] or 0.0
-                                new_cr.execute(
-                                    """SELECT SUM(l.price_unit * l.quantity)
-                                    FROM account_move_line l, account_move i
-                                    WHERE (l.move_id = i.id)
-                                    AND i.partner_id = %s
-                                    AND i.move_type = 'out_refund' and
-                                    l.exclude_from_invoice_tab is false
-                                    """,
-                                    (partner_id,),
-                                )
-                                value -= new_cr.fetchone()[0] or 0.0
-                            elif line["expr_name"] == "purchase":
-                                new_cr.execute(
-                                    """SELECT SUM(l.price_unit * l.quantity)
-                                    FROM account_move_line l, account_move i
-                                    WHERE (l.move_id = i.id)
-                                    AND i.partner_id = %s
-                                    AND i.move_type = 'in_invoice' and
-                                    l.exclude_from_invoice_tab is false
-                                    """,
-                                    (partner_id,),
-                                )
-                                value = new_cr.fetchone()[0] or 0.0
-                                new_cr.execute(
-                                    """SELECT SUM(l.price_unit * l.quantity)
-                                    FROM account_move_line l, account_move i
-                                    WHERE (l.move_id = i.id)
-                                    AND i.partner_id = %s
-                                    AND i.move_type = 'in_refund' and
-                                    l.exclude_from_invoice_tab is false
-                                    """,
-                                    (partner_id,),
-                                )
-                                value -= new_cr.fetchone()[0] or 0.0
-                            res = expression[line["expr_operator"]](
-                                value, line["expr_value"]
-                            )
+                        value = self.env.cr.fetchone()[0] or 0.0
+                        self.env.cr.execute(
+                            """SELECT SUM(l.price_unit * l.quantity)
+                            FROM account_move_line l, account_move i
+                            WHERE (l.move_id = i.id)
+                            AND i.partner_id = %s
+                            AND i.move_type = 'out_refund'
+                            """,
+                            (partner_id,),
+                        )
+                        value -= self.env.cr.fetchone()[0] or 0.0
+                    elif line["expr_name"] == "purchase":
+                        self.env.cr.execute(
+                            """SELECT SUM(l.price_unit * l.quantity)
+                            FROM account_move_line l, account_move i
+                            WHERE (l.move_id = i.id)
+                            AND i.partner_id = %s
+                            AND i.move_type = 'in_invoice'
+                            """,
+                            (partner_id,),
+                        )
+                        value = self.env.cr.fetchone()[0] or 0.0
+                        self.env.cr.execute(
+                            """SELECT SUM(l.price_unit * l.quantity)
+                            FROM account_move_line l, account_move i
+                            WHERE (l.move_id = i.id)
+                            AND i.partner_id = %s
+                            AND i.move_type = 'in_refund'
+                            """,
+                            (partner_id,),
+                        )
+                        value -= self._cr.fetchone()[0] or 0.0
+                    res = expression[line["expr_operator"]](value, line["expr_value"])
 
-                            if not res and (line["operator"] == "and"):
-                                data.append(False)
-                            elif res:
-                                data.append(True)
-                    if not all(data):
-                        to_remove_list.append(partner_id)
-                new_cr.commit()
+                    if not res and (line["operator"] == "and"):
+                        data.append(False)
+                    elif res:
+                        data.append(True)
+            if not all(data):
+                to_remove_list.append(partner_id)
+        partnerd = list(partners)
+        for pid in to_remove_list:
+            partnerd.remove(pid)
+
+        if self[0].segmentation_id.profiling_active:
+            to_remove_list = []
+            for pid in partnerd:
+                self.env.cr.execute(
+                    """
+                    SELECT DISTINCT(answer) FROM partner_question_rel
+                    WHERE partner=%s""",
+                    (pid,),
+                )
+                answers_ids = [x[0] for x in self.env.cr.fetchall()]
+
+                if not self[0].segmentation_id.test_prof(pid, answers_ids):
+                    to_remove_list.append(pid)
+            for pid in to_remove_list:
+                partnerd.remove(pid)
+        for partner in self.env["res.partner"].browse(partnerd):
+            category_ids = partner.category_id.ids
+            if self[0].segmentation_id.categ_id.ids not in category_ids:
+                self._cr.execute(
+                    """
+                    INSERT INTO res_partner_res_partner_category_rel
+                    (category_id,partner_id)
+                    VALUES (%s,%s) ON CONFLICT DO NOTHING""",
+                    (self[0].segmentation_id.categ_id.id, partner.id),
+                )
+                self.env["res.partner"].invalidate_cache(["category_id"], [partner.id])

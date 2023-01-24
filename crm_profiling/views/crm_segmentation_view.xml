@@ -99,6 +99,9 @@
                             </group>
                         </group>
                     </page>
+                    <page string="Job Batch">
+                        <field name="job_batch_ids" />
+                    </page>
                 </notebook>
             </form>
         </field>
