@@ -238,7 +238,7 @@ class SegmentationLine(models.Model):
         required=True,
         default="and",
     )
-    # @Job
+
     def test(self, partners, to_remove_list):
         """
         :param self:            The current crm.segmentation.line.
