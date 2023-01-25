@@ -1,2 +1,1 @@
-from . import delivery_carrier
-from . import report
+from . import delivery_carrier, report

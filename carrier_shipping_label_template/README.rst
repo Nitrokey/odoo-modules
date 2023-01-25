@@ -2,7 +2,7 @@
 Carrier shipping label template
 ===============================
 
-This module add Shipping Label report, it print label downloaded from deutsche post or UPS.
+This module adds the Shipping Label report and it prints the label downloaded from deutsche post or UPS.
 
 Authors
 ~~~~~~~~~~~~
