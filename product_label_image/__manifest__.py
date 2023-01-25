@@ -5,7 +5,7 @@
     "author": "Nitrokey GmbH",
     "license": "AGPL-3",
     "website": "https://github.com/OCA/server-tools",
-    "summary": """Product barcode print with product image""",
+    "summary": """Prints product barcode along with product image""",
     "depends": ["product"],
     "data": [
         "reports/product_template_report.xml",
