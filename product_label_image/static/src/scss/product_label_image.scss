@@ -1,0 +1,37 @@
+div {
+  &.o_firstdiv {
+    width: 100%;
+    margin-bottom: 200px;
+  }
+  &.o_seconddiv {
+    width: 310px;
+    height: 210px;
+    border: 2px solid #555555 !important;
+    padding: 2px 4px;
+  }
+  &.o_thirddiv {
+    height: 86px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    background-color: ghostwhite;
+    & > strong {
+      font-size: 16px;
+    }
+  }
+  &.o_barcode {
+    padding: 5px;
+  }
+  &.o_product_img_div1 {
+    width: 310px;
+    height: 210px;
+    border: 2px solid #555555;
+    border-left: 1px;
+  }
+  &.img_div2 {
+    height: 10rem;
+  }
+  & > img.o_product_picture {
+    height: 190px;
+    width: auto;
+  }
+}

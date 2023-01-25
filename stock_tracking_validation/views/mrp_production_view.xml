@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="mrp_production_form_view" model="ir.ui.view">
+            <field name="name">mrp.production.form.view</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view" />
+            <field name="arch" type="xml">
+                <xpath
+          expr="//button[@name='button_mark_done'][1]"
+          position="attributes"
+        >
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath
+          expr="//button[@name='button_mark_done'][2]"
+          position="attributes"
+        >
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath
+          expr="//button[@name='button_mark_done'][3]"
+          position="attributes"
+        >
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath
+          expr="//button[@name='button_mark_done'][4]"
+          position="attributes"
+        >
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_mark_done'][1]" position="after">
+                    <button
+            name="open_stock_tracking_wizard"
+            attrs="{'invisible': ['|', '|', ('state', 'in', ('draft', 'cancel', 'done', 'to_close')), ('qty_producing', '=', 0), ('move_raw_ids', '!=', [])]}"
+            string="Validate"
+            type="object"
+            class="oe_highlight"
+            confirm="There are no components to consume. Are you still sure you want to continue?"
+            data-hotkey="g"
+          />
+                </xpath>
+                <xpath expr="//button[@name='button_mark_done'][2]" position="after">
+                    <button
+            name="open_stock_tracking_wizard"
+            attrs="{'invisible': ['|', '|', ('state', 'in', ('draft', 'cancel', 'done', 'to_close')), ('qty_producing', '=', 0), ('move_raw_ids', '=', [])]}"
+            string="Validate"
+            type="object"
+            class="oe_highlight"
+            data-hotkey="g"
+          />
+                </xpath>
+                <xpath expr="//button[@name='button_mark_done'][3]" position="after">
+                    <button
+            name="open_stock_tracking_wizard"
+            attrs="{'invisible': [
+                        '|',
+                        ('move_raw_ids', '=', []),
+                        '&amp;',
+                        '|',
+                        ('state', 'not in', ('confirmed', 'progress')),
+                        ('qty_producing', '!=', 0),
+                        ('state', '!=', 'to_close')]}"
+            string="Mark as Done"
+            type="object"
+            class="oe_highlight"
+            data-hotkey="g"
+          />
+                </xpath>
+                <xpath expr="//button[@name='button_mark_done'][4]" position="after">
+                    <button
+            name="open_stock_tracking_wizard"
+            attrs="{'invisible': [
+                        '|',
+                        ('move_raw_ids', '!=', []),
+                        '&amp;',
+                        '|',
+                        ('state', 'not in', ('confirmed', 'progress')),
+                        ('qty_producing', '!=', 0),
+                        ('state', '!=', 'to_close')]}"
+            string="Mark as Done"
+            type="object"
+            class="oe_highlight"
+            data-hotkey="g"
+            confirm="There are no components to consume. Are you still sure you want to continue?"
+          />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

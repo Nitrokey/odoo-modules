@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="paperformat_label_layout" model="report.paperformat">
+        <field name="name">Label Sheet</field>
+        <field name="default" eval="True" />
+        <field name="format">A6</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">29</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+    </record>
+
+    <template id="report_simple_label_image_4x6">
+        <tr>
+            <td t-att-style="make_invisible and 'visibility:hidden;'">
+                <div class="row o_firstdiv">
+                    <div class="o_seconddiv">
+                        <div class="o_thirddiv">
+                            <strong t-field="product.display_name" />
+                        </div>
+
+                        <div class="text-center">
+                            <t t-if="barcode">
+                                <div
+                  class="o_barcode"
+                  t-out="barcode"
+                  t-options="{'widget': 'barcode', 'symbology': 'auto', 'img_style': 'width:71mm;height:15mm;'}"
+                />
+                                <span class="text-center" t-out="barcode" />
+                            </t>
+                        </div>
+                    </div>
+                    <t t-if="product.image_512">
+                        <div class="o_product_img_div1">
+                            <div class="text-center align-middle img_div2">
+                                <img
+                  class="o_product_picture"
+                  t-att-src="'data:image/png;base64,%s' % to_text(product.image_512)"
+                />
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </td>
+        </tr>
+    </template>
+
+    <template id="report_productlabel_image_4x6">
+        <t t-call="web.html_container">
+            <t t-foreach="quantity.items()" t-as="barcode_and_qty_by_product">
+                <t t-set="product" t-value="barcode_and_qty_by_product[0]" />
+                <t t-foreach="barcode_and_qty_by_product[1]" t-as="barcode_and_qty">
+                    <t t-set="barcode" t-value="barcode_and_qty[0]" />
+                    <t t-foreach="range(barcode_and_qty[1])" t-as="qty">
+                        <t t-call="product_label_image.report_simple_label_image_4x6" />
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="producttemplatelabel_image_4x6">
+        <t t-call="web.basic_layout">
+            <div class="page">
+                <t t-call="product_label_image.report_productlabel_image_4x6">
+                    <t t-set="products" t-value="products" />
+                </t>
+            </div>
+        </t>
+    </template>
+    <record id="report_product_label_image_4x6" model="ir.actions.report">
+        <field name="name">Product Label (PDF)</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field
+      name="report_name"
+    >product_label_image.producttemplatelabel_image_4x6</field>
+        <field
+      name="report_file"
+    >product_label_image.producttemplatelabel_image_4x6</field>
+        <field
+      name="paperformat_id"
+      ref="product_label_image.paperformat_label_layout"
+    />
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

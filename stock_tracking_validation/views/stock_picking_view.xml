@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="view_picking_form" model="ir.ui.view">
+            <field name="name">view.picking.form.tracking</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form" />
+            <field name="arch" type="xml">
+                <xpath
+          expr="//button[@name='button_validate'][1]"
+          position="attributes"
+        >
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath
+          expr="//button[@name='button_validate'][2]"
+          position="attributes"
+        >
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_validate'][1]" position="after">
+                    <button
+            name="open_stock_tracking_wizard"
+            attrs="{'invisible': ['|', ('state', 'in', ('waiting','confirmed')), ('show_validate', '=', False)]}"
+            string="Validate"
+            type="object"
+            class="oe_highlight"
+            groups="stock.group_stock_user"
+          />
+                </xpath>
+                <xpath expr="//button[@name='button_validate'][2]" position="after">
+                    <button
+            name="open_stock_tracking_wizard"
+            attrs="{'invisible': ['|', ('state', 'not in', ('waiting', 'confirmed')), ('show_validate', '=', False)]}"
+            string="Validate"
+            type="object"
+            groups="stock.group_stock_user"
+            class="o_btn_validate"
+          />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

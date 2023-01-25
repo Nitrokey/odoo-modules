@@ -1,10 +1,11 @@
 /** @odoo-module **/
 import {isEventHandled, markEventHandled} from "@mail/utils/utils";
+
+import Dialog from "web.Dialog";
 import {_t} from "web.core";
 import {registerMessagingComponent} from "@mail/utils/messaging_component";
-import {useDragVisibleDropZone} from "@mail/component_hooks/use_drag_visible_dropzone/use_drag_visible_dropzone";
-import Dialog from "web.Dialog";
 import rpc from "web.rpc";
+import {useDragVisibleDropZone} from "@mail/component_hooks/use_drag_visible_dropzone/use_drag_visible_dropzone";
 
 const {useRef} = owl.hooks;
 const {Component} = owl;
