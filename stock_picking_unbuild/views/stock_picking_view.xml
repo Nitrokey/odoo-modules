@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="stock_picking_unbuild_form_view" model="ir.ui.view">
+        <field name="name">stock.picking.unbuild.form.view</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <field name="picking_type_id" position="after">
+                <field name="is_display_unbuild" invisible="1" />
+
+            </field>
+            <button name="action_toggle_is_locked" position="after">
+                <button
+          name="action_generate_unbuild_order"
+          type="object"
+          string="Generate Unbuild Order"
+          attrs="{'invisible': ['|', ('is_display_unbuild', '=', False), ('state', '!=', 'done')]}"
+        />
+            </button>
+        </field>
+    </record>
+
+</odoo>
