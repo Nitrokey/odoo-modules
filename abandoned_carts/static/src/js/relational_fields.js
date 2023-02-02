@@ -5,7 +5,7 @@ var registry = require('web.field_registry');
 
 registry.get('one2many').include({
 	_render: function () {
-		if (this.value && this.value.model=='customer.wizard.line' && this.value.type=='list'){
+		if (this.value && this.value.model=='res.partner' && this.value.type=='list'){
 			this.value.addHasSelectors=true;
 		}
 		return this._super()
