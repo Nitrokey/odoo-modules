@@ -53,12 +53,14 @@
                     <button
             name="process_stop"
             string="Stop Process"
+            states="running"
             type="object"
             icon="gtk-cancel"
           />
                     <button
             name="process_continue"
             string="Continue Process"
+            states="stopped"
             type="object"
             icon="gtk-go-forward"
           />
@@ -104,6 +106,9 @@
                             </group>
                         </group>
                     </page>
+                    <page string="Job Batch">
+                        <field name="job_batch_ids" />
+                    </page>
                 </notebook>
             </form>
         </field>
@@ -144,7 +149,7 @@
     action="crm_segmentation_act"
     id="menu_crm_segmentation_act"
     groups="base.group_no_one"
-    sequence="15"
-    parent="sale.menu_sale_config"
+    sequence="4"
+    parent="contacts.res_partner_menu_config"
   />
 </odoo>
