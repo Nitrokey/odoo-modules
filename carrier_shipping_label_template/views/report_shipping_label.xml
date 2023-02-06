@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="report_qweb_paperformat_ups" model="report.paperformat">
+        <field name="name">100 x 150 mm thermal label (e.g. Zebra GK420D)</field>
+        <field name="default" eval="True" />
+        <field name="format">custom</field>
+        <field name="page_height">150</field>
+        <field name="page_width">100</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">2</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">35</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_shipping_label" model="ir.actions.report">
+        <field name="name">Shipping Label</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">carrier_shipping_label_template.report_shipping_label
+        </field>
+        <field name="report_file">carrier_shipping_label_template.report_shipping_label
+        </field>
+        <field name="binding_type">report</field>
+        <field
+      name="paperformat_id"
+      ref="carrier_shipping_label_template.report_qweb_paperformat_ups"
+    />
+    </record>
+
+    <template id="report_shipping_label">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div style="overflow:hidden;weight:800px;">
+                    <img
+            t-attf-src="data:image/*;base64,{{o.ups_image}}"
+            style="-webkit-transform:rotate(90deg);overflow:hidden;margin-top:160px;width:720px;margin-left:-143;margin-bottom:60px;"
+          />
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
