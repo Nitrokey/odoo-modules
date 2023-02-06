@@ -12,7 +12,7 @@ class IrActionsReportReportlab(models.Model):
             "carrier_shipping_label_template.report_shipping_label"
         ]:
             self = self.with_context(shipping_label_res_ids=res_ids)
-        return super(IrActionsReportReportlab, self)._render_qweb_pdf(res_ids, data)
+        return super()._render_qweb_pdf(res_ids, data)
 
     @api.model
     def _render_qweb_html(self, docids, data=None):
@@ -21,23 +21,19 @@ class IrActionsReportReportlab(models.Model):
             self.report_name
             not in ["carrier_shipping_label_template.report_shipping_label"]
         ) or not docids:
-            return super(IrActionsReportReportlab, self)._render_qweb_html(docids, data)
+            return super()._render_qweb_html(docids, data)
         new_doc_ids = (
             self.env["stock.picking"]
             .search([("id", "in", docids), ("label_de_attach_id", "=", False)])
             .ids
         )
-        return super(IrActionsReportReportlab, self)._render_qweb_html(
-            new_doc_ids, data
-        )
+        return super()._render_qweb_html(new_doc_ids, data)
 
     def _post_pdf(self, save_in_attachment, pdf_content=None, res_ids=None):
         if self.report_name not in [
             "carrier_shipping_label_template.report_shipping_label"
         ]:
-            return super(IrActionsReportReportlab, self)._post_pdf(
-                save_in_attachment, pdf_content, res_ids
-            )
+            return super()._post_pdf(save_in_attachment, pdf_content, res_ids)
 
         shipping_label_res_ids = self._context.get("shipping_label_res_ids")
         if shipping_label_res_ids:
@@ -56,13 +52,11 @@ class IrActionsReportReportlab(models.Model):
             if not res_ids:
                 pdf_content = None
 
-        return super(IrActionsReportReportlab, self)._post_pdf(
-            save_in_attachment, pdf_content, res_ids
-        )
+        return super()._post_pdf(save_in_attachment, pdf_content, res_ids)
 
     def _retrieve_attachment(self, record):
         if self.report_name in [
             "carrier_shipping_label_template.report_shipping_label"
         ]:
             return None
-        return super(IrActionsReportReportlab, self)._retrieve_attachment(record)
+        return super()._retrieve_attachment(record)
