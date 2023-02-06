@@ -22,12 +22,7 @@ class IrActionsReportReportlab(models.Model):
             not in ["carrier_shipping_label_template.report_shipping_label"]
         ) or not docids:
             return super(IrActionsReportReportlab, self)._render_qweb_html(docids, data)
-        new_doc_ids = []
-        for picking in self.env["stock.picking"].browse(docids):
-            if picking.label_de_attach_id:
-                continue
-            else:
-                new_doc_ids.append(picking.id)
+        new_doc_ids = self.env["stock.picking"].search([('id','in',docids),('label_de_attach_id','=',False)]).ids
         return super(IrActionsReportReportlab, self)._render_qweb_html(
             new_doc_ids, data
         )
