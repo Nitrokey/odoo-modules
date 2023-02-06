@@ -4,7 +4,7 @@
     "version": "15.0.3.1.5",
     "depends": [
         "ups_delivery_carrier",
-        "carrier_deutsche_post",
+        "delivery_deutsche_post",
     ],
     "data": ["views/report_shipping_label.xml"],
     "auto_install": False,
