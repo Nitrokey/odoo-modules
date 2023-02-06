@@ -9,7 +9,6 @@ class PhoneValidationMixin(models.Model):
     _inherit = "res.partner"
 
     def _phone_format(self, number, country=None, company=None):
-
         return phone_format(
             number,
             self.country_id.code if self.country_id else None,

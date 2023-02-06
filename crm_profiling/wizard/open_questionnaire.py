@@ -25,7 +25,7 @@ class OpenQuestionnaire(models.TransientModel):
     @api.model
     def default_get(self, fields):
         context = self._context.copy()
-        res = super(OpenQuestionnaire, self).default_get(fields)
+        res = super().default_get(fields)
         questionnaire_id = context.get("questionnaire_id", False)
         if questionnaire_id and "question_ans_ids" in fields:
             query = """

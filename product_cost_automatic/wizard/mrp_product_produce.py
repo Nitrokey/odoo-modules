@@ -6,7 +6,7 @@ class MrpImmediateProduction(models.TransientModel):
     _description = "Immediate Production"
 
     def process(self):
-        res = super(MrpImmediateProduction, self).process()
+        res = super().process()
         ctx = self._context.copy()
         active_id = ctx.get("active_id")
         model_name = ctx.get("active_model")
