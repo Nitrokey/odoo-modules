@@ -6,7 +6,6 @@ from odoo import models, fields, api
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import Warning
-from customs.queue_job.job import job
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -118,7 +117,6 @@ class SaleOrderWizard(models.TransientModel):
         for line in orders:
             self.with_delay().create_order_remove_queue(line, user_id, user)
 
-    @job
     def create_order_remove_queue(self, line, user_id, user):
         current_date = datetime.now()
         log_obj = self.env['removed.record.log']
