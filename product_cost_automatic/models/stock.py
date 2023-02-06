@@ -5,7 +5,7 @@ class Picking(models.Model):
     _inherit = "stock.picking"
 
     def _action_done(self):
-        res = super(Picking, self)._action_done()
+        res = super()._action_done()
         if res:
             for purchase in self.mapped("purchase_id"):
                 for line in purchase.order_line:

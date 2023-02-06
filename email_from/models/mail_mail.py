@@ -6,7 +6,7 @@ class MailMail(models.Model):
 
     @api.model
     def create(self, values):
-        new_mail = super(MailMail, self).create(values)
+        new_mail = super().create(values)
         for email_from in self.env.company.email_from_ids:
             from_email_model_ids = email_from.from_email_model_ids.mapped("model")
             if from_email_model_ids:

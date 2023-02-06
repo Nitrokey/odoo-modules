@@ -18,7 +18,7 @@ class WebsiteSaleExt(WebsiteSale):
         sitemap=False,
     )
     def address(self, **kw):
-        response = super(WebsiteSaleExt, self).address(**kw)
+        response = super().address(**kw)
         Partner = request.env["res.partner"].with_context(show_address=1).sudo()
         order = request.website.sale_get_order()
         errors = {}
