@@ -129,7 +129,7 @@ repos:
           - --exit-zero
         verbose: true
         additional_dependencies: &pylint_deps
-          - pylint-odoo==8.0.17
+          - pylint-odoo>=8.0.17
       - id: pylint
         name: pylint with mandatory checks
         args:
