@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-        <record id="customer_wizard_line_form_view" model="ir.ui.view">
-            <field name="name">customer.wizard.line.form.view</field>
-            <field name="model">customer.wizard.line</field>
-            <field name="arch" type="xml">
-                <form string="Customer Line" create="false" write="false">
-                	<group>
-                		<group>
-                			<field name='name' />
-                			<field name='partner_id' />
-                		</group>
-                		<group>
-                			<field name='email' />
-                			<field name='phone' />
-                		</group>
-                	</group>
-                </form>
-            </field>
-        </record>
-        <record id="customer_wizard_form_view" model="ir.ui.view">
+    <record id="customer_wizard_form_view" model="ir.ui.view">
             <field name="name">customer.wizard.form.view</field>
             <field name="model">customer.wizard</field>
             <field name="arch" type="xml">
@@ -32,43 +14,40 @@
                         </h3>
                     </div>
                     <group>
-                        <field name="customer_ids" nolabel="1" widget="one2many_list">
+                        <field name="customer_ids" nolabel="1" widget="one2many_list" readonly="1" edit="0">
                             <tree string="Customer" create='false' edit='false'>
                                 <field name="id" invisible="1"/>
-                                <field name="name"/>
-                                <field name="phone"/>
-                                <field name="email"/>
-                            	<button name="action_view_customer"
-		                            type="object"
-		                            class="oe_stat_button"
-		                            icon="fa-pencil-square-o"
-		                            attrs="{'invisible': [('name', '=', False)]}">
-                        		</button>    
+                                <field name="name" readonly="1"/>
+                                <field name="phone" readonly="1"/>
+                                <field name="email" readonly="1"/>
                             </tree>
-                            
                         </field>
                     </group>
                     <footer>
-                        <button name="action_remove_customer_manual" string="Remove from List" type="object" class="oe_highlight"/>
-                        <button name="action_remove_customer" string="Delete partner records" type="object" class="oe_highlight"/>
+                        <button name="action_remove_customer"
+                                id="action_remove_all_customer" string="Delete all partner records" type="object"
+                                class="oe_highlight"/>
+                        <button name="action_remove_customer_manual"
+                                id ="action_remove_customer" string="Delete selected partner records" type="object"
+                                class="oe_highlight"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
             </field>
         </record>
         
-        <record id="action_show_customer" model="ir.actions.act_window">
-            <field name="name">Abandoned Customer</field>
-            <field name="res_model">customer.wizard</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="customer_wizard_form_view"/>
-            <field name="target">new</field>
-        </record>
+    <record id="action_show_customer" model="ir.actions.act_window">
+        <field name="name">Abandoned Customer</field>
+        <field name="res_model">customer.wizard</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="customer_wizard_form_view"/>
+        <field name="target">new</field>
+    </record>
         
-        <menuitem id="menu_action_show_customer" 
-                  action="action_show_customer" 
-                  name="Abandoned Customer" 
-                  parent="abandoned_carts.menu_main_abandoned_log"/>
+    <menuitem id="menu_action_show_customer"
+              action="action_show_customer"
+              name="Abandoned Customer"
+              parent="abandoned_carts.menu_main_abandoned_log"/>
         
 </odoo>

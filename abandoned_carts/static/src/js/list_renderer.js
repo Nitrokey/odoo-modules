@@ -9,7 +9,28 @@ ListRenderer.include({
 			params.hasSelectors=true;
 		}
 		return this._super(parent, state, params);
-	}
-});
+	},
+})
+var trafficlight = setInterval(function() {
+        var find_all_checkbox = $(document.getElementsByClassName('custom-control-input'))
+	    var checked_checkbox = []
+	    for (let checkbox in find_all_checkbox){
+            if (checkbox === 'length'){
+                break
+            }
+            if (find_all_checkbox[checkbox].checked) {
+                checked_checkbox.push(checkbox)
+            }
 
+	    }
+	    if (checked_checkbox.length > 0) {
+	        $(document.getElementById('action_remove_all_customer')).hide()
+	        $(document.getElementById('action_remove_customer')).show()
+	    }
+	    else {
+	        $(document.getElementById('action_remove_all_customer')).show()
+	        $(document.getElementById('action_remove_customer')).hide()
+	    }
+
+},50);
 });

@@ -6,7 +6,6 @@ var FormController = require('web.FormController');
 FormController.include({
 	_callButtonAction: function (attrs, record) {
 		if (this.modelName=='customer.wizard' && attrs.name=='action_remove_customer_manual'){
-			
 			var ctx = attrs.context || {};
 			var $selectedRows = this.$('tbody .o_list_record_selector input:checked').closest('tr');
 			var selected_ids = _.map($selectedRows, function (row) {return $(row).data('id');});

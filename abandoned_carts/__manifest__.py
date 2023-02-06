@@ -3,7 +3,7 @@
 {
     'name': "Abandoned Carts",
     'version': '12.0.1.2',
-    'depends': ['website_sale', 'crm', 'account', 'project', 'calendar'],
+    'depends': ['website_sale', 'crm', 'account', 'project', 'calendar', 'queue_job'],
     'description': """
 - User can delete Abandoned Customers & Orders
 - User can see deleted Customers or Orders log in Removed Log menu inside Sales --> Abandoned Log menu.
