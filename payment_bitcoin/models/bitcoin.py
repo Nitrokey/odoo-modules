@@ -160,6 +160,7 @@ class BitcoinAddress(models.Model):
 
     order_id = fields.Many2one(
         'sale.order', 'Order Assigned', ondelete='set null')
+    is_btc_used = fields.Boolean('Is Bitcoin used?')
 
     _sql_constraints = [
         ('name_uniq', 'unique(name)', 'Bitcoin Address must be unique'),
@@ -172,59 +173,61 @@ class BitcoinAddress(models.Model):
         payment_journal_obj = acquirer_obj.journal_id
         check_hours = self.env['ir.config_parameter'].sudo().get_param('payment_bitcoin.bit_coin_order_older_than','6')
         _LOGGER.info("\n\n***************Bitcoin Payment check_hours ***************%s",check_hours)
-        check_date = (datetime.now() - td(hours=int(check_hours))).strftime("%Y-%m-%d %H:%M:%S")
-        for bit_add_obj in self.search([('create_date', '>=', check_date)]):
-            address_info = check_received(bit_add_obj.name)
-            _LOGGER.info("\n\n*************** Bitcoin Payment Address Info *************** %s \n\n", address_info)
-            if address_info:
-                valid_rate_exists = self.env['bitcoin.rate.line'].sudo().search(
-                    [('order_id', '=', bit_add_obj.order_id.id), ('name', '=', bit_add_obj.order_id.name)], limit=1)
-                order_valid_rate = 0.0
-                if valid_rate_exists:
-                    order_valid_rate = valid_rate_exists.rate
-                _LOGGER.info("\n\n\n Bitcoin payment ====[Received Bitcoin] >= [Sale order Aount] ==== %s >= %s \n\n\n", address_info['received'], order_valid_rate)
-                if order_valid_rate and address_info['received'] >= order_valid_rate:
-                    if bit_add_obj.order_id.state not in ('cancel'):
-                        if bit_add_obj.order_id.state not in ('done', 'sale'):
-                            bit_add_obj.order_id.action_confirm()
+        check_date = (datetime.now() - td(hours=int(check_hours)))
+        for bit_add_obj in self.search([('order_id', '!=', False),('is_btc_used','=',False)]):
+            if bit_add_obj.order_id.create_date >= check_date:
+                address_info = check_received(bit_add_obj.name)
+                _LOGGER.info("\n\n*************** Bitcoin Payment Address Info *************** %s \n\n", address_info)
+                if address_info:
+                    valid_rate_exists = self.env['bitcoin.rate.line'].sudo().search(
+                        [('order_id', '=', bit_add_obj.order_id.id), ('name', '=', bit_add_obj.order_id.name)], limit=1)
+                    order_valid_rate = 0.0
+                    if valid_rate_exists:
+                        order_valid_rate = valid_rate_exists.rate
+                    _LOGGER.info("\n\n\n Bitcoin payment ====[Received Bitcoin] >= [Sale order Aount] ==== %s >= %s \n\n\n", address_info['received'], order_valid_rate)
+                    if order_valid_rate and address_info['received'] >= order_valid_rate:
+                        if bit_add_obj.order_id.state not in ('cancel'):
+                            if bit_add_obj.order_id.state not in ('done', 'sale'):
+                                bit_add_obj.order_id.action_confirm()
 
-                        if not bit_add_obj.order_id.invoice_ids:
-                            bit_add_obj.order_id.action_invoice_create()
+                            if not bit_add_obj.order_id.invoice_ids:
+                                bit_add_obj.order_id.action_invoice_create()
 
-                        invoice_objs = bit_add_obj.order_id.mapped('invoice_ids').filtered(
-                            lambda r: r.state in ['draft'])
-                        if invoice_objs:
-                            invoice_objs.action_invoice_open()
-                        open_invoice_objs = bit_add_obj.order_id.mapped('invoice_ids').filtered(lambda r: r.state in ['open'])
-                        if open_invoice_objs:
-                            line_to_reconcile = self.env['account.move.line']
-                            payment_line = self.env['account.move.line']
+                            invoice_objs = bit_add_obj.order_id.mapped('invoice_ids').filtered(
+                                lambda r: r.state in ['draft'])
+                            if invoice_objs:
+                                invoice_objs.action_invoice_open()
+                            open_invoice_objs = bit_add_obj.order_id.mapped('invoice_ids').filtered(lambda r: r.state in ['open'])
+                            if open_invoice_objs:
+                                line_to_reconcile = self.env['account.move.line']
+                                payment_line = self.env['account.move.line']
 
-                            payment_methods = payment_journal_obj.inbound_payment_method_ids.ids
-                            payment_vals = {
-                                'partner_id': bit_add_obj.order_id.partner_id.id,
-                                'payment_type': 'inbound',
-                                'partner_type': 'customer',
-                                'amount': bit_add_obj.order_id.amount_total,
-                                'payment_date': fields.Date.today(),
-                                'journal_id': payment_journal_obj.id,
-                                'payment_method_id': payment_methods and payment_methods[0] or False
-                            }
-                            payment_obj = self.env['account.payment'].sudo().create(payment_vals)
-                            payment_obj.post()
-                            payment_move = payment_obj.move_line_ids.mapped('move_id')
-                            payment_line = payment_move.line_ids.filtered(
-                                lambda r: not r.reconciled and r.account_id.internal_type in ('payable', 'receivable'))
+                                payment_methods = payment_journal_obj.inbound_payment_method_ids.ids
+                                payment_vals = {
+                                    'partner_id': bit_add_obj.order_id.partner_id.id,
+                                    'payment_type': 'inbound',
+                                    'partner_type': 'customer',
+                                    'amount': bit_add_obj.order_id.amount_total,
+                                    'payment_date': fields.Date.today(),
+                                    'journal_id': payment_journal_obj.id,
+                                    'payment_method_id': payment_methods and payment_methods[0] or False
+                                }
+                                payment_obj = self.env['account.payment'].sudo().create(payment_vals)
+                                payment_obj.post()
+                                payment_move = payment_obj.move_line_ids.mapped('move_id')
+                                payment_line = payment_move.line_ids.filtered(
+                                    lambda r: not r.reconciled and r.account_id.internal_type in ('payable', 'receivable'))
 
-                            for inv in open_invoice_objs:
-                                line_to_reconcile += inv.move_id.line_ids.filtered(
-                                    lambda r: not r.reconciled and r.account_id.internal_type in (
-                                    'payable', 'receivable'))
+                                for inv in open_invoice_objs:
+                                    line_to_reconcile += inv.move_id.line_ids.filtered(
+                                        lambda r: not r.reconciled and r.account_id.internal_type in (
+                                        'payable', 'receivable'))
 
-                            (line_to_reconcile + payment_line).reconcile()
-                else:
-                    template_obj = self.env.ref('payment_bitcoin.mail_template_data_bit_coin_order_notification')
-                    template_obj.send_mail(bit_add_obj.order_id.id, force_send=True, raise_exception=True)
+                                (line_to_reconcile + payment_line).reconcile()
+                                bit_add_obj.write({"is_btc_used": True})
+                    else:
+                        template_obj = self.env.ref('payment_bitcoin.mail_template_data_bit_coin_order_notification')
+                        template_obj.send_mail(bit_add_obj.order_id.id, force_send=True, raise_exception=True)
 
     @api.model
     def send_bitcoin_address_goes_low_notification(self):
