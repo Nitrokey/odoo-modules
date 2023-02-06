@@ -3,7 +3,6 @@
 from datetime import datetime
 import logging
 
-from customs.queue_job.job import job
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 
@@ -143,7 +142,7 @@ class CustomerWizard(models.TransientModel):
 #            })
 #            _LOGGER.info('name %s, date %s, model %s, res_id %s, user %s'%(record_name, current_date, 'res.partner', record_id, user.name))
 #            self._cr.execute('RELEASE SAVEPOINT remove_partner')
-    @job
+
     def create_partner_remove_queue(self, partner_id, user_id, user_name):
         partner_obj = self.env['res.partner']
         log_obj = self.env['removed.record.log']
