@@ -54,16 +54,14 @@ class MergePartnerLine(models.TransientModel):
         for record in self:
             record.len_aggr_ids = len(record.aggr_ids)
 
-
-
 class MergePartnerAutomatic(models.TransientModel):
     _inherit = 'base.partner.merge.automatic.wizard'
 
     total_duplicates = fields.Integer('Total Duplicates')
     duplicate_position = fields.Integer('Duplicate Contact Position')
-    associate_contact =fields.Boolean("Partner contacts associated to the contact",default=True)
-    contact_not_being_customer =fields.Boolean("A contact not being customer",default=True)
-    without_sales_orders =fields.Boolean("Without sales orders",default=True)
+    associate_contact = fields.Boolean("Partner contacts associated to the contact",default=True)
+    contact_not_being_customer = fields.Boolean("A contact not being customer",default=True)
+    without_sales_orders = fields.Boolean("Without sales orders",default=True)
     group_by_domain_email = fields.Boolean('Domain Email')
 
     group_by_phone = fields.Boolean('Phone')
@@ -227,6 +225,13 @@ class MergePartnerAutomatic(models.TransientModel):
             "FROM res_partner",
         ]
 
+        sub_query = "substring(email from '@(.*)$') not in ('gmail.com','gmx.com','gmx.de','yahoo.com','yahoo.de'" \
+                    ",'posteo.de','posteo.net','live.com','hotmail.com','outlook.com','aol.com','protonmail.com'," \
+                    "'protonmail.ch', 'fastmail.com','vodafone.de','vodafonemail.de','hushmail.com','t-online.de'," \
+                    "'web.de','tutanota.com','tutanota.de')"
+
+        text.append('WHERE %s' % sub_query)
+
         conditions = [criteria]
         if self.associate_contact:
             conditions.append("NOT EXISTS (SELECT 1 FROM res_partner as child WHERE child.parent_id = res_partner.id)")
@@ -242,9 +247,11 @@ class MergePartnerAutomatic(models.TransientModel):
                     criteria = criteria
                     group_fields = group_fields
                 else:
-                    criteria=(criteria).replace('email IS NOT NULL',"SUBSTRING(email FROM POSITION('@' IN email)+1) IS NOT NULL")
-                    group_fields =(group_fields).replace('lower(email)',"SUBSTRING(email FROM POSITION('@' IN email)+1)")
-            text.append('WHERE %s' % criteria)
+                    criteria = (criteria).replace('email IS NOT NULL',
+                                                  "SUBSTRING(email FROM POSITION('@' IN email)+1) IS NOT NULL")
+                    group_fields = (group_fields).replace('lower(email)',
+                                                          "SUBSTRING(email FROM POSITION('@' IN email)+1)")
+            text.append('AND %s' % criteria)
         text.extend([
             "GROUP BY %s" % group_fields,
             "HAVING COUNT(*) >= 2",
