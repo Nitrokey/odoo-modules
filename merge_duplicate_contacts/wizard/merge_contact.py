@@ -230,7 +230,6 @@ class MergePartnerAutomatic(models.TransientModel):
                     "'protonmail.ch', 'fastmail.com','vodafone.de','vodafonemail.de','hushmail.com','t-online.de'," \
                     "'web.de','tutanota.com','tutanota.de')"
 
-        text.append('WHERE %s' % sub_query)
 
         conditions = [criteria]
         if self.associate_contact:
@@ -251,7 +250,14 @@ class MergePartnerAutomatic(models.TransientModel):
                                                   "SUBSTRING(email FROM POSITION('@' IN email)+1) IS NOT NULL")
                     group_fields = (group_fields).replace('lower(email)',
                                                           "SUBSTRING(email FROM POSITION('@' IN email)+1)")
-            text.append('AND %s' % criteria)
+
+        for field in fields:
+            if field == 'domain_email':
+                text.append('WHERE %s' % sub_query)
+                text.append('AND %s' % criteria)
+            else:
+                text.append('WHERE %s' % criteria)
+
         text.extend([
             "GROUP BY %s" % group_fields,
             "HAVING COUNT(*) >= 2",
