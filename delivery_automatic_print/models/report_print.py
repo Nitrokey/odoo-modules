@@ -5,7 +5,7 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     def button_validate(self):
-        res = super(StockPicking, self).button_validate()
+        res = super().button_validate()
         for pickings in self:
             if pickings.picking_type_id.code == "outgoing":
                 if pickings.ups_image or pickings.label_de_attach_id:

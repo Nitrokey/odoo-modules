@@ -11,7 +11,5 @@ class NitrokeyCustomerPortal(CustomerPortal):
             new_dict = dict(report_sudo._context)
             new_dict["must_skip_send_to_printer"] = True
             report_sudo.env.context = new_dict
-        data = super(NitrokeyCustomerPortal, self)._show_report(
-            model, report_type, report_ref, download
-        )
+        data = super()._show_report(model, report_type, report_ref, download)
         return data
