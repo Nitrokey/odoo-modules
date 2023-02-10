@@ -122,7 +122,7 @@ def check_received(addr):
     # no transactions -> nothing received
     if not txs:
         _LOGGER.info("\n\n *** Bitcoin Payment **** if not txs ********************* {received: 0, min_conf: 0, when: None}")
-        return {"received": 0, "min_conf": 0, "when": None}
+        return {"received": 0, "min_conf": 0, "when": None, "transaction": None}
 
     received = 0
     min_conf = None
@@ -133,12 +133,13 @@ def check_received(addr):
         # confirmations = current_block_height - transaction_block_height - 1
         conf = current_height - b_height - 1 if b_height else 0
         if conf < needed_confirms:
-            return {"received": 0, "min_conf": 0, "when": None}
+            return {"received": 0, "min_conf": 0, "when": None, "transaction": None}
         min_conf = min(conf, min_conf) if min_conf is not None else conf
+        last_trans = tx
 
     # here all transactions are >= 10 times confirmed,
     # we consider total_received" as "received" btc
-    out = {"received": addr_info.json()["total_received"] / 1e8, "min_conf": min_conf}
+    out = {"received": addr_info.json()["total_received"] / 1e8, "min_conf": min_conf, "transaction": last_trans.get("hash")}
 
     # let's define the "transaction-finalized" when the last transaction reached needed_confirms confirmations
     # so the time when this happened is ~ 10minutes * )confirmations - needed_confirms)
@@ -166,6 +167,11 @@ class BitcoinAddress(models.Model):
         ('name_uniq', 'unique(name)', 'Bitcoin Address must be unique'),
     ]
 
+    def convert_num_to_standard(self,scientific_num):
+        '''This function converts scientific number to standard number
+        (e.g. 5.836e-05 -> 0.00005836)'''
+        return ("%.17f" % scientific_num).rstrip('0')
+
     @api.model
     def cron_bitcoin_payment_reconciliation(self):
         _LOGGER.info("\n\n****** Bitcoin Payment ********* cron_bitcoin_payment_reconciliation ***************")
@@ -185,6 +191,7 @@ class BitcoinAddress(models.Model):
                     if valid_rate_exists:
                         order_valid_rate = valid_rate_exists.rate
                     _LOGGER.info("\n\n\n Bitcoin payment ====[Received Bitcoin] >= [Sale order Aount] ==== %s >= %s \n\n\n", address_info['received'], order_valid_rate)
+                    amount_received = self.convert_num_to_standard(address_info['received'])
                     if order_valid_rate and address_info['received'] >= order_valid_rate:
                         if bit_add_obj.order_id.state not in ('cancel'):
                             if bit_add_obj.order_id.state not in ('done', 'sale'):
@@ -225,7 +232,14 @@ class BitcoinAddress(models.Model):
 
                                 (line_to_reconcile + payment_line).reconcile()
                                 bit_add_obj.write({"is_btc_used": True})
+                                if float(address_info["received"]) == float(order_valid_rate):
+                                    bit_add_obj.order_id.message_post(body=_(f'Bitcoin transaction {address_info.get("transaction")} for {bit_add_obj.name} with {amount_received} BTC has been confirmed. The corresponding payment is posted: {invoice_objs.mapped("number")}'))
+                                elif float(address_info["received"]) > float(order_valid_rate):
+                                    max_amount_received = float(address_info["received"])-float(order_valid_rate)
+                                    bit_add_obj.order_id.message_post(body=_(f'Bitcoin transaction {address_info.get("transaction")} for {bit_add_obj.name} with {amount_received} BTC has been confirmed. This is  {self.convert_num_to_standard(max_amount_received)} BTC too much. The corresponding payment is posted: {invoice_objs.mapped("number")}'))
                     else:
+                        insufficiant_amount = float(order_valid_rate)-float(address_info["received"])
+                        bit_add_obj.order_id.message_post(body=_(f'Bitcoin transaction {address_info.get("transaction")} for {bit_add_obj.name} with {amount_received} BTC has been confirmed. It is missing {self.convert_num_to_standard(insufficiant_amount)} BTC.'))
                         template_obj = self.env.ref('payment_bitcoin.mail_template_data_bit_coin_order_notification')
                         template_obj.send_mail(bit_add_obj.order_id.id, force_send=True, raise_exception=True)
 
