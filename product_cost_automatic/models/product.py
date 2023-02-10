@@ -20,7 +20,7 @@ class ProductTemplate(models.Model):
 
     @api.model
     def default_get(self, fields):
-        res = super(ProductTemplate, self).default_get(fields)
+        res = super().default_get(fields)
         res.update({"is_automatically": True})
         return res
 
@@ -63,7 +63,7 @@ class ProductProduct(models.Model):
 
     @api.model
     def default_get(self, fields):
-        res = super(ProductProduct, self).default_get(fields)
+        res = super().default_get(fields)
         res.update({"is_automatically": True})
         return res
 

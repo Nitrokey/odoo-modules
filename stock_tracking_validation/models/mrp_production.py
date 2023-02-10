@@ -6,7 +6,7 @@ class MrpProduction(models.Model):
 
     def open_stock_tracking_wizard(self):
         production_line_has_lot = self.move_raw_ids.filtered(
-            lambda m: m.move_line_ids.filtered(lambda l: l.lot_id)
+            lambda m: m.move_line_ids.filtered(lambda lot: lot.lot_id)
         )
         if not production_line_has_lot:
             return self.button_mark_done()

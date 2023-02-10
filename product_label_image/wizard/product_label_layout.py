@@ -17,7 +17,7 @@ class ProductLabelLayout(models.TransientModel):
 
         # Get layout grid
         if self.print_format != "4x6":
-            return super(ProductLabelLayout, self)._prepare_report_data()
+            return super()._prepare_report_data()
 
         xml_id = "product_label_image.report_product_label_image_4x6"
 
