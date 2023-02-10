@@ -236,7 +236,7 @@ class BitcoinAddress(models.Model):
                                     bit_add_obj.order_id.message_post(body=_(f'Bitcoin transaction {address_info.get("transaction")} for {bit_add_obj.name} with {amount_received} BTC has been confirmed. The corresponding payment is posted: {invoice_objs.mapped("number")}'))
                                 elif float(address_info["received"]) > float(order_valid_rate):
                                     max_amount_received = float(address_info["received"])-float(order_valid_rate)
-                                    bit_add_obj.order_id.message_post(body=_(f'Bitcoin transaction {address_info.get("transaction")} for {bit_add_obj.name} with {amount_received} BTC has been confirmed. This is  {self.convert_num_to_standard(max_amount_received)} BTC too much. The corresponding payment is posted: {invoice_objs.mapped("number")}'))
+                                    bit_add_obj.order_id.message_post(body=_(f'Bitcoin transaction {address_info.get("transaction")} for {bit_add_obj.name} with {amount_received} BTC has been confirmed. This is {self.convert_num_to_standard(max_amount_received)} BTC too much. The corresponding payment is posted: {invoice_objs.mapped("number")}'))
                     else:
                         insufficiant_amount = float(order_valid_rate)-float(address_info["received"])
                         bit_add_obj.order_id.message_post(body=_(f'Bitcoin transaction {address_info.get("transaction")} for {bit_add_obj.name} with {amount_received} BTC has been confirmed. It is missing {self.convert_num_to_standard(insufficiant_amount)} BTC.'))
