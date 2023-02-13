@@ -435,3 +435,20 @@ msgstr ""
 msgid "time remaining"
 msgstr ""
 
+#. module: payment_bitcoin
+#: code:addons/payment_bitcoin/models/bitcoin.py:243
+#, python-format
+msgid "Bitcoin transaction %s for %s with %s BTC has been confirmed. It is missing %s BTC."
+msgstr "Die Bitcoin-Transaktion %s für %s mit %s BTC wurde bestätigt. Es fehlen %s BTC."
+
+#. module: payment_bitcoin
+#: code:addons/payment_bitcoin/models/bitcoin.py:236
+#, python-format
+msgid "Bitcoin transaction %s for %s with %s BTC has been confirmed. The corresponding payment is posted: %s"
+msgstr "Die Bitcoin-Transaktion %s für %s mit %s BTC wurde bestätigt. Die entsprechende Zahlung wird gebucht: %s"
+
+#. module: payment_bitcoin
+#: code:addons/payment_bitcoin/models/bitcoin.py:239
+#, python-format
+msgid "Bitcoin transaction %s for %s with %s BTC has been confirmed. This is  %s BTC too much. The corresponding payment is posted: %s"
+msgstr "Die Bitcoin-Transaktion %s für %s mit %s BTC wurde bestätigt. Dies sind  %s BTC zu viel. Die entsprechende Zahlung wird gebucht: %s"
