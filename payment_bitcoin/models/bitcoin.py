@@ -172,6 +172,10 @@ class BitcoinAddress(models.Model):
         (e.g. 5.836e-05 -> 0.00005836)'''
         return ("%.17f" % scientific_num).rstrip('0')
 
+    def cnvrt_list_to_string(self, ldata):
+        lst_to_str = " "
+        return (', '.join([str(data) for data in ldata]))
+
     @api.model
     def cron_bitcoin_payment_reconciliation(self):
         _LOGGER.info("\n\n****** Bitcoin Payment ********* cron_bitcoin_payment_reconciliation ***************")
@@ -233,13 +237,14 @@ class BitcoinAddress(models.Model):
                                 (line_to_reconcile + payment_line).reconcile()
                                 bit_add_obj.write({"is_btc_used": True})
                                 if float(address_info["received"]) == float(order_valid_rate):
-                                    bit_add_obj.order_id.message_post(body=_(f'Bitcoin transaction {address_info.get("transaction")} for {bit_add_obj.name} with {amount_received} BTC has been confirmed. The corresponding payment is posted: {invoice_objs.mapped("number")}'))
+                                    bit_add_obj.order_id.message_post(body=_('Bitcoin transaction %s for %s with %s BTC has been confirmed. The corresponding payment is posted: %s') % (address_info.get("transaction"), bit_add_obj.name, amount_received, self.cnvrt_list_to_string(invoice_objs.mapped("number"))))
                                 elif float(address_info["received"]) > float(order_valid_rate):
                                     max_amount_received = float(address_info["received"])-float(order_valid_rate)
-                                    bit_add_obj.order_id.message_post(body=_(f'Bitcoin transaction {address_info.get("transaction")} for {bit_add_obj.name} with {amount_received} BTC has been confirmed. This is {self.convert_num_to_standard(max_amount_received)} BTC too much. The corresponding payment is posted: {invoice_objs.mapped("number")}'))
+                                    log_max_amt = _('Bitcoin transaction %s for %s with %s BTC has been confirmed. This is  %s BTC too much. The corresponding payment is posted: %s') % (address_info.get("transaction"), bit_add_obj.name, amount_received, self.convert_num_to_standard(max_amount_received), self.cnvrt_list_to_string(invoice_objs.mapped("number")))
+                                    bit_add_obj.order_id.message_post(body=(log_max_amt))
                     else:
                         insufficiant_amount = float(order_valid_rate)-float(address_info["received"])
-                        bit_add_obj.order_id.message_post(body=_(f'Bitcoin transaction {address_info.get("transaction")} for {bit_add_obj.name} with {amount_received} BTC has been confirmed. It is missing {self.convert_num_to_standard(insufficiant_amount)} BTC.'))
+                        bit_add_obj.order_id.message_post(body=_('Bitcoin transaction %s for %s with %s BTC has been confirmed. It is missing %s BTC.') % (address_info.get("transaction"), bit_add_obj.name, amount_received, self.convert_num_to_standard(insufficiant_amount)))
                         template_obj = self.env.ref('payment_bitcoin.mail_template_data_bit_coin_order_notification')
                         template_obj.send_mail(bit_add_obj.order_id.id, force_send=True, raise_exception=True)
 
