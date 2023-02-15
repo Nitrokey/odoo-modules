@@ -63,7 +63,7 @@ class CustomerWizard(models.TransientModel):
                NOT EXISTS (SELECT 1 FROM project_task task  WHERE task.partner_id = p.id) and
                (SELECT count(*) from res_groups_users_rel where gid = (select id from res_groups where id=%d) and uid=ru.id)=0 and
                (SELECT count(*) from res_groups_users_rel where gid = (select id from res_groups where id=%d) and uid=ru.id)=0 and
-               (SELECT count(*) from res_partner WHERE parent_id=p.id) = 0 and
+               p.parent_id is NULL and
                p.customer and
                p.id not in (select partner_id from res_users union all select partner_id from res_company order by partner_id)
                %s

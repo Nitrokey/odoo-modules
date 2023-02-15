@@ -6,6 +6,7 @@ from odoo import models, fields, api
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import Warning
+from customs.queue_job.job import job
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -119,11 +120,12 @@ class SaleOrderWizard(models.TransientModel):
                 % (max_delete_batch_limit))
 
         # orders = self.sale_order_ids.mapped('order_id')
+        user_id = self.env.user.id
         user = self.env.user
         for order_id in order_ids:
-            self.with_delay().create_order_remove_queue(order_id, user.id, user.name)
+            self.with_delay().create_order_remove_queue(order_id, user_id, user)
 
-    def create_order_remove_queue(self, order_id, user_id, user_name):
+    def create_order_remove_queue(self, order_id, user_id, user):
         order_obj = self.env['sale.order']
         current_date = datetime.now()
         log_obj = self.env['removed.record.log']
@@ -136,6 +138,8 @@ class SaleOrderWizard(models.TransientModel):
         try:
             order.unlink()
         except Exception as e:
+            line = order_obj.browse(order_id)
+            line.write({'active': False})
             error = str(e)
 
         log_obj.create({
@@ -147,7 +151,7 @@ class SaleOrderWizard(models.TransientModel):
             'error': error
         })
         _LOGGER.info('name %s, date %s, model %s, res_id %s, user %s' % (
-                    order.name, current_date, 'sale.order', order.id, user_name))
+                    order.name, current_date, 'sale.order', order.id, user.name))
 
     @api.multi
     def action_remove_sale_order_manual(self):
