@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-		<record id="sale_order_wizard_line_form_view" model="ir.ui.view">
-            <field name="name">sale.order.wizard.line.form.view</field>
-            <field name="model">sale.order.wizard.line</field>
-            <field name="arch" type="xml">
-                <form string="Sale Orders" create="false" write="false">
-                	<group>
-                		<group>
-                			<field name="order_id" />
-                			<field name='partner_id' />
-                			<field name='amount_total' />
-                		</group>
-                		<group>
-                			<field name='date_order' />
-                			<field name='user_id' />
-                			<field name='state'/>
-                		</group>
-                	</group>
-                </form>
-            </field>
-        </record>
+<!--		<record id="sale_order_wizard_line_form_view" model="ir.ui.view">-->
+<!--            <field name="name">sale.order.wizard.line.form.view</field>-->
+<!--            <field name="model">sale.order.wizard.line</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <form string="Sale Orders" create="false" write="false">-->
+<!--                	<group>-->
+<!--                		<group>-->
+<!--                			<field name="order_id" />-->
+<!--                			<field name='partner_id' />-->
+<!--                			<field name='amount_total' />-->
+<!--                		</group>-->
+<!--                		<group>-->
+<!--                			<field name='date_order' />-->
+<!--                			<field name='user_id' />-->
+<!--                			<field name='state'/>-->
+<!--                		</group>-->
+<!--                	</group>-->
+<!--                </form>-->
+<!--            </field>-->
+<!--        </record>-->
         <record id="sale_order_wizard_form_view" model="ir.ui.view">
             <field name="name">sale.order.wizard.form.view</field>
             <field name="model">sale.order.wizard</field>
@@ -34,7 +34,7 @@
                         </h3>
                     </div>
                     <group>
-                        <field name="sale_order_ids" nolabel="1" widget="one2many_list"> 
+                        <field name="sale_order_ids" nolabel="1" widget="one2many_list" readonly="1" edit="0">
                         <tree string="Sale Order" name="sale_order" create='false' edit='false'>
                                 <field name="name"/>
                                 <field name="date_order"/>
@@ -46,8 +46,14 @@
                         </field>
                     </group>
                     <footer>
-                        <button name="action_remove_sale_order" string="Remove" type="object" class="oe_highlight"/>
+                        <button name="action_remove_sale_order"
+                                id = "action_remove_all_orders" string="Delete all sale orders" type="object"
+                                class="oe_highlight"/>
+                        <button name="action_remove_sale_order_manual"
+                                id = "action_remove_sale_orders" string="Delete selected sale orders" type="object"
+                                class="oe_highlight"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
+
                     </footer>
                 </form>
             </field>
