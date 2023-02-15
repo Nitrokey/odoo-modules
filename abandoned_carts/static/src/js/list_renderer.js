@@ -21,15 +21,21 @@ var trafficlight = setInterval(function() {
             if (find_all_checkbox[checkbox].checked) {
                 checked_checkbox.push(checkbox)
             }
-
 	    }
 	    if (checked_checkbox.length > 0) {
 	        $(document.getElementById('action_remove_all_customer')).hide()
 	        $(document.getElementById('action_remove_customer')).show()
+
+	        $(document.getElementById('action_remove_all_orders')).hide()
+	        $(document.getElementById('action_remove_sale_orders')).show()
+
 	    }
 	    else {
 	        $(document.getElementById('action_remove_all_customer')).show()
 	        $(document.getElementById('action_remove_customer')).hide()
+
+	        $(document.getElementById('action_remove_all_orders')).show()
+	        $(document.getElementById('action_remove_sale_orders')).hide()
 	    }
 
 },50);
