@@ -116,7 +116,9 @@ class Segmentation(models.Model):
             if batches:
                 batch = batches[0]
                 self.last_batch_id = batch.id
-        jobs = batch.job_ids.filtered(lambda x: x.state not in ["started", "done", "cancelled"])
+        jobs = batch.job_ids.filtered(
+            lambda x: x.state not in ["started", "done", "cancelled"]
+        )
         if jobs:
             jobs.button_cancelled()
         return True
