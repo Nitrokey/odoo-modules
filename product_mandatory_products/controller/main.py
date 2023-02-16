@@ -22,7 +22,7 @@ class ProductConfigurator(ProductConfiguratorController):
         This route is called in JS by appending _website to the base route.
         """
         product = request.env["product.product"].browse(int(product_id))
-        res = super(ProductConfigurator, self).show_advanced_configurator_website(
+        res = super().show_advanced_configurator_website(
             product_id, variant_values, **kw
         )
         if not res and product.mandatory_product_ids:
@@ -69,7 +69,7 @@ class ProductConfigurator(ProductConfiguratorController):
                     "already_configured": kw.get("already_configured", False),
                 },
             )
-        return super(ProductConfigurator, self)._show_advanced_configurator(
+        return super()._show_advanced_configurator(
             product_id, variant_values, pricelist, handle_stock, **kw
         )
 
@@ -105,7 +105,7 @@ class WebsiteSaleExtend(WebsiteSale):
                 product_and_options = self.update_product_and_options(
                     product_and_options
                 )
-            res = super(WebsiteSaleExtend, self).cart_options_update_json(
+            res = super().cart_options_update_json(
                 product_and_options, goto_shop=goto_shop, lang=lang, **kwargs
             )
             self.KW = []
@@ -126,6 +126,7 @@ class WebsiteSaleExtend(WebsiteSale):
                 .sudo()
                 .browse(int(product_data["root_product"]))
             )
+            is_optional_prod = root_product_id.optional_product_ids
             if root_product_id.mandatory_product_ids:
                 if "products" not in product_data:
                     return {"has_mandatory": False}
@@ -137,13 +138,17 @@ class WebsiteSaleExtend(WebsiteSale):
                 if product_in_cart:
                     return {
                         "has_mandatory": True,
-                        "display_optional": True
-                        if root_product_id.optional_product_ids
-                        else False,
+                        "display_optional": True if is_optional_prod else False,
                     }
                 else:
-                    return {"has_mandatory": False, "display_optional": False}
+                    return {
+                        "has_mandatory": True,
+                        "display_optional": True if is_optional_prod else False,
+                    }
             else:
-                return {"has_mandatory": True, "display_optional": False}
+                return {
+                    "has_mandatory": False,
+                    "display_optional": True if is_optional_prod else False,
+                }
         else:
             return True

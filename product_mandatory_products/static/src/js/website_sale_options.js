@@ -2,7 +2,6 @@ odoo.define("product_mandatory_products.website_sale_options", function (require
   "use strict";
 
   var ajax = require("web.ajax");
-  var rpc = require("web.rpc");
   var publicWidget = require("web.public.widget");
   var OptionalProductsModal = require("sale_product_configurator.OptionalProductsModal");
   require("website_sale_options.website_sale");
@@ -62,36 +61,77 @@ odoo.define("product_mandatory_products.website_sale_options", function (require
   });
 
   OptionalProductsModal.include({
-    //       Overwrite
-    //       Get all product inside cart and send to controller to check for mandatory product.
-    _onConfirmButtonClick: function () {
-      var self = this;
+    _getProductslist: function () {
       var products = [];
-      this.$modal.find(".js_product.in_cart:not(.main_product)").each(function () {
+      this.$el.find(".js_product.in_cart:not(.main_product)").each(function () {
         var $item = $(this);
         products.push(parseInt($item.find("input.product_id").val(), 10));
       });
-      rpc
-        .query({
-          route: "/shop/check_mendatory_product",
-          params: {
-            products: products,
-            root_product: this.rootProduct.product_id,
-            current_context: this.context,
-          },
+      return products;
+    },
+
+    _onCancelButtonClick: function () {
+      var self = this;
+      var products = this._getProductslist();
+      var res = this._super;
+      ajax
+        .jsonRpc("/shop/check_mendatory_product", "call", {
+          products: products,
+          root_product: this.rootProduct.product_id,
+          current_context: this.context,
         })
-        .then(function (res) {
-          if (res.has_mandatory) {
-            $("#mandatory_msg").css("display", "none");
-            self.display_optional = res.display_optional;
-            self.trigger("confirm");
-            self.close();
-            if (res.display_optional) {
+        .then(function (result) {
+          self.display_optional = result.display_optional;
+          if (result.has_mandatory) {
+            if (products.length != 1) {
+              if ($("#mandatory_msg").length > 0) {
+                $("#mandatory_msg").css("display", "block");
+              } else {
+                return res.apply(self, arguments);
+              }
+            } else if (result.display_optional) {
+              self.trigger("back");
+              self.close();
               document.getElementById("add_to_cart").click();
+            } else {
+              return res.apply(self, arguments);
             }
           } else {
-            $("#mandatory_msg").css("display", "block");
-            return false;
+            return res.apply(self, arguments);
+          }
+        });
+    },
+
+    //       Get all product inside cart and send to controller to check for mandatory product.
+    _onConfirmButtonClick: function () {
+      var self = this;
+      var products = this._getProductslist();
+      var res = this._super;
+      ajax
+        .jsonRpc("/shop/check_mendatory_product", "call", {
+          products: products,
+          root_product: this.rootProduct.product_id,
+          current_context: this.context,
+        })
+        .then(function (result) {
+          if (result.has_mandatory) {
+            $("#mandatory_msg").css("display", "none");
+            self.display_optional = result.display_optional;
+            if (products.length != 1) {
+              if ($("#mandatory_msg").length > 0) {
+                $("#mandatory_msg").css("display", "block");
+              } else {
+                return res.apply(self, arguments);
+              }
+            } else if (result.display_optional) {
+              self.trigger("confirm");
+              self.close();
+              document.getElementById("add_to_cart").click();
+            } else {
+              return res.apply(self, arguments);
+            }
+          } else {
+            return res.apply(self, arguments);
           }
         });
     },
