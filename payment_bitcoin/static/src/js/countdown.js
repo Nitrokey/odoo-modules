@@ -29,12 +29,13 @@ odoo.define("payment_bitcoin.duration", function (require) {
         var mDisplay = m >= 0 ? String(("0" + m).slice(-2)) + "" : "";
         var sDisplay = s >= 0 ? String(("0" + s).slice(-2)) + "" : "";
 
-        $("div#timecounter").append("<h1>hi</h1>");
         seconds = seconds1;
-        if (seconds === 0) {
+        if (seconds <= 0) {
           clearInterval(interval);
         }
-        $("div#timecounter").html(hDisplay + ":" + mDisplay + ":" + sDisplay);
+        if (seconds > 0) {
+          $("div#timecounter").html(hDisplay + ":" + mDisplay + ":" + sDisplay);
+        }
       }, 1000);
     },
   });
