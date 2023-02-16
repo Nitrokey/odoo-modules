@@ -1,0 +1,83 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* product_cost_automatic
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-21 14:00+0000\n"
+"PO-Revision-Date: 2022-04-21 14:00+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_cost_automatic
+#: model:ir.model.fields,field_description:product_cost_automatic.field_product_template__is_automatically
+msgid "Automatic"
+msgstr "Automatisch"
+
+#. module: product_cost_automatic
+#: model:ir.model.fields,field_description:product_cost_automatic.field_product_product__is_automatically
+msgid "Automatically"
+msgstr "Automatisch"
+
+#. module: product_cost_automatic
+#: model_terms:ir.ui.view,arch_db:product_cost_automatic.product_template_form_is_automatically_inherit
+#: model_terms:ir.ui.view,arch_db:product_cost_automatic.product_variant_easy_edit_view_bom_inherit_nitrokey
+msgid "Compute Price from BoM"
+msgstr "Berechnung des Preises aus Stückliste"
+
+#. module: product_cost_automatic
+#: model:ir.actions.server,name:product_cost_automatic.action_compute_price_po_product
+#: model:ir.actions.server,name:product_cost_automatic.action_compute_price_po_template
+#: model_terms:ir.ui.view,arch_db:product_cost_automatic.product_template_form_is_automatically_inherit
+#: model_terms:ir.ui.view,arch_db:product_cost_automatic.product_variant_easy_edit_view_bom_inherit_nitrokey
+msgid "Compute Price from PO"
+msgstr "Berechnung des Preises aus Bestellung"
+
+#. module: product_cost_automatic
+#: model_terms:ir.ui.view,arch_db:product_cost_automatic.product_template_form_is_automatically_inherit
+#: model_terms:ir.ui.view,arch_db:product_cost_automatic.product_variant_easy_edit_view_bom_inherit_nitrokey
+msgid "Compute the price of the product using products and operations of related bill of materials, for manufactured products only."
+msgstr "Berechnung des Produktpreises mittels Produkten und Vorgängen der entsprechenden Stücklisten, nur für Fertigungsprodukte."
+
+#. module: product_cost_automatic
+#: model_terms:ir.ui.view,arch_db:product_cost_automatic.product_template_form_is_automatically_inherit
+#: model_terms:ir.ui.view,arch_db:product_cost_automatic.product_variant_easy_edit_view_bom_inherit_nitrokey
+msgid "Price will be updated from PO when validating its incoming shipment."
+msgstr "Der Preis wird bei Bestätigung der eingehenden Sendung aus dem Einkauf aktualisiert."
+
+#. module: product_cost_automatic
+#: model:ir.model,name:product_cost_automatic.model_product_product
+msgid "Product"
+msgstr "Produkt"
+
+#. module: product_cost_automatic
+#: model:ir.model,name:product_cost_automatic.model_product_template
+msgid "Product Template"
+msgstr "Produktvorlage"
+
+#. module: product_cost_automatic
+#: model:ir.model.fields,field_description:product_cost_automatic.field_product_template__purchase_line_ids
+msgid "Purchase Line"
+msgstr "Beschaffungszeilen"
+
+#. module: product_cost_automatic
+#: model:ir.model.fields,field_description:product_cost_automatic.field_product_product__purchase_line_ids
+msgid "Purchase Lines"
+msgstr "Beschaffungszeilen"
+
+#. module: product_cost_automatic
+#: model:ir.model,name:product_cost_automatic.model_mrp_product_produce
+msgid "Record Production"
+msgstr "Produktion aufzeichnen"
+
+#. module: product_cost_automatic
+#: model:ir.model,name:product_cost_automatic.model_stock_picking
+msgid "Transfer"
+msgstr "Lieferung vornehmen"
+

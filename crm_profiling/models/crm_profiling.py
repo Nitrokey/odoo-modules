@@ -117,4 +117,4 @@ class ResPartner(models.Model):
                 (6, 0, self._recompute_categ(vals["answers_ids"][0][2]))
             ]
 
-        return super(ResPartner, self).write(vals)
+        return super().write(vals)

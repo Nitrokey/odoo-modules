@@ -3,6 +3,7 @@ from odoo import fields, models
 
 class EmailFrom(models.Model):
     _name = "email.from"
+    _description = "Email From"
 
     from_email_model_ids = fields.Many2many("ir.model", string="Models")
     email_from = fields.Char()
