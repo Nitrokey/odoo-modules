@@ -225,11 +225,24 @@ class MergePartnerAutomatic(models.TransientModel):
             "FROM res_partner",
         ]
 
-        sub_query = "substring(email from '@(.*)$') not in ('gmail.com','gmx.com','gmx.de','yahoo.com','yahoo.de'" \
-                    ",'posteo.de','posteo.net','live.com','hotmail.com','outlook.com','aol.com','protonmail.com'," \
-                    "'protonmail.ch', 'fastmail.com','vodafone.de','vodafonemail.de','hushmail.com','t-online.de'," \
-                    "'web.de','tutanota.com','tutanota.de')"
-
+        sub_query = "substring(email from '@(.*)$') not in ('gmx.com','gmx.de','yahoo.com','yahoo.de'" \
+                ",'posteo.de','posteo.net','live.com','hotmail.com','outlook.com','aol.com','protonmail.com'," \
+                "'protonmail.ch', 'fastmail.com','vodafone.de','vodafonemail.de','hushmail.com','t-online.de'," \
+                "'web.de','tutanota.com','tutanota.de','aikq.de','aol.de','arcor.de','bluewin.ch','compuserve.com','dismail.de'" \
+                ",'disroot.org','duck.com','email.de','ewe.net','ewetel.net','fastmail.de'" \
+                ",'fastmail.fm','fastmail.net','free.fr','freenet.de','gmail.com','gmx.at'" \
+                ",'gmx.ch','gmx.de','gmx.eu','gmx.fr','gmx.info','gmx.li','gmx.org','gmxpro.de'" \
+                ",'gmx-topmail.de','googlemail.com','hotmail.ch','hotmail.co.','hotmail.de'" \
+                ",'hotmail.es','hotmail.fr','hotmail.it','hush.com','icloud.com','jpberlin.de'" \
+                ",'kabelmail.de','laposte.net','lavabit.com','librem.one','live.co.uk','live.de'" \
+                ",'live.fr','live.nl','mac.com','mailbox.org','mail.de','mailfence.com','me.com'" \
+                ",'meineinkauf.ch','msn.com','mykolab.ch','mykolab.com','netcologne.de','online.de'" \
+                ",'onlinehome.de','orange.fr','outlook.de','outlook.es','outlook.fr','posteo.at'" \
+                ",'posteo.ch','posteo.co.uk','posteo.de','posteo.eu','posteo.lu','posteo.'" \
+                ",'posteo.org','protommail.com','proton.me','pt.lu','riseup.net','runbox.com'" \
+                ",'secure.mailbox.org','startmail.com','system.li','temp.mailbox.org','t-online.de'" \
+                ",'tuta.io','tutamail.com','wanadoo.fr','xs4all.nl','yahoo.ca','yahoo.co.uk'" \
+                ",'yahoo.es','yahoo.fr','yahoo.it')"
 
         conditions = [criteria]
         if self.associate_contact:
