@@ -9,9 +9,14 @@ odoo.define("payment_bitcoin.bitcoin", function (require) {
 
   const BitcoinMixin = {
     _onClickPaymentOption: function (ev) {
-      var $order_id = $(
-        'span[data-oe-model="sale.order"][data-oe-field="amount_total"]'
-      ).attr("data-oe-id");
+      var $order_id =
+        $('span[data-oe-model="sale.order"][data-oe-field="amount_total"]').attr(
+          "data-oe-id"
+        ) ||
+        $('b[data-oe-model="sale.order"][data-oe-field="amount_total"]').attr(
+          "data-oe-id"
+        ) ||
+        $("table#sales_order_table").attr("data-order-id");
       var $order_ref = $('input[name="reference"]').val();
       var provider = $(ev.currentTarget)
         .find('input[name="o_payment_radio"]')

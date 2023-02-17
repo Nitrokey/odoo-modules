@@ -9,16 +9,17 @@
     "depends": ["payment", "website_sale", "website_sale_payment", "base_automation"],
     "data": [
         "security/ir.model.access.csv",
-        "data/payment_acquirer_data.xml",
         "data/base_automation.xml",
         "data/mail_data.xml",
         "data/ir_cron_data.xml",
         "views/bitcoin_views.xml",
         "views/payment_bitcoin_templates.xml",
+        "data/payment_acquirer_data.xml",
         "views/counter_qweb.xml",
         "views/cart.xml",
         "views/res_config_settings_view.xml",
         "views/payment_acquirer.xml",
+        "views/sale_portal_view.xml",
     ],
     "assets": {
         "web.assets_frontend": [

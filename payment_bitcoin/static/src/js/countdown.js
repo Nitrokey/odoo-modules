@@ -4,7 +4,7 @@ odoo.define("payment_bitcoin.duration", function (require) {
   var publicWidget = require("web.public.widget");
 
   publicWidget.registry.reloadDuration = publicWidget.Widget.extend({
-    selector: ".oe_website_sale_tx_status",
+    selector: ".oe_website_sale_tx_status, #quote_content",
     init: function () {
       this._super.apply(this, arguments);
       this._updateSeconds();
@@ -33,7 +33,7 @@ odoo.define("payment_bitcoin.duration", function (require) {
         if (seconds <= 0) {
           clearInterval(interval);
         }
-        if (seconds > 0) {
+        if (seconds >= 0) {
           $("div#timecounter").html(hDisplay + ":" + mDisplay + ":" + sDisplay);
         }
       }, 1000);

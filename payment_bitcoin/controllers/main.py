@@ -5,8 +5,11 @@ import werkzeug
 from markupsafe import Markup
 
 from odoo import _, http
+from odoo.exceptions import AccessError, MissingError, ValidationError
+from odoo.fields import Command
 from odoo.http import request
 
+from odoo.addons.sale.controllers.portal import CustomerPortal, PaymentPortal
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 
 _logger = logging.getLogger(__name__)
@@ -15,7 +18,7 @@ _logger = logging.getLogger(__name__)
 class BitcoinController(http.Controller):
     _accept_url = "/payment/bitcoin/feedback"
 
-    @http.route(["/payment/bitcoin/feedback"], type="http", auth="public", csrf=False)
+    @http.route([_accept_url], type="http", auth="public", csrf=False)
     def transfer_form_feedback(self, **post):
         post["state"] = "pending"
         tx_object = request.env["payment.transaction"].sudo()
@@ -65,8 +68,42 @@ class BitcoinController(http.Controller):
         return request.make_response(barcode, headers=[("Content-Type", "image/png")])
 
 
-# class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
 class WebsiteSale(WebsiteSale):
+    def get_bitcoin_render_values(self, order, lang_id):
+        if order.payment_tx_id.bitcoin_unit == "mBTC":
+            bitcoin_amount = order.payment_tx_id.bitcoin_amount / 1000.0
+            m_bitcoin_amount = order.payment_tx_id.bitcoin_amount
+        else:
+            bitcoin_amount = order.payment_tx_id.bitcoin_amount
+            m_bitcoin_amount = order.payment_tx_id.bitcoin_amount * 1000.0
+
+        uri = _("bitcoin:%(address)s$$amount=%(bt_amt)s*$message=%(msg)s") % {
+            "address": order.payment_tx_id.bitcoin_address,
+            "bt_amt": bitcoin_amount,
+            "msg": order.name,
+        }
+        decimal_places = len(str(order.payment_tx_id.bitcoin_amount).split(".")[1])
+        info = (
+            _(
+                "Please send %(amount_btc)s %(unit_btc)s (%(amount_mbtc)s %(unit_mbtc)s) \
+            to the address %(address)s by %(deadline_date)s UTC."
+            )
+            % {
+                "amount_btc": lang_id.format(
+                    f"%.{decimal_places}f", bitcoin_amount, True, True
+                ),
+                "amount_mbtc": lang_id.format(
+                    f"%.{decimal_places}f", m_bitcoin_amount, True, True
+                ),
+                "unit_btc": "BTC",
+                "unit_mbtc": "mBTC",
+                "address": order.payment_tx_id.bitcoin_address,
+                "deadline_date": order.payment_tx_id.last_state_change
+                + timedelta(minutes=order.payment_tx_id.acquirer_id.deadline),
+            }
+        )
+        return (info, uri)
+
     @http.route(
         "/shop/payment/get_status/<int:sale_order_id>",
         type="json",
@@ -82,39 +119,7 @@ class WebsiteSale(WebsiteSale):
             after_panel_heading = resp["message"].find(
                 "</div>", resp["message"].find('<div class="card-header>')
             )
-            if order.payment_tx_id.bitcoin_unit == "mBTC":
-                bitcoin_amount = order.payment_tx_id.bitcoin_amount / 1000.0
-                m_bitcoin_amount = order.payment_tx_id.bitcoin_amount
-            else:
-                bitcoin_amount = order.payment_tx_id.bitcoin_amount
-                m_bitcoin_amount = order.payment_tx_id.bitcoin_amount * 1000.0
-
-            uri = _("bitcoin:%(address)s$$amount=%(bt_amt)s*$message=%(msg)s") % {
-                "address": order.payment_tx_id.bitcoin_address,
-                "bt_amt": bitcoin_amount,
-                "msg": order.name,
-            }
-            decimal_places = len(str(order.payment_tx_id.bitcoin_amount).split(".")[1])
-            info = (
-                _(
-                    "Please send %(amount_btc)s %(unit_btc)s (%(amount_mbtc)s %(unit_mbtc)s) \
-                to the address %(address)s by %(deadline_date)s UTC."
-                )
-                % {
-                    "amount_btc": lang_id.format(
-                        f"%.{decimal_places}f", bitcoin_amount, True, True
-                    ),
-                    "amount_mbtc": lang_id.format(
-                        f"%.{decimal_places}f", m_bitcoin_amount, True, True
-                    ),
-                    "unit_btc": "BTC",
-                    "unit_mbtc": "mBTC",
-                    "address": order.payment_tx_id.bitcoin_address,
-                    "deadline_date": order.payment_tx_id.last_state_change
-                    + timedelta(minutes=order.payment_tx_id.acquirer_id.deadline),
-                }
-            )
-
+            info, uri = self.get_bitcoin_render_values(order, lang_id)
             if after_panel_heading:
                 after_panel_heading += 6
                 msg = """<div class="panel-body" style="padding-bottom:0px;">
@@ -146,3 +151,64 @@ class WebsiteSale(WebsiteSale):
                 ) % uri
             resp["recall"] = False
         return resp
+
+
+class PaymentPortal(PaymentPortal):
+    # overwrite to write the 'payment_tx_id' at transaction creation.
+    @http.route("/my/orders/<int:order_id>/transaction", type="json", auth="public")
+    def portal_order_transaction(self, order_id, access_token, **kwargs):
+        try:
+            order_sudo = self._document_check_access(
+                "sale.order", order_id, access_token
+            )
+        except MissingError as error:
+            raise error
+        except AccessError:
+            raise ValidationError(_("The access token is invalid.")) from AccessError
+
+        kwargs.update(
+            {
+                "reference_prefix": None,
+                "partner_id": order_sudo.partner_id.id,
+                "sale_order_id": order_id,
+            }
+        )
+        kwargs.pop(
+            "custom_create_values", None
+        )  # Don't allow passing arbitrary create values
+        tx_sudo = self._create_transaction(
+            custom_create_values={"sale_order_ids": [Command.set([order_id])]},
+            **kwargs,
+        )
+        so_vals = {"payment_tx_id": tx_sudo.id}
+        sale_order_id = request.env["sale.order"].browse(order_id)
+        sale_order_id.sudo().write(so_vals)
+        return tx_sudo._get_processing_values()
+
+
+class CustomerPortal(CustomerPortal):
+    @http.route(["/my/orders/<int:order_id>"], type="http", auth="public", website=True)
+    def portal_order_page(
+        self,
+        order_id,
+        report_type=None,
+        access_token=None,
+        message=False,
+        download=False,
+        **kw,
+    ):
+        res = super().portal_order_page(
+            order_id,
+            report_type=report_type,
+            access_token=access_token,
+            message=message,
+            download=download,
+            **kw,
+        )
+        order = request.env["sale.order"].sudo().browse(order_id)
+        language = request.env.context.get("lang") or order.partner_id.lang or "en_US"
+        lang_id = request.env["res.lang"].search([("code", "=", language)])
+        if order.payment_acquirer_id.provider == "bitcoin":
+            info, uri = WebsiteSale.get_bitcoin_render_values(self, order, lang_id)
+            res.qcontext.update({"uri": uri, "info": info})
+        return res
