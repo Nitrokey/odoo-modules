@@ -37,21 +37,17 @@ Algorithm
 
 This module identifies orders as abandoned (and to be deleted) if all of the following is true:
 
-`"state = draft" and "sales = website_sales" and "date_of_order <= hours_from_retention_period" and Created by System User`
+`("state = draft" or `"state = sent") and "sales = website_sales" and "date_of_order <= hours_from_retention_period" and Created by System User`
 
 These orders will be displayed in "Abandoned orders" and can be deleted manually. 
 
 Customers, which have
 
-`"orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "invoice = 0" and "account moves = 0" and "tasks = 0" and "active = 0" and "is_customer = true" and Created by System User`
+`"orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "invoice = 0" and "account moves = 0" and "tasks = 0" and "active = 0" and "is_customer = true" and "parent partner = 0" and "portal or user account = 0" and Created by System User`
 
 will be displayed in "Abandoned customers" and can be deleted manually.
 
-But records which have parent partners, and records which have portal or user account should not be displayed on that list.
-
-And if all partner records matched all of the requirement but if the record has child partner record or delivery address it removes that partner don't remove those child records.
-
-For abandoned orders, the orders which are in state draft or in sent, are considered as abandoned orders according to Retention period.
+Child partner records (e.g. delivery addresses) of deleted records will remain and don't get deleted implicitly. However, in subsequent executions they may fulfill all criteria and get deleted too.
 
 A cron job can be configured to delete abandoned orders and abandoned customers automatically.
 
