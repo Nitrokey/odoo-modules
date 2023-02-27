@@ -47,10 +47,10 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin
 msgid ""
 "<span class=\"o_form_label\">Hours</span>\n"
-"                            <span class=\"fa fa-lg fa-building-o\" aria-label=\"Addresses checking for orders which are not older than\" role=\"img\"/>"
+"                            <span class=\"fa fa-lg fa-building-o\" aria-label=\"Address check for orders which are not older than\" role=\"img\"/>"
 msgstr ""
 "<span class=\"o_form_label\">Stunden</span>\n"
-"                            <span class=\"fa fa-lg fa-building-o\" aria-label=\"Addresses checking for orders which are not older than\" role=\"img\"/>"
+"                            <span class=\"fa fa-lg fa-building-o\" aria-label=\"Adressprüfung für Aufträge, die nicht älter sind als\" role=\"img\"/>"
 
 #. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.payment_bitcoin_acquirer_form
@@ -81,7 +81,7 @@ msgstr "Adresslink"
 
 #. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin
-msgid "Addresses checking for orders which are not older than"
+msgid "Addresses check for orders which are not older than"
 msgstr "Adressprüfung für Aufträge, die nicht älter sind als"
 
 #. module: payment_bitcoin
@@ -89,7 +89,7 @@ msgstr "Adressprüfung für Aufträge, die nicht älter sind als"
 #: model:ir.model.fields,help:payment_bitcoin.field_webkul_website_addons__bit_coin_order_older_than
 #: model:ir.model.fields,help:payment_bitcoin.field_website_country_config__bit_coin_order_older_than
 msgid "Address check for orders which are not older than"
-msgstr "Addresses checking for orders which are not older than"
+msgstr "Adressprüfung für Aufträge, die nicht älter sind als"
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line__amount
@@ -155,7 +155,7 @@ msgstr "Bitcoin Adressen"
 
 #. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin
-msgid "Bitcoin Addresses checking"
+msgid "Bitcoin Addresses check"
 msgstr "Bitcoin Adressprüfung"
 
 #. module: payment_bitcoin
@@ -219,7 +219,7 @@ msgstr "Die Bitcoin-Transaktion %(transaction)s für %(address)s mit %(amount)s 
 #: model:ir.actions.server,name:payment_bitcoin.ir_cron_bitcoin_payment_reconciliation_ir_actions_server
 #: model:ir.cron,cron_name:payment_bitcoin.ir_cron_bitcoin_payment_reconciliation
 #: model:ir.cron,name:payment_bitcoin.ir_cron_bitcoin_payment_reconciliation
-msgid "Bitcoin: Addresses Checking"
+msgid "Bitcoin: Addresses Check"
 msgstr "Bitcoin Adressprüfung"
 
 #. module: payment_bitcoin
