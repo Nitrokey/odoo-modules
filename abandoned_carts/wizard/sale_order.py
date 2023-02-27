@@ -54,7 +54,7 @@ class SaleOrderWizard(models.TransientModel):
         # search([('name','in',['Website Sales','Website'])], limit=1)
 
         system_user = self.sudo().env.ref('base.user_root', False)
-        domain = [('state', '=', 'draft'),
+        domain = [('state', 'in', ['draft', 'sent']),
                   ('create_date', '<', date.strftime(DF)),
                   ]
         if system_user:
@@ -147,7 +147,7 @@ class SaleOrderWizard(models.TransientModel):
             'error': error
         })
         _LOGGER.info('name %s, date %s, model %s, res_id %s, user %s' % (
-                    order.name, current_date, 'sale.order', order.id, user_name))
+                    record_name, current_date, 'sale.order', record_id, user_name))
 
     @api.multi
     def action_remove_sale_order_manual(self):

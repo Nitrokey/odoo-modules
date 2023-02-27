@@ -47,6 +47,12 @@ Customers, which have
 
 will be displayed in "Abandoned customers" and can be deleted manually.
 
+But records which have parent partners, and records which have portal or user account should not be displayed on that list.
+
+And if all partner records matched all of the requirement but if the record has child partner record or delivery address it removes that partner don't remove those child records.
+
+For abandoned orders, the orders which are in state draft or in sent, are considered as abandoned orders according to Retention period.
+
 A cron job can be configured to delete abandoned orders and abandoned customers automatically.
 
 Deleted items are listed with name, date, model & user in "Removed Log" for verification purposes.
