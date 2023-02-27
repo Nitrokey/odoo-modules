@@ -37,7 +37,7 @@ Algorithm
 
 This module identifies orders as abandoned (and to be deleted) if all of the following is true:
 
-`("state = draft" or `"state = sent") and "sales = website_sales" and "date_of_order <= hours_from_retention_period" and Created by System User`
+`("state = draft" or `"state = sent") and "Website is set" and "Create date of order <= hours_from_retention_period" and Created by System User`
 
 These orders will be displayed in "Abandoned orders" and can be deleted manually. 
 
