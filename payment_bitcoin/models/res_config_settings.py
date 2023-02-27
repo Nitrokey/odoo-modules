@@ -13,7 +13,7 @@ class ResConfigSettings(models.TransientModel):
     )
 
     bit_coin_order_older_than = fields.Integer(
-        "Hours", help="Addresses checking for orders which are not older than."
+        "Hours", help="Address check for orders which are not older than"
     )
 
     @api.model

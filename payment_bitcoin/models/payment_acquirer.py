@@ -8,7 +8,7 @@ class BitcoinPaymentAcquirer(models.Model):
         selection_add=[("bitcoin", "Bitcoin")], ondelete={"bitcoin": "set default"}
     )
     deadline = fields.Float(
-        help="Add deadline to bitcoin payment, within this deadline payment should be done",
+        help="Add a deadline to Bitcoin payments within which the payment should be made.",
     )
 
     def _get_default_payment_method_id(self):

@@ -56,8 +56,8 @@ class BitcoinController(http.Controller):
         at the bottom of the output image
         """
         try:
-            value = value.replace("$$", "?")
-            value = value.replace("*$", "&")
+            for rplce in (("$$", "?"), ("*$", "&")):
+                value = value.replace(*rplce)
             barcode = request.env["ir.actions.report"].barcode(
                 br_type, value, width=width, height=height, humanreadable=humanreadable
             )

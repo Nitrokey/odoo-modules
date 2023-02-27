@@ -58,7 +58,6 @@ class BitcoinPaymentTransaction(models.Model):
             if values.get("acquirer_id"):
                 acquirer = self.env["payment.acquirer"].browse(values["acquirer_id"])
                 if acquirer.provider == "bitcoin":
-                    values.get("reference")
                     sale_order_ids = values.get("sale_order_ids", [])
                     if sale_order_ids:
                         resp = self.env["bitcoin.rate"].get_rate(
