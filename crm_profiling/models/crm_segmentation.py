@@ -151,6 +151,7 @@ class Segmentation(models.Model):
                     lines.with_context(job_batch=batch).with_delay().test(
                         pids, to_remove_list
                     )
+                batch.enqueue()
                 seg.write({"job_batch_ids": [(4, batch.id)], "last_batch_id": batch.id})
         return True
 
