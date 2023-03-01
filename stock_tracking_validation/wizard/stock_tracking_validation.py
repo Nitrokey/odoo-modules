@@ -14,7 +14,7 @@ class StockTrackingValidation(models.TransientModel):
         if active_model == 'mrp.product.produce':
             mrp_production = self.env['mrp.product.produce'].sudo().browse(active_id).do_produce()
         else:
-            stock_picking = self.env['stock.picking'].sudo().browse(active_id)
+            stock_picking = self.env['stock.picking'].browse(active_id)
             precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
             no_quantities_done = all(float_is_zero(move_line.qty_done, precision_digits=precision_digits) for move_line in stock_picking.move_line_ids.filtered(lambda m: m.state not in ('done', 'cancel')))
             if no_quantities_done:
