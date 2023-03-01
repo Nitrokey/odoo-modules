@@ -10,9 +10,11 @@ class StockPicking(models.Model):
         )
         if not move_line_has_lot:
             return self.button_validate()
-        action = self.env.ref(
-            "stock_tracking_validation.action_product_stock_validation"
-        ).read()[0]
+        action = (
+            self.env.ref("stock_tracking_validation.action_product_stock_validation")
+            .sudo()
+            .read()[0]
+        )
         product_data = """<table class="table table-sm w-50 table-bordered
                             table-striped table-hover m-2">
                             <thead class="thead-light"">
