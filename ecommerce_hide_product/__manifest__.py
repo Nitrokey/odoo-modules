@@ -6,7 +6,7 @@
     "website": "https://github.com/OCA/server-tools",
     "category": "other",
     "depends": ["website_sale"],
-    "summary": """This module is used for hide products from the shop view""",
+    "summary": """This module is used to hide products from the shop view""",
     "data": ["views/product_view.xml"],
     "active": False,
     "installable": True,
