@@ -131,6 +131,8 @@ class SaleOrderWizard(models.TransientModel):
         error = ''
 
         try:
+            if order.state=='sent':
+                order.action_cancel()
             order.unlink()
         except Exception as e:
             error = str(e)

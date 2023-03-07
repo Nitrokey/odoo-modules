@@ -14,7 +14,7 @@
                         </h3>
                     </div>
                     <group>
-                        <field name="customer_ids" nolabel="1" widget="one2many_list" readonly="1" edit="0">
+                        <field name="customer_ids" nolabel="1" class="abandoned_data_check" widget="one2many_list" readonly="1" edit="0">
                             <tree string="Customer" create='false' edit='false'>
                                 <field name="id" invisible="1"/>
                                 <field name="name" readonly="1"/>

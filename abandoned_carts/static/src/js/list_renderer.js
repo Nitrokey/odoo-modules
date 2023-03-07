@@ -2,7 +2,6 @@ odoo.define('abandoned_carts.ListRenderer', function (require) {
 "use strict";
 
 var ListRenderer = require('web.ListRenderer');
-
 ListRenderer.include({
 	init: function (parent, state, params) {
 		if (state.addHasSelectors){
@@ -12,7 +11,7 @@ ListRenderer.include({
 	},
 })
 var trafficlight = setInterval(function() {
-        var find_all_checkbox = $(document.getElementsByClassName('custom-control-input'))
+        var find_all_checkbox = $(document.getElementsByClassName('abandoned_data_check')).find('.custom-control-input')
 	    var checked_checkbox = []
 	    for (let checkbox in find_all_checkbox){
             if (checkbox === 'length'){

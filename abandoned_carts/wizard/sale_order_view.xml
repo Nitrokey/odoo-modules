@@ -34,7 +34,7 @@
                         </h3>
                     </div>
                     <group>
-                        <field name="sale_order_ids" nolabel="1" widget="one2many_list" readonly="1" edit="0">
+                        <field name="sale_order_ids" nolabel="1" class="abandoned_data_check" widget="one2many_list" readonly="1" edit="0">
                         <tree string="Sale Order" name="sale_order" create='false' edit='false'>
                                 <field name="name"/>
                                 <field name="date_order"/>
