@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 15:26+0000\n"
-"PO-Revision-Date: 2022-09-14 15:26+0000\n"
+"POT-Creation-Date: 2023-04-01 20:33+0000\n"
+"PO-Revision-Date: 2023-04-01 20:33+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -40,6 +40,13 @@ msgid "<?xml version=\"1.0\"?>\n"
 "            </div>\n"
 "        "
 msgstr ""
+
+#. module: payment_bitcoin
+#: code:addons/payment_bitcoin/controllers/main.py:107
+#, python-format
+msgid "<div class='panel-body' style='padding-bottom:0px;'><h4><strong>%s</strong></h4></div><div class='panel-body d-flex justify-content-center align-items-center' style='padding-top:5px; padding-bottom:0px;'><div><img class='bitcoin_barcode' src='/report/barcode/bitcoin/?br_type=QR&amp;value=%s&amp;width=300&amp;height=300'></div><div><div class='flex-row' id='countdown_element'><div><strong>Pay Within:</strong></div><div id='timecounter' class='btn btn-info cols-xs-6 '></div></div></div></div>"
+msgstr "<div class='panel-body' style='padding-bottom:0px;'><h4><strong>%s</strong></h4></div><div class='panel-body d-flex justify-content-center align-items-center' style='padding-top:5px; padding-bottom:0px;'><div><img class='bitcoin_barcode' src='/report/barcode/bitcoin/?br_type=QR&amp;value=%s&amp;width=300&amp;height=300'></div><div><div class='flex-row' id='countdown_element'><div><strong>Zahle innerhalb von:</strong></div><div id='timecounter' class='btn btn-info cols-xs-6 '></div></div></div></div>"
+
 
 #. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin

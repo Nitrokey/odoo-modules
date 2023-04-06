@@ -19,10 +19,7 @@
                         <body>
                             <script>
 
-                                var seconds =
-                                <t
-                                        t-esc="order.get_portal_last_transaction().duration"
-                                />
+                                var seconds = "&lt;t t-esc='order.get_portal_last_transaction().duration'/>"
                                 document.getElementById("timecounter").style.fontSize = '60px';
                                 function updateClock() {
                                 var seconds1 = seconds - 1
