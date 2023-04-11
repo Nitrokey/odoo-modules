@@ -151,13 +151,13 @@ class WebsiteSale(WebsiteSale):
                     msg = (
                         _(
                             """<div class="panel-body" style="padding-bottom:0px;">
-                                <h4><strong>%s</strong></h4>
+                                <h4><strong>%(info)s</strong></h4>
                             </div>
                             <div class="panel-body d-flex justify-content-center \
                             align-items-center" 'style="padding-top:5px; \
                             padding-bottom:0px;">
                             <div><img class="bitcoin_barcode" src=\
-                            "/report/barcode/bitcoin/?br_type=QR&amp;value=%s&amp;width=300\
+                            "/report/barcode/bitcoin/?br_type=QR&amp;value=%(uri)s&amp;width=300\
                             &amp;height=300"\
                             ></div>
                             </div>"""
