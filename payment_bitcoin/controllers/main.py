@@ -132,8 +132,8 @@ class WebsiteSale(WebsiteSale):
                           align-items-center" 'style="padding-top:5px; \
                           padding-bottom:0px;">
                           <div><img class="bitcoin_barcode" src=\
-                          "/report/barcode/bitcoin/?br_type=QR&amp;value=%(uri)s&amp;width=300\
-                          &amp;height=300"\
+                          "/report/barcode/bitcoin/?br_type=QR&amp;value=%(uri)s
+                          &amp;width=300&amp;height=300"\
                           ></div>
                           <div><div class="flex-row ml-4" id="countdown_element">
                           <div><strong>Pay Within:</strong></div><div id="timecounter"\
@@ -157,8 +157,8 @@ class WebsiteSale(WebsiteSale):
                             align-items-center" 'style="padding-top:5px; \
                             padding-bottom:0px;">
                             <div><img class="bitcoin_barcode" src=\
-                            "/report/barcode/bitcoin/?br_type=QR&amp;value=%(uri)s&amp;width=300\
-                            &amp;height=300"\
+                            "/report/barcode/bitcoin/?br_type=QR&amp;value=%(uri)s
+                            &amp;width=300&amp;height=300"\
                             ></div>
                             </div>"""
                         )
