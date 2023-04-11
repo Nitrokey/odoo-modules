@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-15 13:08+0000\n"
-"PO-Revision-Date: 2023-02-15 13:08+0000\n"
+"POT-Creation-Date: 2023-04-06 15:23+0000\n"
+"PO-Revision-Date: 2023-04-06 15:23+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,6 +18,44 @@ msgstr ""
 #. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.transaction_form_bitcoin
 msgid "&amp;nbsp;"
+msgstr ""
+
+#. module: payment_bitcoin
+#: code:addons/payment_bitcoin/controllers/main.py:0
+#, python-format
+msgid ""
+"<div class=\"panel-body\" style=\"padding-bottom:0px;\">\n"
+"                          <h4><strong>%s</strong></h4>\n"
+"                          </div>\n"
+"                          <div class=\"panel-body d-flex justify-content-center                           align-items-center\" 'style=\"padding-top:5px;                           padding-bottom:0px;\">\n"
+"                          <div><img class=\"bitcoin_barcode\" src=                          \"/report/barcode/bitcoin/?br_type=QR&amp;value=%s&amp;width=300                          &amp;height=300\"                          ></div>\n"
+"                          <div><div class=\"flex-row ml-4 hah\" id=\"countdown_element\">\n"
+"                          <div><strong>Pay Within:</strong></div><div id=\"timecounter\"                          class=\"btn btn-info cols-xs-6 \"></div>\n"
+"                          </div>\n"
+"                          </div>\n"
+"                          </div>"
+msgstr ""
+"<div class=\"panel-body\" style=\"padding-bottom:0px;\">\n"
+"                          <h4><strong>%s</strong></h4>\n"
+"                          </div>\n"
+"                          <div class=\"panel-body d-flex justify-content-center                           align-items-center\" 'style=\"padding-top:5px;                           padding-bottom:0px;\">\n"
+"                          <div><img class=\"bitcoin_barcode\" src=                          \"/report/barcode/bitcoin/?br_type=QR&amp;value=%s&amp;width=300                          &amp;height=300\"                          ></div>\n"
+"                          <div><div class=\"flex-row ml-4 hah\" id=\"countdown_element\">\n"
+"                          <div><strong>Zahle innerhalb von:</strong></div><div id=\"timecounter\"                          class=\"btn btn-info cols-xs-6 \"></div>\n"
+"                          </div>\n"
+"                          </div>\n"
+"                          </div>"
+
+#. module: payment_bitcoin
+#: code:addons/payment_bitcoin/controllers/main.py:0
+#, python-format
+msgid ""
+"<div class=\"panel-body\" style=\"padding-bottom:0px;\">\n"
+"                                <h4><strong>%s</strong></h4>\n"
+"                            </div>\n"
+"                            <div class=\"panel-body d-flex justify-content-center                             align-items-center\" 'style=\"padding-top:5px;                             padding-bottom:0px;\">\n"
+"                            <div><img class=\"bitcoin_barcode\" src=                            \"/report/barcode/bitcoin/?br_type=QR&amp;value=%s&amp;width=300                            &amp;height=300\"                            ></div>\n"
+"                            </div>"
 msgstr ""
 
 #. module: payment_bitcoin
