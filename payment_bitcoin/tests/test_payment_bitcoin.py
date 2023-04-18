@@ -8,9 +8,6 @@ class TestBitcoinNoPayment(BitcoinCommon):
     def setUp(self):
         super(TestBitcoinNoPayment, self).setUp()
         self.website = self.env.ref("website.default_website")
-
-        # Initialize the bitcoin acceptance duration 10 years in hours
-        self.env['ir.config_parameter'].sudo().create({'key': 'payment_bitcoin.bit_coin_order_older_than','value': 87600})
         self.env.ref("payment_bitcoin.mail_template_data_bit_coin_order_notification").write({"auto_delete": False})
 
     def _create_sale_order(self, amount, partner_id=None):
@@ -34,9 +31,6 @@ class TestBitcoinNoPayment(BitcoinCommon):
             }
         )
 
-    def remove_acceptance_hours_params(self):
-        # Unlink the acceptance duration of the bitcoin
-        return self.env['ir.config_parameter'].sudo().search([('key','=','payment_bitcoin.bit_coin_order_older_than')]).unlink()
 
     def create_bitcoin_address_data(self, addr, order):
         # Check that bitcoin address's record is available if not then create
@@ -137,9 +131,6 @@ class TestBitcoinNoPayment(BitcoinCommon):
 
     def tearDown(self):
         super(TestBitcoinNoPayment, self).tearDown()
-
-        # Unlink the initialized bitcoin acceptance duration
-        self.remove_acceptance_hours_params()
 
         # Unlink the bitcoin address record
         self.btc_adr.unlink()
