@@ -324,22 +324,23 @@ class BitcoinAddress(models.Model):
                         insufficiant_amount = float(order_valid_rate) - float(
                             address_info["received"]
                         )
-                        bit_add_obj.order_id.message_post(
-                            body=_(
-                                "Bitcoin transaction %(transaction)s for \
-                                %(address)s with %(amount)s \
-                                BTC has been confirmed. It is missing \
-                                %(insufficiant_amount)s BTC."
+                        if address_info.get("transaction") and float(amount_received) > 0.0:
+                            bit_add_obj.order_id.message_post(
+                                body=_(
+                                    "Bitcoin transaction %(transaction)s for \
+                                    %(address)s with %(amount)s \
+                                    BTC has been confirmed. It is missing \
+                                    %(insufficiant_amount)s BTC."
+                                )
+                                % {
+                                    "transaction": address_info.get("transaction"),
+                                    "address": bit_add_obj.name,
+                                    "amount": amount_received,
+                                    "insufficiant_amount": self.convert_num_to_standard(
+                                        insufficiant_amount
+                                    ),
+                                }
                             )
-                            % {
-                                "transaction": address_info.get("transaction"),
-                                "address": bit_add_obj.name,
-                                "amount": amount_received,
-                                "insufficiant_amount": self.convert_num_to_standard(
-                                    insufficiant_amount
-                                ),
-                            }
-                        )
                         template_obj = self.env.ref(
                             "payment_bitcoin.mail_template_data_bit_coin_order_notification"
                         )
