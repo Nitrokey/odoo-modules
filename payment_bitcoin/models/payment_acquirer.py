@@ -10,7 +10,7 @@ class BitcoinPaymentAcquirer(models.Model):
     deadline = fields.Float(
         help="Add a deadline to Bitcoin payments within which the payment should be made.",
     )
-    bit_coin_order_older_than = fields.Integer(
+    bitcoin_order_older_than = fields.Integer(
         "Hours",
         help="Address check for orders which are not older than",
         default=6,

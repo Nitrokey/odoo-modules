@@ -126,9 +126,9 @@ msgid "Addresses check for orders which are not older than"
 msgstr "Adressprüfung für Aufträge, die nicht älter sind als"
 
 #. module: payment_bitcoin
-#: model:ir.model.fields,help:payment_bitcoin.field_res_config_settings__bit_coin_order_older_than
-#: model:ir.model.fields,help:payment_bitcoin.field_webkul_website_addons__bit_coin_order_older_than
-#: model:ir.model.fields,help:payment_bitcoin.field_website_country_config__bit_coin_order_older_than
+#: model:ir.model.fields,help:payment_bitcoin.field_res_config_settings__bitcoin_order_older_than
+#: model:ir.model.fields,help:payment_bitcoin.field_webkul_website_addons__bitcoin_order_older_than
+#: model:ir.model.fields,help:payment_bitcoin.field_website_country_config__bitcoin_order_older_than
 msgid "Address check for orders which are not older than"
 msgstr "Adressprüfung für Aufträge, die nicht älter sind als"
 
