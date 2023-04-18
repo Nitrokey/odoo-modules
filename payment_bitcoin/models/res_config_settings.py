@@ -12,10 +12,6 @@ class ResConfigSettings(models.TransientModel):
         "users.",
     )
 
-    bit_coin_order_older_than = fields.Integer(
-        "Hours", help="Address check for orders which are not older than"
-    )
-
     @api.model
     def get_values(self):
         res = super().get_values()
@@ -24,11 +20,6 @@ class ResConfigSettings(models.TransientModel):
                 "min_unused_bitcoin": safe_eval(
                     self.env["ir.config_parameter"].get_param(
                         "payment_bitcoin.min_unused_bitcoin", "3"
-                    )
-                ),
-                "bit_coin_order_older_than": safe_eval(
-                    self.env["ir.config_parameter"].get_param(
-                        "payment_bitcoin.bit_coin_order_older_than", "6"
                     )
                 ),
             }
@@ -40,9 +31,5 @@ class ResConfigSettings(models.TransientModel):
         config = self.env["ir.config_parameter"].sudo()
         config.set_param(
             "payment_bitcoin.min_unused_bitcoin", repr(self.min_unused_bitcoin)
-        )
-        config.set_param(
-            "payment_bitcoin.bit_coin_order_older_than",
-            repr(self.bit_coin_order_older_than),
         )
         return res

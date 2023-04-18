@@ -182,11 +182,7 @@ class BitcoinAddress(models.Model):
             [("provider", "=", "bitcoin")]
         )
         payment_journal_obj = acquirer_obj.journal_id
-        check_hours = (
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("payment_bitcoin.bit_coin_order_older_than", "6")
-        )
+        check_hours = acquirer_obj.bit_coin_order_older_than
         check_date = datetime.now() - td(hours=int(check_hours))
         for bit_add_obj in self.search(
             [("order_id", "!=", False), ("is_btc_used", "=", False)]
