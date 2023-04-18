@@ -324,7 +324,10 @@ class BitcoinAddress(models.Model):
                         insufficiant_amount = float(order_valid_rate) - float(
                             address_info["received"]
                         )
-                        if address_info.get("transaction") and float(amount_received) > 0.0:
+                        if (
+                            address_info.get("transaction")
+                            and float(amount_received) > 0.0
+                        ):
                             bit_add_obj.order_id.message_post(
                                 body=_(
                                     "Bitcoin transaction %(transaction)s for \
