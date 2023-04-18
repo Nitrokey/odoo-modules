@@ -25,8 +25,15 @@
                     </span>
                 </div>
 
-                <label for="bitcoin_order_older_than" attrs="{'invisible': [('provider', '!=', 'bitcoin')]}" />
-                <div attrs="{'invisible': [('provider', '!=', 'bitcoin')]}" class="o_row" name="bitcoin_order_older_than">
+                <label
+           for="bitcoin_order_older_than"
+           attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
+        />
+                <div
+           attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
+           class="o_row"
+           name="bitcoin_order_older_than"
+        >
                     <field name="bitcoin_order_older_than" />
                     <span>
                         <strong>In Hours</strong>

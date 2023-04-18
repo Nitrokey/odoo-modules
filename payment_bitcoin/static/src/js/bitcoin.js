@@ -21,7 +21,7 @@ odoo.define("payment_bitcoin.bitcoin", function (require) {
       var provider = $(ev.currentTarget)
         .find('input[name="o_payment_radio"]')
         .data("provider");
-      if (provider == "bitcoin") {
+      if (provider === "bitcoin") {
         ajax
           .jsonRpc("/payment_bitcoin/rate", "call", {
             order_id: $order_id,
