@@ -102,9 +102,9 @@ msgid "Addresses checking for orders which are not older than"
 msgstr ""
 
 #. module: payment_bitcoin
-#: model:ir.model.fields,help:payment_bitcoin.field_res_config_settings__bit_coin_order_older_than
-#: model:ir.model.fields,help:payment_bitcoin.field_webkul_website_addons__bit_coin_order_older_than
-#: model:ir.model.fields,help:payment_bitcoin.field_website_country_config__bit_coin_order_older_than
+#: model:ir.model.fields,help:payment_bitcoin.field_res_config_settings__bitcoin_order_older_than
+#: model:ir.model.fields,help:payment_bitcoin.field_webkul_website_addons__bitcoin_order_older_than
+#: model:ir.model.fields,help:payment_bitcoin.field_website_country_config__bitcoin_order_older_than
 msgid "Addresses checking for orders which are not older than."
 msgstr ""
 
@@ -246,9 +246,9 @@ msgid "Don't Validate Order ${object.name}"
 msgstr ""
 
 #. module: payment_bitcoin
-#: model:ir.model.fields,field_description:payment_bitcoin.field_res_config_settings__bit_coin_order_older_than
-#: model:ir.model.fields,field_description:payment_bitcoin.field_webkul_website_addons__bit_coin_order_older_than
-#: model:ir.model.fields,field_description:payment_bitcoin.field_website_country_config__bit_coin_order_older_than
+#: model:ir.model.fields,field_description:payment_bitcoin.field_res_config_settings__bitcoin_order_older_than
+#: model:ir.model.fields,field_description:payment_bitcoin.field_webkul_website_addons__bitcoin_order_older_than
+#: model:ir.model.fields,field_description:payment_bitcoin.field_website_country_config__bitcoin_order_older_than
 msgid "Hours"
 msgstr ""
 
