@@ -15,7 +15,7 @@ class BitcoinPaymentAcquirer(models.Model):
     provider = fields.Selection(selection_add=[('bitcoin', 'Bitcoin')])
     deadline = fields.Float(string="Deadline",
                             help="Add deadline to bitcoin payment, within this deadline payment should be done")
-    bit_coin_order_older_than = fields.Integer(
+    bitcoin_order_older_than = fields.Integer(
         'Hours',
         default=6,
         help='Addresses checking for orders which are not older than.',

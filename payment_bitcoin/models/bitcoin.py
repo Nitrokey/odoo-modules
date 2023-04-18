@@ -177,7 +177,7 @@ class BitcoinAddress(models.Model):
     def cron_bitcoin_payment_reconciliation(self):
         acquirer_obj = self.env['payment.acquirer'].search([('provider', '=', 'bitcoin')])
         payment_journal_obj = acquirer_obj.journal_id
-        check_hours = acquirer_obj.bit_coin_order_older_than
+        check_hours = acquirer_obj.bitcoin_order_older_than
         check_date = (datetime.now() - td(hours=int(check_hours)))
         for bit_add_obj in self.search([('order_id', '!=', False),('is_btc_used','=',False)]):
             if bit_add_obj.order_id.create_date >= check_date:
