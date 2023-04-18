@@ -177,7 +177,7 @@ class BitcoinAddress(models.Model):
     def cron_bitcoin_payment_reconciliation(self):
         acquirer_obj = self.env['payment.acquirer'].search([('provider', '=', 'bitcoin')])
         payment_journal_obj = acquirer_obj.journal_id
-        check_hours = self.env['ir.config_parameter'].sudo().get_param('payment_bitcoin.bit_coin_order_older_than','6')
+        check_hours = acquirer_obj.bit_coin_order_older_than
         check_date = (datetime.now() - td(hours=int(check_hours)))
         for bit_add_obj in self.search([('order_id', '!=', False),('is_btc_used','=',False)]):
             if bit_add_obj.order_id.create_date >= check_date:
@@ -237,7 +237,11 @@ class BitcoinAddress(models.Model):
                                     bit_add_obj.order_id.message_post(body=(log_max_amt))
                     else:
                         insufficiant_amount = float(order_valid_rate)-float(address_info["received"])
-                        bit_add_obj.order_id.message_post(body=_('Bitcoin transaction %s for %s with %s BTC has been confirmed. It is missing %s BTC.') % (address_info.get("transaction"), bit_add_obj.name, amount_received, self.convert_num_to_standard(insufficiant_amount)))
+                        if (
+                                address_info.get("transaction")
+                                and float(amount_received) > 0.0
+                        ):
+                            bit_add_obj.order_id.message_post(body=_('Bitcoin transaction %s for %s with %s BTC has been confirmed. It is missing %s BTC.') % (address_info.get("transaction"), bit_add_obj.name, amount_received, self.convert_num_to_standard(insufficiant_amount)))
                         template_obj = self.env.ref('payment_bitcoin.mail_template_data_bit_coin_order_notification')
                         template_obj.send_mail(bit_add_obj.order_id.id, force_send=True, raise_exception=True)
 
