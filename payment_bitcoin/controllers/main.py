@@ -104,20 +104,36 @@ class WebsiteSale(odoo.addons.website_sale.controllers.main.WebsiteSale):
             if after_panel_heading:
                 after_panel_heading += 6
 
-                msg = _(
-                    "<div class='panel-body' style='padding-bottom:0px;'>"
-                    "<h4><strong>%s</strong></h4>"
-                    "</div>"
-                    "<div class='panel-body d-flex justify-content-center align-items-center' "
-                    "style='padding-top:5px; padding-bottom:0px;'>"
-                    "<div><img class='bitcoin_barcode' "
-                    "src='/report/barcode/bitcoin/?br_type=QR&amp;"
-                    "value=%s&amp;width=300&amp;height=300'></div>"
-                    "<div><div class='flex-row' id='countdown_element'>"
-                    "<div><strong>Pay Within:</strong></div><div "
-                    "id='timecounter' class='btn btn-info cols-xs-6 '></div></div></div>"
-                    "</div>"
+                msg = (
+                  b'<div class="panel-body" style="padding-bottom:0px;">'
+                  b"<h4><strong>%s</strong></h4>"
+                  b"</div>"
+                  b'<div class="panel-body d-flex justify-content-center align-items-center"'
+                  b' style="padding-top:5px; '
+                  b'padding-bottom:0px;">'
+                  b'<div><img class="bitcoin_barcode"'
+                  b'src="/report/barcode/bitcoin/?br_type=QR&amp;'
+                  b'value=%s&amp;width=300&amp;height=300"></div>'
                 ) % (info.encode(), uri.encode())
+
+                transaction_deadline = order.get_portal_last_transaction().duration
+
+                if language=="de_DE":
+                    pay_text = "Zahle innerhalb von"
+                else:
+                    pay_text = "Pay Within"
+
+                if transaction_deadline and transaction_deadline > 0:
+                    msg = msg + (
+                        b'<div><div class="flex-row" id="countdown_element">'
+                        b"<div><strong>%s:</strong></div><div "
+                        b'id="timecounter" class="btn btn-info cols-xs-6 "></div></div></div>'
+                        b'</div>'
+                    ) % (pay_text.encode())
+                else:
+                    msg = msg + (
+                        b'</div>'
+                    )
 
                 resp["message"] = (
                     resp["message"][:after_panel_heading]

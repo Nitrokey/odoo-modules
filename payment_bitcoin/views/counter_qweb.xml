@@ -14,17 +14,16 @@
             <t
                     t-if="order.get_portal_last_transaction().acquirer_id.name == 'Bitcoin' and order.get_portal_last_transaction().duration > 0"
             >
+                <span id="counter_duration" class="d-none" t-esc="order.get_portal_last_transaction().duration" />
                 <t t-name="Counter_name">
                     <html>
                         <body>
                             <script>
-
-                                var seconds = "&lt;t t-esc='order.get_portal_last_transaction().duration'/>"
-                                document.getElementById("timecounter").style.fontSize = '60px';
+                                var seconds = document.getElementById("counter_duration").innerHTML;
+                                document.getElementById("timecounter").style.fontSize = '20px';
                                 function updateClock() {
                                 var seconds1 = seconds - 1
                                 seconds = Number(seconds1);
-
                                 var h = Math.floor(seconds / 3600);
                                 var m = Math.floor(((seconds / 3600) % 1).toFixed(4) * 60);
                                 var s = parseInt((((((seconds / 3600) % 1).toFixed(4) * 60) - Math.floor(((seconds /
