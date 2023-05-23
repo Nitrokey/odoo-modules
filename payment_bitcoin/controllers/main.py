@@ -122,25 +122,51 @@ class WebsiteSale(WebsiteSale):
             info, uri = self.get_bitcoin_render_values(order, lang_id)
             if after_panel_heading:
                 after_panel_heading += 6
-                msg = """<div class="panel-body" style="padding-bottom:0px;">
-                            <h4><strong>%s</strong></h4>
-                        </div>
-                        <div class="panel-body d-flex justify-content-center \
-                        align-items-center" 'style="padding-top:5px; \
-                        padding-bottom:0px;">
-                        <div><img class="bitcoin_barcode" src=\
-                        "/report/barcode/bitcoin/?br_type=QR&amp;value=%s&amp;width=300\
-                        &amp;height=300"\
-                        ></div>
-                        <div><div class="flex-row ml-4" id="countdown_element">
-                            <div><strong>Pay Within:</strong></div><div id="timecounter"\
-                             class="btn btn-info cols-xs-6 "></div>
+                if order.get_portal_last_transaction().duration > 0:
+                    msg = (
+                        _(
+                            """<div class="panel-body" style="padding-bottom:0px;">
+                          <h4><strong>%(info)s</strong></h4>
+                          </div>
+                          <div class="panel-body d-flex justify-content-center \
+                          align-items-center" 'style="padding-top:5px; \
+                          padding-bottom:0px;">
+                          <div><img class="bitcoin_barcode" src=\
+                          "/report/barcode/bitcoin/?br_type=QR&amp;value=%(uri)s
+                          &amp;width=300&amp;height=300"\
+                          ></div>
+                          <div><div class="flex-row ml-4" id="countdown_element">
+                          <div><strong>Pay Within:</strong></div><div id="timecounter"\
+                          class="btn btn-info cols-xs-6 "></div>
+                          </div>
+                          </div>
+                          </div>"""
+                        )
+                        % {
+                            "info": info,
+                            "uri": uri,
+                        }
+                    )
+                else:
+                    msg = (
+                        _(
+                            """<div class="panel-body" style="padding-bottom:0px;">
+                                <h4><strong>%(info)s</strong></h4>
                             </div>
-                        </div>
-                    </div>""" % (
-                    info,
-                    uri,
-                )
+                            <div class="panel-body d-flex justify-content-center \
+                            align-items-center" 'style="padding-top:5px; \
+                            padding-bottom:0px;">
+                            <div><img class="bitcoin_barcode" src=\
+                            "/report/barcode/bitcoin/?br_type=QR&amp;value=%(uri)s
+                            &amp;width=300&amp;height=300"\
+                            ></div>
+                            </div>"""
+                        )
+                        % (
+                            info,
+                            uri,
+                        )
+                    )
                 resp["message"] = Markup(msg) + resp["message"]
             else:
                 resp["message"] += info
