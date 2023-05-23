@@ -9,30 +9,6 @@ from odoo.tools.safe_eval import safe_eval
 _LOGGER = logging.getLogger(__name__)
 
 
-# class SaleOrderWizardLine(models.TransientModel):
-#     _name = 'sale.order.wizard.line'
-#     _description = 'Abandoned Order Line Popup'
-#
-#     name = fields.Char('Order Reference')
-#     date_order = fields.Datetime('Date')
-#     partner_id = fields.Many2one('res.partner', 'Customer')
-#     user_id = fields.Many2one('res.users', 'Salesperson')
-#     amount_total = fields.Float('Total')
-#     state = fields.Selection([
-#         ('draft', 'Draft Quotation'),
-#         ('sent', 'Quotation Sent'),
-#         ('cancel', 'Cancelled'),
-#         ('waiting_date', 'Waiting Schedule'),
-#         ('progress', 'Sales Order'),
-#         ('manual', 'Sale to Invoice'),
-#         ('shipping_except', 'Shipping Exception'),
-#         ('invoice_except', 'Invoice Exception'),
-#         ('done', 'Done'),
-#     ], 'Status')
-#     order_id = fields.Many2one('sale.order', 'Order')
-#     wizard_id = fields.Many2one('sale.order.wizard', 'Wizard')
-
-
 class SaleOrderWizard(models.TransientModel):
     _name = "sale.order.wizard"
     _description = "Abandoned Order Popup"
@@ -71,19 +47,6 @@ class SaleOrderWizard(models.TransientModel):
         current_quotation = self.env["sale.order"].search(
             domain, limit=max_delete_batch_limit
         )
-        # lines = []
-        # wizard_line_obj = self.env['sale.order.wizard.line']
-        # for order in current_quotation:
-        #     line = wizard_line_obj.create({'partner_id': order.partner_id.id,
-        #                          'date_order': order.date_order,
-        #                          'user_id': order.user_id.id,
-        #                          'name': order.name,
-        #                          'amount_total': order.amount_total,
-        #                          'state': order.state,
-        #                          'order_id': order.id,
-        #                          })
-        #     lines.append(line.id)
-
         res.update(
             {
                 "sale_order_ids": [(6, 0, current_quotation.ids)],

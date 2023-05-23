@@ -10,8 +10,7 @@ class SaleConfigSettings(models.TransientModel):
     order_retention_period = fields.Integer(
         "Order older than X hours",
         default=48,
-        help="Retention period for order. \
-                                            After X hours order are deleted automatically.",
+        help="Retention period for order. After X hours order are deleted automatically.",
     )
     max_delete_batch_limit = fields.Integer(
         "Maximum record Delete limit",

@@ -39,7 +39,6 @@
         <record id="action_removed_record_log" model="ir.actions.act_window">
             <field name="name">Removed Log</field>
             <field name="res_model">removed.record.log</field>
-            <field name="view_mode">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 

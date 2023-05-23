@@ -146,37 +146,6 @@ limit %d
                 partner_id, user_id, user.name
             )
 
-    #        for partner_id in customer_ids:
-    #            # Browse one record only, because if
-    #               partner linked to some record and \
-    #            # raise exception when deleting record, than system
-    #                                       will just rollback that transaction.
-    #            self._cr.execute('SAVEPOINT remove_partner')
-    #            line = partner_id
-    #            record_name = line.name
-    #            record_id = line.id
-    #            error = ''
-    #            try:
-    #                line.unlink()
-    #            except Exception as e:
-    #                self._cr.execute('ROLLBACK TO SAVEPOINT remove_partner')
-    #                self._cr.execute('SAVEPOINT remove_partner')
-    #                line = partner_obj.browse(partner_id)
-    #                line.write({'active': False})
-    #                error = str(e)
-    #
-    #            log_obj.create({
-    #                'name': record_name,
-    #                'date': current_date,
-    #                'res_model': 'res.partner',
-    #                'res_id': record_id,
-    #                'user_id': user_id,
-    #                'error': error
-    #            })
-    #            _LOGGER.info('name %s, date %s, model %s, res_id %s, user %s'
-    #            %(record_name, current_date, 'res.partner', record_id, user.name))
-    #            self._cr.execute('RELEASE SAVEPOINT remove_partner')
-
     def create_partner_remove_queue(self, partner_id, user_id, user_name):
         partner_obj = self.env["res.partner"]
         log_obj = self.env["removed.record.log"]

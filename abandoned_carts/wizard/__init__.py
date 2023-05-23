@@ -1,2 +1,1 @@
-from . import sale_order
-from . import customer
+from . import customer, sale_order
