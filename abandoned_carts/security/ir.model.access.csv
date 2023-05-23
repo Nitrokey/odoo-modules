@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+abandoned_carts.access_removed_record_log,access_removed_record_log,abandoned_carts.model_removed_record_log,,1,1,1,1
+abandoned_carts.access_customer_wizard,access_customer_wizard,abandoned_carts.model_customer_wizard,,1,1,1,1
+abandoned_carts.access_sale_order_wizard,access_sale_order_wizard,abandoned_carts.model_sale_order_wizard,,1,1,1,1
