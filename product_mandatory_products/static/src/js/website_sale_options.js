@@ -83,7 +83,7 @@ odoo.define("product_mandatory_products.website_sale_options", function (require
         .then(function (result) {
           self.display_optional = result.display_optional;
           if (result.has_mandatory) {
-            if (products.length != 1) {
+            if (products.length !== 1) {
               if ($("#mandatory_msg").length > 0) {
                 $("#mandatory_msg").css("display", "block");
               } else {
@@ -117,7 +117,7 @@ odoo.define("product_mandatory_products.website_sale_options", function (require
           if (result.has_mandatory) {
             $("#mandatory_msg").css("display", "none");
             self.display_optional = result.display_optional;
-            if (products.length != 1) {
+            if (products.length !== 1) {
               if ($("#mandatory_msg").length > 0) {
                 $("#mandatory_msg").css("display", "block");
               } else {
