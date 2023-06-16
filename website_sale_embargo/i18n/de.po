@@ -44,5 +44,5 @@ msgstr "Verkaufsauftrag"
 
 #. module: website_sale_embargo
 #: model:ir.model.fields,help:website_sale_embargo.field_hs_code__embargo
-msgid "Set the embargo on Product in Country"
-msgstr "Das Embargo für das Produkt im Land festlege"
+msgid "Set the embargo on Product and Country"
+msgstr "Legen Sie das Embargo für HS-Code und Land fest"
