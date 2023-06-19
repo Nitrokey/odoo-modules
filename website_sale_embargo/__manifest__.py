@@ -9,7 +9,7 @@
         "sale",
         "website_sale",
     ],
-    "author": "initOS GmbH",
+    "author": "Nitrokey GmbH",
     "category": "",
     "summary": """
         Add Embargo to Product's HS Code

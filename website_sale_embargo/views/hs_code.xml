@@ -7,7 +7,6 @@
       <field name="arch" type="xml">
         <field name="company_id" position="after">
           <field name="country_id" />
-          <field name="embargo" />
         </field>
       </field>
     </record>
@@ -20,7 +19,6 @@
       <field name="arch" type="xml">
         <field name="company_id" position="after">
           <field name="country_id" />
-          <field name="embargo" />
         </field>
       </field>
     </record>

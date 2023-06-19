@@ -11,12 +11,13 @@ class SaleOrder(models.Model):
 
             for rec in order.mapped("order_line"):
                 hs_code = rec.product_id.product_tmpl_id.hs_code_id
-                if hs_code and hs_code.embargo and country_id == hs_code.country_id:
+                embargo_countries = [country.id for country in hs_code.country_id]
+                if hs_code and embargo_countries and country_id.id in embargo_countries:
                     raise ValidationError(
                         _("Product %(product)s is not available in country %(country)s")
                         % {
                             "product": rec.product_id.name,
-                            "country": hs_code.country_id.name,
+                            "country": country_id.name,
                         }
                     )
         return super()._action_confirm()
@@ -24,11 +25,12 @@ class SaleOrder(models.Model):
     def check_for_product_embargo(self, country_id):
         for rec in self.mapped("order_line"):
             hs_code = rec.product_id.product_tmpl_id.hs_code_id
-            if hs_code and hs_code.embargo and country_id == hs_code.country_id:
+            embargo_countries = [country.id for country in hs_code.country_id]
+            if embargo_countries and country_id.id in embargo_countries:
                 raise ValidationError(
                     _("Product %(product)s is not available in country %(country)s")
                     % {
                         "product": rec.product_id.name,
-                        "country": hs_code.country_id.name,
+                        "country": country_id.name,
                     }
                 )
