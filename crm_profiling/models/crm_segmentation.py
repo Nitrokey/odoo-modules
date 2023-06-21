@@ -100,7 +100,7 @@ class Segmentation(models.Model):
         """
         batch = self.last_batch_id
         if not batch:
-            batches = self.job_batch_ids.sort(key=lambda x: x.id, reverse=True)
+            batches = self.job_batch_ids.sorted(key=lambda x: x.id, reverse=True)
             if batches:
                 batch = batches[0]
                 self.last_batch_id = batch.id
@@ -112,7 +112,7 @@ class Segmentation(models.Model):
     def process_stop(self):
         batch = self.last_batch_id
         if not batch:
-            batches = self.job_batch_ids.sort(key=lambda x: x.id, reverse=True)
+            batches = self.job_batch_ids.sorted(key=lambda x: x.id, reverse=True)
             if batches:
                 batch = batches[0]
                 self.last_batch_id = batch.id
