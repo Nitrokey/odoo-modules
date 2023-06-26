@@ -19,7 +19,7 @@ it's the same which has been renamed.
     """,
     "author": "OpenERP SA",
     "website": "https://github.com/OCA/server-tools",
-    "depends": ["base", "crm", "sale"],
+    "depends": ["account", "contacts", "queue_job_batch"],
     "data": [
         "security/ir.model.access.csv",
         "wizard/open_questionnaire_view.xml",
