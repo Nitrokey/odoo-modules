@@ -141,7 +141,7 @@ class TestCRMSegmentation(TransactionCase):
         self.assertTrue(category in partners[1].category_id)
         self.assertTrue(category in partners[2].category_id)
 
-    def test_test(self):
+    def test_process_start_partner_check(self):
         category = self.category_model.create({"name": "Category A"})
         segmentation = self.segmentation_model.create(
             {
