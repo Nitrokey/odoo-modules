@@ -7,7 +7,6 @@ from odoo.addons.website_sale.controllers.main import WebsiteSale
 class WebsiteSale(WebsiteSale):
     @http.route(["/shop/confirm_order"], type="http", auth="public", website=True)
     def confirm_order(self, **post):
-
         order = request.website.sale_get_order()
         country_id = order.partner_shipping_id.country_id
         if country_id:
