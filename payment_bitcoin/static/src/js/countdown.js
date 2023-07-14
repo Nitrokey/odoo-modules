@@ -22,7 +22,8 @@ odoo.define("payment_bitcoin.duration", function (require) {
             (((seconds / 3600) % 1).toFixed(4) * 60 -
               Math.floor(((seconds / 3600) % 1).toFixed(4) * 60)) *
             60
-          ).toFixed()
+          ).toFixed(),
+          10
         );
 
         var hDisplay = h >= 0 ? String(("0" + h).slice(-2)) + "" : "";
