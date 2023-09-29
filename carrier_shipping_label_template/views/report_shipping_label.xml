@@ -20,10 +20,18 @@
         <field name="name">Shipping Label</field>
         <field name="model">stock.picking</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">carrier_shipping_label_template.report_shipping_label
-        </field>
-        <field name="report_file">carrier_shipping_label_template.report_shipping_label
-        </field>
+        <field
+      name="report_name"
+    >carrier_shipping_label_template.report_shipping_label</field>
+        <field
+      name="report_file"
+    >carrier_shipping_label_template.report_shipping_label</field>
+        <field
+      name="report_name"
+    >carrier_shipping_label_template.report_shipping_label</field>
+            <field
+      name="report_file"
+    >carrier_shipping_label_template.report_shipping_label</field>
         <field name="binding_type">report</field>
         <field
       name="paperformat_id"
