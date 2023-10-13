@@ -21,4 +21,4 @@ class ResPartner(models.Model):
             ("user_ids.active", "=", True),
         ]
         users = self.search_read(search_dom, fields, limit=limit)
-        return [users]
+        return list(users)
