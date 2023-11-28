@@ -14,7 +14,7 @@ class UPSReturnDeliveryCarrier(models.Model):
             }
             pickings.write(picking_vals)
 
-        return res[0]
+        return res
 
 
 class StockPicking(models.Model):
