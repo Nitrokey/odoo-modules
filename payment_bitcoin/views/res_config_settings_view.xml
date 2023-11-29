@@ -15,13 +15,13 @@
                             <div class="content-group">
                                 <div class="mt16">
                                     <span
-                    class="col-lg-4"
-                  >Send notification to users when amount of unused Bitcoin
+                                        class="col-lg-4"
+                                    >Send notification to users when amount of unused Bitcoin
                                         addresses are less than or equal
                                         <field
-                      style="width:10%;"
-                      name="min_unused_bitcoin"
-                    />
+                                            style="width:10%;"
+                                            name="min_unused_bitcoin"
+                                        />
                                     </span>
                                 </div>
                             </div>

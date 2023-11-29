@@ -22,10 +22,10 @@
                     </group>
                     <group>
                         <field
-              name="from_email_model_ids"
-              widget="many2many_tags"
-              required="True"
-            />
+                            name="from_email_model_ids"
+                            widget="many2many_tags"
+                            required="True"
+                        />
                     </group>
                 </group>
             </form>

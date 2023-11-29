@@ -44,26 +44,26 @@
             <form string="Partner Segmentation">
                 <header>
                     <button
-            name="process_start"
-            states="not running"
-            string="Compute Segmentation"
-            type="object"
-            icon="fa-play-circle-o"
-          />
+                        name="process_start"
+                        states="not running"
+                        string="Compute Segmentation"
+                        type="object"
+                        icon="fa-play-circle-o"
+                    />
                     <button
-            name="process_stop"
-            string="Stop Process"
-            states="running"
-            type="object"
-            icon="fa-archive"
-          />
+                        name="process_stop"
+                        string="Stop Process"
+                        states="running"
+                        type="object"
+                        icon="fa-archive"
+                    />
                     <button
-            name="process_continue"
-            string="Continue Process"
-            states="stopped"
-            type="object"
-            icon="fa-forward"
-          />
+                        name="process_continue"
+                        string="Continue Process"
+                        states="stopped"
+                        type="object"
+                        icon="fa-forward"
+                    />
                     <field name="state" widget="statusbar" />
                 </header>
                 <group col="4">
@@ -141,10 +141,10 @@
     </record>
 
     <menuitem
-    action="crm_segmentation_act"
-    id="menu_crm_segmentation_act"
-    groups="base.group_no_one"
-    sequence="5"
-    parent="contacts.res_partner_menu_config"
-  />
+        action="crm_segmentation_act"
+        id="menu_crm_segmentation_act"
+        groups="base.group_no_one"
+        sequence="5"
+        parent="contacts.res_partner_menu_config"
+    />
 </odoo>

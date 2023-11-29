@@ -10,11 +10,11 @@
                 </group>
                 <footer>
                     <button
-            name="build_form"
-            string="Open Questionnaire"
-            type="object"
-            class="oe_highlight"
-          />
+                        name="build_form"
+                        string="Open Questionnaire"
+                        type="object"
+                        class="oe_highlight"
+                    />
                     or
                     <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>
@@ -37,20 +37,20 @@
             <form string="Open Questionnaire">
                 <separator colspan="4" string="Questionnaire" />
                 <field
-          name="question_ans_ids"
-          colspan="4"
-          nolabel="1"
-          mode="tree"
-          width="550"
-          height="200"
-        />
+                    name="question_ans_ids"
+                    colspan="4"
+                    nolabel="1"
+                    mode="tree"
+                    width="550"
+                    height="200"
+                />
                 <footer>
                     <button
-            name="questionnaire_compute"
-            string="Save Data"
-            type="object"
-            class="oe_highlight"
-          />
+                        name="questionnaire_compute"
+                        string="Save Data"
+                        type="object"
+                        class="oe_highlight"
+                    />
                     or
                     <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>

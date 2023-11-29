@@ -23,10 +23,10 @@
                         <div class="text-center">
                             <t t-if="barcode">
                                 <div
-                  class="o_barcode"
-                  t-out="barcode"
-                  t-options="{'widget': 'barcode', 'symbology': 'auto', 'img_style': 'width:71mm;height:15mm;'}"
-                />
+                                    class="o_barcode"
+                                    t-out="barcode"
+                                    t-options="{'widget': 'barcode', 'symbology': 'auto', 'img_style': 'width:71mm;height:15mm;'}"
+                                />
                                 <span class="text-center" t-out="barcode" />
                             </t>
                         </div>
@@ -35,9 +35,9 @@
                         <div class="o_product_img_div1">
                             <div class="text-center align-middle img_div2">
                                 <img
-                  class="o_product_picture"
-                  t-att-src="'data:image/png;base64,%s' % to_text(product.image_512)"
-                />
+                                    class="o_product_picture"
+                                    t-att-src="'data:image/png;base64,%s' % to_text(product.image_512)"
+                                />
                             </div>
                         </div>
                     </t>
@@ -74,15 +74,15 @@
         <field name="model">product.template</field>
         <field name="report_type">qweb-pdf</field>
         <field
-      name="report_name"
-    >product_label_image.producttemplatelabel_image_4x6</field>
+            name="report_name"
+        >product_label_image.producttemplatelabel_image_4x6</field>
         <field
-      name="report_file"
-    >product_label_image.producttemplatelabel_image_4x6</field>
+            name="report_file"
+        >product_label_image.producttemplatelabel_image_4x6</field>
         <field
-      name="paperformat_id"
-      ref="product_label_image.paperformat_label_layout"
-    />
+            name="paperformat_id"
+            ref="product_label_image.paperformat_label_layout"
+        />
         <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
         <field name="binding_type">report</field>
     </record>

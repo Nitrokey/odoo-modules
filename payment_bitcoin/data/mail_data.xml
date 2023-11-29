@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<odoo noupdate="0">
+<odoo noupdate="1">
     <!-- Mail Template for Bitcoin: Order Notification-->
     <record id="mail_template_data_bit_coin_order_notification" model="mail.template">
         <field name="name">Bitcoin: Order Notification</field>

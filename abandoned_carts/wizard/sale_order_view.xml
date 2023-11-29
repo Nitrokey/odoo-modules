@@ -8,38 +8,38 @@
                     <div>
                         <h3>
                             <label
-              for="max_delete_limit"
-              string='User can delete Maximum'
-              style="padding-top: 0px; padding-right: 0px !important; padding-bottom: 0px !important;padding-left: 0px !important;"
-            />
+                            for="max_delete_limit"
+                            string='User can delete Maximum'
+                            style="padding-top: 0px; padding-right: 0px !important; padding-bottom: 0px !important;padding-left: 0px !important;"
+                        />
                             <field
-              name="max_delete_limit"
-              class="oe_inline"
-              readonly="1"
-            />
+                            name="max_delete_limit"
+                            class="oe_inline"
+                            readonly="1"
+                        />
                             <label
-              for="max_delete_limit"
-              style="padding-left: 5px;"
-              string=' abandoned items at a time'
-              class="oe_inline"
-            />
+                            for="max_delete_limit"
+                            style="padding-left: 5px;"
+                            string=' abandoned items at a time'
+                            class="oe_inline"
+                        />
                         </h3>
                     </div>
                     <group>
                         <field
-            name="sale_order_ids"
-            nolabel="1"
-            class="abandoned_data_check"
-            widget="one2many"
-            readonly="1"
-            edit="0"
-          >
+                        name="sale_order_ids"
+                        nolabel="1"
+                        class="abandoned_data_check"
+                        widget="one2many"
+                        readonly="1"
+                        edit="0"
+                    >
                         <tree
-              string="Sale Order"
-              name="sale_order"
-              create='false'
-              edit='false'
-            >
+                            string="Sale Order"
+                            name="sale_order"
+                            create='false'
+                            edit='false'
+                        >
                                 <field name="name" />
                                 <field name="date_order" />
                                 <field name="partner_id" />
@@ -51,19 +51,19 @@
                     </group>
                     <footer>
                         <button
-            name="action_remove_sale_order"
-            id="action_remove_all_orders"
-            string="Delete all sale orders"
-            type="object"
-            class="oe_highlight"
-          />
+                        name="action_remove_sale_order"
+                        id="action_remove_all_orders"
+                        string="Delete all sale orders"
+                        type="object"
+                        class="oe_highlight"
+                    />
                         <button
-            name="action_remove_sale_order_manual"
-            id="action_remove_sale_orders"
-            string="Delete selected sale orders"
-            type="object"
-            class="oe_highlight"
-          />
+                        name="action_remove_sale_order_manual"
+                        id="action_remove_sale_orders"
+                        string="Delete selected sale orders"
+                        type="object"
+                        class="oe_highlight"
+                    />
                         <button string="Cancel" class="btn-default" special="cancel" />
 
                     </footer>
@@ -81,11 +81,11 @@
         </record>
 
         <menuitem
-    id="menu_action_show_sale_order"
-    action="action_show_sale_order"
-    name="Abandoned Order"
-    parent="abandoned_carts.menu_main_abandoned_log"
-  />
+        id="menu_action_show_sale_order"
+        action="action_show_sale_order"
+        name="Abandoned Order"
+        parent="abandoned_carts.menu_main_abandoned_log"
+    />
 
 
 </odoo>

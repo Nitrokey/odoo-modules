@@ -12,11 +12,11 @@
     </record>
 
     <menuitem
-    parent="contacts.res_partner_menu_config"
-    id="menu_segm_questionnaire"
-    action="open_questionnaires"
-    sequence="7"
-  />
+        parent="contacts.res_partner_menu_config"
+        id="menu_segm_questionnaire"
+        action="open_questionnaires"
+        sequence="7"
+    />
 
     <record model="ir.actions.act_window" id="open_questions">
         <field name="name">Questions</field>
@@ -25,12 +25,12 @@
     </record>
 
     <menuitem
-    parent="contacts.res_partner_menu_config"
-    id="menu_segm_answer"
-    action="open_questions"
-    sequence="8"
-    groups="base.group_no_one"
-  />
+        parent="contacts.res_partner_menu_config"
+        id="menu_segm_answer"
+        action="open_questions"
+        sequence="8"
+        groups="base.group_no_one"
+    />
 
     <!-- Profiling Questionnaire Tree view  -->
     <record model="ir.ui.view" id="view_questionnaire_tree">
@@ -134,12 +134,12 @@
             <notebook position="inside">
                 <page string="Profiling" groups="base.group_user">
                     <button
-            string="Use a questionnaire"
-            name="%(action_open_questionnaire)d"
-            type="action"
-            colspan="1"
-            icon="fa-wpforms"
-          />
+                        string="Use a questionnaire"
+                        name="%(action_open_questionnaire)d"
+                        type="action"
+                        colspan="1"
+                        icon="fa-wpforms"
+                    />
                     <newline />
                     <field name="answers_ids" colspan="4" nolabel="1" />
                 </page>

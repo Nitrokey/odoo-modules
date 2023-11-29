@@ -21,22 +21,22 @@
         <field name="model">stock.picking</field>
         <field name="report_type">qweb-pdf</field>
         <field
-      name="report_name"
-    >carrier_shipping_label_template.report_shipping_label</field>
+            name="report_name"
+        >carrier_shipping_label_template.report_shipping_label</field>
         <field
-      name="report_file"
-    >carrier_shipping_label_template.report_shipping_label</field>
+            name="report_file"
+        >carrier_shipping_label_template.report_shipping_label</field>
         <field
-      name="report_name"
-    >carrier_shipping_label_template.report_shipping_label</field>
+            name="report_name"
+        >carrier_shipping_label_template.report_shipping_label</field>
             <field
-      name="report_file"
-    >carrier_shipping_label_template.report_shipping_label</field>
+            name="report_file"
+        >carrier_shipping_label_template.report_shipping_label</field>
         <field name="binding_type">report</field>
         <field
-      name="paperformat_id"
-      ref="carrier_shipping_label_template.report_qweb_paperformat_ups"
-    />
+            name="paperformat_id"
+            ref="carrier_shipping_label_template.report_qweb_paperformat_ups"
+        />
     </record>
 
     <template id="report_shipping_label">
@@ -44,9 +44,9 @@
             <t t-foreach="docs" t-as="o">
                 <div style="overflow:hidden;weight:800px;">
                     <img
-            t-attf-src="data:image/*;base64,{{o.ups_image}}"
-            style="-webkit-transform:rotate(90deg);overflow:hidden;margin-top:160px;width:720px;margin-left:-143;margin-bottom:60px;"
-          />
+                        t-attf-src="data:image/*;base64,{{o.ups_image}}"
+                        style="-webkit-transform:rotate(90deg);overflow:hidden;margin-top:160px;width:720px;margin-left:-143;margin-bottom:60px;"
+                    />
                 </div>
             </t>
         </t>

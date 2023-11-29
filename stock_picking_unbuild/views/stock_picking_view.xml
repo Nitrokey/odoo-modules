@@ -12,11 +12,11 @@
             </field>
             <button name="action_toggle_is_locked" position="after">
                 <button
-          name="action_generate_unbuild_order"
-          type="object"
-          string="Generate Unbuild Order"
-          attrs="{'invisible': ['|', ('is_display_unbuild', '=', False), ('state', '!=', 'done')]}"
-        />
+                    name="action_generate_unbuild_order"
+                    type="object"
+                    string="Generate Unbuild Order"
+                    attrs="{'invisible': ['|', ('is_display_unbuild', '=', False), ('state', '!=', 'done')]}"
+                />
             </button>
         </field>
     </record>
