@@ -15,6 +15,7 @@ class BitcoinPaymentAcquirer(models.Model):
         help="Address check for orders which are not older than",
         default=6,
     )
+    bitcoin_send_email = fields.Boolean(default=False)
 
     def _get_default_payment_method_id(self):
         self.ensure_one()

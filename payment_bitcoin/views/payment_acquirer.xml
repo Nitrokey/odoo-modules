@@ -7,33 +7,41 @@
         <field name="inherit_id" ref="payment.payment_acquirer_form" />
         <field name="arch" type="xml">
             <xpath
-        expr="//group[@name='acquirer_config']//field[@name='payment_icon_ids']"
-        position="after"
-      >
+                expr="//group[@name='acquirer_config']//field[@name='payment_icon_ids']"
+                position="after"
+            >
                 <label
-          for="deadline"
-          attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
-        />
+                    for="deadline"
+                    attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
+                />
                 <div
-          attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
-          class="o_row"
-          name="deadline"
-        >
+                    name="deadline"
+                    class="o_row"
+                    attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
+                >
                     <field name="deadline" />
                     <span>
                         <strong>In Minutes</strong>
                     </span>
                 </div>
 
-                <label
-          for="bitcoin_order_older_than"
-          attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
-        />
                 <div
-          attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
-          class="o_row"
-          name="bitcoin_order_older_than"
-        >
+                    name="bitcoin_send_email"
+                    class="o_row"
+                    attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
+                >
+                    <field name="bitcoin_send_email" />
+                </div>
+
+                <label
+                    for="bitcoin_order_older_than"
+                    attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
+                />
+                <div
+                    name="bitcoin_order_older_than"
+                    class="o_row"
+                    attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
+                >
                     <field name="bitcoin_order_older_than" />
                     <span>
                         <strong>In Hours</strong>
