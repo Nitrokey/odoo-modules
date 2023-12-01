@@ -344,14 +344,16 @@ class BitcoinAddress(models.Model):
                                     ),
                                 }
                             )
-                        template_obj = self.env.ref(
-                            "payment_bitcoin.mail_template_data_bit_coin_order_notification"
-                        )
-                        template_obj.send_mail(
-                            bit_add_obj.order_id.id,
-                            force_send=True,
-                            raise_exception=True,
-                        )
+
+                        if acquirer_obj.bitcoin_send_email:
+                            template_obj = self.env.ref(
+                                "payment_bitcoin.mail_template_data_bit_coin_order_notification"
+                            )
+                            template_obj.send_mail(
+                                bit_add_obj.order_id.id,
+                                force_send=True,
+                                raise_exception=True,
+                            )
 
     @api.model
     def send_bitcoin_address_goes_low_notification(self):
