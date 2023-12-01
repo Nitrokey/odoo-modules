@@ -25,6 +25,10 @@
                     </span>
                 </div>
 
+                <label
+                    for="bitcoin_send_email"
+                    attrs="{'invisible': [('provider', '!=', 'bitcoin')]}"
+                />
                 <div
                     name="bitcoin_send_email"
                     class="o_row"
