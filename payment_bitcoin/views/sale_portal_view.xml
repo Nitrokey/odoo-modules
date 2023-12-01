@@ -23,7 +23,7 @@
         inherit_id="payment.transaction_status"
     >
         <xpath expr="//div[hasclass('alert-warning')]" position="inside">
-            <t t-if="tx.acquirer_id.provider == 'bitcoin'">
+            <t t-if="tx.acquirer_id.sudo().provider == 'bitcoin'">
                 <div class="panel-body" style="padding-bottom:0px;">
                         <h4><strong t-out="info" /></h4>
                 </div>
