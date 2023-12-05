@@ -46,15 +46,15 @@
         <field name="name">Bitcoin Addresses</field>
         <field name="res_model">bitcoin.address</field>
         <field name='view_mode'>tree,form</field>
-        <field name="context">{'search_default_new':1}</field>
+        <field name="context">{}</field>
     </record>
 
     <menuitem
-        action='action_bitcoin_address'
-        id='menu_bitcoin_address'
-        parent='account.root_payment_menu'
-        sequence='40'
-    />
+    action='action_bitcoin_address'
+    id='menu_bitcoin_address'
+    parent='account.root_payment_menu'
+    sequence='40'
+  />
 
     <record id="view_bitcoin_rate_form" model="ir.ui.view">
         <field name="name">bitcoin.rate.form</field>
@@ -106,10 +106,10 @@
     </record>
 
     <menuitem
-        action='action_bitcoin_rate'
-        id='menu_bitcoin_rate'
-        parent='account.root_payment_menu'
-        sequence='40'
-    />
+    action='action_bitcoin_rate'
+    id='menu_bitcoin_rate'
+    parent='account.root_payment_menu'
+    sequence='40'
+  />
 
 </odoo>
