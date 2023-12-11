@@ -17,9 +17,7 @@ class WebsiteSaleExt(WebsiteSale):
     )
     def address(self, **kw):
         if "submitted" in kw and kw.get("phone") and kw.get("country_id"):
-            country_id = request.env["res.country"].browse(
-                int(kw["country_id"])
-            )
+            country_id = request.env["res.country"].browse(int(kw["country_id"]))
             formated_vals = phone_format(
                 kw.get("phone"),
                 country_id.code if country_id else None,
