@@ -1,2 +1,1 @@
-from . import res_config_settings
-from . import mail_mail
+from . import email_from, mail_mail, res_company

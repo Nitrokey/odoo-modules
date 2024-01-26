@@ -11,8 +11,8 @@ Enter "Email From" and choose the "Models" for that Email From need to change.
     "depends": ["mail"],
     "data": [
         "security/ir.model.access.csv",
-        "views/res_config_settings_views.xml",
         "views/email_from.xml",
+        "views/res_config_settings_views.xml",
     ],
     "author": "Nitrokey GmbH",
     "license": "AGPL-3",
