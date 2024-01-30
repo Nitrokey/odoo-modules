@@ -3,11 +3,11 @@
     "version": "15.0.1.0.0",
     "category": "Productivity",
     "summary": """
-    * User have option to auto set "Email From" value for mail sending from
-Odoo for specific selected models.
-    * Configuration need to do in Settings --> General Settings menu.
-Enter "Email From" and choose the "Models" for that Email From need to change.
-    """,
+        This module allows to configure "Email From" value for mail sending from
+        Odoo for specific selected models. The configuration need to do in Settings --> General Settings menu.
+        Click "Email From" and choose the "Models" for that Email From need to change and action Set.
+        Leave the model empty to define an email address used by default for all models.
+        Choose action Keep if you don't want to overwrite the email address used.""",
     "depends": ["mail"],
     "data": [
         "security/ir.model.access.csv",
