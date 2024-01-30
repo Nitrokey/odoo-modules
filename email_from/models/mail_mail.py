@@ -34,12 +34,7 @@ class MailMail(models.Model):
 
         active_model = self.env.context.get("active_model")
         # Apply the mapping of the adjustments
-        domain = [
-            ("email_from", "!=", False),
-            # Keep if model is in the list or model isn't set but active_model is
-            # in the list
-            ("model", "not in", to_keep),
-        ]
+        domain = [("model", "not in", to_keep)]
         if active_model in to_keep:
             domain.append(("model", "!=", False))
 
