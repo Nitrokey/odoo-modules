@@ -1,4 +1,8 @@
+import logging
+
 from odoo import api, models
+
+_logger = logging.getLogger(__name__)
 
 
 class MailMail(models.Model):
@@ -26,13 +30,23 @@ class MailMail(models.Model):
         domain = [("action", "=", "set"), ("model_ids", "=", False)]
         default = email_froms.filtered_domain(domain)[:1]
 
+        to_keep = to_keep.mapped("model_ids.model")
+
+        active_model = self.env.context.get("active_model")
         # Apply the mapping of the adjustments
         domain = [
-            ("model", "not in", to_keep.mapped("model_ids.model")),
             ("email_from", "!=", False),
+            # Keep if model is in the list or model isn't set but active_model is
+            # in the list
+            ("model", "not in", to_keep),
         ]
+        if active_model in to_keep:
+            domain.append(("model", "!=", False))
+
         for mail in res.filtered_domain(domain):
-            rec = to_adjust.get(mail.model, default)
+            model = res.model or active_model
+
+            rec = to_adjust.get(model, default)
             if rec:
                 mail.write({"email_from": rec.email_from})
 

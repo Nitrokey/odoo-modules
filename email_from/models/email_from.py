@@ -9,7 +9,7 @@ class EmailFrom(models.Model):
     def _get_actions(self):
         return [("set", _("Set")), ("keep", _("Keep"))]
 
-    company_id = fields.Many2one("email.from", default=lambda self: self.env.company)
+    company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
     sequence = fields.Integer(default=10)
     model_ids = fields.Many2many("ir.model", string="Models")
     email_from = fields.Char()

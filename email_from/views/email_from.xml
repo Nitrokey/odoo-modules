@@ -5,6 +5,7 @@
         <field name="model">email.from</field>
         <field name="arch" type="xml">
             <tree editable="bottom" decoration-muted="not active">
+                <field name="company_id" invisible="1" />
                 <field name="sequence" widget="handle" />
                 <field name="active" />
                 <field
