@@ -4,7 +4,7 @@
     "category": "Productivity",
     "summary": """
         Adds Email Marketing support to the email_from module.""",
-    "depends": ["email_from"],
+    "depends": ["email_from", "mass_mailing"],
     "data": [
         "views/email_from.xml",
     ],
