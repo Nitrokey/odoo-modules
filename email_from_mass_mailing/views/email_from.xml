@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="email_from_view_tree" model="ir.ui.view">
+        <field name="model">email.from</field>
+        <field name="inherit_id" ref="email_from.email_from_view_tree" />
+        <field name="arch" type="xml">
+            <field name="action" position="after">
+                <field name="apply_to_mailing" />
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -15,3 +15,6 @@ class EmailFrom(models.Model):
     email_from = fields.Char()
     action = fields.Selection("_get_actions", default="set", required=True)
     active = fields.Boolean(default=True)
+
+    def _unique_key_for_model(self, model):
+        return model
