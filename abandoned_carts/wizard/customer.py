@@ -57,7 +57,7 @@ class CustomerWizard(models.TransientModel):
         system_user_filter = ""
         if system_user:
             system_user_filter = "and p.create_uid=" + str(system_user.id)
-        qry = """
+        qry = f"""
 SELECT p.id
 FROM res_partner p
 left join res_users ru on ru.partner_id=p.id
@@ -73,16 +73,16 @@ NOT EXISTS (SELECT 1 FROM account_move move  WHERE move.partner_id = p.id) and
 NOT EXISTS (SELECT 1 FROM account_move_line line  WHERE line.partner_id = p.id) and
 NOT EXISTS (SELECT 1 FROM project_task task  WHERE task.partner_id = p.id) and
 (SELECT count(*) from res_groups_users_rel where
-                    gid = (select id from res_groups where id=%d) and uid=ru.id)=0 and
+                    gid = (select id from res_groups where id=%s) and uid=ru.id)=0 and
 (SELECT count(*) from res_groups_users_rel where
-                    gid = (select id from res_groups where id=%d) and uid=ru.id)=0 and
+                    gid = (select id from res_groups where id=%s) and uid=ru.id)=0 and
 p.parent_id is NULL and
 p.is_company = False and
 p.id not in (select partner_id from res_users union all select partner_id
                                                 from res_company order by partner_id)
-%s
+{system_user_filter}
 order by p.id desc
-limit %d
+limit %s
                """
 
         self._cr.execute(
@@ -90,7 +90,6 @@ limit %d
             (
                 user,
                 user_internal,
-                system_user_filter,
                 max_delete_batch_limit,
             ),
         )
