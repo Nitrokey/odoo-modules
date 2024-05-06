@@ -95,40 +95,45 @@ class SaleOrderWizard(models.TransientModel):
             )
 
         # orders = self.sale_order_ids.mapped('order_id')
+        batches = [
+            order_ids[i : i + max_delete_batch_limit]
+            for i in range(0, len(order_ids), max_delete_batch_limit)
+        ]
         user = self.env.user
-        for order_id in order_ids:
-            self.with_delay().create_order_remove_queue(order_id, user.id, user.name)
+        for batch in batches:
+            self.with_delay().create_order_remove_queue(batch, user.id, user.name)
 
-    def create_order_remove_queue(self, order_id, user_id, user_name):
+    def create_order_remove_queue(self, order_ids, user_id, user_name):
         current_date = datetime.now()
         log_obj = self.env["removed.record.log"]
 
-        order = self.env["sale.order"].browse(order_id)
-        record_name = order.name
-        record_id = order.id
-        error = ""
+        for order_id in order_ids:
+            order = self.env["sale.order"].browse(order_id)
+            record_name = order.name
+            record_id = order.id
+            error = ""
 
-        try:
-            if order.state == "sent":
-                order.action_cancel()
-            order.unlink()
-        except Exception as e:
-            error = str(e)
+            try:
+                if order.state == "sent":
+                    order.action_cancel()
+                order.unlink()
+            except Exception as e:
+                error = str(e)
 
-        log_obj.create(
-            {
-                "name": record_name,
-                "date": current_date,
-                "res_model": "sale.order",
-                "res_id": record_id,
-                "user_id": user_id,
-                "error": error,
-            }
-        )
-        _LOGGER.info(
-            "name %s, date %s, model %s, res_id %s, user %s"
-            % (record_name, current_date, "sale.order", record_id, user_name)
-        )
+            log_obj.create(
+                {
+                    "name": record_name,
+                    "date": current_date,
+                    "res_model": "sale.order",
+                    "res_id": record_id,
+                    "user_id": user_id,
+                    "error": error,
+                }
+            )
+            _LOGGER.info(
+                "name %s, date %s, model %s, res_id %s, user %s"
+                % (record_name, current_date, "sale.order", record_id, user_name)
+            )
 
     def action_remove_sale_order_manual(self):
         ctx = self._context or {}
