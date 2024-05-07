@@ -2,7 +2,11 @@
     "name": "Delivery Automatic Print",
     "summary": "Print shipping label automatically",
     "version": "15.0.1.0.0",
-    "depends": ["carrier_shipping_label_template", "stock"],
+    "depends": [
+        "base_report_to_printer",
+        "carrier_shipping_label_template",
+        "stock",
+    ],
     "data": [],
     "auto_install": False,
     "installable": True,
