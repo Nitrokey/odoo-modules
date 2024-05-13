@@ -62,31 +62,58 @@ SELECT p.id
 FROM res_partner p
 left join res_users ru on ru.partner_id=p.id
 WHERE
-NOT EXISTS (SELECT 1 FROM crm_lead as lead WHERE lead.partner_id = p.id) and
-NOT EXISTS
-(SELECT 1 FROM calendar_event_res_partner_rel ce WHERE ce.res_partner_id = p.id) and
-NOT EXISTS (SELECT 1 FROM hr_employee emp WHERE emp.user_id = ru.id) and
-NOT EXISTS (SELECT 1 FROM helpdesk_ticket WHERE partner_id = p.id ) and
-NOT EXISTS (SELECT 1 FROM crm_phonecall call WHERE call.partner_id=p.id) and
-NOT EXISTS (SELECT 1 FROM account_move inv WHERE inv.partner_id = p.id) and
-NOT EXISTS (SELECT 1 FROM sale_order o
-WHERE o.partner_id = p.id or o.partner_invoice_id=p.id or o.partner_shipping_id=p.id)
-and
-NOT EXISTS (SELECT 1 FROM account_move move  WHERE move.partner_id = p.id) and
-NOT EXISTS (SELECT 1 FROM account_move_line line  WHERE line.partner_id = p.id) and
-NOT EXISTS (SELECT 1 FROM project_task task  WHERE task.partner_id = p.id) and
-(SELECT count(*) from res_groups_users_rel where gid =
-(select id from res_groups where id=%s) and uid=ru.id)=0 and
-(SELECT count(*) from res_groups_users_rel where gid =
-(select id from res_groups where id=%s) and uid=ru.id)=0 and
-p.parent_id is NULL and
-p.is_company = False and
-p.id not in (
-select partner_id from res_users union all select partner_id from
-res_company order by partner_id)
-{system_user_filter}
-order by p.id desc
-limit %s
+    NOT EXISTS (
+        SELECT 1 FROM crm_lead as lead WHERE lead.partner_id = p.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 FROM calendar_event_res_partner_rel ce WHERE ce.res_partner_id = p.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 FROM hr_employee emp WHERE emp.user_id = ru.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 FROM helpdesk_ticket WHERE partner_id = p.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 FROM mailing_contact where partner_id = p.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 FROM crm_phonecall call WHERE call.partner_id=p.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 FROM account_move inv WHERE inv.partner_id = p.id OR
+        inv.partner_shipping_id = p.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 FROM sale_order o
+        WHERE o.partner_id = p.id or o.partner_invoice_id=p.id or o.partner_shipping_id=p.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 FROM account_move_line line  WHERE line.partner_id = p.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 FROM project_task task  WHERE task.partner_id = p.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 from res_groups_users_rel
+        where gid = ( select id from res_groups where id=%s )
+            and uid=ru.id
+    ) and
+    NOT EXISTS (
+        SELECT 1 from res_groups_users_rel
+        where gid = (select id from res_groups where id=%s)
+            and uid=ru.id
+    ) and
+    p.parent_id is NULL and
+    p.is_company = False and
+    p.id not in (
+        select partner_id from res_users
+        union all
+        select partner_id from res_company order by partner_id
+    )
+    {system_user_filter}
+    order by p.id desc
+    limit %s
                """
 
         self._cr.execute(
