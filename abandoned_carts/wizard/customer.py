@@ -65,6 +65,8 @@ WHERE
 NOT EXISTS (SELECT 1 FROM crm_lead as lead WHERE lead.partner_id = p.id) and
 NOT EXISTS
 (SELECT 1 FROM calendar_event_res_partner_rel ce WHERE ce.res_partner_id = p.id) and
+NOT EXISTS (SELECT 1 FROM hr_employee emp WHERE emp.user_id = ru.id) and
+NOT EXISTS (SELECT 1 FROM helpdesk_ticket WHERE partner_id = p.id ) and
 NOT EXISTS (SELECT 1 FROM crm_phonecall call WHERE call.partner_id=p.id) and
 NOT EXISTS (SELECT 1 FROM account_move inv WHERE inv.partner_id = p.id) and
 NOT EXISTS (SELECT 1 FROM sale_order o
