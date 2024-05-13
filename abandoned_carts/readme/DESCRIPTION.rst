@@ -19,7 +19,7 @@ These orders will be displayed in "Abandoned orders" and can be deleted manually
 
 Customers, which have
 
-`"orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "invoice = 0" and "tasks = 0" and "active = 0" and "is_customer = true"`
+`"orders = 0" and "lead = 0" and "meetings = 0" and "opportunities = 0" and "calls = 0" and "invoice = 0" and "tasks = 0" and "active = 0" and "is_customer = true" "is_employe = false" and "helpdesk_tickets = 0"`
 
 will be displayed in "Abandoned customers" and can be deleted manually.
 
