@@ -1,8 +1,7 @@
 import logging
 from datetime import datetime, timedelta
 
-from odoo import _, api, fields, models
-from odoo.exceptions import Warning as odoo_warning
+from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
 from odoo.tools.safe_eval import safe_eval
 
@@ -41,7 +40,7 @@ class SaleOrderWizard(models.TransientModel):
 
         max_delete_batch_limit = safe_eval(
             self.env["ir.config_parameter"].get_param(
-                "abandoned_carts.max_delete_batch_limit", "2000"
+                "abandoned_carts.max_delete_batch_limit", "50"
             )
         )
         current_quotation = self.env["sale.order"].search(
@@ -74,7 +73,7 @@ class SaleOrderWizard(models.TransientModel):
     def action_remove_sale_order(self):
         max_delete_batch_limit = safe_eval(
             self.env["ir.config_parameter"].get_param(
-                "abandoned_carts.max_delete_batch_limit", "2000"
+                "abandoned_carts.max_delete_batch_limit", "50"
             )
         )
 
@@ -84,15 +83,6 @@ class SaleOrderWizard(models.TransientModel):
             order_ids = selected_ids  # self.env['res.partner'].browse(selected_ids)
         else:
             order_ids = self.sale_order_ids.ids
-
-        if len(order_ids) > max_delete_batch_limit:
-            raise odoo_warning(
-                _(
-                    "For safety reasons, you cannot delete more than %d sale orders \
-                together. You can re-open the wizard several times if needed."
-                )
-                % (max_delete_batch_limit)
-            )
 
         # orders = self.sale_order_ids.mapped('order_id')
         batches = [

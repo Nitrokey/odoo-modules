@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.tools.safe_eval import safe_eval
 
 _LOGGER = logging.getLogger(__name__)
@@ -44,12 +44,6 @@ class CustomerWizard(models.TransientModel):
 
     @api.model
     def set_fix_customer(self):
-        max_delete_batch_limit = safe_eval(
-            self.env["ir.config_parameter"].get_param(
-                "abandoned_carts.max_delete_batch_limit", "2000"
-            )
-        )
-
         user = self.env.ref("base.group_portal").id
         user_internal = self.env.ref("base.group_user").id
 
@@ -113,15 +107,13 @@ WHERE
     )
     {system_user_filter}
     order by p.id desc
-    limit %s
-               """
+               """  # noqa: E201,E202,E271,E272
 
         self._cr.execute(
             qry,
             (
                 user,
                 user_internal,
-                max_delete_batch_limit,
             ),
         )
         data = self._cr.fetchall()
@@ -139,7 +131,7 @@ WHERE
         res = super().default_get(fields)
         max_delete_batch_limit = safe_eval(
             self.env["ir.config_parameter"].get_param(
-                "abandoned_carts.max_delete_batch_limit", "2000"
+                "abandoned_carts.max_delete_batch_limit", "50"
             )
         )
 
@@ -149,7 +141,7 @@ WHERE
     def action_remove_customer(self):
         max_delete_batch_limit = safe_eval(
             self.env["ir.config_parameter"].get_param(
-                "abandoned_carts.max_delete_batch_limit", "2000"
+                "abandoned_carts.max_delete_batch_limit", "50"
             )
         )
         ctx = self._context or {}
@@ -158,15 +150,6 @@ WHERE
             customer_ids = selected_ids  # self.env['res.partner'].browse(selected_ids)
         else:
             customer_ids = self.customer_ids.ids
-
-        if len(customer_ids) > max_delete_batch_limit:
-            raise Warning(
-                _(
-                    "For safety reasons, you cannot delete more than %d Customer together\
-                . You can re-open the wizard several times if needed."
-                )
-                % max_delete_batch_limit
-            )
 
         user = self.env.user
         user_id = user.id
