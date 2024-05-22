@@ -1,4 +1,8 @@
+import logging
+
 from odoo import models
+
+_logger = logging.getLogger(__name__)
 
 
 class StockPicking(models.Model):
@@ -21,7 +25,8 @@ class StockPicking(models.Model):
         if self.env.context.get("must_skip_send_to_printer"):
             return res
 
-        for report in self.reports_to_print():
+        ctx = {"raise_on_missing_labels": False}
+        for report in self.reports_to_print().with_context(**ctx):
             report.sudo()._render_qweb_pdf(self.ids)
 
         return res

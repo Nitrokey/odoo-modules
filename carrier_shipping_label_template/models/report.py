@@ -23,8 +23,8 @@ class IrActionsReportReportlab(models.Model):
 
         pickings = self.env["stock.picking"].browse(res_ids)
         labels = pickings.mapped("shipping_label_ids")
-        if not labels:
-            raise UserError(_("No shipping labels to print"))
+        if not labels and self.env.context.get("raise_on_missing_labels", True):
+            raise UserError(_("No shipping labels to print for %s", pickings))
 
         streams = [io.BytesIO(base64.decodebytes(att.datas)) for att in labels]
         return self._merge_pdfs(streams), "pdf"
