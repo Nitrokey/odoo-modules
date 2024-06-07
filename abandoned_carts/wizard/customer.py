@@ -100,6 +100,7 @@ WHERE
     ) and
     p.parent_id is NULL and
     p.is_company = False and
+    p.customer_rank > 0 and
     p.id not in (
         select partner_id from res_users
         union all
