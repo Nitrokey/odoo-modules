@@ -17,7 +17,7 @@ class AccountMove(models.Model):
     def _post(self, soft=True):
         res = super()._post(soft=soft)
         for move in self:
-            sale_order_id = move.invoice_line_ids.mapped("sale_line_ids")
-            if sale_order_id:
-                move.ref = sale_order_id.order_id.name
+            order = move.invoice_line_ids.mapped("sale_line_ids.order_id")
+            if order:
+                move.ref = ", ".join(order.mapped("name"))
         return res
