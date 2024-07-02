@@ -1,1 +1,1 @@
-from . import report_print
+from . import ir_actions_report, stock_picking
