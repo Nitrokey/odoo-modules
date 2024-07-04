@@ -579,6 +579,6 @@ class BitcoinRateLine(models.Model):
 
     currency_id = fields.Many2one("res.currency", "Currency")
     amount = fields.Float(digits=(20, 6))
-    order_id = fields.Many2one("sale.order", "Order ID")
-    invoice_id = fields.Many2one("account.move", "Invoice ID")
+    order_id = fields.Integer("Order ID")
+    invoice_id = fields.Integer("Invoice ID")
     name = fields.Char("Origin")
