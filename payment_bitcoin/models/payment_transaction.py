@@ -57,16 +57,24 @@ class BitcoinPaymentTransaction(models.Model):
         for values in values_list:
             if values.get("acquirer_id"):
                 acquirer = self.env["payment.acquirer"].browse(values["acquirer_id"])
-                if acquirer.provider == "bitcoin":
-                    sale_order_ids = values.get("sale_order_ids", [])
-                    if sale_order_ids:
-                        resp = self.env["bitcoin.rate"].get_rate(
-                            order_id=sale_order_ids[0][2][0]
-                        )
-                        if resp:
-                            values["bitcoin_address"] = resp[0]
-                            values["bitcoin_amount"] = resp[1]
-                            values["bitcoin_unit"] = resp[2]
+                if acquirer.provider != "bitcoin":
+                    continue
+
+                kwargs = {}
+                sale_order_ids = values.get("sale_order_ids", [])
+                if sale_order_ids:
+                    kwargs["order_id"] = sale_order_ids[0][2][0]
+
+                invoice_ids = values.get("invoice_ids", [])
+                if invoice_ids:
+                    kwargs["invoice_id"] = invoice_ids[0][2][0]
+
+                if kwargs:
+                    resp = self.env["bitcoin.rate"].get_rate(**kwargs)
+                    if resp:
+                        values["bitcoin_address"] = resp[0]
+                        values["bitcoin_amount"] = resp[1]
+                        values["bitcoin_unit"] = resp[2]
         return super().create(values_list)
 
     @api.model

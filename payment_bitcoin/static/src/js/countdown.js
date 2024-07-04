@@ -1,6 +1,4 @@
 odoo.define("payment_bitcoin.duration", function (require) {
-    "use strict";
-
     var publicWidget = require("web.public.widget");
 
     publicWidget.registry.reloadDuration = publicWidget.Widget.extend({

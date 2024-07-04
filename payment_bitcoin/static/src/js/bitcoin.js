@@ -1,6 +1,4 @@
 odoo.define("payment_bitcoin.bitcoin", function (require) {
-    "use strict";
-
     var ajax = require("web.ajax");
     var core = require("web.core");
     var _t = core._t;
