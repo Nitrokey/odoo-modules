@@ -380,8 +380,8 @@ msgstr "Auf Ziffern runden"
 #. module: payment_bitcoin
 #: code:addons/payment_bitcoin/models/bitcoin.py:0
 #, python-format
-msgid "Sale Order reference required"
-msgstr "Verkaufsauftragsreferenz erforderlich"
+msgid "Payment reference required"
+msgstr "Zahlungsreferenz erforderlich"
 
 #. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_account_config_min_unused_bitcoin

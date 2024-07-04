@@ -9,6 +9,7 @@ from odoo.exceptions import AccessError, MissingError, ValidationError
 from odoo.fields import Command
 from odoo.http import request
 
+from odoo.addons.account.controllers.portal import PortalAccount
 from odoo.addons.sale.controllers.portal import CustomerPortal, PaymentPortal
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 
@@ -69,37 +70,44 @@ class BitcoinController(http.Controller):
 
 
 class WebsiteSale(WebsiteSale):
-    def get_bitcoin_render_values(self, order, lang_id):
-        if order.payment_tx_id.bitcoin_unit == "mBTC":
-            bitcoin_amount = order.payment_tx_id.bitcoin_amount / 1000.0
-            m_bitcoin_amount = order.payment_tx_id.bitcoin_amount
+    def get_bitcoin_render_values(self, transaction, lang, order=None, invoice=None):
+        if transaction.bitcoin_unit == "mBTC":
+            bitcoin_amount = transaction.bitcoin_amount / 1000.0
+            m_bitcoin_amount = transaction.bitcoin_amount
         else:
-            bitcoin_amount = order.payment_tx_id.bitcoin_amount
-            m_bitcoin_amount = order.payment_tx_id.bitcoin_amount * 1000.0
+            bitcoin_amount = transaction.bitcoin_amount
+            m_bitcoin_amount = transaction.bitcoin_amount * 1000.0
+
+        if order:
+            message = order.name
+        elif invoice:
+            message = invoice.name
+        else:
+            message = "Bitcoin Payment"
 
         uri = _("bitcoin:%(address)s$$amount=%(bt_amt)s*$message=%(msg)s") % {
-            "address": order.payment_tx_id.bitcoin_address,
+            "address": transaction.bitcoin_address,
             "bt_amt": bitcoin_amount,
-            "msg": order.name,
+            "msg": message,
         }
-        decimal_places = len(str(order.payment_tx_id.bitcoin_amount).split(".")[1])
+        decimal_places = len(str(transaction.bitcoin_amount).split(".")[1])
         info = (
             _(
                 "Please send %(amount_btc)s %(unit_btc)s (%(amount_mbtc)s %(unit_mbtc)s) \
             to the address %(address)s by %(deadline_date)s UTC."
             )
             % {
-                "amount_btc": lang_id.format(
+                "amount_btc": lang.format(
                     f"%.{decimal_places}f", bitcoin_amount, True, True
                 ),
-                "amount_mbtc": lang_id.format(
+                "amount_mbtc": lang.format(
                     f"%.{decimal_places}f", m_bitcoin_amount, True, True
                 ),
                 "unit_btc": "BTC",
                 "unit_mbtc": "mBTC",
-                "address": order.payment_tx_id.bitcoin_address,
-                "deadline_date": order.payment_tx_id.last_state_change
-                + timedelta(minutes=order.payment_tx_id.acquirer_id.deadline),
+                "address": transaction.bitcoin_address,
+                "deadline_date": transaction.last_state_change
+                + timedelta(minutes=transaction.acquirer_id.deadline),
             }
         )
         return (info, uri)
@@ -114,12 +122,14 @@ class WebsiteSale(WebsiteSale):
         resp = super().shop_payment_get_status(sale_order_id=sale_order_id, **post)
         order = request.env["sale.order"].sudo().browse(sale_order_id)
         language = request.env.context.get("lang") or order.partner_id.lang or "en_US"
-        lang_id = request.env["res.lang"].search([("code", "=", language)])
+        lang = request.env["res.lang"].search([("code", "=", language)])
         if order.payment_acquirer_id.provider == "bitcoin":
             after_panel_heading = resp["message"].find(
                 "</div>", resp["message"].find('<div class="card-header>')
             )
-            info, uri = self.get_bitcoin_render_values(order, lang_id)
+            info, uri = self.get_bitcoin_render_values(
+                transaction=order.payment_tx_id, lang=lang, order=order
+            )
             if after_panel_heading:
                 after_panel_heading += 6
                 if order.get_portal_last_transaction().duration > 0:
@@ -233,8 +243,32 @@ class CustomerPortal(CustomerPortal):
         )
         order = request.env["sale.order"].sudo().browse(order_id)
         language = request.env.context.get("lang") or order.partner_id.lang or "en_US"
-        lang_id = request.env["res.lang"].search([("code", "=", language)])
+        lang = request.env["res.lang"].search([("code", "=", language)])
         if order.payment_acquirer_id.provider == "bitcoin":
-            info, uri = WebsiteSale.get_bitcoin_render_values(self, order, lang_id)
+            info, uri = WebsiteSale.get_bitcoin_render_values(
+                self, transaction=order.payment_tx_id, lang=lang, order=order
+            )
             res.qcontext.update({"uri": uri, "info": info})
+        return res
+
+
+class PortalAccount(PortalAccount):
+    def _invoice_get_page_view_values(self, invoice, access_token, **kwargs):
+        res = super()._invoice_get_page_view_values(invoice, access_token, **kwargs)
+        invoice = res.get("invoice")
+        if not invoice:
+            return res
+
+        transaction = invoice.transaction_ids.filtered_domain(
+            [("provider", "=", "bitcoin"), ("state", "=", "pending")]
+        )[:1]
+        if transaction:
+            language = (
+                request.env.context.get("lang") or invoice.partner_id.lang or "en_US"
+            )
+            lang = request.env["res.lang"].search([("code", "=", language)])
+            info, uri = WebsiteSale.get_bitcoin_render_values(
+                self, transaction=transaction, lang=lang, invoice=invoice
+            )
+            res.update({"uri": uri, "info": info})
         return res

@@ -162,6 +162,9 @@ class BitcoinAddress(models.Model):
     create_uid = fields.Many2one("res.users", "Created by")
 
     order_id = fields.Many2one("sale.order", "Order Assigned", ondelete="set null")
+    invoice_id = fields.Many2one(
+        "account.move", "Invoice Assigned", ondelete="set null"
+    )
     is_btc_used = fields.Boolean("Is Bitcoin used?")
 
     _sql_constraints = [
@@ -185,175 +188,187 @@ class BitcoinAddress(models.Model):
         check_hours = acquirer_obj.bitcoin_order_older_than
         check_date = datetime.now() - td(hours=int(check_hours))
         for bit_add_obj in self.search(
-            [("order_id", "!=", False), ("is_btc_used", "=", False)]
+            [
+                "|",
+                ("order_id", "!=", False),
+                ("invoice_id", "!=", False),
+                ("is_btc_used", "=", False),
+            ]
         ):
-            if bit_add_obj.order_id.create_date >= check_date:
-                address_info = check_received(bit_add_obj.name)
-                if address_info:
-                    valid_rate_exists = (
-                        self.env["bitcoin.rate.line"]
-                        .sudo()
-                        .search(
-                            [
-                                ("order_id", "=", bit_add_obj.order_id.id),
-                                ("name", "=", bit_add_obj.order_id.name),
-                            ],
-                            limit=1,
-                        )
+            if bit_add_obj.order_id.create_date < check_date:
+                continue
+
+            address_info = check_received(bit_add_obj.name)
+            if not address_info:
+                continue
+
+            if bit_add_obj.order_id:
+                domain = [
+                    ("order_id", "=", bit_add_obj.order_id.id),
+                    ("name", "=", bit_add_obj.order_id.name),
+                ]
+            elif bit_add_obj.invoice_id:
+                domain = [
+                    ("invoice_id", "=", bit_add_obj.invoice_id.id),
+                    ("name", "=", bit_add_obj.invoice_id.name),
+                ]
+            else:
+                continue
+
+            recs_to_post = list(
+                filter(None, (bit_add_obj.order_id, bit_add_obj.invoice_id))
+            )
+
+            valid_rate_exists = (
+                self.env["bitcoin.rate.line"].sudo().search(domain, limit=1)
+            )
+            valid_rate = 0.0
+            if valid_rate_exists:
+                valid_rate = valid_rate_exists.rate
+
+            amount_received = self.convert_num_to_standard(address_info["received"])
+            if valid_rate and address_info["received"] >= valid_rate:
+                open_invoice_objs = None
+                if bit_add_obj.order_id and bit_add_obj.order_id.state == "cancel":
+                    if bit_add_obj.order_id.state not in ("done", "sale"):
+                        bit_add_obj.order_id.action_confirm()
+
+                    if not bit_add_obj.order_id.invoice_ids:
+                        bit_add_obj.order_id._create_invoices()
+
+                    invoice_objs = bit_add_obj.order_id.mapped("invoice_ids").filtered(
+                        lambda r: r.state == "draft"
                     )
-                    order_valid_rate = 0.0
-                    if valid_rate_exists:
-                        order_valid_rate = valid_rate_exists.rate
 
-                    amount_received = self.convert_num_to_standard(
-                        address_info["received"]
+                    if invoice_objs:
+                        invoice_objs.action_post()
+
+                    open_invoice_objs = bit_add_obj.order_id.mapped(
+                        "invoice_ids"
+                    ).filtered(lambda r: r.state == "posted")
+
+                if bit_add_obj.invoice_id:
+                    invoice_objs = bit_add_obj.invoice_id.filtered(
+                        lambda r: r.state == "draft"
                     )
-                    if (
-                        order_valid_rate
-                        and address_info["received"] >= order_valid_rate
-                    ):
-                        if bit_add_obj.order_id.state not in ("cancel"):
-                            if bit_add_obj.order_id.state not in ("done", "sale"):
-                                bit_add_obj.order_id.action_confirm()
 
-                            if not bit_add_obj.order_id.invoice_ids:
-                                bit_add_obj.order_id._create_invoices()
+                    open_invoice_objs = bit_add_obj.invoice_id.filtered(
+                        lambda r: r.state == "posted"
+                    )
 
-                            invoice_objs = bit_add_obj.order_id.mapped(
-                                "invoice_ids"
-                            ).filtered(lambda r: r.state in ["draft"])
-                            if invoice_objs:
-                                invoice_objs.action_post()
-                            open_invoice_objs = bit_add_obj.order_id.mapped(
-                                "invoice_ids"
-                            ).filtered(lambda r: r.state in ["posted"])
-                            if open_invoice_objs:
-                                line_to_reconcile = self.env["account.move.line"]
-                                payment_line = self.env["account.move.line"]
+                if open_invoice_objs:
+                    line_to_reconcile = self.env["account.move.line"]
+                    payment_line = self.env["account.move.line"]
 
-                                payment_methods = (
-                                    payment_journal_obj.available_payment_method_ids.ids
-                                )
-                                payment_vals = {
-                                    "partner_id": bit_add_obj.order_id.partner_id.id,
-                                    "payment_type": "inbound",
-                                    "partner_type": "customer",
-                                    "amount": bit_add_obj.order_id.amount_total,
-                                    "date": fields.Date.today(),
-                                    "journal_id": payment_journal_obj.id,
-                                    "payment_method_id": payment_methods
-                                    and payment_methods[0]
-                                    or False,
-                                }
-                                payment_obj = (
-                                    self.env["account.payment"]
-                                    .sudo()
-                                    .create(payment_vals)
-                                )
-                                payment_obj.action_post()
-                                payment_move = payment_obj
-                                payment_line = payment_move.line_ids.filtered(
-                                    lambda r: not r.reconciled
-                                    and r.account_id.internal_type
-                                    in ("payable", "receivable")
-                                )
+                    payment_methods = (
+                        payment_journal_obj.available_payment_method_ids.ids
+                    )
+                    payment_vals = {
+                        "partner_id": bit_add_obj.order_id.partner_id.id,
+                        "payment_type": "inbound",
+                        "partner_type": "customer",
+                        "amount": bit_add_obj.order_id.amount_total,
+                        "date": fields.Date.today(),
+                        "journal_id": payment_journal_obj.id,
+                        "payment_method_id": payment_methods
+                        and payment_methods[0]
+                        or False,
+                    }
+                    payment_obj = (
+                        self.env["account.payment"].sudo().create(payment_vals)
+                    )
+                    payment_obj.action_post()
+                    payment_move = payment_obj
+                    payment_line = payment_move.line_ids.filtered(
+                        lambda r: not r.reconciled
+                        and r.account_id.internal_type in ("payable", "receivable")
+                    )
 
-                                for inv in open_invoice_objs:
-                                    line_to_reconcile += inv.line_ids.filtered(
-                                        lambda r: not r.reconciled
-                                        and r.account_id.internal_type
-                                        in ("payable", "receivable")
-                                    )
-
-                                (line_to_reconcile + payment_line).reconcile()
-                                bit_add_obj.write({"is_btc_used": True})
-                                if float(address_info["received"]) == float(
-                                    order_valid_rate
-                                ):
-                                    bit_add_obj.order_id.message_post(
-                                        body=_(
-                                            "Bitcoin transaction %(transaction)s for \
-                                            %(address)s with %(amount)s BTC has been\
-                                             confirmed. The corresponding payment is \
-                                             posted: %(invoices)s"
-                                        )
-                                        % {
-                                            "transaction": address_info.get(
-                                                "transaction"
-                                            ),
-                                            "address": bit_add_obj.name,
-                                            "amount": amount_received,
-                                            "invoices": self.cnvrt_list_to_string(
-                                                invoice_objs.mapped("name")
-                                            ),
-                                        }
-                                    )
-                                elif float(address_info["received"]) > float(
-                                    order_valid_rate
-                                ):
-                                    max_amount_received = float(
-                                        address_info["received"]
-                                    ) - float(order_valid_rate)
-                                    log_max_amt = (
-                                        _(
-                                            "Bitcoin transaction %(transaction)s \
-                                            for %(address)s \
-                                            with %(amount)s BTC has \
-                                        been confirmed. This is  %(max_amount_received)s \
-                                        BTC too much. The \
-                                        corresponding payment is posted: %(invoices)s"
-                                        )
-                                        % {
-                                            "transaction": address_info.get(
-                                                "transaction"
-                                            ),
-                                            "address": bit_add_obj.name,
-                                            "amount": amount_received,
-                                            "max_amount_received": self.convert_num_to_standard(
-                                                max_amount_received
-                                            ),
-                                            "invoices": self.cnvrt_list_to_string(
-                                                invoice_objs.mapped("name")
-                                            ),
-                                        }
-                                    )
-                                    bit_add_obj.order_id.message_post(
-                                        body=(log_max_amt)
-                                    )
-                    else:
-                        insufficiant_amount = float(order_valid_rate) - float(
-                            address_info["received"]
+                    for inv in open_invoice_objs:
+                        line_to_reconcile += inv.line_ids.filtered(
+                            lambda r: not r.reconciled
+                            and r.account_id.internal_type in ("payable", "receivable")
                         )
-                        if (
-                            address_info.get("transaction")
-                            and float(amount_received) > 0.0
-                        ):
-                            bit_add_obj.order_id.message_post(
+
+                    (line_to_reconcile + payment_line).reconcile()
+                    bit_add_obj.write({"is_btc_used": True})
+                    if float(address_info["received"]) == float(valid_rate):
+                        for rec in recs_to_post:
+                            rec.message_post(
                                 body=_(
                                     "Bitcoin transaction %(transaction)s for \
-                                    %(address)s with %(amount)s \
-                                    BTC has been confirmed. It is missing \
-                                    %(insufficiant_amount)s BTC."
+                                    %(address)s with %(amount)s BTC has been\
+                                     confirmed. The corresponding payment is \
+                                     posted: %(invoices)s"
                                 )
                                 % {
                                     "transaction": address_info.get("transaction"),
                                     "address": bit_add_obj.name,
                                     "amount": amount_received,
-                                    "insufficiant_amount": self.convert_num_to_standard(
-                                        insufficiant_amount
+                                    "invoices": self.cnvrt_list_to_string(
+                                        invoice_objs.mapped("name")
                                     ),
                                 }
                             )
+                    elif float(address_info["received"]) > float(valid_rate):
+                        max_amount_received = float(address_info["received"]) - float(
+                            valid_rate
+                        )
+                        log_max_amt = (
+                            _(
+                                "Bitcoin transaction %(transaction)s \
+                                for %(address)s \
+                                with %(amount)s BTC has \
+                            been confirmed. This is  %(max_amount_received)s \
+                            BTC too much. The \
+                            corresponding payment is posted: %(invoices)s"
+                            )
+                            % {
+                                "transaction": address_info.get("transaction"),
+                                "address": bit_add_obj.name,
+                                "amount": amount_received,
+                                "max_amount_received": self.convert_num_to_standard(
+                                    max_amount_received
+                                ),
+                                "invoices": self.cnvrt_list_to_string(
+                                    invoice_objs.mapped("name")
+                                ),
+                            }
+                        )
+                        for rec in recs_to_post:
+                            rec.message_post(body=log_max_amt)
+            else:
+                insufficiant_amount = float(valid_rate) - float(
+                    address_info["received"]
+                )
+                if address_info.get("transaction") and float(amount_received) > 0.0:
+                    for rec in recs_to_post:
+                        rec.message_post(
+                            body=_(
+                                "Bitcoin transaction %(transaction)s for \
+                                %(address)s with %(amount)s \
+                                BTC has been confirmed. It is missing \
+                                %(insufficiant_amount)s BTC."
+                            )
+                            % {
+                                "transaction": address_info.get("transaction"),
+                                "address": bit_add_obj.name,
+                                "amount": amount_received,
+                                "insufficiant_amount": self.convert_num_to_standard(
+                                    insufficiant_amount
+                                ),
+                            }
+                        )
 
-                        if acquirer_obj.bitcoin_send_email:
-                            template_obj = self.env.ref(
-                                "payment_bitcoin.mail_template_data_bit_coin_order_notification"
-                            )
-                            template_obj.send_mail(
-                                bit_add_obj.order_id.id,
-                                force_send=True,
-                                raise_exception=True,
-                            )
+                if acquirer_obj.bitcoin_send_email and bit_add_obj.order_id:
+                    template_obj = self.env.ref(
+                        "payment_bitcoin.mail_template_data_bit_coin_order_notification"
+                    )
+                    template_obj.send_mail(
+                        bit_add_obj.order_id.id,
+                        force_send=True,
+                        raise_exception=True,
+                    )
 
     @api.model
     def send_bitcoin_address_goes_low_notification(self):
@@ -422,7 +437,9 @@ class BitcoinRate(models.Model):
     )
 
     @api.model
-    def get_rate(self, order_id=False, order_ref=False):
+    def get_rate(
+        self, order_id=False, order_ref=False, invoice_id=False, invoice_ref=False
+    ):
         # function returns bitcoin rate and address for the order currency
         # and total amount
 
@@ -430,46 +447,62 @@ class BitcoinRate(models.Model):
         if len(sobj) != 1:
             return False
 
-        if not order_id and not order_ref:
-            raise UserError(_("Sale Order reference required"))
+        order = invoice = None
         if order_id:
             order = self.env["sale.order"].sudo().browse(int(order_id))
         elif order_ref:
-            order = self.env["sale.order"].search([("name", "=", order_ref)])
+            order = self.env["sale.order"].search([("name", "=", order_ref)], limit=1)
             if not order:
                 _logger.warning("Sale Order with ref %s is missing" % order_ref)
                 return False
-            order = order[0]
 
-        currency = order.pricelist_id.currency_id
-        amount_total = order.amount_total
+        if invoice_id:
+            invoice = self.env["account.move"].sudo().browse(int(invoice_id))
+        elif invoice_ref:
+            invoice = self.env["account.move"].search(
+                [("name", "=", invoice_ref)], limit=1
+            )
+            if not invoice:
+                _logger.warning("Invoice with ref %s is missing" % order_ref)
+                return False
 
-        addr_ids = self.env["bitcoin.address"].search(
-            [("order_id", "=", order.id)], limit=1
-        )
+        if order:
+            domain = [("order_id", "=", order.id)]
+            currency = order.pricelist_id.currency_id
+            amount_total = order.amount_total
+            name = order.name
+        elif invoice:
+            domain = [("invoice_id", "=", invoice.id)]
+            currency = invoice.currency_id
+            amount_total = invoice.amount_total
+            name = invoice.name
+        else:
+            raise UserError(_("Payment reference required"))
+
+        addr_ids = self.env["bitcoin.address"].search(domain, limit=1)
         if not addr_ids:
             addr_ids = self.env["bitcoin.address"].search(
-                [("order_id", "=", False)], limit=1
+                [("order_id", "=", False), ("invoice_id", "=", False)], limit=1
             )
             if not addr_ids:
                 _logger.error("No Bitcoin Address configured")
                 return False
 
-        fltr_dom = [
-            ("order_id", "=", order.id),
-            ("currency_id", "=", currency.id),
-            ("amount", "=", amount_total),
-            (
-                "create_date",
-                ">=",
-                (datetime.now() - relativedelta(minutes=sobj.valid_minutes)).strftime(
-                    "%Y-%m-%d %H:%M:00"
+        domain.extend(
+            [
+                ("currency_id", "=", currency.id),
+                ("amount", "=", amount_total),
+                (
+                    "create_date",
+                    ">=",
+                    (
+                        datetime.now() - relativedelta(minutes=sobj.valid_minutes)
+                    ).strftime("%Y-%m-%d %H:%M:00"),
                 ),
-            ),
-        ]
+            ]
+        )
 
-        valid_rate_exists = self.env["bitcoin.rate.line"].sudo().search(fltr_dom)
-
+        valid_rate_exists = self.env["bitcoin.rate.line"].sudo().search(domain, limit=1)
         if valid_rate_exists:
             # Rate was looked up within valid time limit, so we are using the
             # valid one
@@ -491,8 +524,9 @@ class BitcoinRate(models.Model):
                     "rate": rate,
                     "amount": amount_total,
                     "currency_id": currency.id,
-                    "order_id": order.id,
-                    "name": order.name,
+                    "order_id": order.id if order else None,
+                    "invoice_id": invoice.id if invoice else None,
+                    "name": name,
                 }
             )
             order.message_post(
@@ -508,8 +542,13 @@ class BitcoinRate(models.Model):
                 }
             )
         if addr_ids and rate:
-            addr_ids[0].sudo().write({"order_id": order.id})
-            b_addr = addr_ids[0].name
+            addr_ids.sudo().write(
+                {
+                    "order_id": order.id if order else None,
+                    "invoice_id": invoice.id if invoice else None,
+                }
+            )
+            b_addr = addr_ids.name
 
             if sobj.markup:
                 b_amount = (rate * (sobj.markup / 100)) + rate
@@ -540,5 +579,6 @@ class BitcoinRateLine(models.Model):
 
     currency_id = fields.Many2one("res.currency", "Currency")
     amount = fields.Float(digits=(20, 6))
-    order_id = fields.Integer("Order ID")
+    order_id = fields.Many2one("sale.order", "Order ID")
+    invoice_id = fields.Many2one("account.move", "Invoice ID")
     name = fields.Char("Origin")
