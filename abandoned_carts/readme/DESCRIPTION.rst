@@ -18,7 +18,7 @@ This module identifies orders as abandoned (and to be deleted) if all of the fol
 These orders will be displayed in "Abandoned orders" and can be deleted manually.
 
 Customers, which have
-`"lead = 0" and "meetings = 0" and "is_employee = false" and "helpdesk_tickets = 0" and "newsletter_subscriptions = 0" and "phonecalls = 0" and "orders = 0" and "account moves = 0" and "tasks = 0" and "portal or user account = 0" and "parent_id = NULL" and "is_company = false" and "create_uid = system_user"`
+`"lead = 0" and "meetings = 0" and "is_employee = false" and "helpdesk_tickets = 0" and "newsletter_subscriptions = 0" and "phonecalls = 0" and "orders = 0" and "account moves = 0" and "tasks = 0" and "portal or user account = 0" and "parent_id = NULL" and "is_company = false" and "create_uid = system_user" and "payment_transaction = 0"`
 
 will be displayed in "Abandoned customers" and can be deleted manually.
 

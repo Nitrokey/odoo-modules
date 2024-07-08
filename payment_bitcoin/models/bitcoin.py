@@ -180,7 +180,7 @@ class BitcoinAddress(models.Model):
         return ", ".join([str(data) for data in ldata])
 
     @api.model
-    def cron_bitcoin_payment_reconciliation(self):
+    def cron_bitcoin_payment_reconciliation(self):  # noqa: C901
         acquirer_obj = self.env["payment.acquirer"].search(
             [("provider", "=", "bitcoin")]
         )
@@ -437,7 +437,7 @@ class BitcoinRate(models.Model):
     )
 
     @api.model
-    def get_rate(
+    def get_rate(  # noqa: C901
         self, order_id=False, order_ref=False, invoice_id=False, invoice_ref=False
     ):
         # function returns bitcoin rate and address for the order currency

@@ -1,4 +1,6 @@
 odoo.define("payment_bitcoin.bitcoin", function (require) {
+    "use strict";
+
     var ajax = require("web.ajax");
     var core = require("web.core");
     var _t = core._t;
@@ -25,7 +27,9 @@ odoo.define("payment_bitcoin.bitcoin", function (require) {
                     order_ref: $order_ref,
                 }).then(function (data) {
                     if (data === false) {
+                        /* eslint-disable no-alert */
                         alert(_t("Payment method Bitcoin is currently unavailable."));
+                        /* eslint-enable no-alert */
                         $(ev.currentTarget)
                             .find('input[name="o_payment_radio"]')
                             .attr("disabled", "disabled");
