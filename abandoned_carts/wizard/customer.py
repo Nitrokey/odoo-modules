@@ -98,6 +98,9 @@ WHERE
         where gid = (select id from res_groups where id=%s)
             and uid=ru.id
     ) and
+    NOT EXISTS (
+        SELECT 1 FROM payment_transaction pt WHERE pt.partner_id = p.id
+    ) and
     p.parent_id is NULL and
     p.is_company = False and
     p.customer_rank > 0 and
