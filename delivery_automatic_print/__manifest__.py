@@ -7,7 +7,9 @@
         "carrier_shipping_label_template",
         "stock",
     ],
-    "data": [],
+    "data": [
+        "views/ir_actions_report_views.xml",
+    ],
     "auto_install": False,
     "installable": True,
     "author": "Nitrokey GmbH",

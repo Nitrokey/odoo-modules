@@ -27,6 +27,13 @@ class StockPicking(models.Model):
 
         ctx = {"raise_on_missing_labels": False}
         for report in self.reports_to_print().with_context(**ctx):
-            report.sudo()._render_qweb_pdf(self.ids)
+            if report.auto_picking_type_ids:
+                pickings = self.filtered_domain(
+                    [("picking_type_id", "in", report.auto_picking_type_ids.ids)]
+                )
+            else:
+                pickings = self
+
+            report.sudo()._render_qweb_pdf(pickings.ids)
 
         return res

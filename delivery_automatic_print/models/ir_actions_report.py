@@ -1,11 +1,13 @@
 # © 2024 initOS GmbH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import models
+from odoo import fields, models
 
 
 class IrActionsReport(models.Model):
     _inherit = "ir.actions.report"
+
+    auto_picking_type_ids = fields.Many2many("stock.picking.type")
 
     def _render_qweb_pdf(self, res_ids=None, data=None):
         document, fmt = super()._render_qweb_pdf(res_ids, data)
