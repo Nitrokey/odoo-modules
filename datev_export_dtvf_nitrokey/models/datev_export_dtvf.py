@@ -12,6 +12,6 @@ class DatevExportDtvfExport(models.Model):
         for data in super()._get_data_transaction(move):
             for line in move.line_ids:
                 for field_name in ('ref', 'name', 'move_name'):
-                    if (line[field_name] or '').startswith('SO'):
+                    if (line[field_name] or '').startswith('SO') or (line[field_name] or '').startswith('EK'):
                         data["Belegfeld 1"] = line[field_name]
             yield data
