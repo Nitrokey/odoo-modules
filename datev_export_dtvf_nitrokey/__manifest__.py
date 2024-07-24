@@ -11,4 +11,5 @@
     "depends": [
         "datev_export_dtvf",
     ],
+    "website": "https://github.com/OCA/server-tools",
 }
