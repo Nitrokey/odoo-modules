@@ -27,7 +27,7 @@ class SaleOrderWizard(models.TransientModel):
         res = super().default_get(fields)
         system_user = self.sudo().env.ref("base.user_root", False)
         domain = [
-            ("state", "in", ["draft", "sent"]),
+            ("state", "in", ["draft", "sent", "cancel"]),
             ("create_date", "<", date.strftime(DF)),
             ("website_id", "!=", False),
         ]

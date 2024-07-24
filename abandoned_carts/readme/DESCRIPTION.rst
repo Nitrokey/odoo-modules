@@ -13,7 +13,7 @@ Algorithm
 
 This module identifies orders as abandoned (and to be deleted) if all of the following is true:
 
-`("state = draft" or "state = sent") and "website_id is set" and "(current_time - create_date) < abandoned_carts.order_retention_period" and "create_uid = system_user"`
+`("state = draft" or "state = sent" or "state = cancelled") and "website_id is set" and "(current_time - create_date) < abandoned_carts.order_retention_period" and "create_uid = system_user"`
 
 These orders will be displayed in "Abandoned orders" and can be deleted manually.
 
