@@ -34,6 +34,7 @@ class StockPicking(models.Model):
             else:
                 pickings = self
 
-            report.sudo()._render_qweb_pdf(pickings.ids)
+            if pickings:
+                report.sudo()._render_qweb_pdf(pickings.ids)
 
         return res
