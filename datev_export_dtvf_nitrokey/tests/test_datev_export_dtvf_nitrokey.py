@@ -1,1 +1,0 @@
-from odoo.addons.datev_export_dtvf.tests.test_datev_export_dtvf import TestDatevExportDtvf
