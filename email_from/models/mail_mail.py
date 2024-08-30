@@ -46,5 +46,6 @@ class MailMail(models.Model):
             rec = to_adjust.get(key, default)
             if rec and key not in to_keep:
                 mail.write({"email_from": rec.email_from})
+                mail.write({"reply_to": rec.email_from})
 
         return res
