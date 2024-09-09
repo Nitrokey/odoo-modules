@@ -389,6 +389,10 @@ class BitcoinAddress(models.Model):
             if group:
                 groups += group
 
+            needaction_partner_ids = [
+                (4, user.partner_id.id) for user in groups.mapped("users")
+            ]
+
             self.env["mail.message"].create(
                 {
                     "message_type": "notification",
@@ -396,6 +400,8 @@ class BitcoinAddress(models.Model):
                     "date": datetime.now(),
                     "body": "<p>Only %s unused Bitcoin addresses are left. "
                     "Please add new addresses.</p>" % unused_address_count,
+                    "partner_ids": needaction_partner_ids,
+                    "needaction": True,
                 }
             )
         return
