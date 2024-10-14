@@ -24,7 +24,7 @@ class DatevExportDtvfExport(models.Model):
             return ref1, ref2
 
         # Try to find the reconciled invoices
-        matching = move.mapped("line_ids.full_reconcile_id.reconciled_line_ids")
+        matching = move.mapped("line_ids.full_reconcile_id.reconciled_line_ids.move_id")
         if not matching:
             return ref1, ref2
 
