@@ -19,6 +19,10 @@ class DatevExportDtvfExport(models.Model):
         if move.move_type == "out_refund" and move.reversed_entry_id.invoice_origin:
             return move.reversed_entry_id.invoice_origin, ref1
 
+        # Use refund reference if unequal to ref1
+        if move.move_type == "out_refund" and move.name != ref1:
+            return move.name, ref1
+
         # All non-entry will use the default
         if move.move_type != "entry":
             return ref1, ref2
