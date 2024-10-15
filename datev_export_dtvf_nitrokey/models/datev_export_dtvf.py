@@ -53,4 +53,7 @@ class DatevExportDtvfExport(models.Model):
         for data in super()._get_data_transaction(move):
             ref1, ref2 = self._get_matching_references(move, move.name, "")
             data.update({"Belegfeld 1": ref1, "Belegfeld 2": ref2})
+
+            if move.partner_id.name:
+                data["Buchungstext"] += " " + move.partner_id.name
             yield data
