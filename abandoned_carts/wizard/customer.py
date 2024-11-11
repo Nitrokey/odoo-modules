@@ -44,10 +44,10 @@ class CustomerWizard(models.TransientModel):
 
     @api.model
     def set_fix_customer(self):
-        user = self.env.ref("base.group_portal").id
-        user_internal = self.env.ref("base.group_user").id
+        user = self.env.ref("base.group_portal")
+        user_internal = self.env.ref("base.group_user")
 
-        system_users = user.browse()
+        system_users = self.env["res.users"].browse()
         for ref in ("base.user_root", "base.public_user"):
             rec = self.sudo().env.ref(ref, False)
             if rec:
@@ -123,8 +123,8 @@ ORDER BY p.id DESC"""  # noqa: E201,E202,E271,E272
         self._cr.execute(
             qry,
             (
-                user,
-                user_internal,
+                user.id,
+                user_internal.id,
             ),
         )
         data = self._cr.fetchall()
