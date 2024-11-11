@@ -44,80 +44,86 @@ class CustomerWizard(models.TransientModel):
 
     @api.model
     def set_fix_customer(self):
-        user = self.env.ref("base.group_portal").id
-        user_internal = self.env.ref("base.group_user").id
+        user = self.env.ref("base.group_portal")
+        user_internal = self.env.ref("base.group_user")
 
-        system_user = self.sudo().env.ref("base.user_root", False)
-        system_user_filter = ""
-        if system_user:
-            system_user_filter = "and p.create_uid=" + str(system_user.id)
+        system_users = self.env["res.users"].browse()
+        for ref in ("base.user_root", "base.public_user"):
+            rec = self.sudo().env.ref(ref, False)
+            if rec:
+                system_users |= rec
+
+        if system_users:
+            ids = ",".join(map(str, system_users.ids))
+            system_user_filter = f"AND p.create_uid IN ({ids})"
+        else:
+            system_user_filter = ""
+
         qry = f"""
 SELECT p.id
 FROM res_partner p
-left join res_users ru on ru.partner_id=p.id
+LEFT JOIN res_users ru ON ru.partner_id=p.id
 WHERE
     NOT EXISTS (
         SELECT 1 FROM crm_lead as lead WHERE lead.partner_id = p.id
-    ) and
+    ) AND
     NOT EXISTS (
         SELECT 1 FROM calendar_event_res_partner_rel ce WHERE ce.res_partner_id = p.id
-    ) and
+    ) AND
     NOT EXISTS (
         SELECT 1 FROM hr_employee emp WHERE emp.user_id = ru.id
-    ) and
+    ) AND
     NOT EXISTS (
         SELECT 1 FROM helpdesk_ticket WHERE partner_id = p.id
-    ) and
+    ) AND
     NOT EXISTS (
         SELECT 1 FROM mailing_contact where partner_id = p.id
-    ) and
+    ) AND
     NOT EXISTS (
         SELECT 1 FROM crm_phonecall call WHERE call.partner_id=p.id
-    ) and
+    ) AND
     NOT EXISTS (
         SELECT 1 FROM account_move inv WHERE inv.partner_id = p.id OR
         inv.partner_shipping_id = p.id
-    ) and
+    ) AND
     NOT EXISTS (
         SELECT 1 FROM sale_order o
-        WHERE o.partner_id = p.id or o.partner_invoice_id=p.id or o.partner_shipping_id=p.id
-    ) and
+        WHERE o.partner_id = p.id OR o.partner_invoice_id=p.id OR o.partner_shipping_id=p.id
+    ) AND
     NOT EXISTS (
         SELECT 1 FROM account_move_line line  WHERE line.partner_id = p.id
-    ) and
+    ) AND
     NOT EXISTS (
         SELECT 1 FROM project_task task  WHERE task.partner_id = p.id
-    ) and
+    ) AND
     NOT EXISTS (
-        SELECT 1 from res_groups_users_rel
-        where gid = ( select id from res_groups where id=%s )
-            and uid=ru.id
-    ) and
+        SELECT 1 FROM res_groups_users_rel
+        WHERE gid = ( SELECT id FROM res_groups WHERE id=%s )
+            AND uid=ru.id
+    ) AND
     NOT EXISTS (
-        SELECT 1 from res_groups_users_rel
-        where gid = (select id from res_groups where id=%s)
-            and uid=ru.id
-    ) and
+        SELECT 1 FROM res_groups_users_rel
+        WHERE gid = (SELECT id FROM res_groups WHERE id=%s)
+            AND uid=ru.id
+    ) AND
     NOT EXISTS (
         SELECT 1 FROM payment_transaction pt WHERE pt.partner_id = p.id
-    ) and
-    p.parent_id is NULL and
-    p.is_company = False and
-    p.customer_rank > 0 and
-    p.id not in (
-        select partner_id from res_users
-        union all
-        select partner_id from res_company order by partner_id
+    ) AND
+    p.parent_id IS NULL AND
+    p.is_company = False AND
+    p.id NOT IN (
+        SELECT partner_id FROM res_users
+        UNION ALL
+        SELECT partner_id FROM res_company ORDER BY partner_id
     )
     {system_user_filter}
-    order by p.id desc
-               """  # noqa: E201,E202,E271,E272
+ORDER BY p.id DESC"""  # noqa: E201,E202,E271,E272
 
         self._cr.execute(
             qry,
             (
-                user,
-                user_internal,
+                user.id,
+                user_internal.id,
             ),
         )
         data = self._cr.fetchall()
