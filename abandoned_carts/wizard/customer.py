@@ -111,7 +111,6 @@ WHERE
     ) AND
     p.parent_id IS NULL AND
     p.is_company = False AND
-    p.customer_rank > 0 AND
     p.id NOT IN (
         SELECT partner_id FROM res_users
         UNION ALL
