@@ -29,6 +29,7 @@ class SaleOrderWizard(models.TransientModel):
             ("state", "in", ["draft", "sent", "cancel"]),
             ("create_date", "<", date.strftime(DF)),
             ("website_id", "!=", False),
+            ("invoice_ids", "=", False),
         ]
 
         system_users = self.env["res.users"].browse()
