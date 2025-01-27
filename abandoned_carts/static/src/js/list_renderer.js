@@ -1,7 +1,7 @@
-odoo.define("abandoned_carts.ListRenderer", function (require) {
-    (function () {
-        "use strict";
+(function () {
+    "use strict";
 
+    odoo.define("abandoned_carts.ListRenderer", function (require) {
         var ListRenderer = require("web.ListRenderer");
         ListRenderer.include({
             init: function (parent, state, params) {
@@ -38,5 +38,5 @@ odoo.define("abandoned_carts.ListRenderer", function (require) {
                 $(document.getElementById("action_remove_sale_orders")).hide();
             }
         }, 50);
-    })();
-});
+    });
+})();

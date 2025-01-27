@@ -1,7 +1,7 @@
-odoo.define("abandoned_carts.relational_fields", function (require) {
-    (function () {
-        "use strict";
+(function () {
+    "use strict";
 
+    odoo.define("abandoned_carts.relational_fields", function (require) {
         var FieldOne2Many = require("web.relational_fields");
 
         FieldOne2Many.FieldOne2Many.include({
@@ -17,5 +17,5 @@ odoo.define("abandoned_carts.relational_fields", function (require) {
                 return this._super();
             },
         });
-    })();
-});
+    });
+})();

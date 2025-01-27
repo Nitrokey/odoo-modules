@@ -1,7 +1,7 @@
-odoo.define("payment_bitcoin.bitcoin", function (require) {
-    (function () {
-        "use strict";
+(function () {
+    "use strict";
 
+    odoo.define("payment_bitcoin.bitcoin", function (require) {
         var ajax = require("web.ajax");
         var core = require("web.core");
         var _t = core._t;
@@ -14,9 +14,9 @@ odoo.define("payment_bitcoin.bitcoin", function (require) {
                     $(
                         'span[data-oe-model="sale.order"][data-oe-field="amount_total"]'
                     ).attr("data-oe-id") ||
-                    $('b[data-oe-model="sale.order"][data-oe-field="amount_total"]').attr(
-                        "data-oe-id"
-                    ) ||
+                    $(
+                        'b[data-oe-model="sale.order"][data-oe-field="amount_total"]'
+                    ).attr("data-oe-id") ||
                     $("table#sales_order_table").attr("data-order-id");
                 var $order_ref = $('input[name="reference"]').val();
                 var provider = $(ev.currentTarget)
@@ -29,7 +29,9 @@ odoo.define("payment_bitcoin.bitcoin", function (require) {
                     }).then(function (data) {
                         if (data === false) {
                             /* eslint-disable no-alert */
-                            alert(_t("Payment method Bitcoin is currently unavailable."));
+                            alert(
+                                _t("Payment method Bitcoin is currently unavailable.")
+                            );
                             /* eslint-enable no-alert */
                             $(ev.currentTarget)
                                 .find('input[name="o_payment_radio"]')
@@ -45,5 +47,5 @@ odoo.define("payment_bitcoin.bitcoin", function (require) {
         };
         checkoutForm.include(BitcoinMixin);
         manageForm.include(BitcoinMixin);
-    })();
-});
+    });
+})();

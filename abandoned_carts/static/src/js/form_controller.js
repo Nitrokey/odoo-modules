@@ -1,7 +1,7 @@
-odoo.define("abandoned_carts.FormController", function (require) {
-    (function () {
-        "use strict";
+(function () {
+    "use strict";
 
+    odoo.define("abandoned_carts.FormController", function (require) {
         var FormController = require("web.FormController");
 
         FormController.include({
@@ -21,11 +21,11 @@ odoo.define("abandoned_carts.FormController", function (require) {
                         return row.id;
                     });
 
-                    var records = this.initialState.data.customer_ids.data.filter(function (
-                        row
-                    ) {
-                        return selected_ids.indexOf(row.id) >= 0;
-                    });
+                    var records = this.initialState.data.customer_ids.data.filter(
+                        function (row) {
+                            return selected_ids.indexOf(row.id) >= 0;
+                        }
+                    );
                     ctx.deleting_ids = _.map(records, function (rec) {
                         return rec.res_id;
                     });
@@ -59,5 +59,5 @@ odoo.define("abandoned_carts.FormController", function (require) {
                 return this._super(attrs, record);
             },
         });
-    })();
-});
+    });
+})();

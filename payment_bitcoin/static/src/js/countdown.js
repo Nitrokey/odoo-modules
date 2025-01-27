@@ -1,7 +1,7 @@
-odoo.define("payment_bitcoin.duration", function (require) {
-    (function () {
-        "use strict";
+(function () {
+    "use strict";
 
+    odoo.define("payment_bitcoin.duration", function (require) {
         var publicWidget = require("web.public.widget");
 
         publicWidget.registry.reloadDuration = publicWidget.Widget.extend({
@@ -44,5 +44,5 @@ odoo.define("payment_bitcoin.duration", function (require) {
             },
         });
         return publicWidget.registry.reloadDuration;
-    })();
-});
+    });
+})();

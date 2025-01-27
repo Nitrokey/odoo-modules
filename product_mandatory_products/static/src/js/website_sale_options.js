@@ -1,7 +1,7 @@
-odoo.define("product_mandatory_products.website_sale_options", function (require) {
-    (function () {
-        "use strict";
+(function () {
+    "use strict";
 
+    odoo.define("product_mandatory_products.website_sale_options", function (require) {
         var ajax = require("web.ajax");
         var publicWidget = require("web.public.widget");
         var OptionalProductsModal = require("sale_product_configurator.OptionalProductsModal");
@@ -69,10 +69,14 @@ odoo.define("product_mandatory_products.website_sale_options", function (require
         OptionalProductsModal.include({
             _getProductslist: function () {
                 var products = [];
-                this.$el.find(".js_product.in_cart:not(.main_product)").each(function () {
-                    var $item = $(this);
-                    products.push(parseInt($item.find("input.product_id").val(), 10));
-                });
+                this.$el
+                    .find(".js_product.in_cart:not(.main_product)")
+                    .each(function () {
+                        var $item = $(this);
+                        products.push(
+                            parseInt($item.find("input.product_id").val(), 10)
+                        );
+                    });
                 return products;
             },
 
@@ -140,5 +144,5 @@ odoo.define("product_mandatory_products.website_sale_options", function (require
         });
 
         return publicWidget.registry.WebsiteSaleOptions;
-    })();
-});
+    });
+})();
