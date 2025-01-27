@@ -1,5 +1,4 @@
 odoo.define("abandoned_carts.relational_fields", function (require) {
-    "use strict";
 
     var FieldOne2Many = require("web.relational_fields");
 

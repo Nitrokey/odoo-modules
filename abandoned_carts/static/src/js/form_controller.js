@@ -1,5 +1,4 @@
 odoo.define("abandoned_carts.FormController", function (require) {
-    "use strict";
 
     var FormController = require("web.FormController");
 

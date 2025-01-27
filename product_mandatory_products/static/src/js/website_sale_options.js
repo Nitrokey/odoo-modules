@@ -1,5 +1,4 @@
 odoo.define("product_mandatory_products.website_sale_options", function (require) {
-    "use strict";
 
     var ajax = require("web.ajax");
     var publicWidget = require("web.public.widget");
