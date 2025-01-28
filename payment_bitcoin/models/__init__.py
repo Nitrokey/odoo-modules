@@ -1,6 +1,8 @@
-from . import bitcoin
-from . import payment_acquirer
-from . import res_config_settings
-from . import account_payment
-from . import account_payment_register
-from . import payment_transaction
+from . import (
+    account_payment,
+    account_payment_register,
+    bitcoin,
+    payment_acquirer,
+    payment_transaction,
+    res_config_settings,
+)
