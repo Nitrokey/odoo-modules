@@ -5,6 +5,7 @@ from hashlib import sha256
 
 import requests
 from dateutil.relativedelta import relativedelta
+from datetime import date
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
@@ -389,21 +390,14 @@ class BitcoinAddress(models.Model):
             if group:
                 groups += group
 
-            needaction_partner_ids = [
-                (4, user.partner_id.id) for user in groups.mapped("users")
-            ]
+            for user in groups.mapped("users"):
+                user.partner_id.activity_schedule(
+                    "mail.mail_activity_data_todo",
+                    summary=_("Bitcoin addresses running low"),
+                    user_id=user.id,
+                    date_deadline=date.today(),
+                )
 
-            self.env["mail.message"].create(
-                {
-                    "message_type": "notification",
-                    "subtype_id": self.env.ref("mail.mt_comment").id,
-                    "date": datetime.now(),
-                    "body": "<p>Only %s unused Bitcoin addresses are left. "
-                    "Please add new addresses.</p>" % unused_address_count,
-                    "partner_ids": needaction_partner_ids,
-                    "needaction": True,
-                }
-            )
         return
 
     @api.constrains("name")
