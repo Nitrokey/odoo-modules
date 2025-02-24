@@ -25,14 +25,22 @@ class SaleOrderWizard(models.TransientModel):
         date = datetime.now() - timedelta(hours=order_retention_period)
 
         res = super().default_get(fields)
-        system_user = self.sudo().env.ref("base.user_root", False)
         domain = [
             ("state", "in", ["draft", "sent", "cancel"]),
             ("create_date", "<", date.strftime(DF)),
             ("website_id", "!=", False),
+            ("invoice_ids", "=", False),
         ]
-        if system_user:
-            domain.append(("create_uid", "=", system_user.id))
+
+        system_users = self.env["res.users"].browse()
+        for ref in ("base.user_root", "base.public_user"):
+            rec = self.sudo().env.ref(ref, False)
+            if rec:
+                system_users |= rec
+
+        system_users = self.sudo().env.ref("base.user_root", False)
+        if system_users:
+            domain.append(("create_uid", "in", system_users.ids))
 
         # sales_team = self.env.ref('sales_team.salesteam_website_sales', False)
         # if sales_team:

@@ -1,7 +1,6 @@
 from odoo import SUPERUSER_ID, api
 
-from . import models
-from . import wizard
+from . import models, wizard
 
 
 def _set_is_automatically(cr, registry):

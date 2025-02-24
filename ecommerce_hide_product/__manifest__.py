@@ -8,6 +8,5 @@
     "depends": ["website_sale"],
     "summary": """This module is used to hide products from the shop view""",
     "data": ["views/product_view.xml"],
-    "active": False,
     "installable": True,
 }
