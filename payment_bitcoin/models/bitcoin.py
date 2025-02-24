@@ -1,11 +1,10 @@
 import codecs
 import logging
-from datetime import datetime, timedelta as td
+from datetime import date, datetime, timedelta as td
 from hashlib import sha256
 
 import requests
 from dateutil.relativedelta import relativedelta
-from datetime import date
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
