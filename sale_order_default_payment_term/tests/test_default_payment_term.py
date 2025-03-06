@@ -65,7 +65,7 @@ class TestDefaultPaymentTerm(TransactionCase):
         self.assertEqual(
             sale_order.payment_term_id.id,
             first_payment_term.id,
-            "The default payment term should be the first payment term in the system",
+            "The default payment term should be the first one in the system",
         )
 
     def test_manual_payment_term_selection(self):
