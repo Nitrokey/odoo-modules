@@ -5,7 +5,7 @@ class TestDefaultPaymentTerm(TransactionCase):
     """Test the default payment term functionality."""
 
     def setUp(self):
-        super(TestDefaultPaymentTerm, self).setUp()
+        super().setUp()
         # Create test data
         self.payment_term_1 = self.env["account.payment.term"].create(
             {
@@ -122,6 +122,6 @@ class TestDefaultPaymentTerm(TransactionCase):
             self.payment_term_2.id,
             "The payment term should be the one from the partner's property_payment_term_id",
         )
-        
+
         # Clean up: Unset the payment term on the partner to avoid influencing other tests
         self.partner.property_payment_term_id = False

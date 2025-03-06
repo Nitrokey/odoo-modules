@@ -25,4 +25,4 @@ class SaleOrder(models.Model):
                 # Use our default
                 vals["payment_term_id"] = self._default_payment_term_id().id
 
-        return super(SaleOrder, self).create(vals)
+        return super().create(vals)

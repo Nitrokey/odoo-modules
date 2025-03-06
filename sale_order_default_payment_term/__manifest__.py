@@ -4,7 +4,7 @@
     "category": "Sales",
     "summary": "Set the first payment term as default when creating a new sales order",
     "author": "Nitrokey GmbH",
-    "website": "https://www.nitrokey.com",
+    "website": "https://github.com/OCA/server-tools",
     "license": "AGPL-3",
     "depends": ["sale", "account"],
     "data": [],
