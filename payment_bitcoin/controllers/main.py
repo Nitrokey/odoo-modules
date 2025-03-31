@@ -172,10 +172,10 @@ class WebsiteSale(WebsiteSale):
                             ></div>
                             </div>"""
                         )
-                        % (
-                            info,
-                            uri,
-                        )
+                        % {
+                            "info": info,
+                            "uri": uri,
+                        }
                     )
                 resp["message"] = Markup(msg) + resp["message"]
             else:
