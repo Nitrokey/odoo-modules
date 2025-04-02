@@ -29,11 +29,11 @@ class BitcoinPaymentTransaction(models.Model):
 
     def format_bitcoin_amount(self, amount, decimal_places=8):
         """Format the Bitcoin amount according to the partner's language."""
-        lang_code = self.partner_id.lang or self.env.user.lang or 'en_US'
-        lang = self.env['res.lang'].search([('code', '=', lang_code)], limit=1)
+        lang_code = self.partner_id.lang or self.env.user.lang or "en_US"
+        lang = self.env["res.lang"].search([("code", "=", lang_code)], limit=1)
         if lang:
             return lang.format(f"%.{decimal_places}f", amount, True, True)
-        return f"{amount:.{decimal_places}f}"
+        return f"{amount: .{decimal_places}f}"
 
     @api.depends("bitcoin_address")
     def _compute_link_address(self):
