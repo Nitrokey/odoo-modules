@@ -181,24 +181,21 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
 
     def _register_payment(self, invoice):
         """Helper to register full payment for an invoice."""
+        # Get a bank journal
+        bank_journal = self.env["account.journal"].search([("type", "=", "bank")], limit=1)
+
+        # Find a valid payment method for this journal
+        payment_method_line = bank_journal.inbound_payment_method_line_ids[0]
+
+        # Create and post payment
         payment_register = (
             self.env["account.payment.register"]
             .with_context(active_model="account.move", active_ids=[invoice.id])
             .create(
                 {
                     "payment_date": invoice.date,
-                    "journal_id": self.env["account.journal"]
-                    .search([("type", "=", "bank")], limit=1)
-                    .id,
-                    "payment_method_line_id": self.env["account.payment.method.line"]
-                    .search(
-                        [
-                            ("payment_method_id.code", "=", "manual"),
-                            ("payment_type", "=", "inbound"),
-                        ],
-                        limit=1,
-                    )
-                    .id,
+                    "journal_id": bank_journal.id,
+                    "payment_method_line_id": payment_method_line.id,
                     "amount": invoice.amount_total,
                 }
             )
