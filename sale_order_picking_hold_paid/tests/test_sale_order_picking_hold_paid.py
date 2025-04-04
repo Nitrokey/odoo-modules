@@ -190,8 +190,9 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
                     "journal_id": self.env["account.journal"]
                     .search([("type", "=", "bank")], limit=1)
                     .id,
-                    "payment_method_id": self.env.ref(
-                        "account.account_payment_method_manual_in"
+                    "payment_method_line_id": self.env["account.payment.method.line"].search(
+                        [("payment_method_id.code", "=", "manual"), ("payment_type", "=", "inbound")],
+                        limit=1,
                     ).id,
                     "amount": invoice.amount_total,
                 }
