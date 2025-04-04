@@ -27,8 +27,7 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
                         0,
                         0,
                         {
-                            "value": "percent",
-                            "value_amount": 100.0,
+                            "value": "balance",
                             "days": 30,
                         },
                     ),
@@ -45,8 +44,7 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
                         0,
                         0,
                         {
-                            "value": "percent",
-                            "value_amount": 100.0,
+                            "value": "balance",
                             "days": 30,
                         },
                     ),
