@@ -27,9 +27,10 @@ class SaleOrder(models.Model):
     def _create_picking(self):
         """Override to prevent picking creation if hold_picking_until_paid is enabled."""
         # Only create pickings for orders that don't need to be held or are fully paid
-        orders_to_process = self.filtered(
-            lambda o: not o.picking_hold_until_paid or self._is_fully_paid()
-        )
+        orders_to_process = self.env['sale.order']
+        for order in self:
+            if not order.picking_hold_until_paid or order._is_fully_paid():
+                orders_to_process += order
         return super(SaleOrder, orders_to_process)._create_picking()
 
     def _is_fully_paid(self):
@@ -44,10 +45,13 @@ class SaleOrder(models.Model):
 
     def create_pickings_if_paid(self):
         """Create pickings for orders that are now fully paid."""
-        for order in self.filtered(
-            lambda o: o.picking_hold_until_paid and o._is_fully_paid()
-        ):
-            order._create_picking()
+        orders_to_process = self.env['sale.order']
+        for order in self:
+            if order.picking_hold_until_paid and order._is_fully_paid():
+                orders_to_process += order
+        
+        if orders_to_process:
+            orders_to_process._create_picking()
 
 
 class SaleOrderLine(models.Model):
