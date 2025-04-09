@@ -34,14 +34,23 @@ class SaleOrder(models.Model):
         return super(SaleOrder, orders_to_process)._create_picking()
 
     def _is_fully_paid(self):
-        """Check if all invoices for this order are paid."""
+        """Check if the order is fully invoiced and all invoices are paid."""
         self.ensure_one()
-        if not self.invoice_ids:
+
+        # Check if the order is fully invoiced or nothing to invoice
+        if self.invoice_status not in ["invoiced", "no"]:
             return False
-        return all(
-            inv.payment_state == "paid"
-            for inv in self.invoice_ids.filtered(lambda i: i.state == "posted")
-        )
+
+        # If there are no invoices but nothing to invoice, consider it paid
+        if not self.invoice_ids and self.invoice_status == "no":
+            return True
+
+        # Check if all posted invoices are paid
+        posted_invoices = self.invoice_ids.filtered(lambda i: i.state == "posted")
+        if not posted_invoices:
+            return False
+
+        return all(inv.payment_state == "paid" for inv in posted_invoices)
 
     def create_pickings_if_paid(self):
         """Create pickings for orders that are now fully paid."""
@@ -51,7 +60,17 @@ class SaleOrder(models.Model):
                 orders_to_process += order
 
         if orders_to_process:
-            orders_to_process._create_picking()
+            # Force the creation of pickings by temporarily setting picking_hold_until_paid to False
+            # This is needed because _create_picking checks picking_hold_until_paid
+            for order in orders_to_process:
+                # Store original value
+                original_hold = order.picking_hold_until_paid
+                # Temporarily set to False to bypass the check in _create_picking
+                order.picking_hold_until_paid = False
+                # Create picking
+                super(SaleOrder, order)._create_picking()
+                # Restore original value
+                order.picking_hold_until_paid = original_hold
 
 
 class SaleOrderLine(models.Model):
