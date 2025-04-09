@@ -58,7 +58,7 @@ class AccountMove(models.Model):
         # 3. Try through direct relationship in sale.order
         for move in self:
             related_orders = self.env["sale.order"].search(
-                [("invoice_ids", "in", move.id)]
+                [("invoice_ids", "in", [move.id])]
             )
             orders |= related_orders
             _logger.info(
