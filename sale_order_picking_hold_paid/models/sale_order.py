@@ -1,10 +1,7 @@
 # Copyright 2025 Nitrokey GmbH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import logging
 from odoo import api, fields, models
-
-_logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
@@ -57,54 +54,24 @@ class SaleOrder(models.Model):
 
     def create_pickings_if_paid(self):
         """Create pickings for orders that are now fully paid."""
-        _logger.info("create_pickings_if_paid called for orders: %s", self.ids)
-
         # This method is called from account_move when invoices are paid
         # We don't need to check _is_fully_paid here because that's already done in account_move
 
         for order in self:
-            _logger.info(
-                "Processing order %s, has pickings: %s", 
-                order.id, 
-                bool(order.picking_ids)
-            )
-
             if not order.picking_ids:
-                _logger.info("Creating picking for order %s", order.id)
-
                 try:
                     # Temporarily set picking_hold_until_paid to False
                     # This allows the standard _create_picking method to work
-                    _logger.info("Temporarily setting picking_hold_until_paid to False")
                     order.write({"picking_hold_until_paid": False})
-                    
+
                     # Use the standard method to create pickings
-                    _logger.info("Calling _action_confirm to create pickings")
                     order._action_confirm()
-                    
+
                     # Set picking_hold_until_paid back to True
-                    _logger.info("Setting picking_hold_until_paid back to True")
                     order.write({"picking_hold_until_paid": True})
-                    
-                    _logger.info(
-                        "Pickings created successfully for order %s: %s", 
-                        order.id, 
-                        order.picking_ids.ids
-                    )
-                except Exception as e:
-                    _logger.error(
-                        "Error creating picking for order %s: %s", 
-                        order.id, 
-                        str(e)
-                    )
+                except Exception:
                     # Make sure to restore the flag even if there's an error
                     order.write({"picking_hold_until_paid": True})
-            else:
-                _logger.info(
-                    "Order %s already has pickings: %s", 
-                    order.id, 
-                    order.picking_ids.ids
-                )
 
 
 class SaleOrderLine(models.Model):
