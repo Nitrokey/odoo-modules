@@ -54,23 +54,27 @@ class SaleOrder(models.Model):
 
     def create_pickings_if_paid(self):
         """Create pickings for orders that are now fully paid."""
-        orders_to_process = self.env["sale.order"]
-        for order in self:
-            if order.picking_hold_until_paid and order._is_fully_paid():
-                orders_to_process += order
+        # This method is called from account_move when invoices are paid
+        # We don't need to check _is_fully_paid here because that's already done in account_move
 
-        if orders_to_process:
-            # Force the creation of pickings by temporarily setting picking_hold_until_paid to False
-            # This is needed because _create_picking checks picking_hold_until_paid
-            for order in orders_to_process:
-                # Store original value
-                original_hold = order.picking_hold_until_paid
-                # Temporarily set to False to bypass the check in _create_picking
-                order.picking_hold_until_paid = False
-                # Create picking
-                super(SaleOrder, order)._create_picking()
-                # Restore original value
-                order.picking_hold_until_paid = original_hold
+        # Create pickings directly without using _create_picking
+        # This bypasses the check in _create_picking for picking_hold_until_paid
+        for order in self:
+            if not order.picking_ids:
+                # Create a picking for each order
+                picking_vals = order._prepare_picking()
+                picking = self.env["stock.picking"].create(picking_vals)
+
+                # Create stock moves for each order line
+                for line in order.order_line:
+                    if line.product_id.type in ["product", "consu"]:
+                        move_vals = line._prepare_stock_moves(picking)
+                        for val in move_vals:
+                            self.env["stock.move"].create(val)
+
+                # Confirm the picking
+                picking.action_confirm()
+                picking.action_assign()
 
 
 class SaleOrderLine(models.Model):
