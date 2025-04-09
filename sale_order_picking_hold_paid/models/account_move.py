@@ -22,15 +22,29 @@ class AccountMove(models.Model):
 
     def _check_sale_order_pickings(self):
         """Create pickings for sale orders if they are now fully paid."""
-        for move in self.filtered(
-            lambda m: m.move_type == "out_invoice" and m.state == "posted"
-        ):
-            sale_orders = self.env["sale.order"].search(
-                [
-                    ("invoice_ids", "in", move.ids),
-                    ("picking_hold_until_paid", "=", True),
-                ]
-            )
+        # Get all related sale orders from invoice lines
+        orders = self.mapped("invoice_line_ids.sale_line_ids.order_id")
 
-            # Create pickings for orders that are now fully paid
-            sale_orders.create_pickings_if_paid()
+        # Only process orders with hold_picking_until_paid
+        orders_to_check = orders.filtered(lambda o: o.picking_hold_until_paid)
+
+        if not orders_to_check:
+            return
+
+        # Find orders that are fully invoiced
+        fully_invoiced = orders_to_check.filtered(
+            lambda o: o.invoice_status == "invoiced"
+        )
+
+        # From fully invoiced orders, find those where all invoices are paid
+        fully_paid = self.env["sale.order"]
+        for order in fully_invoiced:
+            if all(
+                inv.payment_state == "paid"
+                for inv in order.invoice_ids.filtered(lambda i: i.state == "posted")
+            ):
+                fully_paid += order
+
+        # Create pickings for fully paid orders
+        if fully_paid:
+            fully_paid.create_pickings_if_paid()
