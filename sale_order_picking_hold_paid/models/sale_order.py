@@ -1,7 +1,10 @@
 # Copyright 2025 Nitrokey GmbH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import logging
 from odoo import api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
@@ -54,27 +57,76 @@ class SaleOrder(models.Model):
 
     def create_pickings_if_paid(self):
         """Create pickings for orders that are now fully paid."""
+        _logger.info("create_pickings_if_paid called for orders: %s", self.ids)
+
         # This method is called from account_move when invoices are paid
         # We don't need to check _is_fully_paid here because that's already done in account_move
 
         # Create pickings directly without using _create_picking
         # This bypasses the check in _create_picking for picking_hold_until_paid
         for order in self:
+            _logger.info(
+                "Processing order %s, has pickings: %s", 
+                order.id, 
+                bool(order.picking_ids)
+            )
+
             if not order.picking_ids:
-                # Create a picking for each order
-                picking_vals = order._prepare_picking()
-                picking = self.env["stock.picking"].create(picking_vals)
+                _logger.info("Creating picking for order %s", order.id)
 
-                # Create stock moves for each order line
-                for line in order.order_line:
-                    if line.product_id.type in ["product", "consu"]:
-                        move_vals = line._prepare_stock_moves(picking)
-                        for val in move_vals:
-                            self.env["stock.move"].create(val)
+                try:
+                    # Create a picking for each order
+                    picking_vals = order._prepare_picking()
+                    _logger.info("Picking values: %s", picking_vals)
+                    
+                    picking = self.env["stock.picking"].create(picking_vals)
+                    _logger.info("Created picking: %s", picking.id)
 
-                # Confirm the picking
-                picking.action_confirm()
-                picking.action_assign()
+                    # Create stock moves for each order line
+                    for line in order.order_line:
+                        _logger.info(
+                            "Processing order line %s, product: %s, type: %s", 
+                            line.id, 
+                            line.product_id.id, 
+                            line.product_id.type
+                        )
+
+                        if line.product_id.type in ["product", "consu"]:
+                            move_vals = line._prepare_stock_moves(picking)
+                            _logger.info(
+                                "Stock move values for line %s: %s", 
+                                line.id, 
+                                len(move_vals)
+                            )
+
+                            for val in move_vals:
+                                move = self.env["stock.move"].create(val)
+                                _logger.info("Created stock move: %s", move.id)
+
+                    # Confirm the picking
+                    _logger.info("Confirming picking %s", picking.id)
+                    picking.action_confirm()
+
+                    _logger.info("Assigning picking %s", picking.id)
+                    picking.action_assign()
+
+                    _logger.info(
+                        "Picking %s created and processed successfully for order %s", 
+                        picking.id, 
+                        order.id
+                    )
+                except Exception as e:
+                    _logger.error(
+                        "Error creating picking for order %s: %s", 
+                        order.id, 
+                        str(e)
+                    )
+            else:
+                _logger.info(
+                    "Order %s already has pickings: %s", 
+                    order.id, 
+                    order.picking_ids.ids
+                )
 
 
 class SaleOrderLine(models.Model):
