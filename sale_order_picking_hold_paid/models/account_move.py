@@ -22,14 +22,52 @@ class AccountMove(models.Model):
         if "payment_state" in vals:
             self._check_sale_order_pickings()
         return result
+        
+    def action_invoice_paid(self):
+        """Check if pickings should be created when invoice is paid directly."""
+        _logger.info("action_invoice_paid called for invoices: %s", self.ids)
+        result = super().action_invoice_paid()
+        self._check_sale_order_pickings()
+        return result
 
     def _check_sale_order_pickings(self):
         """Create pickings for sale orders if they are now fully paid."""
         _logger.info("_check_sale_order_pickings called for invoices: %s", self.ids)
-
-        # Get all related sale orders from invoice lines
-        orders = self.mapped("invoice_line_ids.sale_line_ids.order_id")
-        _logger.info("Found related sale orders: %s", orders.ids)
+        
+        # Try multiple approaches to find related sale orders
+        orders = self.env["sale.order"]
+        
+        # 1. Try through invoice lines
+        line_orders = self.mapped("invoice_line_ids.sale_line_ids.order_id")
+        orders |= line_orders
+        _logger.info("Orders found through invoice lines: %s", line_orders.ids)
+        
+        # 2. Try through invoice origin (often contains sale order name)
+        for move in self.filtered(lambda m: m.move_type == "out_invoice" and m.state == "posted"):
+            if move.invoice_origin:
+                origin_orders = self.env["sale.order"].search(
+                    [("name", "=", move.invoice_origin)]
+                )
+                orders |= origin_orders
+                _logger.info(
+                    "Orders found through invoice origin %s: %s", 
+                    move.invoice_origin, 
+                    origin_orders.ids
+                )
+        
+        # 3. Try through direct relationship in sale.order
+        for move in self:
+            related_orders = self.env["sale.order"].search(
+                [("invoice_ids", "in", move.id)]
+            )
+            orders |= related_orders
+            _logger.info(
+                "Orders found through direct relationship for invoice %s: %s", 
+                move.id, 
+                related_orders.ids
+            )
+        
+        _logger.info("Total found related sale orders: %s", orders.ids)
 
         # Only process orders with hold_picking_until_paid
         orders_to_check = orders.filtered(lambda o: o.picking_hold_until_paid)
