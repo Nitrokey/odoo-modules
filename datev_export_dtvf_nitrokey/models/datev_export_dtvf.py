@@ -55,5 +55,7 @@ class DatevExportDtvfExport(models.Model):
             data.update({"Belegfeld 1": ref1, "Belegfeld 2": ref2})
 
             if move.partner_id.name:
-                data["Buchungstext"] += " " + move.partner_id.name
+                data["Buchungstext"] = " ".join(
+                    filter(None, (data["Buchungstext"], move.partner_id.name))
+                )
             yield data
