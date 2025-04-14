@@ -25,7 +25,7 @@
                                         <div class="o_attachment_wrap">
                                             <div class="o_image_box">
                                                 <img
-                                                    alt=""
+                                                    t-att-alt="record.name.value"
                                                     t-if="record.image_128.raw_value"
                                                     t-att-src="kanban_image('product.icon', 'image_128', record.id.raw_value)"
                                                 />

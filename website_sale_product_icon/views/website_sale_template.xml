@@ -19,7 +19,7 @@
         </t>
     </template>
     <template id="product" inherit_id="website_sale.product">
-        <xpath expr="//p[@t-field='product.description_sale']/.." position="after">
+        <xpath expr="//div[@id='product_details']" position="inside">
             <t t-call="website_sale_product_icon.product_icons" />
         </xpath>
     </template>

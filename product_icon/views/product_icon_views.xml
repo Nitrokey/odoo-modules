@@ -55,7 +55,7 @@
                             <div class="o_kanban_image">
                                 <img
                                     t-att-src="kanban_image('product.icon', 'image_128', record.id.raw_value)"
-                                    alt="Icon"
+                                    t-att-alt="record.name.value"
                                 />
                             </div>
                             <div class="oe_kanban_details">
