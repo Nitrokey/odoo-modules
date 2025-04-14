@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="product_icon_view_form" model="ir.ui.view">
         <field name="model">product.icon</field>
@@ -6,11 +6,19 @@
             <form string="Product icon">
                 <sheet>
                     <div class="oe_left" style="width: 500px;">
-                        <field name="image_1920" widget="image" class="oe_avatar oe_left"/>
+                        <field
+                            name="image_1920"
+                            widget="image"
+                            class="oe_avatar oe_left"
+                        />
                         <div class="oe_title" style="width: 390px;">
-                            <label class="oe_edit_only" for="name" string="Image name"/>
+                            <label
+                                class="oe_edit_only"
+                                for="name"
+                                string="Image name"
+                            />
                             <h2>
-                                <field name="name" class="oe_inline"/>
+                                <field name="name" class="oe_inline" />
                             </h2>
                         </div>
                     </div>
@@ -22,7 +30,7 @@
         <field name="model">product.icon</field>
         <field name="arch" type="xml">
             <tree string="Product icons">
-                <field name="name"/>
+                <field name="name" />
             </tree>
         </field>
     </record>
@@ -30,25 +38,29 @@
         <field name="model">product.icon</field>
         <field name="arch" type="xml">
             <kanban>
-                <field name="id"/>
-                <field name="name"/>
-                <field name="image_128"/>
+                <field name="id" />
+                <field name="name" />
+                <field name="image_128" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
                             <div class="o_kanban_image">
-                                <img t-att-src="kanban_image('product.icon', 'image_128', record.id.raw_value)"
-                                     alt="Icon"/>
+                                <img
+                                    t-att-src="kanban_image('product.icon', 'image_128', record.id.raw_value)"
+                                    alt="Icon"
+                                />
                             </div>
                             <div class="oe_kanban_details">
                                 <h4>
                                     <a type="open">
-                                        <field name="name"/>
+                                        <field name="name" />
                                     </a>
                                 </h4>
-                                <span t-attf-class="o_website_sale_image_card_size badge badge-#{size_status}"
-                                      t-att-title="message">
-                                    <t t-esc="record.image_128.value"/>
+                                <span
+                                    t-attf-class="o_website_sale_image_card_size badge badge-#{size_status}"
+                                    t-att-title="message"
+                                >
+                                    <t t-esc="record.image_128.value" />
                                 </span>
 
                             </div>
@@ -64,9 +76,11 @@
         <field name="res_model">product.icon</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
-    <menuitem id="product_icon_menu"
-              name="Product icons"
-              parent="sale.prod_config_main"
-              action="product_icon_action"
-              sequence="29"/>
+    <menuitem
+        id="product_icon_menu"
+        name="Product icons"
+        parent="sale.prod_config_main"
+        action="product_icon_action"
+        sequence="29"
+    />
 </odoo>

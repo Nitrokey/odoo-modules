@@ -1,20 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="product_template_icon_view_form" model="ir.ui.view">
         <field name="model">product.template.icon</field>
         <field name="arch" type="xml">
             <form string="Product template icon">
                 <sheet>
-                    <field name="product_template_id" invisible="True"/>
+                    <field name="product_template_id" invisible="True" />
                     <div class="oe_left" style="width: 500px;">
-                        <field name="image" widget="image" class="oe_avatar oe_left" readonly="True"/>
+                        <field
+                            name="image"
+                            widget="image"
+                            class="oe_avatar oe_left"
+                            readonly="True"
+                        />
                         <div class="oe_title" style="width: 390px;">
-                            <label class="oe_edit_only" for="name" string="Image name" readonly="True"/>
+                            <label
+                                class="oe_edit_only"
+                                for="name"
+                                string="Image name"
+                                readonly="True"
+                            />
                         </div>
                     </div>
                     <group>
                         <group>
-                            <field name="icon_id"/>
+                            <field name="icon_id" />
                         </group>
                     </group>
                 </sheet>
@@ -25,8 +35,8 @@
         <field name="model">product.template.icon</field>
         <field name="arch" type="xml">
             <tree string="">
-                <field name="sequence" widget="handle"/>
-                <field name="icon_id"/>
+                <field name="sequence" widget="handle" />
+                <field name="icon_id" />
             </tree>
         </field>
     </record>
@@ -34,17 +44,20 @@
         <field name="model">product.template.icon</field>
         <field name="arch" type="xml">
             <kanban string="Icon">
-                <field name="id"/>
-                <field name="image" widget="image"/>
-                <field name="icon_id"/>
+                <field name="id" />
+                <field name="image" widget="image" />
+                <field name="icon_id" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
                             <div class="o_kanban_image">
-                                <img t-att-src="kanban_image('product.icon', 'image_128', record.icon_id.raw_value)" alt="Icon"/>
+                                <img
+                                    t-att-src="kanban_image('product.icon', 'image_128', record.icon_id.raw_value)"
+                                    alt="Icon"
+                                />
                             </div>
                             <div class="oe_kanban_details">
-                                <field name="icon_id"/>
+                                <field name="icon_id" />
                             </div>
                         </div>
                     </t>

@@ -18,18 +18,18 @@
 #
 ###############################################################################
 {
-    'name': 'Website Sale Product Icon',
-    'summary': 'Show product icons in online store',
-    'category': 'Website',
-    'version': '15.0.1.0.0',
-    'author': 'Trey (www.trey.es)',
-    'website': 'https://www.trey.es',
-    'license': 'AGPL-3',
-    'depends': [
-        'product_icon',
-        'website_sale',
+    "name": "Website Sale Product Icon",
+    "summary": "Show product icons in online store",
+    "category": "Website",
+    "version": "15.0.1.0.0",
+    "author": "Trey (www.trey.es)",
+    "website": "https://github.com/OCA/server-tools",
+    "license": "AGPL-3",
+    "depends": [
+        "product_icon",
+        "website_sale",
     ],
-    'data': [
-        'views/website_sale_template.xml',
+    "data": [
+        "views/website_sale_template.xml",
     ],
 }

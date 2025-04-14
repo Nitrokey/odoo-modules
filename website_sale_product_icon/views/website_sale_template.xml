@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="product_icons">
         <t t-if="product.icon_ids">
@@ -6,7 +6,12 @@
                 <ul class="list-unstyled list-inline">
                     <t t-foreach="product.icon_ids" t-as="icon">
                         <li class="list-inline-item o_wspi_icon text-center">
-                            <img class="img-fluid o_wspi_icon_image" t-attf-src="/web/image?model=product.icon&amp;field=image_128&amp;id=#{ icon.icon_id.id }&amp;unique=" t-att-alt="icon.icon_id.name" t-att-title="icon.icon_id.name"/>
+                            <img
+                                class="img-fluid o_wspi_icon_image"
+                                t-attf-src="/web/image?model=product.icon&amp;field=image_128&amp;id=#{ icon.icon_id.id }&amp;unique="
+                                t-att-alt="icon.icon_id.name"
+                                t-att-title="icon.icon_id.name"
+                            />
                         </li>
                     </t>
                 </ul>
@@ -15,7 +20,7 @@
     </template>
     <template id="product" inherit_id="website_sale.product">
         <xpath expr="//p[@t-field='product.description_sale']/.." position="after">
-            <t t-call="website_sale_product_icon.product_icons"/>
+            <t t-call="website_sale_product_icon.product_icons" />
         </xpath>
     </template>
 </odoo>
