@@ -9,9 +9,7 @@ class ProductTemplateIcon(models.Model):
     _description = "Product template icon"
     _rec_name = "sequence"
 
-    sequence = fields.Integer(
-        string="Sequence",
-    )
+    sequence = fields.Integer()
     icon_id = fields.Many2one(
         comodel_name="product.icon",
         string="Icon",
