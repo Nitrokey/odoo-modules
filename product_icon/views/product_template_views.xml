@@ -4,8 +4,8 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view" />
         <field name="arch" type="xml">
-            <group name="extra_images" position="after">
-                <group name="product_icons" string="Icons">
+            <xpath expr="//notebook" position="inside">
+                <page string="Icons" name="product_icons">
                     <field
                         name="icon_ids"
                         class="o_website_sale_image_list"
@@ -42,8 +42,8 @@
                             </templates>
                         </kanban>
                     </field>
-                </group>
-            </group>
+                </page>
+            </xpath>
         </field>
     </record>
 </odoo>
