@@ -5,7 +5,7 @@
         <field name="arch" type="xml">
             <form string="Product icon">
                 <sheet>
-                    <field name="product_template_id" invisible="True"/>
+                    <field name="product_template_id" invisible="True" />
                     <div class="oe_left" style="width: 500px;">
                         <field
                             name="image_1920"
@@ -25,7 +25,7 @@
                     </div>
                     <group>
                         <group>
-                            <field name="sequence" widget="handle"/>
+                            <field name="sequence" widget="handle" />
                         </group>
                     </group>
                 </sheet>
@@ -36,7 +36,7 @@
         <field name="model">product.icon</field>
         <field name="arch" type="xml">
             <tree string="Product icons">
-                <field name="sequence" widget="handle"/>
+                <field name="sequence" widget="handle" />
                 <field name="name" />
             </tree>
         </field>
