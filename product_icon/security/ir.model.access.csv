@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_icon_read,product.logo,model_product_icon,,1,0,0,0
+access_product_icon,product.logo,model_product_icon,base.group_user,1,1,1,1
+access_product_template_icon_read,product.template.icon,model_product_template_icon,,1,0,0,0
+access_product_template_icon,product.template.icon,model_product_template_icon,base.group_user,1,1,1,1
