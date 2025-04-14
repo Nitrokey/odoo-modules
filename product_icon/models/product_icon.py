@@ -10,7 +10,6 @@ class ProductIcon(models.Model):
     _order = "sequence, id"
 
     name = fields.Char(
-        string="Name",
         required=True,
     )
     sequence = fields.Integer()
