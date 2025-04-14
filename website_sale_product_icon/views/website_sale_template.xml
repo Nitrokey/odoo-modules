@@ -8,9 +8,9 @@
                         <li class="list-inline-item o_wspi_icon text-center">
                             <img
                                 class="img-fluid o_wspi_icon_image"
-                                t-attf-src="/web/image?model=product.icon&amp;field=image_128&amp;id=#{ icon.icon_id.id }&amp;unique="
-                                t-att-alt="icon.icon_id.name"
-                                t-att-title="icon.icon_id.name"
+                                t-attf-src="/web/image?model=product.icon&amp;field=image_128&amp;id=#{ icon.id }&amp;unique="
+                                t-att-alt="icon.name"
+                                t-att-title="icon.name"
                             />
                         </li>
                     </t>

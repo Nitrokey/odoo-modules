@@ -7,9 +7,17 @@ from odoo import fields, models
 class ProductIcon(models.Model):
     _name = "product.icon"
     _description = "Product icon"
+    _order = "sequence, id"
 
     name = fields.Char(
         string="Name",
+        required=True,
+    )
+    sequence = fields.Integer()
+    product_template_id = fields.Many2one(
+        comodel_name="product.template",
+        string="Product template",
+        index=True,
         required=True,
     )
     image_1920 = fields.Image(

@@ -32,7 +32,6 @@
     "data": [
         "security/ir.model.access.csv",
         "views/product_icon_views.xml",
-        "views/product_template_icon_views.xml",
         "views/product_template_views.xml",
     ],
 }

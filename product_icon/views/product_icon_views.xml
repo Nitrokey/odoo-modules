@@ -5,6 +5,7 @@
         <field name="arch" type="xml">
             <form string="Product icon">
                 <sheet>
+                    <field name="product_template_id" invisible="True"/>
                     <div class="oe_left" style="width: 500px;">
                         <field
                             name="image_1920"
@@ -22,6 +23,11 @@
                             </h2>
                         </div>
                     </div>
+                    <group>
+                        <group>
+                            <field name="sequence" widget="handle"/>
+                        </group>
+                    </group>
                 </sheet>
             </form>
         </field>
@@ -30,6 +36,7 @@
         <field name="model">product.icon</field>
         <field name="arch" type="xml">
             <tree string="Product icons">
+                <field name="sequence" widget="handle"/>
                 <field name="name" />
             </tree>
         </field>
@@ -41,6 +48,7 @@
                 <field name="id" />
                 <field name="name" />
                 <field name="image_128" />
+                <field name="sequence" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
