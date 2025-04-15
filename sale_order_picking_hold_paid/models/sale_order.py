@@ -93,7 +93,7 @@ class SaleOrderLine(models.Model):
         if mto_route and manufacture_route:
             # Add lines that have MTO + Manufacturing routes even if order is on hold
             for line in self - lines_to_process:
-                product_routes = line.product_id.route_ids
+                product_routes = line.product_id.route_ids + line.product_id.categ_id.route_ids
                 if (
                     mto_route.id in product_routes.ids
                     and manufacture_route.id in product_routes.ids
