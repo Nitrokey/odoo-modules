@@ -10,7 +10,6 @@ Website Sale Product Icon
 
 This module displays product icons in the online store product page.
 
-    * Shows icons in the product page of the online store
 
 **Table of contents**
 

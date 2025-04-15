@@ -10,11 +10,8 @@ This module can be used to add icons to products, especially for the website.
 Many products need icons to show details about their characteristics, regulations, compositions, etc.
 
 
-* Manage icons from the sales menu.
-
+* Manage icons from the sales menu and their sequence in which they are displayed.
 * Add icons at the product template level.
-
-* At the template level, you can modify the order in which they are displayed.
 
 
 **Table of contents**
@@ -25,7 +22,7 @@ Many products need icons to show details about their characteristics, regulation
 Configuration
 =============
 
-In the sales menu, configuration section, there is a menu option for creating icons.
+In the product view, tab "icons" you can upload icons.
 
 
 Usage
