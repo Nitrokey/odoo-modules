@@ -237,7 +237,9 @@ def check_received(addr):
 
     try:
         # Get the current block height
-        _logger.debug("Fetching latest block from %s", latest_block_url)
+        _logger.info(
+            "blockchain.com API called: Fetching latest block from %s", latest_block_url
+        )
         latest_block_response = requests.get(latest_block_url, timeout=10)
         if latest_block_response.status_code != 200:
             _logger.error(
@@ -261,7 +263,10 @@ def check_received(addr):
         _logger.info("Current block height: %s", current_height)
 
         # Get address information
-        _logger.debug("Fetching address info from %s", addr_info_url.format(addr=addr))
+        _logger.info(
+            "blockchain.com API called: Fetching address info from %s",
+            addr_info_url.format(addr=addr),
+        )
         addr_info_response = requests.get(addr_info_url.format(addr=addr), timeout=10)
         if addr_info_response.status_code != 200:
             _logger.error(
@@ -272,7 +277,7 @@ def check_received(addr):
             return None
 
         addr_info_data = addr_info_response.json()
-        _logger.debug("Address info data: %s", addr_info_data)
+        _logger.info("Address info data: %s", addr_info_data)
 
         if "txs" not in addr_info_data:
             _logger.error(
@@ -295,11 +300,12 @@ def check_received(addr):
                 continue
 
             tx_hash = tx["hash"]
-            _logger.debug("Checking transaction %s", tx_hash)
+            _logger.info("Checking transaction %s", tx_hash)
 
             # Get transaction information
-            _logger.debug(
-                "Fetching transaction info from %s", tx_info_url.format(tx=tx_hash)
+            _logger.info(
+                "blockchain.com API called: Fetching transaction info from %s",
+                tx_info_url.format(tx=tx_hash),
             )
             tx_info_response = requests.get(tx_info_url.format(tx=tx_hash), timeout=10)
             if tx_info_response.status_code != 200:
@@ -311,7 +317,7 @@ def check_received(addr):
                 continue
 
             tx_info_data = tx_info_response.json()
-            _logger.debug("Transaction info data: %s", tx_info_data)
+            _logger.info("Transaction info data: %s", tx_info_data)
 
             if "block_height" not in tx_info_data:
                 _logger.error(
@@ -1247,9 +1253,11 @@ class BitcoinRate(models.Model):
                     url = sobj.url.replace("{CURRENCY}", currency.name)
                     url = url.replace("{AMOUNT}", str(amount_total))
 
-                    _logger.info("Fetching Bitcoin rate from URL: %s", url)
-
                     try:
+                        _logger.info(
+                            "blockchain.com API called: Fetching Bitcoin rate from %s",
+                            url,
+                        )
                         response = requests.get(url, timeout=10)
 
                         if response.status_code != 200:
