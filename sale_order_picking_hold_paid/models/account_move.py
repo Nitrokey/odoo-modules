@@ -76,6 +76,6 @@ class AccountMove(models.Model):
             if all_paid:
                 fully_paid += order
 
-        # Create pickings for fully paid orders
+        # Remove delivery block for fully paid orders
         if fully_paid:
-            fully_paid.create_pickings_if_paid()
+            fully_paid.action_remove_delivery_block()
