@@ -52,26 +52,33 @@ class SaleOrder(models.Model):
 
         return all(inv.payment_state == "paid" for inv in posted_invoices)
 
-    def create_pickings_if_paid(self):
-        """Create pickings for orders that are now fully paid."""
-        # This method is called from account_move when invoices are paid
-        # We don't need to check _is_fully_paid here because that's already done in account_move
-
+    def action_remove_delivery_block(self):
+        """Remove the delivery block and create procurements as usual."""
         for order in self:
             if not order.picking_ids:
-                try:
-                    # Temporarily set picking_hold_until_paid to False
-                    # This allows the standard _create_picking method to work
-                    order.write({"picking_hold_until_paid": False})
-
-                    # Use the standard method to create pickings
-                    order._action_confirm()
-
-                    # Set picking_hold_until_paid back to True
-                    order.write({"picking_hold_until_paid": True})
-                except Exception:
-                    # Make sure to restore the flag even if there's an error
-                    order.write({"picking_hold_until_paid": True})
+                # Temporarily set picking_hold_until_paid to False
+                order.write({"picking_hold_until_paid": False})
+                
+                # If the order has a delivery_block_id (from sale_stock_picking_blocking),
+                # we need to handle that as well
+                had_block = False
+                if hasattr(order, 'delivery_block_id') and order.delivery_block_id:
+                    had_block = True
+                    # Store the original delivery_block_id
+                    original_block = order.delivery_block_id
+                    # Remove the delivery block
+                    order.write({"delivery_block_id": False})
+                
+                # Create the picking using the standard method
+                order.order_line._action_launch_stock_rule()
+                
+                # Restore the picking_hold_until_paid flag
+                order.write({"picking_hold_until_paid": True})
+                
+                # Restore the delivery_block_id if it was set
+                if had_block:
+                    order.write({"delivery_block_id": original_block.id})
+        return True
 
 
 class SaleOrderLine(models.Model):
@@ -81,7 +88,9 @@ class SaleOrderLine(models.Model):
         """Do not create stock moves if order is on hold and not for manufacturing."""
         # Filter out lines from orders that are on hold
         lines_to_process = self.filtered(
-            lambda line: not line.order_id.picking_hold_until_paid
+            lambda line: not line.order_id.picking_hold_until_paid and 
+                        (not hasattr(line.order_id, 'delivery_block_id') or 
+                         not line.order_id.delivery_block_id)
         )
 
         # For manufacturing orders, we need to process all lines

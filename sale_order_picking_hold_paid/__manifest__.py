@@ -14,6 +14,7 @@
         "sale_stock",
         "account",
         "mrp",
+        "sale_stock_picking_blocking",
     ],
     "data": [
         "views/account_payment_term_views.xml",
