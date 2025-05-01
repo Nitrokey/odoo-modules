@@ -577,10 +577,10 @@ class BitcoinAddress(models.Model):
                         # Handle order case
                         if (
                             bit_add_obj.order_id
-                            and bit_add_obj.order_id.state == "cancel"
+                            and bit_add_obj.order_id.state != "cancel"
                         ):
                             _logger.info(
-                                "Order %s is in 'cancel' state, confirming it",
+                                "Order %s is not in 'cancel' state, processing it",
                                 bit_add_obj.order_id.name,
                             )
 
