@@ -48,27 +48,34 @@ class TestBitcoinPayment(TransactionCase):
         if not self.bitcoin_acquirer:
             # Create Bitcoin payment acquirer if not found
             # First, get a journal for the Bitcoin payment acquirer
-            journal = self.env['account.journal'].search([
-                ('type', '=', 'bank'),
-                ('company_id', '=', self.env.company.id),
-            ], limit=1)
-            
+            journal = self.env["account.journal"].search(
+                [
+                    ("type", "=", "bank"),
+                    ("company_id", "=", self.env.company.id),
+                ],
+                limit=1,
+            )
+
             if not journal:
                 # Create a journal if none exists
-                journal = self.env['account.journal'].create({
-                    'name': 'Bitcoin Journal',
-                    'code': 'BTC',
-                    'type': 'bank',
-                    'company_id': self.env.company.id,
-                })
-                
+                journal = self.env["account.journal"].create(
+                    {
+                        "name": "Bitcoin Journal",
+                        "code": "BTC",
+                        "type": "bank",
+                        "company_id": self.env.company.id,
+                    }
+                )
+
             # Make sure the journal has at least one payment method
-            inbound_payment_method = self.env.ref('account.account_payment_method_manual_in')
+            inbound_payment_method = self.env.ref(
+                "account.account_payment_method_manual_in"
+            )
             if inbound_payment_method.id not in journal.inbound_payment_method_ids.ids:
-                journal.write({
-                    'inbound_payment_method_ids': [(4, inbound_payment_method.id)]
-                })
-                
+                journal.write(
+                    {"inbound_payment_method_ids": [(4, inbound_payment_method.id)]}
+                )
+
             self.bitcoin_acquirer = self.env["payment.acquirer"].create(
                 {
                     "name": "Bitcoin",
@@ -81,10 +88,22 @@ class TestBitcoinPayment(TransactionCase):
                 }
             )
 
-        # Create a Bitcoin address
-        self.bitcoin_address = self.env["bitcoin.address"].create(
+        # Create Bitcoin addresses for each test
+        self.bitcoin_address_successful = self.env["bitcoin.address"].create(
             {
                 "name": "3N1MrpKTxGfb4CmTzgEYXfcDM9o2s3P5Q1",
+            }
+        )
+
+        self.bitcoin_address_no_payment = self.env["bitcoin.address"].create(
+            {
+                "name": "3Qe4hNh78zVBsPptZAayxgTko6yRPPMrp4",
+            }
+        )
+
+        self.bitcoin_address_insufficient = self.env["bitcoin.address"].create(
+            {
+                "name": "32NUyczyB1uizWPHknAqDbWV3eogkVnpLh",
             }
         )
 
@@ -117,7 +136,7 @@ class TestBitcoinPayment(TransactionCase):
     def _mock_blockchain_info_address_with_payment(self, url, *args, **kwargs):
         """Mock blockchain.info address API response with payment received"""
         # Extract the address from the URL
-        address = url.split('/')[-1].split('?')[0]
+        address = url.split("/")[-1].split("?")[0]
         return MockResponse(
             {
                 "address": address,
@@ -136,7 +155,7 @@ class TestBitcoinPayment(TransactionCase):
     def _mock_blockchain_info_address_no_payment(self, url, *args, **kwargs):
         """Mock blockchain.info address API response with no payment received"""
         # Extract the address from the URL
-        address = url.split('/')[-1].split('?')[0]
+        address = url.split("/")[-1].split("?")[0]
         return MockResponse(
             {
                 "address": address,
@@ -148,7 +167,7 @@ class TestBitcoinPayment(TransactionCase):
     def _mock_blockchain_info_address_insufficient_payment(self, url, *args, **kwargs):
         """Mock blockchain.info address API response with insufficient payment"""
         # Extract the address from the URL
-        address = url.split('/')[-1].split('?')[0]
+        address = url.split("/")[-1].split("?")[0]
         return MockResponse(
             {
                 "address": address,
@@ -266,7 +285,7 @@ class TestBitcoinPayment(TransactionCase):
         )
 
         # Assign the Bitcoin address to the sale order
-        self.bitcoin_address.write(
+        self.bitcoin_address_successful.write(
             {
                 "order_id": sale_order.id,
             }
@@ -277,7 +296,8 @@ class TestBitcoinPayment(TransactionCase):
 
         # Check that the Bitcoin address is marked as used
         self.assertTrue(
-            self.bitcoin_address.is_btc_used, "Bitcoin address should be marked as used"
+            self.bitcoin_address_successful.is_btc_used,
+            "Bitcoin address should be marked as used",
         )
 
         # Check that the sale order is now in the 'sale' state (confirmed)
@@ -395,12 +415,7 @@ class TestBitcoinPayment(TransactionCase):
         )
 
         # Assign the Bitcoin address to the sale order
-        bitcoin_address = self.env["bitcoin.address"].create(
-            {
-                "name": "3Qe4hNh78zVBsPptZAayxgTko6yRPPMrp4",
-            }
-        )
-        bitcoin_address.write(
+        self.bitcoin_address_no_payment.write(
             {
                 "order_id": sale_order.id,
             }
@@ -411,7 +426,8 @@ class TestBitcoinPayment(TransactionCase):
 
         # Check that the Bitcoin address is NOT marked as used
         self.assertFalse(
-            bitcoin_address.is_btc_used, "Bitcoin address should NOT be marked as used"
+            self.bitcoin_address_no_payment.is_btc_used,
+            "Bitcoin address should NOT be marked as used",
         )
 
         # Check that the sale order is still in 'draft' state (quotation)
@@ -513,12 +529,7 @@ class TestBitcoinPayment(TransactionCase):
         )
 
         # Assign the Bitcoin address to the sale order
-        bitcoin_address = self.env["bitcoin.address"].create(
-            {
-                "name": "32NUyczyB1uizWPHknAqDbWV3eogkVnpLh",
-            }
-        )
-        bitcoin_address.write(
+        self.bitcoin_address_insufficient.write(
             {
                 "order_id": sale_order.id,
             }
@@ -529,7 +540,8 @@ class TestBitcoinPayment(TransactionCase):
 
         # Check that the Bitcoin address is NOT marked as used
         self.assertFalse(
-            bitcoin_address.is_btc_used, "Bitcoin address should NOT be marked as used"
+            self.bitcoin_address_insufficient.is_btc_used,
+            "Bitcoin address should NOT be marked as used",
         )
 
         # Check that the sale order is still in 'draft' state (quotation)
