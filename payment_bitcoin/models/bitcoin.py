@@ -229,7 +229,7 @@ class BitcoinAddress(models.Model):
             amount_received = self.convert_num_to_standard(address_info["received"])
             if valid_rate and address_info["received"] >= valid_rate:
                 open_invoice_objs = None
-                if bit_add_obj.order_id and bit_add_obj.order_id.state == "cancel":
+                if bit_add_obj.order_id and bit_add_obj.order_id.state != "cancel":
                     if bit_add_obj.order_id.state not in ("done", "sale"):
                         bit_add_obj.order_id.action_confirm()
 
