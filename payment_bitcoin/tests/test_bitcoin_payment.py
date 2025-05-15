@@ -340,7 +340,7 @@ class TestBitcoinPayment(TransactionCase):
         return MockResponse(
             {
                 "address": address,
-                "total_received": 123400000,  # 1.234 BTC in satoshis
+                "total_received": 0.00001234,  # Same as the rate we set in the test
                 "txs": [
                     {
                         "hash": (
@@ -371,7 +371,7 @@ class TestBitcoinPayment(TransactionCase):
         return MockResponse(
             {
                 "address": address,
-                "total_received": 50000000,  # 0.5 BTC in satoshis (less than required)
+                "total_received": 0.5,  # 0.5 BTC (less than the 1.234 BTC required)
                 "txs": [
                     {
                         "hash": (
