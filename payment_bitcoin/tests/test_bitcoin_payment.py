@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta as td
 from unittest.mock import patch
 
 from odoo.tests import tagged
@@ -410,11 +410,16 @@ class TestBitcoinPayment(TransactionCase):
             return self._mock_blockchain_info_transaction(url, *args, **kwargs)
         return MockResponse({}, status_code=404)
 
-    @patch("odoo.addons.payment_bitcoin.models.bitcoin.requests.get")
-    def test_bitcoin_payment_flow_successful(self, mock_get):
+    @patch("odoo.addons.payment_bitcoin.models.bitcoin.check_received")
+    def test_bitcoin_payment_flow_successful(self, mock_check_received):
         """Test the Bitcoin payment flow with successful payment"""
-        # Configure the mock to use our custom _get_mock_response method
-        mock_get.side_effect = self._get_mock_response
+        # Configure the mock to return a successful payment
+        mock_check_received.return_value = {
+            "received": 0.00001234,  # Same as the rate we set in the test
+            "min_conf": 3,
+            "transaction": "6eb38d0fdf73c7c6ea30d5bc0e5378d9d1c81c1b5a6c4f0a8f595f7c7ad3c2a0",
+            "when": datetime.now() - td(minutes=30),
+        }
 
         # Create a sale order (in quotation state)
         sale_order = self.env["sale.order"].create(
@@ -512,25 +517,17 @@ class TestBitcoinPayment(TransactionCase):
                 "Sale order should be in 'sale' state (confirmed)",
             )
 
-    @patch("odoo.addons.payment_bitcoin.models.bitcoin.requests.get")
-    def test_bitcoin_payment_flow_no_payment(self, mock_get):
+    @patch("odoo.addons.payment_bitcoin.models.bitcoin.check_received")
+    def test_bitcoin_payment_flow_no_payment(self, mock_check_received):
         """Test the Bitcoin payment flow when no payment is received"""
 
-        # Override the default mock to return no payment
-        def mock_response_no_payment(url, *args, **kwargs):
-            if "tobtc" in url:
-                return self._mock_blockchain_info_rate(url, *args, **kwargs)
-            elif "latestblock" in url:
-                return self._mock_blockchain_info_latest_block(url, *args, **kwargs)
-            elif "rawaddr" in url:
-                return self._mock_blockchain_info_address_no_payment(
-                    url, *args, **kwargs
-                )
-            elif "rawtx" in url:
-                return self._mock_blockchain_info_transaction(url, *args, **kwargs)
-            return MockResponse({}, status_code=404)
-
-        mock_get.side_effect = mock_response_no_payment
+        # Configure the mock to return no payment
+        mock_check_received.return_value = {
+            "received": 0,  # No payment received
+            "min_conf": 0,
+            "transaction": None,
+            "when": None,
+        }
 
         # Create a sale order (in quotation state)
         sale_order = self.env["sale.order"].create(
@@ -631,25 +628,17 @@ class TestBitcoinPayment(TransactionCase):
         # Check that no invoice was created
         self.assertFalse(sale_order.invoice_ids, "No invoice should have been created")
 
-    @patch("odoo.addons.payment_bitcoin.models.bitcoin.requests.get")
-    def test_bitcoin_payment_flow_insufficient_payment(self, mock_get):
+    @patch("odoo.addons.payment_bitcoin.models.bitcoin.check_received")
+    def test_bitcoin_payment_flow_insufficient_payment(self, mock_check_received):
         """Test the Bitcoin payment flow when insufficient payment is received"""
 
-        # Override the default mock to return insufficient payment
-        def mock_response_insufficient_payment(url, *args, **kwargs):
-            if "tobtc" in url:
-                return self._mock_blockchain_info_rate(url, *args, **kwargs)
-            elif "latestblock" in url:
-                return self._mock_blockchain_info_latest_block(url, *args, **kwargs)
-            elif "rawaddr" in url:
-                return self._mock_blockchain_info_address_insufficient_payment(
-                    url, *args, **kwargs
-                )
-            elif "rawtx" in url:
-                return self._mock_blockchain_info_transaction(url, *args, **kwargs)
-            return MockResponse({}, status_code=404)
-
-        mock_get.side_effect = mock_response_insufficient_payment
+        # Configure the mock to return insufficient payment
+        mock_check_received.return_value = {
+            "received": 0.5,  # 0.5 BTC (less than the 1.234 BTC required)
+            "min_conf": 3,
+            "transaction": "6eb38d0fdf73c7c6ea30d5bc0e5378d9d1c81c1b5a6c4f0a8f595f7c7ad3c2a0",
+            "when": datetime.now() - td(minutes=30),
+        }
 
         # Create a sale order (in quotation state)
         sale_order = self.env["sale.order"].create(
