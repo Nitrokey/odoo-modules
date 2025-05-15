@@ -61,7 +61,7 @@ class TestBitcoinPayment(TransactionCase):
         # Create a Bitcoin address
         self.bitcoin_address = self.env["bitcoin.address"].create(
             {
-                "name": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+                "name": "3N1MrpKTxGfb4CmTzgEYXfcDM9o2s3P5Q1",
             }
         )
 
@@ -95,7 +95,7 @@ class TestBitcoinPayment(TransactionCase):
         """Mock blockchain.info address API response with payment received"""
         return MockResponse(
             {
-                "address": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+                "address": "3N1MrpKTxGfb4CmTzgEYXfcDM9o2s3P5Q1",
                 "total_received": 123400000,  # 1.234 BTC in satoshis
                 "txs": [
                     {
@@ -112,7 +112,7 @@ class TestBitcoinPayment(TransactionCase):
         """Mock blockchain.info address API response with no payment received"""
         return MockResponse(
             {
-                "address": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+                "address": "3N1MrpKTxGfb4CmTzgEYXfcDM9o2s3P5Q1",
                 "total_received": 0,  # No BTC received
                 "txs": [],  # No transactions
             }
@@ -122,7 +122,7 @@ class TestBitcoinPayment(TransactionCase):
         """Mock blockchain.info address API response with insufficient payment"""
         return MockResponse(
             {
-                "address": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+                "address": "3N1MrpKTxGfb4CmTzgEYXfcDM9o2s3P5Q1",
                 "total_received": 50000000,  # 0.5 BTC in satoshis (less than required)
                 "txs": [
                     {
@@ -210,7 +210,7 @@ class TestBitcoinPayment(TransactionCase):
         # Set Bitcoin address and amount on the transaction
         transaction.write(
             {
-                "bitcoin_address": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+                "bitcoin_address": "3N1MrpKTxGfb4CmTzgEYXfcDM9o2s3P5Q1",
                 "bitcoin_amount": 0.00001234,  # Same as mocked rate
                 "bitcoin_unit": "BTC",
             }
@@ -339,7 +339,7 @@ class TestBitcoinPayment(TransactionCase):
         # Set Bitcoin address and amount on the transaction
         transaction.write(
             {
-                "bitcoin_address": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq2",
+                "bitcoin_address": "3Qe4hNh78zVBsPptZAayxgTko6yRPPMrp4",
                 "bitcoin_amount": 0.00001234,  # Same as mocked rate
                 "bitcoin_unit": "BTC",
             }
@@ -368,7 +368,7 @@ class TestBitcoinPayment(TransactionCase):
         # Assign the Bitcoin address to the sale order
         bitcoin_address = self.env["bitcoin.address"].create(
             {
-                "name": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq2",
+                "name": "3Qe4hNh78zVBsPptZAayxgTko6yRPPMrp4",
             }
         )
         bitcoin_address.write(
@@ -457,7 +457,7 @@ class TestBitcoinPayment(TransactionCase):
         # Set Bitcoin address and amount on the transaction
         transaction.write(
             {
-                "bitcoin_address": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq3",
+                "bitcoin_address": "32NUyczyB1uizWPHknAqDbWV3eogkVnpLh",
                 "bitcoin_amount": 0.00001234,  # Same as mocked rate
                 "bitcoin_unit": "BTC",
             }
@@ -486,7 +486,7 @@ class TestBitcoinPayment(TransactionCase):
         # Assign the Bitcoin address to the sale order
         bitcoin_address = self.env["bitcoin.address"].create(
             {
-                "name": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq3",
+                "name": "32NUyczyB1uizWPHknAqDbWV3eogkVnpLh",
             }
         )
         bitcoin_address.write(
