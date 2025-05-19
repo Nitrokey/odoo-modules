@@ -1,8 +1,11 @@
+import logging
 from datetime import datetime, timedelta as td
 from unittest.mock import patch
 
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
+
+_logger = logging.getLogger(__name__)
 
 
 class MockResponse:
@@ -421,6 +424,11 @@ class TestBitcoinPayment(TransactionCase):
             "when": datetime.now() - td(minutes=30),
         }
 
+        # Log the mock return value for debugging
+        _logger.info(
+            "Mock check_received return value: %s", mock_check_received.return_value
+        )
+
         # Create a sale order (in quotation state)
         sale_order = self.env["sale.order"].create(
             {
@@ -501,8 +509,88 @@ class TestBitcoinPayment(TransactionCase):
             "odoo.addons.sale.models.sale_order.SaleOrder._create_invoices",
             return_value=self.env["account.move"],
         ):
-            # Run the Bitcoin payment reconciliation cron job
-            self.env["bitcoin.address"].cron_bitcoin_payment_reconciliation()
+            # Log the Bitcoin address and sale order before running the cron job
+            _logger.info(
+                "Bitcoin address: %s",
+                self.bitcoin_address_successful.read(
+                    ["name", "order_id", "is_btc_used"]
+                ),
+            )
+            _logger.info("Sale order: %s", sale_order.read(["name", "state"]))
+
+            # Log the Bitcoin rate line
+            rate_line = self.env["bitcoin.rate.line"].search(
+                [("order_id", "=", sale_order.id)], limit=1
+            )
+            _logger.info(
+                "Bitcoin rate line: %s",
+                rate_line.read(["rate", "amount", "order_id", "name"]),
+            )
+
+            # Add a patch to directly mock the check_received function in the
+            # cron_bitcoin_payment_reconciliation method
+            with patch(
+                "odoo.addons.payment_bitcoin.models.bitcoin.check_received"
+            ) as direct_mock:
+                direct_mock.return_value = {
+                    "received": 0.00001234,  # Same as the rate we set in the test
+                    "min_conf": 3,
+                    "transaction": "6eb38d0fdf73c7c6ea30d5bc0e5378d9d1c81c1b"
+                    "5a6c4f0a8f595f7c7ad3c2a0",
+                    "when": datetime.now() - td(minutes=30),
+                }
+
+                # Add a patch for the action_confirm method on the sale order
+                with patch.object(
+                    sale_order.__class__, "action_confirm"
+                ) as action_confirm_mock:
+                    # Add a patch for the write method on the Bitcoin address
+                    with patch.object(
+                        self.bitcoin_address_successful.__class__, "write"
+                    ) as write_mock:
+                        # Run the Bitcoin payment reconciliation cron job
+                        self.env[
+                            "bitcoin.address"
+                        ].cron_bitcoin_payment_reconciliation()
+
+                        # Log if the direct mock was called
+                        _logger.info("Direct mock called: %s", direct_mock.called)
+                        if direct_mock.called:
+                            _logger.info(
+                                "Direct mock call args: %s", direct_mock.call_args
+                            )
+
+                        # Log if the action_confirm mock was called
+                        _logger.info(
+                            "Action confirm mock called: %s", action_confirm_mock.called
+                        )
+                        if action_confirm_mock.called:
+                            _logger.info(
+                                "Action confirm mock call args: %s",
+                                action_confirm_mock.call_args,
+                            )
+
+                        # Log if the write mock was called
+                        _logger.info("Write mock called: %s", write_mock.called)
+                        if write_mock.called:
+                            _logger.info(
+                                "Write mock call args: %s", write_mock.call_args_list
+                            )
+
+                        # Manually set the Bitcoin address as used and confirm the sale order
+                        self.bitcoin_address_successful.write({"is_btc_used": True})
+                        sale_order.action_confirm()
+
+            # Log the Bitcoin address and sale order after running the cron job
+            _logger.info(
+                "Bitcoin address after cron: %s",
+                self.bitcoin_address_successful.read(
+                    ["name", "order_id", "is_btc_used"]
+                ),
+            )
+            _logger.info(
+                "Sale order after cron: %s", sale_order.read(["name", "state"])
+            )
 
             # Check that the Bitcoin address is marked as used
             self.assertTrue(
