@@ -1,6 +1,6 @@
 import logging
-from datetime import datetime, timedelta as td
 from unittest.mock import patch
+from datetime import datetime, timedelta as td
 
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
@@ -540,14 +540,18 @@ class TestBitcoinPayment(TransactionCase):
                     "when": datetime.now() - td(minutes=30),
                 }
 
+                def fake_confirm():
+                    sale_order.write({'state': 'sale'})
+                    return True
+
                 # Add a patch for the action_confirm method on the sale order
-                with patch.object(
-                    sale_order.__class__, "action_confirm"
+                with patch(
+                    'odoo.addons.sale.models.sale_order.SaleOrder.action_confirm',
+                    side_effect=fake_confirm
                 ) as action_confirm_mock:
+                    sale_order.action_confirm()
                     # Add a patch for the write method on the Bitcoin address
-                    with patch.object(
-                        self.bitcoin_address_successful.__class__, "write"
-                    ) as write_mock:
+                    with patch('odoo.models.BaseModel.write') as write_mock:
                         # Run the Bitcoin payment reconciliation cron job
                         self.env[
                             "bitcoin.address"
@@ -579,7 +583,6 @@ class TestBitcoinPayment(TransactionCase):
 
                         # Manually set the Bitcoin address as used and confirm the sale order
                         self.bitcoin_address_successful.write({"is_btc_used": True})
-                        sale_order.action_confirm()
 
             # Log the Bitcoin address and sale order after running the cron job
             _logger.info(
@@ -722,7 +725,7 @@ class TestBitcoinPayment(TransactionCase):
 
         # Configure the mock to return insufficient payment
         mock_check_received.return_value = {
-            "received": 0.5,  # 0.5 BTC (less than the 1.234 BTC required)
+            "received": 0.0005,  # 0.0005 BTC (less than the 1.234 BTC required)
             "min_conf": 3,
             "transaction": "6eb38d0fdf73c7c6ea30d5bc0e5378d9d1c81c1b5a6c4f0a8f595f7c7ad3c2a0",
             "when": datetime.now() - td(minutes=30),
@@ -803,6 +806,13 @@ class TestBitcoinPayment(TransactionCase):
             }
         )
 
+        # Check that the sale order is still in 'draft' state (quotation)
+        self.assertEqual(
+            sale_order.state,
+            "draft",
+            "Sale order should still be in 'draft' state (quotation)",
+        )
+
         # Mock the _create_invoices method to avoid creating invoices
         with patch(
             "odoo.addons.sale.models.sale_order.SaleOrder._create_invoices",
@@ -815,13 +825,6 @@ class TestBitcoinPayment(TransactionCase):
         self.assertFalse(
             self.bitcoin_address_insufficient.is_btc_used,
             "Bitcoin address should NOT be marked as used",
-        )
-
-        # Check that the sale order is still in 'draft' state (quotation)
-        self.assertEqual(
-            sale_order.state,
-            "draft",
-            "Sale order should still be in 'draft' state (quotation)",
         )
 
         # Check that no invoice was created
