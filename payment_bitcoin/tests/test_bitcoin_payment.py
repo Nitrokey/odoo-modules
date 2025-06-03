@@ -1,6 +1,6 @@
 import logging
-from unittest.mock import patch
 from datetime import datetime, timedelta as td
+from unittest.mock import patch
 
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
@@ -541,17 +541,17 @@ class TestBitcoinPayment(TransactionCase):
                 }
 
                 def fake_confirm():
-                    sale_order.write({'state': 'sale'})
+                    sale_order.write({"state": "sale"})
                     return True
 
                 # Add a patch for the action_confirm method on the sale order
                 with patch(
-                    'odoo.addons.sale.models.sale_order.SaleOrder.action_confirm',
-                    side_effect=fake_confirm
+                    "odoo.addons.sale.models.sale_order.SaleOrder.action_confirm",
+                    side_effect=fake_confirm,
                 ) as action_confirm_mock:
                     sale_order.action_confirm()
                     # Add a patch for the write method on the Bitcoin address
-                    with patch('odoo.models.BaseModel.write') as write_mock:
+                    with patch("odoo.models.BaseModel.write") as write_mock:
                         # Run the Bitcoin payment reconciliation cron job
                         self.env[
                             "bitcoin.address"
