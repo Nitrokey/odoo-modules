@@ -100,8 +100,6 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
 
     def _create_invoice(self, sale_order):
         """Helper to create and post an invoice for a sale order."""
-        sale_order.action_confirm()
-
         # Create invoice
         wiz = (
             self.env["sale.advance.payment.inv"]
@@ -122,6 +120,12 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
         sale_order = self._create_sale_order(self.payment_term_normal)
         sale_order.action_confirm()
 
+        # Check that no delivery block was set
+        self.assertFalse(
+            sale_order.delivery_block_id,
+            "No delivery block should be set with normal payment term",
+        )
+
         # Check that picking was created
         self.assertTrue(
             sale_order.picking_ids, "Picking should be created with normal payment term"
@@ -133,10 +137,21 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
         sale_order = self._create_sale_order(self.payment_term_hold)
         sale_order.action_confirm()
 
+        # Check that delivery block was automatically set
+        self.assertTrue(
+            sale_order.delivery_block_id,
+            "Delivery block should be set with hold payment term",
+        )
+
+        # Check that the delivery block has remove_on_payment enabled
+        self.assertTrue(
+            sale_order.delivery_block_id.remove_on_payment,
+            "Delivery block should have remove_on_payment enabled",
+        )
+
         # Check that no picking was created
         self.assertFalse(
-            sale_order.picking_ids,
-            "No picking should be created with hold payment term",
+            sale_order.picking_ids, "No picking should be created with delivery block"
         )
 
         # Create and post invoice
@@ -151,7 +166,11 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
         # Register payment
         self._register_payment(invoice)
 
-        # Now picking should be created
+        # Now delivery block should be removed and picking should be created
+        self.assertFalse(
+            sale_order.delivery_block_id,
+            "Delivery block should be removed after payment",
+        )
         self.assertTrue(
             sale_order.picking_ids, "Picking should be created after invoice is paid"
         )
@@ -164,10 +183,15 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
         )
         sale_order.action_confirm()
 
+        # Check that delivery block was set
+        self.assertTrue(
+            sale_order.delivery_block_id,
+            "Delivery block should be set with hold payment term",
+        )
+
         # Check that no picking was created
         self.assertFalse(
-            sale_order.picking_ids,
-            "No picking should be created with hold payment term",
+            sale_order.picking_ids, "No picking should be created with delivery block"
         )
 
         # Check that manufacturing order was created
@@ -175,8 +199,23 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
             [("origin", "like", sale_order.name)]
         )
         self.assertTrue(
-            production,
-            "Manufacturing order should be created despite hold payment term",
+            production, "Manufacturing order should be created despite delivery block"
+        )
+
+    def test_delivery_block_reason_creation(self):
+        """Test that delivery block reason is created automatically."""
+        # Get the delivery block reason for the hold payment term
+        block_reason = self.payment_term_hold.get_delivery_block_reason()
+
+        self.assertTrue(block_reason, "Delivery block reason should be created")
+        self.assertTrue(
+            block_reason.remove_on_payment,
+            "Delivery block reason should have remove_on_payment enabled",
+        )
+        self.assertIn(
+            "Hold until paid",
+            block_reason.name,
+            "Delivery block reason name should contain 'Hold until paid'",
         )
 
     def _register_payment(self, invoice):
