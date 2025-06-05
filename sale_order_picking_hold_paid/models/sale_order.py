@@ -43,3 +43,36 @@ class SaleOrder(models.Model):
         if self.env.context.get("auto_removal_on_payment"):
             records = records.filtered("delivery_block_id.remove_on_payment")
         return super(SaleOrder, records).action_remove_delivery_block()
+
+
+class SaleOrderLine(models.Model):
+    _inherit = "sale.order.line"
+
+    def _action_launch_stock_rule(self, previous_product_uom_qty=False):
+        """Allow manufacturing orders even when delivery is blocked."""
+        # Check if this line has manufacturing route
+        mto_route = self.env.ref("stock.route_warehouse0_mto", raise_if_not_found=False)
+        manufacture_route = self.env.ref(
+            "mrp.route_warehouse0_manufacture", raise_if_not_found=False
+        )
+
+        lines_to_process = self.env["sale.order.line"]
+
+        for line in self:
+            # Allow if no delivery block
+            if not line.order_id.delivery_block_id:
+                lines_to_process |= line
+            # Allow manufacturing lines even with delivery block
+            elif mto_route and manufacture_route:
+                product_routes = (
+                    line.product_id.route_ids + line.product_id.categ_id.route_ids
+                )
+                if (
+                    mto_route.id in product_routes.ids
+                    and manufacture_route.id in product_routes.ids
+                ):
+                    lines_to_process |= line
+
+        return super(SaleOrderLine, lines_to_process)._action_launch_stock_rule(
+            previous_product_uom_qty=previous_product_uom_qty
+        )
