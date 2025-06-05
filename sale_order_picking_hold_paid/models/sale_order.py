@@ -10,7 +10,6 @@ class SaleOrder(models.Model):
     @api.onchange("payment_term_id")
     def _onchange_payment_term_id(self):
         """Set delivery block when payment term requires holding until paid."""
-        res = super()._onchange_payment_term_id()
         if self.payment_term_id and self.payment_term_id.hold_picking_until_paid:
             block_reason = self.payment_term_id.get_delivery_block_reason()
             if block_reason:
@@ -23,7 +22,6 @@ class SaleOrder(models.Model):
                 and "Hold until paid" in self.delivery_block_id.name
             ):
                 self.delivery_block_id = False
-        return res
 
     def action_confirm(self):
         """Ensure delivery block is set if payment term requires it."""
