@@ -194,6 +194,12 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
             sale_order.picking_ids, "No picking should be created with delivery block"
         )
 
+        # Create and post invoice
+        invoice = self._create_invoice(sale_order)
+
+        # Register payment
+        self._register_payment(invoice)
+
         # Check that manufacturing order was created
         production = self.env["mrp.production"].search(
             [("origin", "like", sale_order.name)]
