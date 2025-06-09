@@ -62,6 +62,8 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
 
         # Create MTO + Manufacturing product
         self.mto_route = self.env.ref("stock.route_warehouse0_mto")
+        # Un-archive the MTO route
+        self.mto_route.action_unarchive()
         self.manufacture_route = self.env.ref("mrp.route_warehouse0_manufacture")
 
         self.product_mto_mfg = self.env["product.product"].create(
