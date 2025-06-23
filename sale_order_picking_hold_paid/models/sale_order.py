@@ -7,6 +7,17 @@ from odoo import api, models
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    @api.model
+    def create(self, vals):
+        """Set delivery block when creating quotation with payment term that has
+        delivery block reason."""
+        order = super().create(vals)
+        if order.payment_term_id and order.payment_term_id.delivery_block_reason_id:
+            block_reason = order.payment_term_id.get_delivery_block_reason()
+            if block_reason:
+                order.delivery_block_id = block_reason
+        return order
+
     @api.onchange("payment_term_id")
     def _onchange_payment_term_id(self):
         """Set delivery block when payment term has a delivery block reason."""
@@ -60,13 +71,20 @@ class SaleOrderLine(models.Model):
                 lines_to_process |= line
             # Allow manufacturing lines even with delivery block
             elif mto_route and manufacture_route:
+                # Get all routes for the product (including category routes)
                 product_routes = (
-                    line.product_id.route_ids + line.product_id.categ_id.route_ids
+                    line.product_id.route_ids | line.product_id.categ_id.route_ids
                 )
-                if (
-                    mto_route.id in product_routes.ids
-                    and manufacture_route.id in product_routes.ids
-                ):
+                # Also check warehouse routes
+                warehouse = line.order_id.warehouse_id
+                if warehouse:
+                    product_routes |= warehouse.route_ids
+
+                # Check if product has both MTO and Manufacturing routes
+                has_mto = mto_route in product_routes
+                has_manufacture = manufacture_route in product_routes
+
+                if has_mto and has_manufacture:
                     lines_to_process |= line
 
         return super(SaleOrderLine, lines_to_process)._action_launch_stock_rule(
