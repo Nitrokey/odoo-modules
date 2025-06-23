@@ -7,8 +7,9 @@ class SaleOrder(models.Model):
     @api.model
     def _default_payment_term_id(self):
         """Set the first payment term as default when creating a new sales order."""
-        # Get the first payment term from the system using default ordering (sequence, id)
-        first_payment_term = self.env["account.payment.term"].search([], limit=1)
+        # Get the first payment term from the system using proper ordering (sequence, id)
+        # This ensures we get the first payment term in the list, not just the one with lowest ID
+        first_payment_term = self.env["account.payment.term"].search([], order="sequence, id", limit=1)
         return first_payment_term
 
     @api.model
