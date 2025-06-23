@@ -17,19 +17,14 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
             }
         )
 
-        # Get the default delivery block reason from sale_stock_picking_blocking
-        self.delivery_block_reason = self.env["sale.delivery.block.reason"].search(
-            [], limit=1
+        # Always create a specific delivery block reason for testing
+        self.delivery_block_reason = self.env["sale.delivery.block.reason"].create(
+            {
+                "name": "Test Block Reason",
+                "description": "Test delivery block reason",
+                "remove_on_payment": True,
+            }
         )
-        if not self.delivery_block_reason:
-            # Create one if none exists
-            self.delivery_block_reason = self.env["sale.delivery.block.reason"].create(
-                {
-                    "name": "Test Block Reason",
-                    "description": "Test delivery block reason",
-                    "remove_on_payment": True,
-                }
-            )
 
         # Create payment terms
         self.payment_term_normal = self.env["account.payment.term"].create(
@@ -144,6 +139,31 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
         # Check that picking was created
         self.assertTrue(
             sale_order.picking_ids, "Picking should be created with normal payment term"
+        )
+
+    def test_delivery_block_set_at_quotation_creation(self):
+        """Test that delivery block is set immediately when creating quotation with
+        hold payment term."""
+        # Create sale order (quotation) with hold payment term
+        sale_order = self._create_sale_order(self.payment_term_hold)
+
+        # Check that delivery block was set at creation (before confirmation)
+        self.assertTrue(
+            sale_order.delivery_block_id,
+            "Delivery block should be set at quotation creation with hold payment term",
+        )
+
+        # Verify it's the correct delivery block reason
+        self.assertEqual(
+            sale_order.delivery_block_id.id,
+            self.delivery_block_reason.id,
+            "Delivery block should match the payment term's delivery block reason",
+        )
+
+        # Check that the delivery block has remove_on_payment enabled
+        self.assertTrue(
+            sale_order.delivery_block_id.remove_on_payment,
+            "Delivery block should have remove_on_payment enabled",
         )
 
     def test_hold_payment_term(self):
