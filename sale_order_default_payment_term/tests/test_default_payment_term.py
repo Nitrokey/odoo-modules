@@ -46,7 +46,9 @@ class TestDefaultPaymentTerm(TransactionCase):
     def test_default_payment_term(self):
         """Test that the first payment term is set as default for new sales orders."""
         # Get the first payment term from the system using proper ordering (sequence, id)
-        first_payment_term = self.env["account.payment.term"].search([], order="sequence, id", limit=1)
+        first_payment_term = self.env["account.payment.term"].search(
+            [], order="sequence, id", limit=1
+        )
 
         # Make sure we have the actual ID for comparison
         self.assertTrue(
