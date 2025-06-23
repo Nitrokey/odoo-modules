@@ -9,18 +9,14 @@ class SaleOrder(models.Model):
 
     @api.onchange("payment_term_id")
     def _onchange_payment_term_id(self):
-        """Set delivery block when payment term requires holding until paid."""
-        if self.payment_term_id and self.payment_term_id.hold_picking_until_paid:
+        """Set delivery block when payment term has a delivery block reason."""
+        if self.payment_term_id and self.payment_term_id.delivery_block_reason_id:
             block_reason = self.payment_term_id.get_delivery_block_reason()
             if block_reason:
                 self.delivery_block_id = block_reason
-        elif self.payment_term_id and not self.payment_term_id.hold_picking_until_paid:
-            # Remove delivery block if payment term doesn't require holding
-            if (
-                self.delivery_block_id
-                and self.delivery_block_id.remove_on_payment
-                and "Hold until paid" in self.delivery_block_id.name
-            ):
+        elif self.payment_term_id and not self.payment_term_id.delivery_block_reason_id:
+            # Remove delivery block if payment term doesn't have a delivery block reason
+            if self.delivery_block_id and self.delivery_block_id.remove_on_payment:
                 self.delivery_block_id = False
 
     def action_confirm(self):
@@ -29,7 +25,7 @@ class SaleOrder(models.Model):
         for order in self:
             if (
                 order.payment_term_id
-                and order.payment_term_id.hold_picking_until_paid
+                and order.payment_term_id.delivery_block_reason_id
                 and not order.delivery_block_id
             ):
                 block_reason = order.payment_term_id.get_delivery_block_reason()

@@ -17,11 +17,24 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
             }
         )
 
+        # Get the default delivery block reason from sale_stock_picking_blocking
+        self.delivery_block_reason = self.env["sale.delivery.block.reason"].search(
+            [], limit=1
+        )
+        if not self.delivery_block_reason:
+            # Create one if none exists
+            self.delivery_block_reason = self.env["sale.delivery.block.reason"].create(
+                {
+                    "name": "Test Block Reason",
+                    "description": "Test delivery block reason",
+                    "remove_on_payment": True,
+                }
+            )
+
         # Create payment terms
         self.payment_term_normal = self.env["account.payment.term"].create(
             {
                 "name": "Normal Payment Term",
-                "hold_picking_until_paid": False,
                 "line_ids": [
                     (
                         0,
@@ -38,7 +51,7 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
         self.payment_term_hold = self.env["account.payment.term"].create(
             {
                 "name": "Hold Until Paid",
-                "hold_picking_until_paid": True,
+                "delivery_block_reason_id": self.delivery_block_reason.id,
                 "line_ids": [
                     (
                         0,
@@ -210,20 +223,16 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
             production, "Manufacturing order should be created despite delivery block"
         )
 
-    def test_delivery_block_reason_creation(self):
-        """Test that delivery block reason is created automatically."""
+    def test_delivery_block_reason_selection(self):
+        """Test that delivery block reason is properly selected."""
         # Get the delivery block reason for the hold payment term
         block_reason = self.payment_term_hold.get_delivery_block_reason()
 
-        self.assertTrue(block_reason, "Delivery block reason should be created")
-        self.assertTrue(
-            block_reason.remove_on_payment,
-            "Delivery block reason should have remove_on_payment enabled",
-        )
-        self.assertIn(
-            "Hold until paid",
-            block_reason.name,
-            "Delivery block reason name should contain 'Hold until paid'",
+        self.assertTrue(block_reason, "Delivery block reason should be selected")
+        self.assertEqual(
+            block_reason.id,
+            self.delivery_block_reason.id,
+            "Delivery block reason should match the selected one",
         )
 
     def _register_payment(self, invoice):
