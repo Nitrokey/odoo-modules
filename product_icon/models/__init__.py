@@ -1,4 +1,4 @@
 ###############################################################################
 # For copyright and license notices, see __manifest__.py file in root directory
 ###############################################################################
-from . import product_icon, product_template
+from . import product_icon, product_template, product_template_icon
