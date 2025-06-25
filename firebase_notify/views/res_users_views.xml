@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Extend User Form View to add Firebase notification settings -->
+    <record id="view_users_form_firebase" model="ir.ui.view">
+        <field name="name">res.users.form.firebase</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences']" position="inside">
+                <group string="Firebase Notifications" name="firebase_notifications">
+                    <field name="firebase_notifications_enabled" />
+                    <field
+                        name="firebase_token"
+                        attrs="{'invisible': [('firebase_notifications_enabled', '=', False)]}"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend User Preferences Form View -->
+    <record id="view_users_form_simple_modif_firebase" model="ir.ui.view">
+        <field name="name">res.users.preferences.form.firebase</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='preferences']" position="after">
+                <group string="Firebase Notifications" name="firebase_notifications">
+                    <field name="firebase_notifications_enabled" />
+                    <field
+                        name="firebase_token"
+                        attrs="{'invisible': [('firebase_notifications_enabled', '=', False)]}"
+                        placeholder="Enter your Firebase device token"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

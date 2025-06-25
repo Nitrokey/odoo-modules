@@ -1,0 +1,33 @@
+<h1>Firebase Notifications</h1>
+
+<h3>Overview</h3>
+<p>This module sends Firebase push notifications when users receive chat messages and inbox messages in Odoo.</p>
+
+<h3>Key Features</h3>
+<ul>
+    <li><strong>User-configurable:</strong> Each user can enable/disable Firebase notifications in their profile</li>
+    <li><strong>Firebase token management:</strong> Users can set their Firebase device token in their preferences</li>
+    <li><strong>Automatic notifications:</strong> Sends push notifications for new chat and inbox messages</li>
+    <li><strong>Disabled by default:</strong> Firebase notifications are disabled by default for all users</li>
+    <li><strong>Seamless integration:</strong> Works with the firebase_integration module</li>
+</ul>
+
+<h3>Setup Instructions</h3>
+<ol>
+    <li>Install the <strong>firebase_integration</strong> module first</li>
+    <li>Configure Firebase credentials in <strong>Settings > General Settings</strong></li>
+    <li>Install this <strong>notify_firebase</strong> module</li>
+    <li>Users can enable notifications in their profile under <strong>Preferences</strong></li>
+</ol>
+
+<h3>User Configuration</h3>
+<ol>
+    <li>Go to your user preferences (click on your name > <strong>Preferences</strong>)</li>
+    <li>Find the <strong>"Firebase Notifications"</strong> section</li>
+    <li>Check <strong>"Enable Firebase Notifications"</strong></li>
+    <li>Enter your Firebase device token</li>
+    <li>Save your preferences</li>
+</ol>
+
+<h3>Technical Details</h3>
+<p>The module automatically hooks into the mail.message creation process and sends Firebase notifications to users who have enabled notifications and configured a valid Firebase token. It supports both direct messages and channel messages, with comprehensive error handling and logging.</p>
