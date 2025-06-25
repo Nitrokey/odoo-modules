@@ -1,0 +1,23 @@
+<h1>Firebase Integration</h1>
+<h3>Configuration</h3>
+<h6>Admin Configuration:</h6>
+<p>1. Go to <strong>Settings > General Settings</strong></p>
+<p>2. Find the <strong>Firebase Integration</strong> section</p>
+<p>3. Upload your Firebase service account private key JSON file</p>
+<p>4. Save the configuration</p>
+
+<p>Alternatively, you can configure Firebase through:</p>
+<p><strong>Settings > Technical > Firebase Configuration</strong></p>
+
+<h6>Usage:</h6>
+
+<code>
+    from odoo.addons.firebase_integration.tools.firebase import send_firebase_notifications<br/>
+
+    msg = [<br>
+    &nbsp;{'token':'','body':'','title':''},<br/>
+    &nbsp;{'token':'','body':'','title':''}<br/>
+    ]<br/>
+    # Pass the environment to the function<br/>
+    success_sent_message_count = send_firebase_notifications(msg, self.env)
+</code>
