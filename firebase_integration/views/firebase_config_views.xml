@@ -80,11 +80,11 @@
             <xpath expr="//div[hasclass('settings')]" position="inside">
                 <div
                     class="app_settings_block"
-                    data-string="Firebase Integration"
-                    string="Firebase Integration"
+                    data-string="Firebase Notification"
+                    string="Firebase Notification"
                     data-key="firebase_integration"
                 >
-                    <h2>Firebase Integration</h2>
+                    <h2>Firebase Notification</h2>
                     <div class="row mt16 o_settings_container">
                         <div class="col-12 col-lg-6 o_setting_box">
                             <div class="o_setting_left_pane">

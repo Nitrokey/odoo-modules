@@ -57,7 +57,7 @@ const firebaseConfig = {
 ## Step 5: Configure in Odoo
 
 1. Go to **Settings > General Settings**
-2. Find **"Firebase Integration"** section
+2. Find **"Firebase Notification"** section
 3. Enable **"Enable Firebase Integration"**
 4. Upload the **Firebase Private Key File** (service account JSON from Step 2)
 5. Configure the **Web App Configuration** section with values from Step 3:

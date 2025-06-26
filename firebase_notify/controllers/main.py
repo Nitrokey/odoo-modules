@@ -14,8 +14,9 @@ class FirebaseNotifyController(http.Controller):
     def firebase_messaging_sw(self):
         """Serve Firebase messaging service worker from root path"""
         try:
-            # Get the module path
-            module_path = request.env['ir.module.module'].get_module_path('firebase_notify')
+            import odoo.modules as addons
+            # Get the module path using the correct method
+            module_path = addons.get_module_path('firebase_notify')
             sw_path = os.path.join(module_path, 'static', 'firebase-messaging-sw.js')
             
             # Read the service worker file
