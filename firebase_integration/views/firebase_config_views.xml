@@ -51,15 +51,6 @@
         </field>
     </record>
 
-    <!-- Menu Item -->
-    <menuitem
-        id="menu_firebase_config"
-        name="Firebase Configuration"
-        parent="base.menu_administration"
-        action="action_firebase_config"
-        sequence="100"
-    />
-
     <!-- Settings View -->
     <record id="res_config_settings_view_form_firebase" model="ir.ui.view">
         <field name="name">res.config.settings.view.form.inherit.firebase</field>
@@ -77,6 +68,17 @@
                     <h2>Firebase Integration</h2>
                     <div class="row mt16 o_settings_container">
                         <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="firebase_is_active"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="firebase_is_active">Enable Firebase Integration</label>
+                                <div class="text-muted">
+                                    Enable Firebase push notifications and integration features
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" attrs="{'invisible': [('firebase_is_active', '=', False)]}">
                             <div class="o_setting_right_pane">
                                 <label for="firebase_private_key_file">Firebase Private Key File</label>
                                 <div class="text-muted">

@@ -56,43 +56,47 @@ class ResConfigSettings(models.TransientModel):
         help="Upload the Firebase service account private key JSON file",
     )
     firebase_private_key_filename = fields.Char()
+    firebase_is_active = fields.Boolean(
+        string="Enable Firebase Integration",
+        default=False,
+        help="Enable or disable Firebase integration"
+    )
 
     @api.model
     def get_values(self):
         res = super().get_values()
-        firebase_config = self.env["firebase.config"].search(
-            [("is_active", "=", True)], limit=1
-        )
+        firebase_config = self.env["firebase.config"].search([], limit=1)
         if firebase_config:
             res.update(
                 {
                     "firebase_private_key_file": firebase_config.private_key_file,
                     "firebase_private_key_filename": firebase_config.private_key_filename,
+                    "firebase_is_active": firebase_config.is_active,
                 }
             )
         return res
 
     def set_values(self):
         res = super().set_values()
-        if self.firebase_private_key_file:
-            # Create or update Firebase configuration
-            firebase_config = self.env["firebase.config"].search(
-                [("is_active", "=", True)], limit=1
+        firebase_config = self.env["firebase.config"].search([], limit=1)
+        
+        if firebase_config:
+            # Update existing configuration
+            firebase_config.write(
+                {
+                    "private_key_file": self.firebase_private_key_file or firebase_config.private_key_file,
+                    "private_key_filename": self.firebase_private_key_filename or firebase_config.private_key_filename,
+                    "is_active": self.firebase_is_active,
+                }
             )
-            if firebase_config:
-                firebase_config.write(
-                    {
-                        "private_key_file": self.firebase_private_key_file,
-                        "private_key_filename": self.firebase_private_key_filename,
-                    }
-                )
-            else:
-                self.env["firebase.config"].create(
-                    {
-                        "name": "Firebase Settings",
-                        "private_key_file": self.firebase_private_key_file,
-                        "private_key_filename": self.firebase_private_key_filename,
-                        "is_active": True,
-                    }
-                )
+        elif self.firebase_private_key_file:
+            # Create new configuration only if file is provided
+            self.env["firebase.config"].create(
+                {
+                    "name": "Firebase Settings",
+                    "private_key_file": self.firebase_private_key_file,
+                    "private_key_filename": self.firebase_private_key_filename,
+                    "is_active": self.firebase_is_active,
+                }
+            )
         return res
