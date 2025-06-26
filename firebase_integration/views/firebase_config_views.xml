@@ -77,14 +77,15 @@
                     <h2>Firebase Integration</h2>
                     <div class="row mt16 o_settings_container">
                         <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane">
-                                <field name="firebase_private_key_file" />
-                            </div>
                             <div class="o_setting_right_pane">
-                                <label for="firebase_private_key_file" />
+                                <label for="firebase_private_key_file">Firebase Private Key File</label>
                                 <div class="text-muted">
                                     Upload the Firebase service account private key JSON file
                                 </div>
+                                <field
+                                    name="firebase_private_key_file"
+                                    filename="firebase_private_key_filename"
+                                />
                                 <field
                                     name="firebase_private_key_filename"
                                     invisible="1"
