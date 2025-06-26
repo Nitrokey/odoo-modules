@@ -11,12 +11,21 @@
                         <field name="name" />
                         <field name="is_active" />
                     </group>
-                    <group string="Firebase Credentials">
+                    <group string="Server-side Configuration">
                         <field name="private_key_filename" invisible="1" />
                         <field
                             name="private_key_file"
                             filename="private_key_filename"
                         />
+                    </group>
+                    <group string="Web App Configuration (for Browser Notifications)">
+                        <field name="web_api_key" />
+                        <field name="web_auth_domain" />
+                        <field name="web_project_id" />
+                        <field name="web_storage_bucket" />
+                        <field name="web_messaging_sender_id" />
+                        <field name="web_app_id" />
+                        <field name="vapid_key" />
                     </group>
                 </sheet>
             </form>

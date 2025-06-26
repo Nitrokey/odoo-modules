@@ -15,6 +15,15 @@ class FirebaseConfig(models.Model):
     private_key_file = fields.Binary(string="Firebase Private Key File", required=True)
     private_key_filename = fields.Char(string="Filename")
     is_active = fields.Boolean(string="Active", default=True)
+    
+    # Web App Configuration (for client-side Firebase SDK)
+    web_api_key = fields.Char(string="Web API Key", help="Firebase Web API Key")
+    web_auth_domain = fields.Char(string="Auth Domain", help="Firebase Auth Domain (project-id.firebaseapp.com)")
+    web_project_id = fields.Char(string="Project ID", help="Firebase Project ID")
+    web_storage_bucket = fields.Char(string="Storage Bucket", help="Firebase Storage Bucket")
+    web_messaging_sender_id = fields.Char(string="Messaging Sender ID", help="Firebase Cloud Messaging Sender ID")
+    web_app_id = fields.Char(string="App ID", help="Firebase Web App ID")
+    vapid_key = fields.Char(string="VAPID Key", help="Firebase Web Push VAPID Key")
 
     @api.model
     def get_firebase_credentials(self):

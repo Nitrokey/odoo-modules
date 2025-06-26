@@ -46,23 +46,27 @@ class FirebaseNotifyController(http.Controller):
             if not firebase_config:
                 return {'success': False, 'error': 'No Firebase configuration found'}
             
-            credentials = firebase_config.get_firebase_credentials()
-            if not credentials:
-                return {'success': False, 'error': 'Invalid Firebase credentials'}
+            # Check if web app configuration is available
+            if not firebase_config.web_api_key or not firebase_config.web_project_id:
+                return {
+                    'success': False, 
+                    'error': 'Firebase web app configuration not set. Please configure web app settings in Firebase Configuration.'
+                }
             
-            # Return only the necessary config for web notifications
+            # Return web app configuration for client-side Firebase SDK
             web_config = {
-                'apiKey': credentials.get('api_key', ''),
-                'authDomain': credentials.get('auth_domain', ''),
-                'projectId': credentials.get('project_id', ''),
-                'storageBucket': credentials.get('storage_bucket', ''),
-                'messagingSenderId': credentials.get('messaging_sender_id', ''),
-                'appId': credentials.get('app_id', ''),
+                'apiKey': firebase_config.web_api_key,
+                'authDomain': firebase_config.web_auth_domain or f"{firebase_config.web_project_id}.firebaseapp.com",
+                'projectId': firebase_config.web_project_id,
+                'storageBucket': firebase_config.web_storage_bucket or f"{firebase_config.web_project_id}.appspot.com",
+                'messagingSenderId': firebase_config.web_messaging_sender_id,
+                'appId': firebase_config.web_app_id,
             }
             
             return {
                 'success': True,
-                'config': web_config
+                'config': web_config,
+                'vapidKey': firebase_config.vapid_key
             }
             
         except Exception as e:

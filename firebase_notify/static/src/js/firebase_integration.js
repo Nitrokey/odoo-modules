@@ -123,9 +123,18 @@ class FirebaseRealNotifyService {
                 };
             }
 
+            // Get VAPID key from server
+            const configResult = await this.rpc('/firebase_notify/get_config', {});
+            if (!configResult.success || !configResult.vapidKey) {
+                return { 
+                    success: false, 
+                    error: 'VAPID key not configured. Please set VAPID key in Firebase Configuration.' 
+                };
+            }
+
             // Get registration token
             const token = await this.messaging.getToken({
-                vapidKey: 'BKxvxQ9K5G8X2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7A8B9C0D1E2F3G4H5I6J7K8L9M0N1O2P3Q4R5S6T7U8V9W0X1Y2Z3'
+                vapidKey: configResult.vapidKey
             });
 
             if (token) {
