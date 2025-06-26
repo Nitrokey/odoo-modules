@@ -27,6 +27,9 @@ class FirebaseTools(models.AbstractModel):
             return False
             
         try:
+            _logger.info(f"Sending Firebase notification to token: {token[:20]}...")
+            _logger.info(f"Title: {title}, Body: {body}")
+            
             messages = [{
                 'token': token,
                 'title': title,
@@ -34,11 +37,14 @@ class FirebaseTools(models.AbstractModel):
                 'data': data or {}
             }]
             
+            _logger.info("Calling firebase.send_firebase_notifications...")
             success_count = firebase.send_firebase_notifications(messages, self.env)
+            _logger.info(f"Firebase notification success count: {success_count}")
+            
             return success_count > 0
             
         except Exception as e:
-            _logger.error(f"Failed to send Firebase notification: {str(e)}")
+            _logger.error(f"Exception in Firebase tools send_notification: {str(e)}", exc_info=True)
             return False
 
     def send_notifications(self, notifications):

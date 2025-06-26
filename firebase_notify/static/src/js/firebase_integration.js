@@ -114,13 +114,23 @@ class FirebaseRealNotifyService {
 
     async requestPermissionAndRegisterToken() {
         try {
+            // Check current permission status
+            console.log('Current notification permission:', Notification.permission);
+            
             // Request notification permission
             const permission = await Notification.requestPermission();
+            console.log('Permission result:', permission);
             
             if (permission !== 'granted') {
+                let errorMessage = 'Notification permission denied. ';
+                if (permission === 'denied') {
+                    errorMessage += 'Please enable notifications for this site in your browser settings (usually in the address bar or site settings).';
+                } else if (permission === 'default') {
+                    errorMessage += 'Permission request was dismissed. Please try again and click "Allow" when prompted.';
+                }
                 return { 
                     success: false, 
-                    error: 'Notification permission denied. Please allow notifications in your browser settings.' 
+                    error: errorMessage
                 };
             }
 

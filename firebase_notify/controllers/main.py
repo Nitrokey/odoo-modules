@@ -128,15 +128,46 @@ class FirebaseNotifyController(http.Controller):
         """Send a test notification to the current user"""
         try:
             user = request.env.user
+            _logger.info(f"Test notification requested by user: {user.name}")
             
-            if not user.firebase_notifications_enabled or not user.firebase_token:
+            if not user.firebase_notifications_enabled:
                 return {
                     'success': False,
-                    'error': 'Firebase notifications not enabled or no token registered'
+                    'error': 'Firebase notifications not enabled for this user'
+                }
+                
+            if not user.firebase_token:
+                return {
+                    'success': False,
+                    'error': 'No Firebase token registered for this user'
+                }
+            
+            _logger.info(f"User token: {user.firebase_token[:20]}...")
+            
+            # Check if Firebase configuration exists
+            firebase_config = request.env['firebase.config'].search([('is_active', '=', True)], limit=1)
+            if not firebase_config:
+                return {
+                    'success': False,
+                    'error': 'No Firebase configuration found. Please configure Firebase in Settings.'
+                }
+            
+            _logger.info("Firebase configuration found")
+            
+            # Check if firebase_admin is available
+            try:
+                import firebase_admin
+                _logger.info("firebase_admin library is available")
+            except ImportError as e:
+                _logger.error(f"firebase_admin library not found: {str(e)}")
+                return {
+                    'success': False,
+                    'error': 'firebase_admin library not installed. Please install: pip install firebase_admin'
                 }
             
             # Import Firebase tools
             firebase_tools = request.env['firebase.tools']
+            _logger.info("Firebase tools loaded")
             
             # Send test notification
             result = firebase_tools.send_notification(
@@ -150,6 +181,8 @@ class FirebaseNotifyController(http.Controller):
                 }
             )
             
+            _logger.info(f"Firebase notification result: {result}")
+            
             if result:
                 return {
                     'success': True,
@@ -158,12 +191,12 @@ class FirebaseNotifyController(http.Controller):
             else:
                 return {
                     'success': False,
-                    'error': 'Failed to send test notification'
+                    'error': 'Firebase notification failed - check server logs for details'
                 }
                 
         except Exception as e:
-            _logger.error(f"Failed to send test notification: {str(e)}")
+            _logger.error(f"Exception in send_test_notification: {str(e)}", exc_info=True)
             return {
                 'success': False,
-                'error': 'Failed to send test notification: ' + str(e)
+                'error': f'Server error: {str(e)}'
             }

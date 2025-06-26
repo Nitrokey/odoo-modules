@@ -30,12 +30,6 @@
                                 This shows your current Firebase token (auto-generated test token or real browser token)
                             </small>
                         </div>
-                        
-                        <div class="mt-3">
-                            <strong>Manual Token Entry (Advanced)</strong>
-                            <p class="text-muted">For mobile apps or manual token entry:</p>
-                            <field name="firebase_token" nolabel="1" placeholder="Enter Firebase token manually (optional)"/>
-                        </div>
                     </div>
                 </group>
             </xpath>
@@ -71,12 +65,6 @@
                             <small class="form-text text-muted">
                                 This shows your current Firebase token (auto-generated test token or real browser token)
                             </small>
-                        </div>
-                        
-                        <div class="mt-3">
-                            <strong>Manual Token Entry (Advanced)</strong>
-                            <p class="text-muted">For mobile apps or manual token entry:</p>
-                            <field name="firebase_token" nolabel="1" placeholder="Enter Firebase token manually (optional)"/>
                         </div>
                     </div>
                 </group>
