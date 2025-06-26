@@ -12,7 +12,7 @@
                     <div
                         attrs="{'invisible': [('firebase_notifications_enabled', '=', False)]}"
                     >
-                        <div class="alert alert-info">
+                        <div class="alert alert-info" role="status">
                             <strong>🔔 Real Browser Notifications</strong>
                             <p>Click the button below to enable real Firebase notifications in your browser:</p>
                             <button type="button" name="enable_firebase_notifications" class="btn btn-primary" onclick="enableFirebaseNotifications()">
@@ -54,7 +54,7 @@
                     <div
                         attrs="{'invisible': [('firebase_notifications_enabled', '=', False)]}"
                     >
-                        <div class="alert alert-info">
+                        <div class="alert alert-info" role="status">
                             <strong>🔔 Real Browser Notifications</strong>
                             <p>Click the button below to enable real Firebase notifications in your browser:</p>
                             <button type="button" name="enable_firebase_notifications_pref" class="btn btn-primary" onclick="enableFirebaseNotifications()">
