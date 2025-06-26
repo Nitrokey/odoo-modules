@@ -56,38 +56,27 @@ const firebaseConfig = {
 
 ## Step 5: Configure in Odoo
 
-### Option A: Through Settings (Recommended)
-
 1. Go to **Settings > General Settings**
 2. Find **"Firebase Integration"** section
 3. Enable **"Enable Firebase Integration"**
-4. Upload the **service account JSON file**
-5. Save settings
-
-### Option B: Through Firebase Configuration Menu
-
-1. Go to **Settings > Technical > Firebase Configuration**
-2. Create new configuration:
-   - **Name**: "Firebase Settings"
-   - **Active**: ✓
-   - **Firebase Private Key File**: Upload service account JSON
-   
-   **Web App Configuration:**
-   - **Web API Key**: `apiKey` from Step 3
-   - **Auth Domain**: `authDomain` from Step 3  
-   - **Project ID**: `projectId` from Step 3
-   - **Storage Bucket**: `storageBucket` from Step 3
-   - **Messaging Sender ID**: `messagingSenderId` from Step 3
-   - **App ID**: `appId` from Step 3
+4. Upload the **Firebase Private Key File** (service account JSON from Step 2)
+5. Configure the **Web App Configuration** section with values from Step 3:
+   - **Web API Key**: `apiKey` from firebaseConfig
+   - **Auth Domain**: `authDomain` from firebaseConfig
+   - **Project ID**: `projectId` from firebaseConfig
+   - **Storage Bucket**: `storageBucket` from firebaseConfig
+   - **Messaging Sender ID**: `messagingSenderId` from firebaseConfig
+   - **App ID**: `appId` from firebaseConfig
    - **VAPID Key**: VAPID key from Step 4
+6. Save settings
 
 ## Step 6: Test Configuration
 
 1. Go to user preferences (your name > **Preferences**)
 2. Enable **"Firebase Notifications"**
-3. Click **"Enable Real Browser Notifications"**
+3. Click **"Enable Browser Notifications"**
 4. Allow notifications when browser prompts
-5. Click **"Test Real Notification"**
+5. Click **"Test Notification"**
 6. You should see a desktop notification!
 
 ## Troubleshooting

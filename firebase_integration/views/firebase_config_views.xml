@@ -60,6 +60,16 @@
         </field>
     </record>
 
+    <!-- Firebase Configuration Menu -->
+    <menuitem
+        id="menu_firebase_config"
+        name="Firebase Configuration"
+        parent="base.menu_administration"
+        action="action_firebase_config"
+        groups="base.group_system"
+        sequence="100"
+    />
+
     <!-- Settings View -->
     <record id="res_config_settings_view_form_firebase" model="ir.ui.view">
         <field name="name">res.config.settings.view.form.inherit.firebase</field>
@@ -106,6 +116,69 @@
                                 />
                                 <field
                                     name="firebase_private_key_filename"
+                                    invisible="1"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt16 o_settings_container" attrs="{'invisible': [('firebase_is_active', '=', False)]}">
+                        <div class="col-12">
+                            <h3>Web App Configuration (for Browser Notifications)</h3>
+                            <div class="text-muted mb16">
+                                Configure Firebase web app settings for browser push notifications. Get these values from your Firebase Console > Project Settings > General > Your apps > Web app.
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="firebase_web_api_key">Web API Key</label>
+                                <field name="firebase_web_api_key" placeholder="AIzaSyC..." />
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="firebase_web_auth_domain">Auth Domain</label>
+                                <field name="firebase_web_auth_domain" placeholder="my-project.firebaseapp.com" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="firebase_web_project_id">Project ID</label>
+                                <field name="firebase_web_project_id" placeholder="my-project" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="firebase_web_storage_bucket">Storage Bucket</label>
+                                <field name="firebase_web_storage_bucket" placeholder="my-project.appspot.com" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="firebase_web_messaging_sender_id">Messaging Sender ID</label>
+                                <field name="firebase_web_messaging_sender_id" placeholder="123456789" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="firebase_web_app_id">App ID</label>
+                                <field name="firebase_web_app_id" placeholder="1:123456789:web:abc123" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="firebase_vapid_key">VAPID Key</label>
+                                <div class="text-muted">
+                                    Generate this in Firebase Console > Cloud Messaging > Web Push certificates
+                                </div>
+                                <field name="firebase_vapid_key" placeholder="B..." />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
                                     invisible="1"
                                 />
                             </div>

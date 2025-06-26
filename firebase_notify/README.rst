@@ -33,14 +33,14 @@ For Users
 2. Find the "Firebase Notifications" section
 3. Check "Enable Firebase Notifications"
 
-**Step 2: Enable Real Browser Notifications**
+**Step 2: Enable Browser Notifications**
 
 **🔔 Real Firebase Integration (Recommended)**
 
-1. In the Firebase Notifications section, click **"Enable Real Browser Notifications"**
+1. In the Firebase Notifications section, click **"Enable Browser Notifications"**
 2. **Allow notifications** when prompted by your browser
 3. Your real Firebase token will be automatically generated and registered
-4. Click **"Test Real Notification"** to verify it works
+4. Click **"Test Notification"** to verify it works
 5. You should see an actual desktop notification appear!
 
 **📱 Alternative Methods**
@@ -53,7 +53,7 @@ If you prefer to use mobile app tokens or manual entry:
 
 **Step 3: Test and Verify**
 
-4. **Test Real Notifications**: Click the "Test Real Notification" button
+4. **Test Notifications**: Click the "Test Notification" button
 5. **Check Desktop**: You should see a real browser notification
 6. **Test Message Flow**: Send yourself a message in Odoo to test the complete flow
 
