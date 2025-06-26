@@ -7,6 +7,7 @@
     "data": [
         "security/ir.model.access.csv",
         "views/res_users_views.xml",
+        "views/test_template.xml",
     ],
     "assets": {
         "web.assets_backend": [

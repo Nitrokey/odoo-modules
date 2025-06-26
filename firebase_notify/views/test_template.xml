@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="test_page" name="Firebase Notification Test">
+        <t t-call="web.layout">
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Firebase Notification Test</h3>
+                            </div>
+                            <div class="card-body">
+                                <h5>Current User: <t t-esc="user.name"/></h5>
+                                
+                                <div class="mt-3">
+                                    <h6>Firebase Settings Status:</h6>
+                                    <ul>
+                                        <li>Notifications Enabled: 
+                                            <span t-if="user.firebase_notifications_enabled" class="text-success">✓ Yes</span>
+                                            <span t-else="" class="text-danger">✗ No</span>
+                                        </li>
+                                        <li>Firebase Token: 
+                                            <span t-if="user.firebase_token" class="text-success">✓ Registered</span>
+                                            <span t-else="" class="text-danger">✗ Not registered</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="mt-4">
+                                    <h6>Test Actions:</h6>
+                                    
+                                    <div class="mb-3">
+                                        <button id="enableNotifications" class="btn btn-primary">
+                                            1. Enable Notifications
+                                        </button>
+                                        <small class="form-text text-muted">
+                                            This will enable Firebase notifications for your user
+                                        </small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <input type="text" id="tokenInput" class="form-control" placeholder="Enter a test Firebase token (any text for testing)"/>
+                                        <button id="registerToken" class="btn btn-secondary mt-2">
+                                            2. Register Test Token
+                                        </button>
+                                        <small class="form-text text-muted">
+                                            For testing, you can enter any text as a token
+                                        </small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <button id="sendTest" class="btn btn-success">
+                                            3. Send Test Notification
+                                        </button>
+                                        <small class="form-text text-muted">
+                                            This will attempt to send a Firebase notification
+                                        </small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <button id="sendMessage" class="btn btn-info">
+                                            4. Send Test Message (triggers notification)
+                                        </button>
+                                        <small class="form-text text-muted">
+                                            This creates a message that should trigger a notification
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div id="results" class="mt-4">
+                                    <!-- Results will be displayed here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const resultsDiv = document.getElementById('results');
+                    
+                    function showResult(message, isSuccess = true) {
+                        const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
+                        resultsDiv.innerHTML = `&lt;div class="alert ${alertClass}"&gt;${message}&lt;/div&gt;`;
+                    }
+
+                    // Enable notifications
+                    document.getElementById('enableNotifications').addEventListener('click', function() {
+                        fetch('/web/dataset/call_kw', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {
+                                    model: 'res.users',
+                                    method: 'write',
+                                    args: [[<t t-esc="user.id"/>], {'firebase_notifications_enabled': true}],
+                                    kwargs: {}
+                                }
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result) {
+                                showResult('✓ Firebase notifications enabled successfully!');
+                                setTimeout(() => location.reload(), 1500);
+                            } else {
+                                showResult('✗ Failed to enable notifications', false);
+                            }
+                        })
+                        .catch(error => {
+                            showResult('✗ Error: ' + error.message, false);
+                        });
+                    });
+
+                    // Register token
+                    document.getElementById('registerToken').addEventListener('click', function() {
+                        const token = document.getElementById('tokenInput').value;
+                        if (!token) {
+                            showResult('✗ Please enter a token', false);
+                            return;
+                        }
+
+                        fetch('/firebase_notify/simple_register', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {
+                                    token: token
+                                }
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result &amp;&amp; data.result.success) {
+                                showResult('✓ Token registered successfully!');
+                                setTimeout(() => location.reload(), 1500);
+                            } else {
+                                showResult('✗ Failed to register token: ' + (data.result ? data.result.error : 'Unknown error'), false);
+                            }
+                        })
+                        .catch(error => {
+                            showResult('✗ Error: ' + error.message, false);
+                        });
+                    });
+
+                    // Send test notification
+                    document.getElementById('sendTest').addEventListener('click', function() {
+                        fetch('/firebase_notify/send_test', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {}
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result &amp;&amp; data.result.success) {
+                                showResult('✓ Test notification sent successfully!');
+                            } else {
+                                showResult('✗ Failed to send notification: ' + (data.result ? data.result.error : 'Unknown error'), false);
+                            }
+                        })
+                        .catch(error => {
+                            showResult('✗ Error: ' + error.message, false);
+                        });
+                    });
+
+                    // Send test message
+                    document.getElementById('sendMessage').addEventListener('click', function() {
+                        fetch('/web/dataset/call_kw', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {
+                                    model: 'mail.message',
+                                    method: 'create',
+                                    args: [{
+                                        'subject': 'Test Message for Firebase Notification',
+                                        'body': 'This is a test message to trigger Firebase notifications.',
+                                        'message_type': 'comment',
+                                        'partner_ids': [[6, 0, [<t t-esc="user.partner_id.id"/>]]]
+                                    }],
+                                    kwargs: {}
+                                }
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result) {
+                                showResult('✓ Test message created! Check if you received a notification.');
+                            } else {
+                                showResult('✗ Failed to create test message', false);
+                            }
+                        })
+                        .catch(error => {
+                            showResult('✗ Error: ' + error.message, false);
+                        });
+                    });
+                });
+            </script>
+        </t>
+    </template>
+</odoo>
