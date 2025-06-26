@@ -203,25 +203,54 @@ registry.category("services").add("firebase_real_notify", {
     },
 });
 
+// Create a global Firebase service instance
+window.firebaseNotifyService = null;
+
+// Initialize the service when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Create service instance directly
+    window.firebaseNotifyService = new FirebaseRealNotifyService(
+        null, // env
+        {
+            rpc: function(url, params) {
+                return fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        method: 'call',
+                        params: params || {}
+                    })
+                }).then(response => response.json()).then(data => data.result);
+            },
+            notification: {
+                add: function(message, options) {
+                    console.log('Notification:', message, options);
+                }
+            }
+        }
+    );
+});
+
 // Global function for use in form views
 window.enableFirebaseNotifications = async function() {
-    const firebaseService = odoo.__DEBUG__.services['firebase_real_notify'];
-    
-    if (!firebaseService) {
-        alert('Firebase service not available');
+    if (!window.firebaseNotifyService) {
+        alert('Firebase service not initialized. Please refresh the page and try again.');
         return;
     }
 
     try {
         // Initialize Firebase
-        const initResult = await firebaseService.initialize();
+        const initResult = await window.firebaseNotifyService.initialize();
         if (!initResult.success) {
             alert('Failed to initialize Firebase: ' + initResult.error);
             return;
         }
 
         // Request permission and register token
-        const result = await firebaseService.requestPermissionAndRegisterToken();
+        const result = await window.firebaseNotifyService.requestPermissionAndRegisterToken();
         
         if (result.success) {
             alert('✅ ' + result.message);
@@ -232,20 +261,19 @@ window.enableFirebaseNotifications = async function() {
         }
     } catch (error) {
         alert('❌ Error: ' + error.message);
+        console.error('Firebase enable error:', error);
     }
 };
 
 // Global function for testing notifications
 window.testFirebaseNotification = async function() {
-    const firebaseService = odoo.__DEBUG__.services['firebase_real_notify'];
-    
-    if (!firebaseService) {
-        alert('Firebase service not available');
+    if (!window.firebaseNotifyService) {
+        alert('Firebase service not initialized. Please refresh the page and try again.');
         return;
     }
 
     try {
-        const result = await firebaseService.sendTestNotification();
+        const result = await window.firebaseNotifyService.sendTestNotification();
         
         if (result.success) {
             alert('✅ Test notification sent! Check your browser for the notification.');
@@ -254,5 +282,6 @@ window.testFirebaseNotification = async function() {
         }
     } catch (error) {
         alert('❌ Error: ' + error.message);
+        console.error('Firebase test error:', error);
     }
 };
