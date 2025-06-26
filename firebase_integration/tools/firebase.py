@@ -61,19 +61,35 @@ def send_firebase_notifications(messages, env=None) -> int:
         return 0
 
     try:
-        messages = list(
-            map(
-                lambda msg: messaging.Message(
-                    notification=messaging.Notification(
-                        msg.get("title"), msg.get("body")
-                    ),
-                    token=msg.get("token"),
-                ),
-                messages,
+        _logger.info(f"Processing {len(messages)} Firebase messages")
+        
+        firebase_messages = []
+        for i, msg in enumerate(messages):
+            token = msg.get("token")
+            title = msg.get("title")
+            body = msg.get("body")
+            
+            _logger.info(f"Message {i}: token={token[:20] if token else 'None'}..., title={title}, body={body}")
+            
+            firebase_msg = messaging.Message(
+                notification=messaging.Notification(title, body),
+                token=token,
             )
-        )
-        response = messaging.send_each(messages, app=app)
+            firebase_messages.append(firebase_msg)
+        
+        _logger.info("Sending messages to Firebase...")
+        response = messaging.send_each(firebase_messages, app=app)
+        
+        _logger.info(f"Firebase response - Success: {response.success_count}, Failure: {response.failure_count}")
+        
+        # Log individual response details
+        for i, result in enumerate(response.responses):
+            if result.success:
+                _logger.info(f"Message {i}: SUCCESS - ID: {result.message_id}")
+            else:
+                _logger.error(f"Message {i}: FAILED - Error: {result.exception}")
+        
         return response.success_count
     except Exception as e:
-        _logger.error(f"Failed to send Firebase notifications: {str(e)}")
+        _logger.error(f"Exception in send_firebase_notifications: {str(e)}", exc_info=True)
         return 0
