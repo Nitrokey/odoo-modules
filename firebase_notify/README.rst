@@ -27,11 +27,39 @@ Usage
 For Users
 ---------
 
+**Step 1: Enable Firebase Notifications**
+
 1. Go to your user preferences (click on your name > Preferences)
 2. Find the "Firebase Notifications" section
 3. Check "Enable Firebase Notifications"
-4. Enter your Firebase device token
-5. Save your preferences
+
+**Step 2: Register Your Browser for Notifications**
+
+**Automatic Registration (Recommended)**
+
+1. In the Firebase Notifications section, click **"Enable Browser Notifications"**
+2. Allow notifications when prompted by your browser
+3. Your Firebase token will be automatically registered with Odoo
+4. You'll see a confirmation that notifications are enabled
+
+**Manual Registration (Alternative)**
+
+If automatic registration doesn't work, you can manually enter a Firebase token:
+
+- **Mobile App**: Install a Firebase-enabled mobile app and copy the token from app settings
+- **Web Browser**: Visit a Firebase-enabled website and copy the displayed token
+- **Developer Tools**: Use browser console with ``messaging.getToken()``
+
+**Step 3: Save and Test**
+
+4. Save your preferences
+5. Test by sending yourself a message in Odoo
+
+**Important Notes:**
+- **Browser-specific**: Each browser/device needs separate registration
+- **Permission required**: You must allow browser notifications when prompted
+- **Automatic updates**: Tokens are automatically refreshed when needed
+- **Background notifications**: Works even when Odoo tab is not active
 
 For Developers
 --------------

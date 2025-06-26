@@ -59,7 +59,7 @@ class ResConfigSettings(models.TransientModel):
     firebase_is_active = fields.Boolean(
         string="Enable Firebase Integration",
         default=False,
-        help="Enable or disable Firebase integration"
+        help="Enable or disable Firebase integration",
     )
 
     @api.model
@@ -79,13 +79,15 @@ class ResConfigSettings(models.TransientModel):
     def set_values(self):
         res = super().set_values()
         firebase_config = self.env["firebase.config"].search([], limit=1)
-        
+
         if firebase_config:
             # Update existing configuration
             firebase_config.write(
                 {
-                    "private_key_file": self.firebase_private_key_file or firebase_config.private_key_file,
-                    "private_key_filename": self.firebase_private_key_filename or firebase_config.private_key_filename,
+                    "private_key_file": self.firebase_private_key_file
+                    or firebase_config.private_key_file,
+                    "private_key_filename": self.firebase_private_key_filename
+                    or firebase_config.private_key_filename,
                     "is_active": self.firebase_is_active,
                 }
             )

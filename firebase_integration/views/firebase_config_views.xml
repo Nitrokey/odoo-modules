@@ -69,18 +69,25 @@
                     <div class="row mt16 o_settings_container">
                         <div class="col-12 col-lg-6 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="firebase_is_active"/>
+                                <field name="firebase_is_active" />
                             </div>
                             <div class="o_setting_right_pane">
-                                <label for="firebase_is_active">Enable Firebase Integration</label>
+                                <label
+                                    for="firebase_is_active"
+                                >Enable Firebase Integration</label>
                                 <div class="text-muted">
                                     Enable Firebase push notifications and integration features
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-6 o_setting_box" attrs="{'invisible': [('firebase_is_active', '=', False)]}">
+                        <div
+                            class="col-12 col-lg-6 o_setting_box"
+                            attrs="{'invisible': [('firebase_is_active', '=', False)]}"
+                        >
                             <div class="o_setting_right_pane">
-                                <label for="firebase_private_key_file">Firebase Private Key File</label>
+                                <label
+                                    for="firebase_private_key_file"
+                                >Firebase Private Key File</label>
                                 <div class="text-muted">
                                     Upload the Firebase service account private key JSON file
                                 </div>

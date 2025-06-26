@@ -8,6 +8,12 @@
         "security/ir.model.access.csv",
         "views/res_users_views.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "firebase_notify/static/src/js/firebase_notify.js",
+            "firebase_notify/static/src/xml/firebase_notify_templates.xml",
+        ],
+    },
     "images": [],
     "license": "LGPL-3",
     "installable": True,

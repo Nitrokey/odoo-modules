@@ -9,10 +9,23 @@
             <xpath expr="//page[@name='preferences']" position="inside">
                 <group string="Firebase Notifications" name="firebase_notifications">
                     <field name="firebase_notifications_enabled" />
-                    <field
-                        name="firebase_token"
+                    <div
                         attrs="{'invisible': [('firebase_notifications_enabled', '=', False)]}"
-                    />
+                    >
+                        <div class="firebase_notify_widget_container">
+                            <!-- Automatic browser registration widget will be inserted here -->
+                        </div>
+                        <div class="mt-3">
+                            <strong>Manual Token Entry (Advanced)</strong>
+                            <p
+                                class="text-muted"
+                            >If automatic registration doesn't work, you can manually enter your Firebase token:</p>
+                            <field
+                                name="firebase_token"
+                                placeholder="Paste your Firebase device token here (optional)"
+                            />
+                        </div>
+                    </div>
                 </group>
             </xpath>
         </field>
@@ -27,11 +40,23 @@
             <xpath expr="//group[@name='preferences']" position="after">
                 <group string="Firebase Notifications" name="firebase_notifications">
                     <field name="firebase_notifications_enabled" />
-                    <field
-                        name="firebase_token"
+                    <div
                         attrs="{'invisible': [('firebase_notifications_enabled', '=', False)]}"
-                        placeholder="Enter your Firebase device token"
-                    />
+                    >
+                        <div class="firebase_notify_widget_container">
+                            <!-- Automatic browser registration widget will be inserted here -->
+                        </div>
+                        <div class="mt-3">
+                            <strong>Manual Token Entry (Advanced)</strong>
+                            <p
+                                class="text-muted"
+                            >If automatic registration doesn't work, you can manually enter your Firebase token:</p>
+                            <field
+                                name="firebase_token"
+                                placeholder="Paste your Firebase device token here (optional)"
+                            />
+                        </div>
+                    </div>
                 </group>
             </xpath>
         </field>

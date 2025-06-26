@@ -21,13 +21,52 @@
 </ol>
 
 <h3>User Configuration</h3>
+
+<h4>Step 1: Enable Firebase Notifications</h4>
 <ol>
     <li>Go to your user preferences (click on your name > <strong>Preferences</strong>)</li>
     <li>Find the <strong>"Firebase Notifications"</strong> section</li>
     <li>Check <strong>"Enable Firebase Notifications"</strong></li>
-    <li>Enter your Firebase device token</li>
-    <li>Save your preferences</li>
 </ol>
+
+<h4>Step 2: Register Your Browser for Notifications</h4>
+
+<div class="alert alert-success">
+    <strong>🎉 Automatic Registration Available!</strong><br>
+    Odoo can now automatically register your browser for Firebase notifications - no manual token entry required!
+</div>
+
+<p><strong>Automatic Registration (Recommended)</strong></p>
+<ol>
+    <li>Click <strong>"Enable Browser Notifications"</strong> in the Firebase Notifications section</li>
+    <li>Allow notifications when prompted by your browser</li>
+    <li>Your Firebase token will be automatically registered with Odoo</li>
+    <li>You'll see a confirmation that notifications are enabled</li>
+</ol>
+
+<p><strong>Manual Registration (Alternative)</strong></p>
+<p>If automatic registration doesn't work, you can still manually enter a Firebase token:</p>
+<ul>
+    <li><strong>Mobile App:</strong> Install a Firebase-enabled mobile app and copy the token from app settings</li>
+    <li><strong>Web Browser:</strong> Visit a Firebase-enabled website and copy the displayed token</li>
+    <li><strong>Developer Tools:</strong> Use browser console with <code>messaging.getToken()</code></li>
+</ul>
+
+<h4>Step 3: Save and Test</h4>
+<ol start="4">
+    <li>Save your preferences</li>
+    <li>Test by sending yourself a message in Odoo</li>
+</ol>
+
+<div class="alert alert-info">
+    <strong>Key Benefits:</strong>
+    <ul>
+        <li><strong>Browser-specific:</strong> Each browser/device needs separate registration</li>
+        <li><strong>Automatic updates:</strong> Tokens are automatically refreshed when needed</li>
+        <li><strong>Background notifications:</strong> Works even when Odoo tab is not active</li>
+        <li><strong>No manual maintenance:</strong> No need to update tokens manually</li>
+    </ul>
+</div>
 
 <h3>Technical Details</h3>
 <p>The module automatically hooks into the mail.message creation process and sends Firebase notifications to users who have enabled notifications and configured a valid Firebase token. It supports both direct messages and channel messages, with comprehensive error handling and logging.</p>

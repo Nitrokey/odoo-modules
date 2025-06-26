@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="firebase_notify.FirebaseNotifyWidget" owl="1">
+        <div class="firebase_notify_widget">
+            <div t-if="state.loading" class="text-muted">
+                <i class="fa fa-spinner fa-spin"/> Loading...
+            </div>
+            <div t-else="">
+                <div t-if="!state.enabled" class="alert alert-info">
+                    <strong>Enable Firebase Notifications</strong>
+                    <p>Click the button below to automatically register this browser for Firebase notifications.</p>
+                    <button class="btn btn-primary" t-on-click="enableNotifications">
+                        <i class="fa fa-bell"/> Enable Browser Notifications
+                    </button>
+                </div>
+                <div t-elif="state.hasToken" class="alert alert-success">
+                    <i class="fa fa-check-circle"/> Firebase notifications are enabled for this browser.
+                </div>
+                <div t-else="" class="alert alert-warning">
+                    <i class="fa fa-exclamation-triangle"/> Firebase notifications are enabled but no token is registered for this browser.
+                    <button class="btn btn-sm btn-primary" t-on-click="enableNotifications">
+                        Register This Browser
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
