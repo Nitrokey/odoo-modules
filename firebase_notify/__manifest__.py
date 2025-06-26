@@ -12,6 +12,7 @@
     "assets": {
         "web.assets_backend": [
             "firebase_notify/static/src/js/firebase_notify.js",
+            "firebase_notify/static/src/js/firebase_integration.js",
             "firebase_notify/static/src/xml/firebase_notify_templates.xml",
         ],
     },

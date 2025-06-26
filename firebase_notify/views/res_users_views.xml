@@ -12,18 +12,29 @@
                     <div
                         attrs="{'invisible': [('firebase_notifications_enabled', '=', False)]}"
                     >
-                        <div class="firebase_notify_widget_container">
-                            <!-- Automatic browser registration widget will be inserted here -->
+                        <div class="alert alert-info">
+                            <strong>🔔 Real Browser Notifications</strong>
+                            <p>Click the button below to enable real Firebase notifications in your browser:</p>
+                            <button type="button" class="btn btn-primary" onclick="enableFirebaseNotifications()">
+                                <i class="fa fa-bell"/> Enable Real Browser Notifications
+                            </button>
+                            <button type="button" class="btn btn-success ml-2" onclick="testFirebaseNotification()">
+                                <i class="fa fa-paper-plane"/> Test Real Notification
+                            </button>
                         </div>
+                        
+                        <div class="mt-3">
+                            <strong>Current Token Status:</strong>
+                            <field name="firebase_token" readonly="1"/>
+                            <small class="form-text text-muted">
+                                This shows your current Firebase token (auto-generated test token or real browser token)
+                            </small>
+                        </div>
+                        
                         <div class="mt-3">
                             <strong>Manual Token Entry (Advanced)</strong>
-                            <p
-                                class="text-muted"
-                            >If automatic registration doesn't work, you can manually enter your Firebase token:</p>
-                            <field
-                                name="firebase_token"
-                                placeholder="Paste your Firebase device token here (optional)"
-                            />
+                            <p class="text-muted">For mobile apps or manual token entry:</p>
+                            <field name="firebase_token" nolabel="1" placeholder="Enter Firebase token manually (optional)"/>
                         </div>
                     </div>
                 </group>
@@ -43,18 +54,29 @@
                     <div
                         attrs="{'invisible': [('firebase_notifications_enabled', '=', False)]}"
                     >
-                        <div class="firebase_notify_widget_container">
-                            <!-- Automatic browser registration widget will be inserted here -->
+                        <div class="alert alert-info">
+                            <strong>🔔 Real Browser Notifications</strong>
+                            <p>Click the button below to enable real Firebase notifications in your browser:</p>
+                            <button type="button" class="btn btn-primary" onclick="enableFirebaseNotifications()">
+                                <i class="fa fa-bell"/> Enable Real Browser Notifications
+                            </button>
+                            <button type="button" class="btn btn-success ml-2" onclick="testFirebaseNotification()">
+                                <i class="fa fa-paper-plane"/> Test Real Notification
+                            </button>
                         </div>
+                        
+                        <div class="mt-3">
+                            <strong>Current Token Status:</strong>
+                            <field name="firebase_token" readonly="1"/>
+                            <small class="form-text text-muted">
+                                This shows your current Firebase token (auto-generated test token or real browser token)
+                            </small>
+                        </div>
+                        
                         <div class="mt-3">
                             <strong>Manual Token Entry (Advanced)</strong>
-                            <p
-                                class="text-muted"
-                            >If automatic registration doesn't work, you can manually enter your Firebase token:</p>
-                            <field
-                                name="firebase_token"
-                                placeholder="Paste your Firebase device token here (optional)"
-                            />
+                            <p class="text-muted">For mobile apps or manual token entry:</p>
+                            <field name="firebase_token" nolabel="1" placeholder="Enter Firebase token manually (optional)"/>
                         </div>
                     </div>
                 </group>

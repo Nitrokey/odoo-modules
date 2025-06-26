@@ -33,33 +33,36 @@ For Users
 2. Find the "Firebase Notifications" section
 3. Check "Enable Firebase Notifications"
 
-**Step 2: Register Your Browser for Notifications**
+**Step 2: Enable Real Browser Notifications**
 
-**Automatic Registration (Recommended)**
+**🔔 Real Firebase Integration (Recommended)**
 
-1. In the Firebase Notifications section, click **"Enable Browser Notifications"**
-2. Allow notifications when prompted by your browser
-3. Your Firebase token will be automatically registered with Odoo
-4. You'll see a confirmation that notifications are enabled
+1. In the Firebase Notifications section, click **"Enable Real Browser Notifications"**
+2. **Allow notifications** when prompted by your browser
+3. Your real Firebase token will be automatically generated and registered
+4. Click **"Test Real Notification"** to verify it works
+5. You should see an actual desktop notification appear!
 
-**Manual Registration (Alternative)**
+**📱 Alternative Methods**
 
-If automatic registration doesn't work, you can manually enter a Firebase token:
+If you prefer to use mobile app tokens or manual entry:
 
 - **Mobile App**: Install a Firebase-enabled mobile app and copy the token from app settings
-- **Web Browser**: Visit a Firebase-enabled website and copy the displayed token
-- **Developer Tools**: Use browser console with ``messaging.getToken()``
+- **Manual Entry**: Enter any Firebase token in the manual entry field
+- **Test Tokens**: The system auto-generates test tokens for development
 
-**Step 3: Save and Test**
+**Step 3: Test and Verify**
 
-4. Save your preferences
-5. Test by sending yourself a message in Odoo
+4. **Test Real Notifications**: Click the "Test Real Notification" button
+5. **Check Desktop**: You should see a real browser notification
+6. **Test Message Flow**: Send yourself a message in Odoo to test the complete flow
 
-**Important Notes:**
-- **Browser-specific**: Each browser/device needs separate registration
-- **Permission required**: You must allow browser notifications when prompted
-- **Automatic updates**: Tokens are automatically refreshed when needed
+**🎯 What You'll Experience:**
+- **Browser permission prompt**: "Allow notifications" dialog
+- **Real desktop notifications**: Actual notifications that appear on your desktop
 - **Background notifications**: Works even when Odoo tab is not active
+- **Click actions**: Clicking notifications opens/focuses Odoo
+- **Foreground alerts**: In-app notifications when Odoo is active
 
 For Developers
 --------------

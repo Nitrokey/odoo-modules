@@ -4,10 +4,6 @@ import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { Component, onMounted, useState } from "@odoo/owl";
 
-// Firebase SDK imports (these would need to be loaded externally)
-// import { initializeApp } from 'firebase/app';
-// import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-
 class FirebaseNotifyService {
     constructor(env, services) {
         this.env = env;
