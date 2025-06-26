@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from odoo import http
 from odoo.http import request
@@ -8,6 +9,33 @@ _logger = logging.getLogger(__name__)
 
 
 class FirebaseNotifyController(http.Controller):
+
+    @http.route('/firebase-messaging-sw.js', type='http', auth='public', methods=['GET'])
+    def firebase_messaging_sw(self):
+        """Serve Firebase messaging service worker from root path"""
+        try:
+            # Get the module path
+            module_path = request.env['ir.module.module'].get_module_path('firebase_notify')
+            sw_path = os.path.join(module_path, 'static', 'firebase-messaging-sw.js')
+            
+            # Read the service worker file
+            with open(sw_path, 'r', encoding='utf-8') as f:
+                sw_content = f.read()
+            
+            # Return the service worker with proper headers
+            return request.make_response(
+                sw_content,
+                headers=[
+                    ('Content-Type', 'application/javascript'),
+                    ('Service-Worker-Allowed', '/'),
+                    ('Cache-Control', 'no-cache, no-store, must-revalidate'),
+                    ('Pragma', 'no-cache'),
+                    ('Expires', '0')
+                ]
+            )
+        except Exception as e:
+            _logger.error(f"Failed to serve service worker: {str(e)}")
+            return request.not_found()
 
     @http.route('/firebase_notify/register_token', type='json', auth='user', methods=['POST'])
     def register_firebase_token(self, token):
@@ -92,4 +120,49 @@ class FirebaseNotifyController(http.Controller):
             return {
                 'success': False,
                 'error': 'Failed to get status'
+            }
+
+    @http.route('/firebase_notify/send_test', type='json', auth='user', methods=['POST'])
+    def send_test_notification(self):
+        """Send a test notification to the current user"""
+        try:
+            user = request.env.user
+            
+            if not user.firebase_notifications_enabled or not user.firebase_token:
+                return {
+                    'success': False,
+                    'error': 'Firebase notifications not enabled or no token registered'
+                }
+            
+            # Import Firebase tools
+            firebase_tools = request.env['firebase.tools']
+            
+            # Send test notification
+            result = firebase_tools.send_notification(
+                user.firebase_token,
+                'Test Notification',
+                'This is a test notification from Odoo Firebase integration!',
+                {
+                    'test': True,
+                    'user_id': user.id,
+                    'timestamp': str(request.env.cr.now())
+                }
+            )
+            
+            if result:
+                return {
+                    'success': True,
+                    'message': 'Test notification sent successfully!'
+                }
+            else:
+                return {
+                    'success': False,
+                    'error': 'Failed to send test notification'
+                }
+                
+        except Exception as e:
+            _logger.error(f"Failed to send test notification: {str(e)}")
+            return {
+                'success': False,
+                'error': 'Failed to send test notification: ' + str(e)
             }

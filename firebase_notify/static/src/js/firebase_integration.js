@@ -92,7 +92,7 @@ class FirebaseRealNotifyService {
     async registerServiceWorker() {
         if ('serviceWorker' in navigator) {
             try {
-                const registration = await navigator.serviceWorker.register('/firebase_notify/static/firebase-messaging-sw.js');
+                const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
                 console.log('Service Worker registered:', registration);
                 
                 // Send Firebase config to service worker
@@ -107,6 +107,7 @@ class FirebaseRealNotifyService {
                 }
             } catch (error) {
                 console.error('Service Worker registration failed:', error);
+                throw error;
             }
         }
     }
@@ -210,6 +211,47 @@ registry.category("services").add("firebase_real_notify", {
     start(env, services) {
         return new FirebaseRealNotifyService(env, services);
     },
+});
+
+// Client action for enabling Firebase notifications
+registry.category("actions").add("firebase_enable_notifications", async function (env, action) {
+    const firebaseService = env.services.firebase_real_notify;
+    
+    try {
+        // Initialize Firebase
+        const initResult = await firebaseService.initialize();
+        if (!initResult.success) {
+            env.services.notification.add('Failed to initialize Firebase: ' + initResult.error, {
+                type: 'danger'
+            });
+            return;
+        }
+
+        // Request permission and register token
+        const result = await firebaseService.requestPermissionAndRegisterToken();
+        
+        if (result.success) {
+            env.services.notification.add(result.message, {
+                type: 'success'
+            });
+            
+            // Reload the current view to show updated status
+            if (env.services.action && env.services.action.doAction) {
+                env.services.action.doAction('reload');
+            } else {
+                window.location.reload();
+            }
+        } else {
+            env.services.notification.add('Failed to enable notifications: ' + result.error, {
+                type: 'danger'
+            });
+        }
+    } catch (error) {
+        env.services.notification.add('Error: ' + error.message, {
+            type: 'danger'
+        });
+        console.error('Firebase enable error:', error);
+    }
 });
 
 // Create a global Firebase service instance
