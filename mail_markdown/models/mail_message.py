@@ -74,12 +74,17 @@ class MailMessage(models.Model):
         if not markdown_text:
             return markdown_text
 
-        # First process line-by-line for line-dependent formatting
-        # Handle both \n and <br> as line separators since Odoo may convert line breaks
-        # Also handle HTML entities that Odoo may have escaped
-        text_with_newlines = markdown_text.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
-        text_with_newlines = text_with_newlines.replace("&gt;", ">").replace("&lt;", "<").replace("&amp;", "&")
-        lines = text_with_newlines.split("\n")
+        # First handle HTML entities and line breaks
+        html = markdown_text.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
+        html = html.replace("&gt;", ">").replace("&lt;", "<").replace("&amp;", "&")
+
+        # Process code blocks first (they span multiple lines)
+        html = re.sub(
+            r"```(.*?)```", r"<pre><code>\1</code></pre>", html, flags=re.DOTALL
+        )
+
+        # Now process line-by-line for line-dependent formatting
+        lines = html.split("\n")
         processed_lines = []
         in_ul = False
         in_ol = False
@@ -159,11 +164,6 @@ class MailMessage(models.Model):
 
         # Convert inline code (`code`)
         html = re.sub(r"`([^`]+?)`", r"<code>\1</code>", html)
-
-        # Convert code blocks (```code```)
-        html = re.sub(
-            r"```(.*?)```", r"<pre><code>\1</code></pre>", html, flags=re.DOTALL
-        )
 
         # Convert links [text](url)
         html = re.sub(
