@@ -34,23 +34,23 @@ class MailMessage(models.Model):
         """
         if not text:
             return False
-        
+
         # Check for common markdown patterns
         markdown_patterns = [
-            r'\*\*.*?\*\*',  # Bold **text**
-            r'__.*?__',      # Underline __text__
-            r'\*.*?\*',      # Italic *text*
-            r'_.*?_',        # Italic _text_
-            r'~~.*?~~',      # Strikethrough ~~text~~
-            r'`.*?`',        # Inline code `code`
-            r'```.*?```',    # Code blocks ```code```
-            r'\[.*?\]\(.*?\)',  # Links [text](url)
-            r'^#{1,6}\s',    # Headers # ## ###
-            r'^\s*[\*\-\+]\s',  # Unordered lists
-            r'^\s*\d+\.\s',  # Ordered lists
-            r'^>\s',         # Blockquotes
+            r"\*\*.*?\*\*",  # Bold **text**
+            r"__.*?__",  # Underline __text__
+            r"\*.*?\*",  # Italic *text*
+            r"_.*?_",  # Italic _text_
+            r"~~.*?~~",  # Strikethrough ~~text~~
+            r"`.*?`",  # Inline code `code`
+            r"```.*?```",  # Code blocks ```code```
+            r"\[.*?\]\(.*?\)",  # Links [text](url)
+            r"(^|\n)#{1,6}\s",  # Headers # ## ###
+            r"(^|\n)\s*[\*\-\+]\s",  # Unordered lists
+            r"(^|\n)\s*\d+\.\s",  # Ordered lists
+            r"(^|\n)>\s",  # Blockquotes
         ]
-        
+
         for pattern in markdown_patterns:
             if re.search(pattern, text, re.MULTILINE):
                 return True
@@ -65,6 +65,7 @@ class MailMessage(models.Model):
         if not markdown_text:
             return markdown_text
 
+        # First, handle inline formatting that doesn't depend on line position
         html = markdown_text
 
         # Convert bold text (**text**)
@@ -89,27 +90,57 @@ class MailMessage(models.Model):
         # Convert links [text](url)
         html = re.sub(r'\[([^\]]+?)\]\(([^)]+?)\)', r'<a href="\2" target="_blank">\1</a>', html)
 
-        # Convert headers
-        html = re.sub(r'^### (.*?)$', r'<h3>\1</h3>', html, flags=re.MULTILINE)
-        html = re.sub(r'^## (.*?)$', r'<h2>\1</h2>', html, flags=re.MULTILINE)
-        html = re.sub(r'^# (.*?)$', r'<h1>\1</h1>', html, flags=re.MULTILINE)
+        # Now process line-by-line for line-dependent formatting
+        lines = html.split('\n')
+        processed_lines = []
+        in_ul = False
+        in_ol = False
 
-        # Convert unordered lists
-        html = re.sub(r'^[\*\-\+] (.*)$', r'<li>\1</li>', html, flags=re.MULTILINE)
-        html = re.sub(r'(<li>.*</li>)', r'<ul>\1</ul>', html, flags=re.DOTALL)
-        html = re.sub(r'</ul>\s*<ul>', '', html)
+        for line in lines:
+            # Convert headers (must be at start of line)
+            if re.match(r'^### (.*)$', line):
+                line = re.sub(r'^### (.*)$', r'<h3>\1</h3>', line)
+            elif re.match(r'^## (.*)$', line):
+                line = re.sub(r'^## (.*)$', r'<h2>\1</h2>', line)
+            elif re.match(r'^# (.*)$', line):
+                line = re.sub(r'^# (.*)$', r'<h1>\1</h1>', line)
 
-        # Convert ordered lists
-        html = re.sub(r'^\d+\. (.*)$', r'<li>\1</li>', html, flags=re.MULTILINE)
-        # This is a simplified approach - in reality, you'd want more sophisticated list handling
+            # Convert unordered lists
+            elif re.match(r'^\s*[\*\-\+] (.*)$', line):
+                if not in_ul:
+                    processed_lines.append('<ul>')
+                    in_ul = True
+                line = re.sub(r'^\s*[\*\-\+] (.*)$', r'<li>\1</li>', line)
 
-        # Convert line breaks
-        html = html.replace('\n', '<br/>')
+            # Convert ordered lists
+            elif re.match(r'^\s*\d+\. (.*)$', line):
+                if not in_ol:
+                    processed_lines.append('<ol>')
+                    in_ol = True
+                line = re.sub(r'^\s*\d+\. (.*)$', r'<li>\1</li>', line)
 
-        # Convert blockquotes
-        html = re.sub(r'^> (.*)$', r'<blockquote>\1</blockquote>', html, flags=re.MULTILINE)
+            # Convert blockquotes
+            elif re.match(r'^>\s*(.*)$', line):
+                line = re.sub(r'^>\s*(.*)$', r'<blockquote>\1</blockquote>', line)
 
-        return html
+            # Handle end of lists
+            else:
+                if in_ul:
+                    processed_lines.append('</ul>')
+                    in_ul = False
+                if in_ol:
+                    processed_lines.append('</ol>')
+                    in_ol = False
+
+            processed_lines.append(line)
+
+        # Close any open lists at the end
+        if in_ul:
+            processed_lines.append('</ul>')
+        if in_ol:
+            processed_lines.append('</ol>')
+
+        return '\n'.join(processed_lines)
 
     @api.model
     def _get_markdown_preview(self, markdown_text):

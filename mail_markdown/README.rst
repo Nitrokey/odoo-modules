@@ -33,18 +33,17 @@ After installation, users can write chatter messages using Markdown syntax. Mess
 
 **Markdown Features:**
 
-* **Bold**: ``**bold text**`` → **bold text**
-* *Italic*: ``*italic text*`` or ``_italic text_`` → *italic text*
-* __Underline__: ``__underlined text__`` → __underlined text__
+* **Bold**: ``**bold text**``
+* *Italic*: ``*italic text*`` or ``_italic text_``
+* Underline: ``__underlined text__``
 * `Code`: ```inline code``` → `inline code`
-* Code blocks: ````code block```` → formatted code block
-* Links: ``[Link text](https://example.com)`` → `Link text <https://example.com>`_
+* Code blocks: ````code block````
+* `Links <https://example.com>`: ``[Link text](https://example.com)``
 * Unordered lists: ``* Item 1``, ``- Item 2``, ``+ Item 3``
 * Ordered lists: ``1. First item``, ``2. Second item``
 * Headers: ``# Header 1``, ``## Header 2``, ``### Header 3``
-* Strikethrough: ``~~strikethrough text~~`` → ~~strikethrough text~~
-* Blockquotes: ``> This is a quote`` → quoted text
-* Line breaks: Line breaks in text are preserved as HTML line breaks
+* Strikethrough: ``~~strikethrough text~~``
+* Blockquotes: ``> This is a quote``
 
 Bug Tracker
 ===========
