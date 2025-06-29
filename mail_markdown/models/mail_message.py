@@ -39,6 +39,9 @@ class MailMessage(models.Model):
         if not text:
             return False
 
+        # Handle both \n and <br> as line separators for detection
+        text_normalized = text.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
+        
         # Check for common markdown patterns
         markdown_patterns = [
             r"\*\*.*?\*\*",  # Bold **text**
@@ -56,7 +59,7 @@ class MailMessage(models.Model):
         ]
 
         for pattern in markdown_patterns:
-            if re.search(pattern, text, re.MULTILINE):
+            if re.search(pattern, text_normalized, re.MULTILINE):
                 return True
         return False
 
@@ -70,7 +73,9 @@ class MailMessage(models.Model):
             return markdown_text
 
         # First process line-by-line for line-dependent formatting
-        lines = markdown_text.split("\n")
+        # Handle both \n and <br> as line separators since Odoo may convert line breaks
+        text_with_newlines = markdown_text.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
+        lines = text_with_newlines.split("\n")
         processed_lines = []
         in_ul = False
         in_ol = False
