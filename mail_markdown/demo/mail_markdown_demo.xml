@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data noupdate="1">
         <!-- Demo data for mail_markdown module -->
-        
+
         <!-- Create a demo partner to test chatter messages -->
         <record id="partner_markdown_demo" model="res.partner">
             <field name="name">Markdown Demo Partner</field>
             <field name="email">markdown.demo@example.com</field>
             <field name="is_company">True</field>
-            <field name="comment">This partner is used for testing markdown functionality in chatter messages.</field>
+            <field
+                name="comment"
+            >This partner is used for testing markdown functionality in chatter messages.</field>
         </record>
 
         <!-- Create some demo messages with markdown content -->
@@ -48,9 +50,9 @@ def hello_world():
 
 **Happy messaging with Markdown!** 🚀</field>
             <field name="model">res.partner</field>
-            <field name="res_id" ref="partner_markdown_demo"/>
+            <field name="res_id" ref="partner_markdown_demo" />
             <field name="message_type">comment</field>
-            <field name="author_id" ref="base.user_admin"/>
+            <field name="author_id" ref="base.user_admin" />
         </record>
 
         <record id="message_markdown_demo_2" model="mail.message">
@@ -78,9 +80,9 @@ function greet(name) {
 - [Odoo Documentation](https://www.odoo.com/documentation)
 - [Markdown Guide](https://www.markdownguide.org/)</field>
             <field name="model">res.partner</field>
-            <field name="res_id" ref="partner_markdown_demo"/>
+            <field name="res_id" ref="partner_markdown_demo" />
             <field name="message_type">comment</field>
-            <field name="author_id" ref="base.user_admin"/>
+            <field name="author_id" ref="base.user_admin" />
         </record>
     </data>
 </odoo>
