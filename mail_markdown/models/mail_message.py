@@ -66,37 +66,8 @@ class MailMessage(models.Model):
         if not markdown_text:
             return markdown_text
 
-        # First, handle inline formatting that doesn't depend on line position
-        html = markdown_text
-
-        # Convert bold text (**text**)
-        html = re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", html)
-
-        # Convert italic text (*text* or _text_)
-        html = re.sub(r"(?<!\*)\*(?!\*)([^*]+?)(?<!\*)\*(?!\*)", r"<em>\1</em>", html)
-        html = re.sub(r"(?<!_)_(?!_)([^_]+?)(?<!_)_(?!_)", r"<em>\1</em>", html)
-
-        # Convert underline text (__text__)
-        html = re.sub(r"__(.*?)__", r"<u>\1</u>", html)
-
-        # Convert strikethrough text (~~text~~)
-        html = re.sub(r"~~(.*?)~~", r"<del>\1</del>", html)
-
-        # Convert inline code (`code`)
-        html = re.sub(r"`([^`]+?)`", r"<code>\1</code>", html)
-
-        # Convert code blocks (```code```)
-        html = re.sub(
-            r"```(.*?)```", r"<pre><code>\1</code></pre>", html, flags=re.DOTALL
-        )
-
-        # Convert links [text](url)
-        html = re.sub(
-            r"\[([^\]]+?)\]\(([^)]+?)\)", r'<a href="\2" target="_blank">\1</a>', html
-        )
-
-        # Now process line-by-line for line-dependent formatting
-        lines = html.split("\n")
+        # First process line-by-line for line-dependent formatting
+        lines = markdown_text.split("\n")
         processed_lines = []
         in_ul = False
         in_ol = False
@@ -145,7 +116,36 @@ class MailMessage(models.Model):
         if in_ol:
             processed_lines.append("</ol>")
 
-        return "\n".join(processed_lines)
+        # Now handle inline formatting on the processed text
+        html = "\n".join(processed_lines)
+
+        # Convert bold text (**text**)
+        html = re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", html)
+
+        # Convert italic text (*text* or _text_)
+        html = re.sub(r"(?<!\*)\*(?!\*)([^*]+?)(?<!\*)\*(?!\*)", r"<em>\1</em>", html)
+        html = re.sub(r"(?<!_)_(?!_)([^_]+?)(?<!_)_(?!_)", r"<em>\1</em>", html)
+
+        # Convert underline text (__text__)
+        html = re.sub(r"__(.*?)__", r"<u>\1</u>", html)
+
+        # Convert strikethrough text (~~text~~)
+        html = re.sub(r"~~(.*?)~~", r"<del>\1</del>", html)
+
+        # Convert inline code (`code`)
+        html = re.sub(r"`([^`]+?)`", r"<code>\1</code>", html)
+
+        # Convert code blocks (```code```)
+        html = re.sub(
+            r"```(.*?)```", r"<pre><code>\1</code></pre>", html, flags=re.DOTALL
+        )
+
+        # Convert links [text](url)
+        html = re.sub(
+            r"\[([^\]]+?)\]\(([^)]+?)\)", r'<a href="\2" target="_blank">\1</a>', html
+        )
+
+        return html
 
     @api.model
     def _get_markdown_preview(self, markdown_text):
