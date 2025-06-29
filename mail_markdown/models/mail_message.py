@@ -1,6 +1,9 @@
+import logging
 import re
 
 from odoo import api, models
+
+_logger = logging.getLogger(__name__)
 
 
 class MailMessage(models.Model):
@@ -73,16 +76,22 @@ class MailMessage(models.Model):
         in_ol = False
 
         for line in lines:
+            _logger.info(f"Processing line: '{line}'")
+            
             # Convert headers (must be at start of line)
             if re.match(r"^### (.*)$", line):
+                _logger.info("Matched header 3")
                 line = re.sub(r"^### (.*)$", r"<h3>\1</h3>", line)
             elif re.match(r"^## (.*)$", line):
+                _logger.info("Matched header 2")
                 line = re.sub(r"^## (.*)$", r"<h2>\1</h2>", line)
             elif re.match(r"^# (.*)$", line):
+                _logger.info("Matched header 1")
                 line = re.sub(r"^# (.*)$", r"<h1>\1</h1>", line)
 
             # Convert unordered lists
             elif re.match(r"^\s*[\*\-\+] (.*)$", line):
+                _logger.info("Matched unordered list")
                 if not in_ul:
                     processed_lines.append("<ul>")
                     in_ul = True
@@ -90,6 +99,7 @@ class MailMessage(models.Model):
 
             # Convert ordered lists
             elif re.match(r"^\s*\d+\. (.*)$", line):
+                _logger.info("Matched ordered list")
                 if not in_ol:
                     processed_lines.append("<ol>")
                     in_ol = True
@@ -97,10 +107,15 @@ class MailMessage(models.Model):
 
             # Convert blockquotes
             elif re.match(r"^>\s*(.*)$", line):
+                _logger.info("Matched blockquote with space")
                 line = re.sub(r"^>\s*(.*)$", r"<blockquote>\1</blockquote>", line)
+            elif re.match(r"^>(.*)$", line):
+                _logger.info("Matched blockquote without space")
+                line = re.sub(r"^>(.*)$", r"<blockquote>\1</blockquote>", line)
 
             # Handle end of lists
             else:
+                _logger.info("No match - handling list endings")
                 if in_ul:
                     processed_lines.append("</ul>")
                     in_ul = False
@@ -108,6 +123,7 @@ class MailMessage(models.Model):
                     processed_lines.append("</ol>")
                     in_ol = False
 
+            _logger.info(f"Processed line result: '{line}'")
             processed_lines.append(line)
 
         # Close any open lists at the end
