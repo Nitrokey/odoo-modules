@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="1">
+        <!-- Demo data for mail_markdown module -->
+
+        <!-- Create a demo partner to test chatter messages -->
+        <record id="partner_markdown_demo" model="res.partner">
+            <field name="name">Markdown Demo Partner</field>
+            <field name="email">markdown.demo@example.com</field>
+            <field name="is_company">True</field>
+            <field
+                name="comment"
+            >This partner is used for testing markdown functionality in chatter messages.</field>
+        </record>
+
+        <!-- Create some demo messages with markdown content -->
+        <record id="message_markdown_demo_1" model="mail.message">
+            <field name="subject">Welcome to Markdown Support!</field>
+            <field name="body"># Welcome to Markdown Support!
+
+This is a **demo message** to show how *markdown* works in chatter.
+
+## Features Supported:
+
+- **Bold text** using `**text**`
+- *Italic text* using `*text*` or `_text_`
+- __Underlined text__ using `__text__`
+- ~~Strikethrough text~~ using `~~text~~`
+- `Inline code` using backticks
+- [Links](https://www.odoo.com) using `[text](url)`
+
+### Code Blocks:
+
+```python
+def hello_world():
+    print("Hello, Markdown World!")
+```
+
+### Lists:
+
+1. First item
+2. Second item
+3. Third item
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+> This is a blockquote to highlight important information.
+
+**Happy messaging with Markdown!** 🚀</field>
+            <field name="model">res.partner</field>
+            <field name="res_id" ref="partner_markdown_demo" />
+            <field name="message_type">comment</field>
+            <field name="author_id" ref="base.user_admin" />
+        </record>
+
+        <record id="message_markdown_demo_2" model="mail.message">
+            <field name="subject">Markdown Formatting Examples</field>
+            <field name="body">## Text Formatting Examples
+
+Here are some examples of different markdown formatting:
+
+### Emphasis
+- **Bold**: `**bold text**` → **bold text**
+- *Italic*: `*italic text*` → *italic text*
+- __Underline__: `__underline text__` → __underline text__
+- ~~Strikethrough~~: `~~strikethrough text~~` → ~~strikethrough text~~
+
+### Code
+- Inline: `code` → `code`
+- Block:
+```javascript
+function greet(name) {
+    return `Hello, ${name}!`;
+}
+```
+
+### Links and References
+- [Odoo Documentation](https://www.odoo.com/documentation)
+- [Markdown Guide](https://www.markdownguide.org/)</field>
+            <field name="model">res.partner</field>
+            <field name="res_id" ref="partner_markdown_demo" />
+            <field name="message_type">comment</field>
+            <field name="author_id" ref="base.user_admin" />
+        </record>
+    </data>
+</odoo>
