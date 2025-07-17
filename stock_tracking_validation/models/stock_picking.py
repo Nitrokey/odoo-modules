@@ -15,7 +15,7 @@ class StockPicking(models.Model):
             .sudo()
             .read()[0]
         )
-        product_data = """<table class="table table-sm w-70 table-bordered
+        product_data = """<table class="table table-sm w-100 table-bordered
                             table-striped table-hover m-2">
                             <thead class="thead-light"">
                                 <tr>
