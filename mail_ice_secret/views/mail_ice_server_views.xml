@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <!-- Extend the mail.ice.server form view to replace username/password with secret -->
+        <record id="view_mail_ice_server_form_secret" model="ir.ui.view">
+            <field name="name">mail.ice.server.form.secret</field>
+            <field name="model">mail.ice.server</field>
+            <field name="inherit_id" ref="mail.view_ice_server_form" />
+            <field name="arch" type="xml">
+                <field name="username" position="replace">
+                    <field name="secret" />
+                </field>
+                <field name="credential" position="replace" />
+            </field>
+        </record>
+
+        <!-- Extend the mail.ice.server tree view to replace username/credential with secret -->
+        <record id="view_mail_ice_server_tree_secret" model="ir.ui.view">
+            <field name="name">mail.ice.server.tree.secret</field>
+            <field name="model">mail.ice.server</field>
+            <field name="inherit_id" ref="mail.view_ice_server_tree" />
+            <field name="arch" type="xml">
+                <field name="username" position="replace">
+                    <field name="secret" string="Secret" />
+                </field>
+                <field name="credential" position="replace" />
+            </field>
+        </record>
+    </data>
+</odoo>
