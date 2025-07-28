@@ -6,6 +6,7 @@
             <field name="name">mail.ice.server.form.secret</field>
             <field name="model">mail.ice.server</field>
             <field name="inherit_id" ref="mail.view_ice_server_form" />
+            <field name="priority">99</field>
             <field name="arch" type="xml">
                 <field name="username" position="replace">
                     <field name="secret" />
@@ -19,6 +20,7 @@
             <field name="name">mail.ice.server.tree.secret</field>
             <field name="model">mail.ice.server</field>
             <field name="inherit_id" ref="mail.view_ice_server_tree" />
+            <field name="priority">99</field>
             <field name="arch" type="xml">
                 <field name="username" position="replace">
                     <field name="secret" string="Secret" />
