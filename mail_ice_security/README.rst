@@ -1,6 +1,6 @@
-==============================
-Mail ICE Secret Authentication
-==============================
+=================
+Mail ICE Security
+=================
 
 This module extends Odoo's WebRTC functionality to support both traditional username/password 
 and secret-based authentication for ICE (STUN/TURN/TURNS) servers. It adds support for 

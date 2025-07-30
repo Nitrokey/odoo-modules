@@ -11,15 +11,10 @@ class MailIceServer(models.Model):
     _inherit = "mail.ice.server"
 
     # Extend server types to include TURNS (TLS)
-    server_type = fields.Selection(
-        [("stun", "stun:"), ("turn", "turn:"), ("turns", "turns:")],
-        string="Type",
-        required=True,
-        default="stun",
-    )
+    server_type = fields.Selection(selection_add=[("turns", "turns:")])
 
     # Add secret field for secret-based authentication (parallel to username/password)
-    secret = fields.Char(help="Secret for secret-based authentication", password=True)
+    secret = fields.Char(help="Secret for secret-based authentication")
 
     # Add realm field for TURN server authentication
     realm = fields.Char(help="Realm for TURN server authentication (optional)")
