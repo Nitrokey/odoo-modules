@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data>
-        <!-- Extend the mail.ice.server form view to replace username/password with secret -->
+        <!-- Extend the mail.ice.server form view to add secret and realm fields -->
         <record id="view_mail_ice_server_form_secret" model="ir.ui.view">
             <field name="name">mail.ice.server.form.secret</field>
             <field name="model">mail.ice.server</field>
             <field name="inherit_id" ref="mail.view_ice_server_form" />
             <field name="priority">99</field>
             <field name="arch" type="xml">
-                <field name="username" position="replace">
-                    <field name="secret" />
+                <field name="credential" position="after">
+                    <field
+                        name="secret"
+                        password="True"
+                        placeholder="For secret-based authentication"
+                    />
+                    <field
+                        name="realm"
+                        placeholder="Optional realm (e.g., domain.com)"
+                    />
                 </field>
-                <field name="credential" position="replace" />
             </field>
         </record>
 
-        <!-- Extend the mail.ice.server tree view to replace username/credential with secret -->
+        <!-- Extend the mail.ice.server tree view to show authentication method -->
         <record id="view_mail_ice_server_tree_secret" model="ir.ui.view">
             <field name="name">mail.ice.server.tree.secret</field>
             <field name="model">mail.ice.server</field>
             <field name="inherit_id" ref="mail.view_ice_server_tree" />
             <field name="priority">99</field>
             <field name="arch" type="xml">
-                <field name="username" position="replace">
-                    <field name="secret" string="Secret" />
+                <field name="credential" position="after">
+                    <field name="secret" password="True" />
+                    <field name="realm" />
                 </field>
-                <field name="credential" position="replace" />
             </field>
         </record>
     </data>
