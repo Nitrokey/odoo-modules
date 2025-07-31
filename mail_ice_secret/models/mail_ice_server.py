@@ -10,9 +10,6 @@ from odoo import fields, models
 class MailIceServer(models.Model):
     _inherit = "mail.ice.server"
 
-    # Extend server types to include TURNS (TLS)
-    server_type = fields.Selection(selection_add=[("turns", "turns:")])
-
     # Add secret field for secret-based authentication (parallel to username/password)
     secret = fields.Char(help="Secret for secret-based authentication")
 
@@ -22,7 +19,7 @@ class MailIceServer(models.Model):
     def _get_local_ice_servers(self):
         """
         Override to support both username/password and secret-based authentication.
-        Also adds support for TURNS (TLS) protocol and realm configuration.
+        Also adds realm configuration for TURN servers.
         :return: List of up to 5 dict, each representing a stun or turn server
         """
         # firefox has a hard cap of 5 ice servers
@@ -36,7 +33,7 @@ class MailIceServer(models.Model):
 
             # Handle authentication - prefer secret-based if available,
             # fallback to username/password
-            if ice_server.secret and ice_server.server_type in ("turn", "turns"):
+            if ice_server.secret and ice_server.server_type == "turn":
                 # Secret-based authentication with time-based HMAC
                 # Create timestamp-based username (valid for 1 hour)
                 timestamp = int(time.time()) + 3600
@@ -52,14 +49,14 @@ class MailIceServer(models.Model):
                 formatted_ice_server["username"] = username
                 formatted_ice_server["credential"] = credential
 
-            elif ice_server.username and ice_server.server_type in ("turn", "turns"):
+            elif ice_server.username and ice_server.server_type == "turn":
                 # Traditional username/password authentication
                 formatted_ice_server["username"] = ice_server.username
                 if ice_server.credential:
                     formatted_ice_server["credential"] = ice_server.credential
 
             # Add realm if specified (for both authentication methods)
-            if ice_server.realm and ice_server.server_type in ("turn", "turns"):
+            if ice_server.realm and ice_server.server_type == "turn":
                 formatted_ice_server["realm"] = ice_server.realm
 
             formatted_ice_servers.append(formatted_ice_server)

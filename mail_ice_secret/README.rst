@@ -1,15 +1,14 @@
-=================
-Mail ICE Security
-=================
+==============================
+Mail ICE Secret Authentication
+==============================
 
 This module extends Odoo's WebRTC functionality to support both traditional username/password 
-and secret-based authentication for ICE (STUN/TURN/TURNS) servers. It adds support for 
-TLS-encrypted TURN servers (TURNS) and provides flexible authentication options.
+and secret-based authentication for ICE (STUN/TURN) servers. It adds realm configuration 
+support and provides flexible authentication options.
 
 Features
 ========
 
-* **TURNS Protocol Support**: Adds support for TLS-encrypted TURN servers (turns:)
 * **Dual Authentication**: Supports both username/password and secret-based authentication
 * **Time-based HMAC**: Implements secure time-based HMAC authentication for secret-based servers
 * **Realm Support**: Optional realm configuration for TURN server authentication
@@ -30,23 +29,18 @@ Server Types
 - **URI**: stun.example.com:3478
 - **Authentication**: None required
 
-**TURN Server (Unencrypted)**
+**TURN Server**
 - **Type**: turn:
-- **URI**: turn.example.com:3478
+- **URI**: turn.example.com:3478 or turn.example.com:443
 - **Authentication**: Username/Password or Secret-based
-
-**TURNS Server (TLS Encrypted)**
-- **Type**: turns:
-- **URI**: turn.example.com:443 or turn.example.com:5349
-- **Authentication**: Username/Password or Secret-based
-- **Transport**: Automatically uses TCP with TLS encryption
+- **Transport**: WebRTC automatically chooses UDP or TCP (with TLS on port 443)
 
 Port and Transport Configuration
 ================================
 
 **Standard Ports:**
 - **3478**: Standard TURN (UDP/TCP, unencrypted)
-- **5349**: Standard TURNS (TCP with TLS)
+- **5349**: TURN with TLS (TCP with TLS)
 - **443**: HTTPS port (TCP with TLS, firewall-friendly)
 
 **URI Format:**
@@ -55,7 +49,7 @@ Configure the port as part of the URI: ``server.example.com:port``
 **Transport Protocol Selection:**
 - **Single Entry**: ``turn:server:port`` - WebRTC tries UDP first, falls back to TCP
 - **Explicit Transport**: ``turn:server:port?transport=udp`` or ``turn:server:port?transport=tcp``
-- **TLS (TURNS)**: Always uses TCP with TLS encryption
+- **TLS Ports**: WebRTC automatically uses TLS on ports 443 and 5349
 
 Authentication Methods
 ======================
@@ -97,25 +91,12 @@ Configuration Examples
 - **Secret**: mysecretkey123
 - **Realm**: (optional)
 
-**Example 4: TLS TURN Server (TURNS) on Port 443**
-- **Type**: turns:
+**Example 4: TLS TURN Server on Port 443**
+- **Type**: turn:
 - **URI**: turn.example.com:443
 - **Secret**: mysecretkey123
 - **Realm**: (optional)
 - **Benefits**: Encrypted, firewall-friendly (HTTPS port)
-
-**Example 5: Dual Configuration for Maximum Compatibility**
-Create two entries for the same server:
-
-*Entry 1 (Fast UDP):*
-- **Type**: turn:
-- **URI**: turn.example.com:3478
-- **Secret**: mysecretkey123
-
-*Entry 2 (Secure TLS):*
-- **Type**: turns:
-- **URI**: turn.example.com:443
-- **Secret**: mysecretkey123
 
 Usage
 =====
@@ -139,12 +120,11 @@ Technical Details
 
 **Protocol Handling:**
 - **STUN**: No authentication required
-- **TURN**: Uses provided authentication method
-- **TURNS**: Same as TURN but with mandatory TLS encryption
+- **TURN**: Uses provided authentication method, WebRTC handles TLS automatically
 
 **WebRTC Transport Selection:**
 - **turn: protocol**: UDP preferred, TCP fallback
-- **turns: protocol**: TCP with TLS (UDP not possible with TLS)
+- **TLS detection**: WebRTC automatically uses TLS on ports 443 and 5349
 - **Automatic**: WebRTC client chooses optimal transport based on network conditions
 
 **Compatibility:**
@@ -168,7 +148,7 @@ Security Considerations
 - **Deep packet inspection**: Encrypted traffic appears as HTTPS
 
 **Best Practices:**
-- Use **TURNS (TLS)** for production environments
+- Use **TLS ports** (443, 5349) for production environments
 - Use **secret-based authentication** when supported by server
 - Configure **realm** if required by your TURN server
 - Use **port 443** for maximum firewall compatibility
@@ -184,9 +164,9 @@ Troubleshooting
 - Ensure realm matches server requirements
 
 *Connection Failures:*
-- Test with both turn: and turns: protocols
 - Verify port accessibility (firewall rules)
 - Check server logs for allocation errors
+- Test with different ports (3478, 443, 5349)
 
 *WebRTC Issues:*
 - Use browser developer tools (chrome://webrtc-internals/)
@@ -199,7 +179,7 @@ Use browser console to test ICE server configuration:
 .. code-block:: javascript
 
     const iceServers = [{
-        urls: 'turns:turn.example.com:443',
+        urls: 'turn:turn.example.com:443',
         username: 'generated-timestamp',
         credential: 'generated-hmac'
     }];
