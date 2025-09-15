@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <template
+        id="sale_order_portal_content_bitcoin_qr"
+        name="Portal sale oredr Bitcoin payment QR code"
+        inherit_id="sale.sale_order_portal_content"
+    >
+        <xpath expr="//div[@id='informations']" position="before">
+            <t
+                t-if="sale_order.get_portal_last_transaction().acquirer_id.name == 'Bitcoin' and sale_order.get_portal_last_transaction().duration > 0"
+            >
+                <span
+                    class="total_duration_seconds d-none"
+                    t-out="sale_order.get_portal_last_transaction().duration"
+                />
+            </t>
+        </xpath>
+    </template>
+
+    <template
+        id="transaction_status_payment_bitcoin"
+        inherit_id="payment.transaction_status"
+    >
+        <xpath expr="//div[hasclass('alert-warning')]" position="inside">
+            <t t-if="tx.acquirer_id.sudo().provider == 'bitcoin'">
+                <div class="panel-body" style="padding-bottom:0px;">
+                        <h4><strong t-out="info" /></h4>
+                </div>
+                <div
+                    class="panel-body d-flex justify-content-center align-items-center"
+                    style="padding-top:5px;padding-bottom:0px;"
+                >
+                    <div><img
+                            class="bitcoin_barcode"
+                            t-att-src="'/report/barcode/bitcoin/?br_type=QR&amp;value=%s&amp;width=300&amp;height=300' % (uri)"
+                        />
+                </div>
+                <div>
+                    <div class="flex-row ml-4" id="countdown_element">
+                        <div>
+                            <strong>Pay Within:</strong>
+                        </div>
+                            <div id="timecounter" class="btn btn-info cols-xs-6 " />
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>
