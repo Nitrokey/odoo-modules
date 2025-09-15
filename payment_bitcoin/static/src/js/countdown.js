@@ -1,46 +1,63 @@
-odoo.define("payment_bitcoin.duration", function (require) {
-    "use strict";
+/** @odoo-module **/
 
-    var publicWidget = require("web.public.widget");
+import publicWidget from "@web/legacy/js/public/public_widget";
 
-    publicWidget.registry.reloadDuration = publicWidget.Widget.extend({
-        selector: ".oe_website_sale_tx_status, #quote_content",
-        init: function () {
-            this._super.apply(this, arguments);
-            this._updateSeconds();
-        },
-        _updateSeconds: function () {
-            var seconds = $(".total_duration_seconds").text();
-            var interval = setInterval(function () {
-                $("#timecounter").css("font-size", "60px");
-                var seconds1 = seconds - 1;
-                seconds = Number(seconds1);
-                var h = Math.floor(seconds / 3600);
-                var m = Math.floor(((seconds / 3600) % 1).toFixed(4) * 60);
-                var s = parseInt(
-                    (
-                        (((seconds / 3600) % 1).toFixed(4) * 60 -
-                            Math.floor(((seconds / 3600) % 1).toFixed(4) * 60)) *
-                        60
-                    ).toFixed(),
-                    10
-                );
+publicWidget.registry.reloadDuration = publicWidget.Widget.extend({
+    selector: "#countdown_element, #quote_content",
 
-                var hDisplay = h >= 0 ? String(("0" + h).slice(-2)) + "" : "";
-                var mDisplay = m >= 0 ? String(("0" + m).slice(-2)) + "" : "";
-                var sDisplay = s >= 0 ? String(("0" + s).slice(-2)) + "" : "";
+    init() {
+        this._super(...arguments);
+        this._interval = null;
+        this._updateSeconds();
+    },
 
-                seconds = seconds1;
-                if (seconds <= 0) {
-                    clearInterval(interval);
-                }
-                if (seconds >= 0) {
-                    $("div#timecounter").html(
-                        hDisplay + ":" + mDisplay + ":" + sDisplay
-                    );
-                }
-            }, 1000);
-        },
-    });
-    return publicWidget.registry.reloadDuration;
+    destroy() {
+        if (this._interval) {
+            clearInterval(this._interval);
+            this._interval = null;
+        }
+        this._super(...arguments);
+    },
+
+    _updateSeconds() {
+        const secondsNode = document.querySelector(".total_duration_seconds");
+        let seconds = secondsNode ? parseInt(secondsNode.textContent || "0", 10) : 0;
+        const timeCounter = document.getElementById("timecounter");
+        if (!timeCounter) {
+            return; // Nothing to update.
+        }
+        timeCounter.style.fontSize = "60px";
+
+        const tick = () => {
+            const s1 = seconds - 1;
+            seconds = Number(s1);
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor(((seconds / 3600) % 1).toFixed(4) * 60);
+            const s = parseInt(
+                (
+                    (((seconds / 3600) % 1).toFixed(4) * 60 -
+                        Math.floor(((seconds / 3600) % 1).toFixed(4) * 60)) *
+                    60
+                ).toFixed(),
+                10
+            );
+
+            const hDisplay = h >= 0 ? String(("0" + h).slice(-2)) : "";
+            const mDisplay = m >= 0 ? String(("0" + m).slice(-2)) : "";
+            const sDisplay = s >= 0 ? String(("0" + s).slice(-2)) : "";
+
+            seconds = s1;
+            if (seconds <= 0) {
+                clearInterval(this._interval);
+                this._interval = null;
+            }
+            if (seconds >= 0) {
+                timeCounter.innerHTML = `${hDisplay}:${mDisplay}:${sDisplay}`;
+            }
+        };
+
+        this._interval = setInterval(tick, 1000);
+    },
 });
+
+export default publicWidget.registry.reloadDuration;

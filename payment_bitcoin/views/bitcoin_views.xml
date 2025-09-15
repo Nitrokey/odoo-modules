@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-
     <record id="view_bitcoin_address_form" model="ir.ui.view">
         <field name="name">bitcoin.address.form</field>
         <field name="model">bitcoin.address</field>
@@ -25,11 +24,11 @@
         <field name="name">bitcoin.address.list</field>
         <field name="model">bitcoin.address</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="order_id" />
                 <field name="invoice_id" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -47,7 +46,7 @@
     <record id="action_bitcoin_address" model="ir.actions.act_window">
         <field name="name">Bitcoin Addresses</field>
         <field name="res_model">bitcoin.address</field>
-        <field name='view_mode'>tree,form</field>
+        <field name='view_mode'>list,form</field>
         <field name="context">{}</field>
     </record>
 
@@ -76,13 +75,13 @@
                     </group>
                     <group>
                         <field name="rate_lines" colspan="4" nolabel="1">
-                            <tree>
+                            <list>
                                 <field name="create_date" />
                                 <field name="name" />
                                 <field name="currency_id" />
                                 <field name="amount" />
                                 <field name="rate" />
-                            </tree>
+                            </list>
                         </field>
                     </group>
                 </sheet>
@@ -94,16 +93,16 @@
         <field name="name">bitcoin.rate.list</field>
         <field name="model">bitcoin.rate</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="url" />
-            </tree>
+            </list>
         </field>
     </record>
 
     <record id="action_bitcoin_rate" model="ir.actions.act_window">
         <field name="name">Bitcoin Rate</field>
         <field name="res_model">bitcoin.rate</field>
-        <field name='view_mode'>tree,form</field>
+        <field name='view_mode'>list,form</field>
         <field name="context">{'search_default_new':1}</field>
     </record>
 
@@ -113,5 +112,4 @@
         parent='account.root_payment_menu'
         sequence='40'
     />
-
 </odoo>

@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-
     <template
         name="counter_tamplate_name_new"
         id="party_gift_confirmation_new_inhrit"
         inherit_id="website_sale.confirmation"
     >
-        <xpath
-            expr="//div[hasclass('oe_cart')]//table[hasclass('table')]"
-            position="after"
-        >
+        <xpath expr="//table[hasclass('table')]" position="after">
             <t
-                t-if="order.get_portal_last_transaction().acquirer_id.name == 'Bitcoin' and order.get_portal_last_transaction().duration > 0"
+                t-if="order.get_portal_last_transaction().provider_code == 'Bitcoin' and order.get_portal_last_transaction().duration > 0"
             >
                 <t t-name="Counter_name">
                     <span

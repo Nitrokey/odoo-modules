@@ -1,6 +1,7 @@
 import codecs
 import logging
-from datetime import date, datetime, timedelta as td
+from datetime import date, datetime
+from datetime import timedelta as td
 from hashlib import sha256
 
 import requests
@@ -115,9 +116,9 @@ def check_received(addr):
 
     needed_confirms = 3
 
-    current_height = requests.get(latest_block_url).json()["height"]
+    current_height = requests.get(latest_block_url, timeout=30).json()["height"]
 
-    addr_info = requests.get(addr_info_url.format(addr=addr))
+    addr_info = requests.get(addr_info_url.format(addr=addr), timeout=30)
     txs = addr_info.json()["txs"]
     # no transactions -> nothing received
     if not txs:
@@ -125,7 +126,7 @@ def check_received(addr):
 
     min_conf = None
     for tx in txs:
-        tx_info = requests.get(tx_info_url.format(tx=tx["hash"]))
+        tx_info = requests.get(tx_info_url.format(tx=tx["hash"]), timeout=30)
 
         b_height = tx_info.json()["block_height"]
         # confirmations = current_block_height - transaction_block_height - 1
@@ -137,17 +138,15 @@ def check_received(addr):
 
     # here all transactions are >= 10 times confirmed,
     # we consider total_received" as "received" btc
-    out = {
+    # define the "transaction-finalized" when the last transaction
+    # reached needed_confirms confirmations
+    # so the time when this happened is ~ 10minutes * )confirmations - needed_confirms)
+    return {
         "received": addr_info.json()["total_received"] / 1e8,
         "min_conf": min_conf,
         "transaction": last_trans.get("hash"),
+        "when": datetime.now() - td(minutes=10) * (min_conf - needed_confirms),
     }
-
-    # let's define the "transaction-finalized" when the last transaction
-    # reached needed_confirms confirmations
-    # so the time when this happened is ~ 10minutes * )confirmations - needed_confirms)
-    out["when"] = datetime.now() - td(minutes=10) * (min_conf - needed_confirms)
-    return out
 
 
 class BitcoinAddress(models.Model):
@@ -174,18 +173,16 @@ class BitcoinAddress(models.Model):
     def convert_num_to_standard(self, scientific_num):
         """This function converts scientific number to standard number
         (e.g. 5.836e-05 -> 0.00005836)"""
-        return ("%.17f" % scientific_num).rstrip("0")
+        return f"{scientific_num}.17f".rstrip("0")
 
     def cnvrt_list_to_string(self, ldata):
         return ", ".join([str(data) for data in ldata])
 
     @api.model
     def cron_bitcoin_payment_reconciliation(self):  # noqa: C901
-        acquirer_obj = self.env["payment.acquirer"].search(
-            [("provider", "=", "bitcoin")]
-        )
-        payment_journal_obj = acquirer_obj.journal_id
-        check_hours = acquirer_obj.bitcoin_order_older_than
+        provider_obj = self.env["payment.provider"].search([("code", "=", "bitcoin")])
+        payment_journal_obj = provider_obj.journal_id
+        check_hours = provider_obj.bitcoin_order_older_than
         check_date = datetime.now() - td(hours=int(check_hours))
         for bit_add_obj in self.search(
             [
@@ -314,27 +311,24 @@ class BitcoinAddress(models.Model):
                         max_amount_received = float(address_info["received"]) - float(
                             valid_rate
                         )
-                        log_max_amt = (
-                            _(
-                                "Bitcoin transaction %(transaction)s \
+                        log_max_amt = _(
+                            "Bitcoin transaction %(transaction)s \
                                 for %(address)s \
                                 with %(amount)s BTC has \
                             been confirmed. This is  %(max_amount_received)s \
                             BTC too much. The \
                             corresponding payment is posted: %(invoices)s"
-                            )
-                            % {
-                                "transaction": address_info.get("transaction"),
-                                "address": bit_add_obj.name,
-                                "amount": amount_received,
-                                "max_amount_received": self.convert_num_to_standard(
-                                    max_amount_received
-                                ),
-                                "invoices": self.cnvrt_list_to_string(
-                                    invoice_objs.mapped("name")
-                                ),
-                            }
-                        )
+                        ) % {
+                            "transaction": address_info.get("transaction"),
+                            "address": bit_add_obj.name,
+                            "amount": amount_received,
+                            "max_amount_received": self.convert_num_to_standard(
+                                max_amount_received
+                            ),
+                            "invoices": self.cnvrt_list_to_string(
+                                invoice_objs.mapped("name")
+                            ),
+                        }
                         for rec in recs_to_post:
                             rec.message_post(body=log_max_amt)
             else:
@@ -360,7 +354,7 @@ class BitcoinAddress(models.Model):
                             }
                         )
 
-                if acquirer_obj.bitcoin_send_email and bit_add_obj.order_id:
+                if provider_obj.bitcoin_send_email and bit_add_obj.order_id:
                     template_obj = self.env.ref(
                         "payment_bitcoin.mail_template_data_bit_coin_order_notification"
                     )
@@ -452,7 +446,7 @@ class BitcoinRate(models.Model):
         elif order_ref:
             order = self.env["sale.order"].search([("name", "=", order_ref)], limit=1)
             if not order:
-                _logger.warning("Sale Order with ref %s is missing" % order_ref)
+                _logger.warning(f"Sale Order with ref {order_ref} is missing")
                 return False
 
         if invoice_id:
@@ -462,12 +456,12 @@ class BitcoinRate(models.Model):
                 [("name", "=", invoice_ref)], limit=1
             )
             if not invoice:
-                _logger.warning("Invoice with ref %s is missing" % order_ref)
+                _logger.warning(f"Invoice with ref {order_ref} is missing")
                 return False
 
         if order:
             domain = [("order_id", "=", order.id)]
-            currency = order.pricelist_id.currency_id
+            currency = order.pricelist_id.currency_id or order.currency_id
             amount_total = order.amount_total
             name = order.name
         elif invoice:
@@ -510,7 +504,7 @@ class BitcoinRate(models.Model):
             # Check for New Rate
             url = sobj.url.replace("{CURRENCY}", currency.name)
             url = url.replace("{AMOUNT}", str(amount_total))
-            response = requests.get(url)
+            response = requests.get(url, timeout=30)
             if response.status_code != 200:
                 _logger.error("can not find Bitcoin exchange rate")
                 return False
