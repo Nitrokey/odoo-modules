@@ -62,18 +62,23 @@ patch(
                 model: "res.partner",
                 method: "check_users",
                 args: [res_id, model],
-            }).then((hasExternalUsers) => {
-                if (hasExternalUsers) {
-                    this._showConfirmationDialog(superMethod);
-                } else {
-                    // No external users, send directly
+            })
+                .then((hasExternalUsers) => {
+                    if (hasExternalUsers) {
+                        this._showConfirmationDialog(superMethod);
+                    } else {
+                        // No external users, send directly
+                        superMethod();
+                    }
+                })
+                .catch((error) => {
+                    console.error(
+                        "mail_external_confirmation: Error checking external users:",
+                        error
+                    );
+                    // On error, send without confirmation to avoid blocking the user
                     superMethod();
-                }
-            }).catch((error) => {
-                console.error("mail_external_confirmation: Error checking external users:", error);
-                // On error, send without confirmation to avoid blocking the user
-                superMethod();
-            });
+                });
         },
 
         /**
