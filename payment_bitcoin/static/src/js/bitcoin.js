@@ -1,13 +1,14 @@
 /** @odoo-module **/
 
+import publicWidget from "@web/legacy/js/public/public_widget";
 import {_t} from "@web/core/l10n/translation";
 import {rpc} from "@web/core/network/rpc";
-import publicWidget from "@web/legacy/js/public/public_widget";
 
 // In Odoo 18, the frontend payment form widget is PaymentForm in the publicWidget registry.
 // We extend it to hook into the payment option selection and validate Bitcoin availability.
 
 const BitcoinMixin = {
+    // eslint-disable-next-line complexity
     async _selectPaymentOption(ev) {
         // Call super first to keep standard behavior (expand forms, toggle button, etc.).
         await this._super(...arguments);
@@ -60,7 +61,6 @@ const BitcoinMixin = {
         } catch (e) {
             // In case of RPC failure, silently ignore to not block other providers.
             // Console error is acceptable for debugging.
-            // eslint-disable-next-line no-console
             console.error("Bitcoin availability check failed", e);
         }
     },

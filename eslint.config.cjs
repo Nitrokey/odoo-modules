@@ -190,6 +190,7 @@ const config = [{
                 str: "String",
                 string: "String",
             },
+            mode: "permissive",
         },
     },
 

@@ -33,6 +33,7 @@ publicWidget.registry.reloadDuration = publicWidget.Widget.extend({
             seconds = Number(s1);
             const h = Math.floor(seconds / 3600);
             const m = Math.floor(((seconds / 3600) % 1).toFixed(4) * 60);
+            // Parse seconds with base 10
             const s = parseInt(
                 (
                     (((seconds / 3600) % 1).toFixed(4) * 60 -
