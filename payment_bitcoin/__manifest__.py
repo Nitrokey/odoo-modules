@@ -6,7 +6,7 @@
     "author": "Nitrokey GmbH, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/server-tools",
     "license": "LGPL-3",
-    "depends": ["payment", "website_sale", "base_automation"],
+    "depends": ["payment", "website_sale", "base_automation", "account"],
     "data": [
         "security/ir.model.access.csv",
         "views/bitcoin_views.xml",
