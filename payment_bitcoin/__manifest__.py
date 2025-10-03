@@ -1,11 +1,12 @@
 {
     "name": "Bitcoin Payment Acquirer",
-    "category": "Hidden",
-    "summary": "Payment Acquirer: Bitcoin Transfer Implementation",
+    "category": "Accounting/Payment Providers",
+    "summary": "Payment Acquirer to accept Bitcoin cryptocurrency payments in e-commerce and sales orders with automatic address management and rate conversion",
     "version": "18.0.1.0.0",
     "author": "Nitrokey GmbH, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/server-tools",
     "license": "LGPL-3",
+    "readme": "README.rst",
     "depends": ["payment", "website_sale", "base_automation", "account"],
     "data": [
         "security/ir.model.access.csv",

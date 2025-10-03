@@ -12,7 +12,7 @@
         <field
             name="image"
             type="base64"
-            file="payment_bitcoin/static/src/img/bitcoin_icon.png"
+            file="payment_bitcoin/static/description/icon.png"
         />
     </record>
 
@@ -21,7 +21,7 @@
         <field
             name="image_128"
             type="base64"
-            file="payment_bitcoin/static/src/img/bitcoin_icon.png"
+            file="payment_bitcoin/static/description/icon.png"
         />
         <field name="code">bitcoin</field>
         <field name="redirect_form_view_id" ref="payment_bitcoin.bitcoin_form" />
