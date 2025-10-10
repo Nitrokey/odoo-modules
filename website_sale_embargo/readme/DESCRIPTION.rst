@@ -1,0 +1,1 @@
+This module extends the functionality to add an Embargo between Product's HS Code and country. The confirmation of Sales Orders containing a product with an embargo on the delivery country is prevented.
