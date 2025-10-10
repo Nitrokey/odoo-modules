@@ -21,7 +21,7 @@
     "name": "Product icon",
     "summary": "Add product icons",
     "category": "Product",
-    "version": "15.0.1.0.0",
+    "version": "18.0.1.0.0",
     "author": "Trey (www.trey.es)",
     "website": "https://github.com/OCA/server-tools",
     "license": "AGPL-3",
