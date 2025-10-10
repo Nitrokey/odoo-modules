@@ -1,3 +1,1 @@
-from . import bitcoin
-from . import portal
-from . import post_processing
+from . import bitcoin, portal, post_processing

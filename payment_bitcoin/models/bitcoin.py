@@ -1,7 +1,6 @@
 import codecs
 import logging
-from datetime import date, datetime
-from datetime import timedelta as td
+from datetime import date, datetime, timedelta as td
 from hashlib import sha256
 
 import requests

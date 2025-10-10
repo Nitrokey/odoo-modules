@@ -1,6 +1,5 @@
 import logging
-from datetime import datetime
-from datetime import timedelta as td
+from datetime import datetime, timedelta as td
 from unittest.mock import patch
 
 from odoo.tests import tagged
