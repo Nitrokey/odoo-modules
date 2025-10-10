@@ -1,0 +1,160 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* product_icon
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-26 16:35+0000\n"
+"PO-Revision-Date: 2021-04-26 18:36+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 2.4.2\n"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon__create_uid
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon__create_date
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: product_icon
+#: model_terms:ir.ui.view,arch_db:product_icon.product_template_form_view
+msgid "Delete"
+msgstr "Borrar"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon__display_name
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: product_icon
+#: model_terms:ir.ui.view,arch_db:product_icon.product_template_form_view
+msgid "Dropdown menu"
+msgstr "Menú desplegable"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__name
+msgid "Empty"
+msgstr "Vacío"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon__id
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__id
+msgid "ID"
+msgstr ""
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__icon_id
+#: model_terms:ir.ui.view,arch_db:product_icon.product_icon_view_kanban
+#: model_terms:ir.ui.view,arch_db:product_icon.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:product_icon.product_template_icon_view_kanban
+msgid "Icon"
+msgstr "Icono"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_product__icon_ids
+#: model:ir.model.fields,field_description:product_icon.field_product_template__icon_ids
+#: model_terms:ir.ui.view,arch_db:product_icon.product_template_form_view
+msgid "Icons"
+msgstr "Iconos"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon__image
+msgid "Image"
+msgstr "Imagen"
+
+#. module: product_icon
+#: model_terms:ir.ui.view,arch_db:product_icon.product_icon_view_form
+#: model_terms:ir.ui.view,arch_db:product_icon.product_template_icon_view_form
+msgid "Image name"
+msgstr "Nombre imagen"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon____last_update
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon____last_update
+msgid "Last Modified on"
+msgstr "Última modificación en"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon__write_uid
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon__write_date
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon__image_medium
+msgid "Medium-sized image"
+msgstr "Imagen tamaño-medio"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: product_icon
+#: model:ir.actions.act_window,name:product_icon.product_icon_action
+msgid "Product Icons"
+msgstr "Iconos de producto"
+
+#. module: product_icon
+#: model:ir.model,name:product_icon.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: product_icon
+#: model:ir.model,name:product_icon.model_product_icon
+#: model_terms:ir.ui.view,arch_db:product_icon.product_icon_view_form
+msgid "Product icon"
+msgstr "Icono de producto"
+
+#. module: product_icon
+#: model:ir.ui.menu,name:product_icon.product_icon_menu
+#: model_terms:ir.ui.view,arch_db:product_icon.product_icon_view_tree
+msgid "Product icons"
+msgstr "Iconos de producto"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__product_template_id
+msgid "Product template"
+msgstr "Plantilla de producto"
+
+#. module: product_icon
+#: model:ir.model,name:product_icon.model_product_template_icon
+#: model_terms:ir.ui.view,arch_db:product_icon.product_template_icon_view_form
+msgid "Product template icon"
+msgstr "Icono plantilla de producto"
+
+#. module: product_icon
+#: model:ir.actions.act_window,name:product_icon.product_template_icon_action
+msgid "Product template icons"
+msgstr "Iconos plantilla de producto"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__sequence
+msgid "Sequence"
+msgstr "Secuencia"
+
+#. module: product_icon
+#: model:ir.model.fields,field_description:product_icon.field_product_icon__image_small
+#: model:ir.model.fields,field_description:product_icon.field_product_template_icon__image
+msgid "Small-sized image"
+msgstr "Imagen de tamaño-pequeño"

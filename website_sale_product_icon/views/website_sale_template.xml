@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="product_icons">
+        <t t-if="product.icon_ids">
+            <div class="o_wspi_icons">
+                <ul class="list-unstyled list-inline">
+                    <t t-foreach="product.icon_ids" t-as="icon">
+                        <li class="list-inline-item o_wspi_icon text-center">
+                            <img
+                                class="img-fluid o_wspi_icon_image"
+                                t-attf-src="/web/image?model=product.icon&amp;field=image_128&amp;id=#{ icon.id }&amp;unique="
+                                t-att-alt="icon.name"
+                                t-att-title="icon.name"
+                            />
+                        </li>
+                    </t>
+                </ul>
+            </div>
+        </t>
+    </template>
+    <template id="product" inherit_id="website_sale.product">
+        <xpath expr="//div[@id='product_details']" position="inside">
+            <t t-call="website_sale_product_icon.product_icons" />
+        </xpath>
+    </template>
+</odoo>
