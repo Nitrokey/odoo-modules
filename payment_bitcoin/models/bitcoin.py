@@ -275,7 +275,7 @@ class BitcoinAddress(models.Model):
                         self.env["account.payment"].sudo().create(payment_vals)
                     )
                     payment_obj.action_post()
-                    payment_move = payment_obj
+                    payment_move = payment_obj.move_id
                     payment_line = payment_move.line_ids.filtered(
                         lambda r: not r.reconciled
                         and r.account_id.internal_type in ("payable", "receivable")
