@@ -172,7 +172,7 @@ class BitcoinAddress(models.Model):
     def convert_num_to_standard(self, scientific_num):
         """This function converts scientific number to standard number
         (e.g. 5.836e-05 -> 0.00005836)"""
-        return f"{scientific_num}.17f".rstrip("0")
+        return f"{scientific_num:.17f}".rstrip("0")
 
     def cnvrt_list_to_string(self, ldata):
         return ", ".join([str(data) for data in ldata])
