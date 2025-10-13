@@ -114,24 +114,77 @@ def check_received(addr):
     latest_block_url = "https://blockchain.info/latestblock"
 
     needed_confirms = 3
+    default_response = {"received": 0, "min_conf": 0, "when": None, "transaction": None}
 
-    current_height = requests.get(latest_block_url, timeout=30).json()["height"]
+    # Get current blockchain height
+    try:
+        response = requests.get(latest_block_url, timeout=30)
+        if response.status_code != 200:
+            _logger.warning(
+                f"Failed to get latest block from blockchain.info: "
+                f"HTTP {response.status_code}"
+            )
+            return default_response
+        current_height = response.json()["height"]
+    except requests.exceptions.JSONDecodeError as e:
+        _logger.warning(
+            f"Failed to parse JSON from blockchain.info latest block: {e}. "
+            f"Response: {response.text[:200]}"
+        )
+        return default_response
+    except Exception as e:
+        _logger.warning(f"Error getting latest block from blockchain.info: {e}")
+        return default_response
 
-    addr_info = requests.get(addr_info_url.format(addr=addr), timeout=30)
-    txs = addr_info.json()["txs"]
+    # Get address info
+    try:
+        addr_info = requests.get(addr_info_url.format(addr=addr), timeout=30)
+        if addr_info.status_code != 200:
+            _logger.warning(
+                f"Failed to get address info for {addr}: HTTP {addr_info.status_code}"
+            )
+            return default_response
+        addr_data = addr_info.json()
+        txs = addr_data.get("txs", [])
+    except requests.exceptions.JSONDecodeError as e:
+        _logger.warning(
+            f"Failed to parse JSON for address {addr}: {e}. "
+            f"Response: {addr_info.text[:200]}"
+        )
+        return default_response
+    except Exception as e:
+        _logger.warning(f"Error getting address info for {addr}: {e}")
+        return default_response
+
     # no transactions -> nothing received
     if not txs:
-        return {"received": 0, "min_conf": 0, "when": None, "transaction": None}
+        return default_response
 
     min_conf = None
     for tx in txs:
-        tx_info = requests.get(tx_info_url.format(tx=tx["hash"]), timeout=30)
+        try:
+            tx_info = requests.get(tx_info_url.format(tx=tx["hash"]), timeout=30)
+            if tx_info.status_code != 200:
+                _logger.warning(
+                    f"Failed to get transaction info for {tx['hash']}: "
+                    f"HTTP {tx_info.status_code}"
+                )
+                continue
+            tx_data = tx_info.json()
+            b_height = tx_data.get("block_height")
+        except requests.exceptions.JSONDecodeError as e:
+            _logger.warning(
+                f"Failed to parse JSON for transaction {tx['hash']}: {e}"
+            )
+            continue
+        except Exception as e:
+            _logger.warning(f"Error getting transaction info for {tx['hash']}: {e}")
+            continue
 
-        b_height = tx_info.json()["block_height"]
         # confirmations = current_block_height - transaction_block_height - 1
         conf = current_height - b_height - 1 if b_height else 0
         if conf < needed_confirms:
-            return {"received": 0, "min_conf": 0, "when": None, "transaction": None}
+            return default_response
         min_conf = min(conf, min_conf) if min_conf is not None else conf
         last_trans = tx
 
@@ -141,7 +194,7 @@ def check_received(addr):
     # reached needed_confirms confirmations
     # so the time when this happened is ~ 10minutes * )confirmations - needed_confirms)
     return {
-        "received": addr_info.json()["total_received"] / 1e8,
+        "received": addr_data.get("total_received", 0) / 1e8,
         "min_conf": min_conf,
         "transaction": last_trans.get("hash"),
         "when": datetime.now() - td(minutes=10) * (min_conf - needed_confirms),
