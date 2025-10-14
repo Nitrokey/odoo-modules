@@ -340,13 +340,13 @@ class BitcoinAddress(models.Model):
                     payment_move = payment_obj.move_id
                     payment_line = payment_move.line_ids.filtered(
                         lambda r: not r.reconciled
-                        and r.account_id.internal_type in ("payable", "receivable")
+                        and r.account_id.account_type in ("liability_payable", "asset_receivable")
                     )
 
                     for inv in open_invoice_objs:
                         line_to_reconcile += inv.line_ids.filtered(
                             lambda r: not r.reconciled
-                            and r.account_id.internal_type in ("payable", "receivable")
+                            and r.account_id.account_type in ("liability_payable", "asset_receivable")
                         )
 
                     (line_to_reconcile + payment_line).reconcile()
