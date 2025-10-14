@@ -245,7 +245,13 @@ class BitcoinAddress(models.Model):
                 ("is_btc_used", "=", False),
             ]
         ):
-            if bit_add_obj.order_id.create_date < check_date:
+            # Determine which record to check (order or invoice)
+            record = bit_add_obj.order_id or bit_add_obj.invoice_id
+            if not record:
+                continue
+            
+            # Skip if record is too old (outside validity window)
+            if record.create_date < check_date:
                 continue
 
             address_info = check_received(bit_add_obj.name)
@@ -313,11 +319,14 @@ class BitcoinAddress(models.Model):
                     payment_methods = (
                         payment_journal_obj.available_payment_method_ids.ids
                     )
+                    
+                    # Use the correct record (order or invoice) for payment details
+                    payment_record = bit_add_obj.order_id or bit_add_obj.invoice_id
                     payment_vals = {
-                        "partner_id": bit_add_obj.order_id.partner_id.id,
+                        "partner_id": payment_record.partner_id.id,
                         "payment_type": "inbound",
                         "partner_type": "customer",
-                        "amount": bit_add_obj.order_id.amount_total,
+                        "amount": payment_record.amount_total,
                         "date": fields.Date.today(),
                         "journal_id": payment_journal_obj.id,
                         "payment_method_id": payment_methods
