@@ -5,6 +5,7 @@ from hashlib import sha256
 
 import requests
 from dateutil.relativedelta import relativedelta
+from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
@@ -575,16 +576,18 @@ class BitcoinRate(models.Model):
                 }
             )
             order.message_post(
-                body=_(
-                    """Bitcoin Address: <span><a target="_blank" \
+                body=Markup(
+                    _(
+                        """Bitcoin Address: <span><a target="_blank" \
                     href="https://www.blockchain.com/btc/address/%(address_id)s?\
                     filter=5">%(address_id1)s</a></span>, <span>%(rate)s </span> BTC"""
+                    )
+                    % {
+                        "address_id": addr_ids[0].name,
+                        "address_id1": addr_ids[0].name,
+                        "rate": rate,
+                    }
                 )
-                % {
-                    "address_id": addr_ids[0].name,
-                    "address_id1": addr_ids[0].name,
-                    "rate": rate,
-                }
             )
         if addr_ids and rate:
             addr_ids.sudo().write(
