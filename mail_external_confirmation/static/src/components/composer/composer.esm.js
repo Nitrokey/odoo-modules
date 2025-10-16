@@ -25,15 +25,7 @@ patch(
                 return;
             }
 
-            // First check if there are selected recipients in the composer UI
-            const hasExternalRecipients = this._checkExternalRecipients();
-
-            if (hasExternalRecipients) {
-                this._showConfirmationDialog(superMethod);
-                return;
-            }
-
-            // If no external recipients detected in UI, check followers via backend
+            // Get thread information for backend check
             const thread =
                 this.composerView &&
                 this.composerView.composer &&
@@ -57,7 +49,8 @@ patch(
                 return;
             }
 
-            // Check if there are external users among followers with proper error handling
+            // Check if there are external users among followers via backend
+            // This is more reliable than frontend checks as it has direct database access
             rpc.query({
                 model: "res.partner",
                 method: "check_users",
@@ -79,91 +72,6 @@ patch(
                     // On error, send without confirmation to avoid blocking the user
                     superMethod();
                 });
-        },
-
-        /**
-         * Check if there are external recipients selected in the composer UI
-         * This handles the "Send to customer" checkbox scenario
-         */
-        _checkExternalRecipients() {
-            try {
-                const composer = this.composerView.composer;
-
-                // Check if there are recipients selected
-                if (composer.recipients && composer.recipients.length > 0) {
-                    // Check if any recipient is external (not an internal user)
-                    for (const recipient of composer.recipients) {
-                        if (this._isExternalRecipient(recipient)) {
-                            return true;
-                        }
-                    }
-                }
-
-                // Check for partner recipients
-                if (composer.partners && composer.partners.length > 0) {
-                    for (const partner of composer.partners) {
-                        if (this._isExternalPartner(partner)) {
-                            return true;
-                        }
-                    }
-                }
-
-                // Check for suggested recipients (common in chatter)
-                if (
-                    composer.suggestedRecipients &&
-                    composer.suggestedRecipients.length > 0
-                ) {
-                    for (const recipient of composer.suggestedRecipients) {
-                        if (recipient.checked && this._isExternalRecipient(recipient)) {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            } catch (error) {
-                console.warn(
-                    "mail_external_confirmation: Error checking external recipients:",
-                    error
-                );
-                return false;
-            }
-        },
-
-        /**
-         * Check if a recipient is external
-         */
-        _isExternalRecipient(recipient) {
-            // If recipient has no user_ids or is not an internal user
-            if (!recipient.user_ids || recipient.user_ids.length === 0) {
-                return true; // No user account = external
-            }
-
-            // Check if recipient is marked as external or customer
-            if (recipient.is_company === false && recipient.customer_rank > 0) {
-                return true;
-            }
-
-            return false;
-        },
-
-        /**
-         * Check if a partner is external
-         */
-        _isExternalPartner(partner) {
-            if (!partner) return false;
-
-            // Partners without users are external
-            if (!partner.user_ids || partner.user_ids.length === 0) {
-                return true;
-            }
-
-            // Check if it's marked as a customer
-            if (partner.customer_rank && partner.customer_rank > 0) {
-                return true;
-            }
-
-            return false;
         },
 
         /**
