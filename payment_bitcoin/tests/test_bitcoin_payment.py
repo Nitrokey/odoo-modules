@@ -190,14 +190,20 @@ class TestBitcoinPayment(TransactionCase):
                     }
                 )
 
-            # Create the provider with sudo to bypass validation issues
-            self.bitcoin_provider = self.env["payment.provider"].sudo().create(
+            # Create the provider without Bitcoin-specific fields first
+            self.bitcoin_provider = self.env["payment.provider"].create(
                 {
                     "name": "Bitcoin",
                     "code": "bitcoin",
                     "company_id": self.env.company.id,
                     "state": "test",
                     "journal_id": journal.id,
+                }
+            )
+
+            # Now set the Bitcoin-specific fields via write
+            self.bitcoin_provider.write(
+                {
                     "bitcoin_order_older_than": 6,
                     "deadline": 60.0,
                 }
