@@ -147,61 +147,41 @@ class TestBitcoinPayment(TransactionCase):
                 }
             )
 
-        # Get Bitcoin payment provider
-        self.bitcoin_provider = self.env["payment.provider"].search(
-            [("code", "=", "bitcoin")], limit=1
+        # Get Bitcoin payment provider from data file
+        self.bitcoin_provider = self.env.ref(
+            "payment_bitcoin.payment_acquirer_bitcoin"
         )
 
-        if not self.bitcoin_provider:
-            # Create Bitcoin payment acquirer if not found
-            # First, get a journal for the Bitcoin payment acquirer
-            journal = self.env["account.journal"].search(
-                [
-                    ("type", "=", "bank"),
-                    ("company_id", "=", self.env.company.id),
-                ],
-                limit=1,
-            )
+        # Get or create a journal for the Bitcoin payment provider
+        journal = self.env["account.journal"].search(
+            [
+                ("type", "=", "bank"),
+                ("company_id", "=", self.env.company.id),
+            ],
+            limit=1,
+        )
 
-            if not journal:
-                # Create a journal if none exists
-                journal = self.env["account.journal"].create(
-                    {
-                        "name": "Bitcoin Journal",
-                        "code": "BTC",
-                        "type": "bank",
-                        "company_id": self.env.company.id,
-                    }
-                )
-
-            # Make sure the journal has at least one payment method
-            inbound_payment_method = self.env.ref(
-                "account.account_payment_method_manual_in"
-            )
-            if (
-                inbound_payment_method.id
-                not in journal.inbound_payment_method_line_ids.ids
-            ):
-                journal.write(
-                    {
-                        "inbound_payment_method_line_ids": [
-                            (4, inbound_payment_method.id)
-                        ]
-                    }
-                )
-
-            self.bitcoin_provider = self.env["payment.provider"].create(
+        if not journal:
+            # Create a journal if none exists
+            journal = self.env["account.journal"].create(
                 {
-                    "name": "Bitcoin",
-                    "code": "bitcoin",
+                    "name": "Bitcoin Journal",
+                    "code": "BTC",
+                    "type": "bank",
                     "company_id": self.env.company.id,
-                    "state": "test",
-                    "bitcoin_order_older_than": 6,
-                    "deadline": 60.0,
-                    "journal_id": journal.id,
-                    "payment_method_ids": [(4, self.bitcoin_payment_method.id)],
                 }
             )
+
+        # Configure the provider for testing
+        self.bitcoin_provider.write(
+            {
+                "bitcoin_order_older_than": 6,
+                "deadline": 60.0,
+                "journal_id": journal.id,
+                "state": "test",
+                "payment_method_ids": [(4, self.bitcoin_payment_method.id)],
+            }
+        )
 
         # Create Bitcoin addresses for each test
         self.bitcoin_address_successful = self.env["bitcoin.address"].create(
