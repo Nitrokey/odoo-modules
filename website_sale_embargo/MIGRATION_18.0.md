@@ -36,7 +36,7 @@ The WebsiteSale controller in Odoo 18.0 renamed several methods:
 #### Method Signature Updates
 
 **shop_address Method**:
--  **New parameters**: `partner_id`, `address_type`, `use_delivery_as_billing` are now
+- **New parameters**: `partner_id`, `address_type`, `use_delivery_as_billing` are now
   explicit parameters
 - **Replaced**: `**kw` with `**query_params` for clarity
 - **Added**: Import of `str2bool` from `odoo.tools` for proper boolean parameter
@@ -55,7 +55,7 @@ The WebsiteSale controller in Odoo 18.0 renamed several methods:
      `_get_country_related_render_values()`
 
 3. **Added cart validation**
-   - Added `if redirection := self._check_cart(order):` to ensure cart is valid before 
+   - Added `if redirection := self._check_cart(order):` to ensure cart is valid before
      proceeding
 
 ### 3. Models (No Changes Required)
@@ -173,7 +173,5 @@ If you encounter issues after migration:
 
 ## Credits
 
-**Migration Author**: AI Assistant (Cline)
-**Migration Date**: October 2025
-**Original Module Author**: Nitrokey GmbH
-**Original Module License**: AGPL-3.0 or later
+**Migration Author**: AI Assistant (Cline) **Migration Date**: October 2025 **Original
+Module Author**: Nitrokey GmbH **Original Module License**: AGPL-3.0 or later

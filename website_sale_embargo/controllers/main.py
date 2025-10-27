@@ -52,7 +52,8 @@ class WebsiteSale(WebsiteSale):
             if embargo_status:
                 # Get the partner to edit, if any
                 partner_sudo, address_type = self._prepare_address_update(
-                    order, partner_id=partner_id and int(partner_id),
+                    order,
+                    partner_id=partner_id and int(partner_id),
                     address_type=address_type
                 )
 
