@@ -6,24 +6,20 @@ from odoo.addons.website_sale.controllers.main import WebsiteSale
 
 
 class WebsiteSale(WebsiteSale):
+
     @http.route(
         ["/shop/confirm_order"], type="http", auth="public", website=True, sitemap=False
     )
     def shop_confirm_order(self, **post):
         order = request.website.sale_get_order()
         country_id = order.partner_shipping_id.country_id
-        if country_id:
+        if order and country_id:
             order.check_for_product_embargo(country_id, True)
 
         return super().shop_confirm_order(**post)
 
     @http.route(
-        ["/shop/address"],
-        type="http",
-        methods=["GET"],
-        auth="public",
-        website=True,
-        sitemap=False,
+        ["/shop/address"], type="http", methods=["GET"], auth="public", website=True, sitemap=False,
     )
     def shop_address(
         self,

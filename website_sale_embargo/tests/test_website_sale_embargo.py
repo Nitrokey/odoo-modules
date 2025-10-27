@@ -180,7 +180,7 @@ class TestWebsiteSaleEmbargo(TransactionCase):
 
         # Check that ValidationError is raised when raise_validation=True
         with self.assertRaises(ValidationError) as cm:
-            order.check_for_product_embargo(self.country_cn, raise_validation=True)
+            order.check_for_product_embargo(self.country_cn, raise_error=True)
 
         self.assertIn("Embargoed Product", str(cm.exception))
         self.assertIn("China", str(cm.exception))
