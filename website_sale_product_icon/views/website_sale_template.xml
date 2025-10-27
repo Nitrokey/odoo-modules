@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+    <!-- Product Icons Snippet -->
     <template id="product_icons">
         <t t-if="product.icon_ids">
             <div class="o_wspi_icons">
@@ -18,6 +19,8 @@
             </div>
         </t>
     </template>
+
+    <!-- Inherit the Website Product Page -->
     <template id="product" inherit_id="website_sale.product">
         <xpath expr="//div[@id='product_details']" position="inside">
             <t t-call="website_sale_product_icon.product_icons" />

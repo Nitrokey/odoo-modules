@@ -9,7 +9,7 @@
                     <field
                         name="icon_ids"
                         class="o_website_sale_image_list"
-                        context="{'default_product_template_id': active_id}"
+                        context="{'default_product_template_id': id}"
                         nolabel="1"
                     >
                         <kanban string="Icons">
