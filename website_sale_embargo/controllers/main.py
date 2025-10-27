@@ -54,7 +54,7 @@ class WebsiteSale(WebsiteSale):
                 partner_sudo, address_type = self._prepare_address_update(
                     order,
                     partner_id=partner_id and int(partner_id),
-                    address_type=address_type
+                    address_type=address_type,
                 )
 
                 # Get the base render values from parent
