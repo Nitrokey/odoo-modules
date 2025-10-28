@@ -1,14 +1,15 @@
 from odoo import fields, models
 
 
-class BitcoinPaymentAcquirer(models.Model):
-    _inherit = "payment.acquirer"
+class BitcoinPaymentProvider(models.Model):
+    _inherit = "payment.provider"
 
-    provider = fields.Selection(
+    code = fields.Selection(
         selection_add=[("bitcoin", "Bitcoin")], ondelete={"bitcoin": "set default"}
     )
     deadline = fields.Float(
-        help="Add a deadline to Bitcoin payments within which the payment should be made.",
+        help="Add a deadline to Bitcoin payments within which the payment should "
+        "be made.",
     )
     bitcoin_order_older_than = fields.Integer(
         "Hours",

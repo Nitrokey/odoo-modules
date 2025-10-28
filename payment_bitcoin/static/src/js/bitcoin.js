@@ -1,47 +1,71 @@
-odoo.define("payment_bitcoin.bitcoin", function (require) {
-    "use strict";
+/** @odoo-module **/
 
-    var ajax = require("web.ajax");
-    var core = require("web.core");
-    var _t = core._t;
-    const checkoutForm = require("payment.checkout_form");
-    const manageForm = require("payment.manage_form");
+import publicWidget from "@web/legacy/js/public/public_widget";
+import {_t} from "@web/core/l10n/translation";
+import {rpc} from "@web/core/network/rpc";
 
-    const BitcoinMixin = {
-        _onClickPaymentOption: function (ev) {
-            var $order_id =
-                $(
+// In Odoo 18, the frontend payment form widget is PaymentForm in the publicWidget registry.
+// We extend it to hook into the payment option selection and validate Bitcoin availability.
+
+const BitcoinMixin = {
+    // eslint-disable-next-line complexity
+    async _selectPaymentOption(ev) {
+        // Call super first to keep standard behavior (expand forms, toggle button, etc.).
+        await this._super(...arguments);
+        const target = ev?.target || ev?.currentTarget || this.el;
+        const provider =
+            target?.dataset?.providerCode ||
+            target.closest("[data-provider]")?.dataset?.providerCode ||
+            this.el.querySelector('input[name="o_payment_radio"]:checked')?.dataset
+                ?.providerCode;
+        if (provider !== "bitcoin") {
+            return;
+        }
+        // Try to get order identifiers from the DOM similar to the legacy behavior.
+        const orderId =
+            document
+                .querySelector(
                     'span[data-oe-model="sale.order"][data-oe-field="amount_total"]'
-                ).attr("data-oe-id") ||
-                $('b[data-oe-model="sale.order"][data-oe-field="amount_total"]').attr(
-                    "data-oe-id"
-                ) ||
-                $("table#sales_order_table").attr("data-order-id");
-            var $order_ref = $('input[name="reference"]').val();
-            var provider = $(ev.currentTarget)
-                .find('input[name="o_payment_radio"]')
-                .data("provider");
-            if (provider === "bitcoin") {
-                ajax.jsonRpc("/payment_bitcoin/rate", "call", {
-                    order_id: $order_id,
-                    order_ref: $order_ref,
-                }).then(function (data) {
-                    if (data === false) {
-                        /* eslint-disable no-alert */
-                        alert(_t("Payment method Bitcoin is currently unavailable."));
-                        /* eslint-enable no-alert */
-                        $(ev.currentTarget)
-                            .find('input[name="o_payment_radio"]')
-                            .attr("disabled", "disabled");
-                        $(ev.currentTarget)
-                            .find('input[name="o_payment_radio"]')
-                            .prop("checked", false);
-                    }
-                });
+                )
+                ?.getAttribute("data-oe-id") ||
+            document
+                .querySelector(
+                    'b[data-oe-model="sale.order"][data-oe-field="amount_total"]'
+                )
+                ?.getAttribute("data-oe-id") ||
+            document
+                .querySelector("table#sales_order_table")
+                ?.getAttribute("data-order-id");
+        const orderRef =
+            document.querySelector('input[name="reference"]')?.value || undefined;
+
+        try {
+            const data = await rpc("/payment_bitcoin/rate", {
+                order_id: orderId,
+                order_ref: orderRef,
+            });
+            if (data === false) {
+                // Inform the user and unselect/disable the option.
+                // eslint-disable-next-line no-alert
+                alert(_t("Payment method Bitcoin is currently unavailable."));
+                const radio = target.matches('input[name="o_payment_radio"]')
+                    ? target
+                    : target.querySelector('input[name="o_payment_radio"]');
+                if (radio) {
+                    radio.disabled = true;
+                    radio.checked = false;
+                }
+                // Trigger a button update.
+                this._enableButton(false);
             }
-            return this._super(...arguments);
-        },
-    };
-    checkoutForm.include(BitcoinMixin);
-    manageForm.include(BitcoinMixin);
-});
+        } catch (e) {
+            // In case of RPC failure, silently ignore to not block other providers.
+            // Console error is acceptable for debugging.
+            console.error("Bitcoin availability check failed", e);
+        }
+    },
+};
+
+publicWidget.registry.PaymentForm.include(BitcoinMixin);
+
+export default BitcoinMixin;

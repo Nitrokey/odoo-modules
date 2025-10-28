@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="bitcoin_rate_default" model="bitcoin.rate">
+        <field name="markup">10</field>
+    </record>
+
+    <record id="payment_method_bitcoin" model="payment.method">
+        <field name="name">Bitcoin</field>
+        <field name="code">bitcoin</field>
+        <field name="sequence">1000</field>
+        <field name="active">False</field>
+        <field
+            name="image"
+            type="base64"
+            file="payment_bitcoin/static/description/icon.png"
+        />
+    </record>
+
+    <record id="payment_acquirer_bitcoin" model="payment.provider">
+        <field name="name">Bitcoin</field>
+        <field
+            name="image_128"
+            type="base64"
+            file="payment_bitcoin/static/description/icon.png"
+        />
+        <field name="code">bitcoin</field>
+        <field name="redirect_form_view_id" ref="payment_bitcoin.bitcoin_form" />
+        <field
+            name="pre_msg"
+        ><![CDATA[
+        <p>Transfer information will be provided after choosing the payment mode.</p>]]>
+        </field>
+        <field name="module_id" ref="base.module_payment_bitcoin" />
+        <field
+            name="payment_method_ids"
+            eval="[Command.set([
+            ref('payment_bitcoin.payment_method_bitcoin'),
+        ])]"
+        />
+    </record>
+</odoo>

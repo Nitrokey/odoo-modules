@@ -580,5 +580,5 @@ msgstr ""
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_payment_transaction__duration
-msgid "time remaining"
+msgid "Time remaining"
 msgstr ""

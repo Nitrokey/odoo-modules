@@ -190,11 +190,12 @@ const config = [{
                 str: "String",
                 string: "String",
             },
+            mode: "permissive",
         },
     },
 
 }, {
-    files: ["**/*.esm.js", "**/*test.js"],
+    files: ["**/*.esm.js", "**/*test.js", "**/static/src/js/**/*.js"],
 
     languageOptions: {
         ecmaVersion: 2024,
