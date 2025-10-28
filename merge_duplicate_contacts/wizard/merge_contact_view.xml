@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 <odoo>
-
     <record id="base.action_partner_merge" model="ir.actions.act_window">
         <field name="binding_model_id" eval="False" />
     </record>

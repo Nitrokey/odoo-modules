@@ -4,7 +4,7 @@ import operator
 from ast import literal_eval
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -508,7 +508,7 @@ class MergePartnerManualCheck(models.TransientModel):
                 "target": "new",
             }
 
-        self.env['base.partner.merge.automatic.wizard']._merge(
+        self.env["base.partner.merge.automatic.wizard"]._merge(
             partner_ids, this.dst_partner_id
         )
 

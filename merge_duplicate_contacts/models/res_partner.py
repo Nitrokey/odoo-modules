@@ -21,7 +21,7 @@ class ResPartner(models.Model):
             for record in self:
                 res.append((record.id, str(record.id)))
             return res
-        return super(ResPartner, self).name_get()
+        return super().name_get()
 
     def prepare_wizard_data(self):
         return {
