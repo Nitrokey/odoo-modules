@@ -1,6 +1,7 @@
 import codecs
 import logging
-from datetime import date, datetime, timedelta as td
+from datetime import date, datetime
+from datetime import timedelta as td
 from hashlib import sha256
 
 import requests
@@ -174,9 +175,7 @@ def check_received(addr):
             tx_data = tx_info.json()
             b_height = tx_data.get("block_height")
         except requests.exceptions.JSONDecodeError as e:
-            _logger.warning(
-                f"Failed to parse JSON for transaction {tx['hash']}: {e}"
-            )
+            _logger.warning(f"Failed to parse JSON for transaction {tx['hash']}: {e}")
             continue
         except Exception as e:
             _logger.warning(f"Error getting transaction info for {tx['hash']}: {e}")
@@ -249,7 +248,7 @@ class BitcoinAddress(models.Model):
             record = bit_add_obj.order_id or bit_add_obj.invoice_id
             if not record:
                 continue
-            
+
             # Skip if record is too old (outside validity window)
             if record.create_date < check_date:
                 continue
@@ -319,7 +318,7 @@ class BitcoinAddress(models.Model):
                     payment_methods = (
                         payment_journal_obj.available_payment_method_ids.ids
                     )
-                    
+
                     # Use the correct record (order or invoice) for payment details
                     payment_record = bit_add_obj.order_id or bit_add_obj.invoice_id
                     payment_vals = {
@@ -340,13 +339,15 @@ class BitcoinAddress(models.Model):
                     payment_move = payment_obj.move_id
                     payment_line = payment_move.line_ids.filtered(
                         lambda r: not r.reconciled
-                        and r.account_id.account_type in ("liability_payable", "asset_receivable")
+                        and r.account_id.account_type
+                        in ("liability_payable", "asset_receivable")
                     )
 
                     for inv in open_invoice_objs:
                         line_to_reconcile += inv.line_ids.filtered(
                             lambda r: not r.reconciled
-                            and r.account_id.account_type in ("liability_payable", "asset_receivable")
+                            and r.account_id.account_type
+                            in ("liability_payable", "asset_receivable")
                         )
 
                     (line_to_reconcile + payment_line).reconcile()

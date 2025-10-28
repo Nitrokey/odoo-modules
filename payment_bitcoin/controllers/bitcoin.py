@@ -31,7 +31,8 @@ def get_bitcoin_render_values(transaction, lang, order=None, invoice=None):
     }
     decimal_places = len(str(transaction.bitcoin_amount).split(".")[1])
     info = _(
-        "Please send %(amount_btc)s %(unit_btc)s (%(amount_mbtc)s %(unit_mbtc)s) \
+        "Please send %(amount_btc)s %(unit_btc)s \
+        (%(amount_mbtc)s %(unit_mbtc)s) \
         to the address %(address)s by %(deadline_date)s UTC."
     ) % {
         "amount_btc": lang.format(f"%.{decimal_places}f", bitcoin_amount, True),
@@ -60,7 +61,7 @@ class BitcoinController(http.Controller):
     @http.route(["/payment_bitcoin/rate"], type="json", auth="public")
     def payment_bitcoin_rate(self, order_id=False, order_ref=False):
         _logger.debug(
-            f"bitcoin rate lookup for Order ID {order_id}, Order Ref {order_ref}"
+            "Bitcoin rate lookup for Order ID %s, Order Ref %s", order_id, order_ref
         )
         return request.env["bitcoin.rate"].sudo().get_rate(order_id, order_ref)
 
