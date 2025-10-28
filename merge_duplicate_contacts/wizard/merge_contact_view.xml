@@ -49,7 +49,7 @@
                     <field
                         name="dst_partner_id"
                         domain="[('id', 'in', partner_ids or False)]"
-                        attrs="{'required': [('state', '=', 'selection')]}"
+                        required="state == 'selection'"
                         invisible="1"
                     />
                     <field name='contact_type' invisible="1" />
@@ -228,14 +228,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('name_show_icon','=',True)]}"
+                                invisible="name_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('name_show_icon','=',False)]}"
+                                invisible="not name_show_icon"
                             />
 
                             <button
@@ -281,14 +281,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('company_show_icon','=',True)]}"
+                                invisible="company_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('company_show_icon','=',False)]}"
+                                invisible="not company_show_icon"
                             />
 
                             <button
@@ -334,14 +334,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('company_name_show_icon','=',True)]}"
+                                invisible="company_name_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('company_name_show_icon','=',False)]}"
+                                invisible="not company_name_show_icon"
                             />
 
                             <button
@@ -387,14 +387,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('email_show_icon','=',True)]}"
+                                invisible="email_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('email_show_icon','=',False)]}"
+                                invisible="not email_show_icon"
                             />
 
                             <button
@@ -439,14 +439,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('phone_show_icon','=',True)]}"
+                                invisible="phone_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('phone_show_icon','=',False)]}"
+                                invisible="not phone_show_icon"
                             />
 
                             <button
@@ -492,14 +492,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('mobile_show_icon','=',True)]}"
+                                invisible="mobile_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('mobile_show_icon','=',False)]}"
+                                invisible="not mobile_show_icon"
                             />
 
                             <button
@@ -526,7 +526,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type', '=', 'contact'),('company_id', '!=', False)]}"
+                                readonly="contact_type == 'contact' and company_id"
                             />
                             <field
                                 name='addr1_show_icon'
@@ -546,14 +546,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('addr1_show_icon','=',True)]}"
+                                invisible="addr1_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('addr1_show_icon','=',False)]}"
+                                invisible="not addr1_show_icon"
                             />
 
                             <button
@@ -568,7 +568,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type2', '=', 'contact'),('company_id2', '!=', False)]}"
+                                readonly="contact_type2 == 'contact' and company_id2"
                             />
                         </div>
                     </group>
@@ -580,7 +580,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type', '=', 'contact'),('company_id', '!=', False)]}"
+                                readonly="contact_type == 'contact' and company_id"
                             />
                             <field
                                 name='addr2_show_icon'
@@ -600,14 +600,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('addr2_show_icon','=',True)]}"
+                                invisible="addr2_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('addr2_show_icon','=',False)]}"
+                                invisible="not addr2_show_icon"
                             />
 
                             <button
@@ -622,7 +622,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type2', '=', 'contact'),('company_id2', '!=', False)]}"
+                                readonly="contact_type2 == 'contact' and company_id2"
                             />
                         </div>
                     </group>
@@ -634,7 +634,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type', '=', 'contact'),('company_id', '!=', False)]}"
+                                readonly="contact_type == 'contact' and company_id"
                             />
                             <field
                                 name='zip_show_icon'
@@ -654,14 +654,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('zip_show_icon','=',True)]}"
+                                invisible="zip_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('zip_show_icon','=',False)]}"
+                                invisible="not zip_show_icon"
                             />
 
                             <button
@@ -676,7 +676,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type2', '=', 'contact'),('company_id2', '!=', False)]}"
+                                readonly="contact_type2 == 'contact' and company_id2"
                             />
                         </div>
                     </group>
@@ -688,7 +688,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type', '=', 'contact'),('company_id', '!=', False)]}"
+                                readonly="contact_type == 'contact' and company_id"
                             />
                             <field
                                 name='city_show_icon'
@@ -708,14 +708,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('city_show_icon','=',True)]}"
+                                invisible="city_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('city_show_icon','=',False)]}"
+                                invisible="not city_show_icon"
                             />
 
                             <button
@@ -730,7 +730,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type2', '=', 'contact'),('company_id2', '!=', False)]}"
+                                readonly="contact_type2 == 'contact' and company_id2"
                             />
                         </div>
                     </group>
@@ -742,7 +742,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type', '=', 'contact'),('company_id', '!=', False)]}"
+                                readonly="contact_type == 'contact' and company_id"
                             />
                             <field
                                 name='state_show_icon'
@@ -762,14 +762,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('state_show_icon','=',True)]}"
+                                invisible="state_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('state_show_icon','=',False)]}"
+                                invisible="not state_show_icon"
                             />
 
                             <button
@@ -784,7 +784,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type2', '=', 'contact'),('company_id2', '!=', False)]}"
+                                readonly="contact_type2 == 'contact' and company_id2"
                             />
                         </div>
                     </group>
@@ -796,7 +796,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type', '=', 'contact'),('company_id', '!=', False)]}"
+                                readonly="contact_type == 'contact' and company_id"
                             />
                             <field
                                 name='country_show_icon'
@@ -816,14 +816,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('country_show_icon','=',True)]}"
+                                invisible="country_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('country_show_icon','=',False)]}"
+                                invisible="not country_show_icon"
                             />
 
                             <button
@@ -838,7 +838,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type2', '=', 'contact'),('company_id2', '!=', False)]}"
+                                readonly="contact_type2 == 'contact' and company_id2"
                             />
                         </div>
                     </group>
@@ -850,7 +850,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type', '=', 'contact'),('company_id', '!=', False)]}"
+                                readonly="contact_type == 'contact' and company_id"
                             />
                             <field
                                 name='vat_show_icon'
@@ -870,14 +870,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('vat_show_icon','=',True)]}"
+                                invisible="vat_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('vat_show_icon','=',False)]}"
+                                invisible="not vat_show_icon"
                             />
 
                             <button
@@ -892,7 +892,7 @@
                                 nolabel="1"
                                 class="oe_inline"
                                 style="min-width: 300px;"
-                                attrs="{'readonly': [('contact_type2', '=', 'contact'),('company_id2', '!=', False)]}"
+                                readonly="contact_type2 == 'contact' and company_id2"
                             />
                         </div>
                     </group>
@@ -923,14 +923,14 @@
                                 string="Differ"
                                 type="object"
                                 class="btn-danger oe_inline"
-                                attrs="{'invisible':[('is_company_show_icon','=',True)]}"
+                                invisible="is_company_show_icon"
                             />
                             <button
                                 name="dummy_button"
                                 string="Same"
                                 type="object"
                                 class="oe_inline"
-                                attrs="{'invisible':[('is_company_show_icon','=',False)]}"
+                                invisible="not is_company_show_icon"
                             />
 
                             <button

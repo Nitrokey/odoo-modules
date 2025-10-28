@@ -342,9 +342,7 @@ class MergePartnerManualCheck(models.TransientModel):
         return self.partner_wizard_id._action_new_next_screen()
 
     def _get_ordered_partner(self, partner_ids, context=None):
-        partners = self.pool.get("res.partner").browse(
-            list(partner_ids), context=context
-        )
+        partners = self.env["res.partner"].browse(list(partner_ids))
         ordered_partners = sorted(
             sorted(partners, key=operator.attrgetter("create_date"), reverse=True),
             key=operator.attrgetter("active"),
@@ -356,7 +354,7 @@ class MergePartnerManualCheck(models.TransientModel):
     def _log_merge_operation(self, src_partners, dst_partner):
         _logger.info(
             "(uid = %s) merged the partners %r with %s",
-            self._uid,
+            self.env.uid,
             src_partners.ids,
             dst_partner.id,
         )

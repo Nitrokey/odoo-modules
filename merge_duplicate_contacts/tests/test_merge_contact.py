@@ -1,4 +1,5 @@
-import odoo.tests.common as common
+from odoo import Command
+from odoo.tests import common
 
 
 class TestPartnerMerge(common.SingleTransactionCase):
@@ -73,15 +74,13 @@ class TestPartnerMerge(common.SingleTransactionCase):
                     "partner_invoice_id": self.partner2.id,
                     "partner_shipping_id": self.partner2.id,
                     "order_line": [
-                        (
-                            0,
-                            0,
+                        Command.create(
                             {
                                 "name": "test product A",
                                 "product_id": proudct_id.id,
                                 "product_uom_qty": 2,
                                 "qty_delivered": 1,
-                            },
+                            }
                         )
                     ],
                 }
@@ -163,15 +162,13 @@ class TestPartnerMerge(common.SingleTransactionCase):
                     "partner_invoice_id": self.partner2.id,
                     "partner_shipping_id": self.partner2.id,
                     "order_line": [
-                        (
-                            0,
-                            0,
+                        Command.create(
                             {
                                 "name": "test product A",
                                 "product_id": proudct_id.id,
                                 "product_uom_qty": 2,
                                 "qty_delivered": 1,
-                            },
+                            }
                         )
                     ],
                 }
@@ -321,15 +318,13 @@ class TestPartnerMerge(common.SingleTransactionCase):
                     "partner_invoice_id": self.partner2.id,
                     "partner_shipping_id": self.partner2.id,
                     "order_line": [
-                        (
-                            0,
-                            0,
+                        Command.create(
                             {
                                 "name": "test product A",
                                 "product_id": proudct_id.id,
                                 "product_uom_qty": 2,
                                 "qty_delivered": 1,
-                            },
+                            }
                         )
                     ],
                 }
@@ -476,15 +471,13 @@ class TestPartnerMerge(common.SingleTransactionCase):
                     "partner_invoice_id": self.partner1.id,
                     "partner_shipping_id": self.partner1.id,
                     "order_line": [
-                        (
-                            0,
-                            0,
+                        Command.create(
                             {
                                 "name": "test product A",
                                 "product_id": proudct_id.id,
                                 "product_uom_qty": 2,
                                 "qty_delivered": 1,
-                            },
+                            }
                         )
                     ],
                 }
@@ -564,15 +557,13 @@ class TestPartnerMerge(common.SingleTransactionCase):
                     "partner_invoice_id": self.partner2.id,
                     "partner_shipping_id": self.partner2.id,
                     "order_line": [
-                        (
-                            0,
-                            0,
+                        Command.create(
                             {
                                 "name": "test product A",
                                 "product_id": proudct_id.id,
                                 "product_uom_qty": 2,
                                 "qty_delivered": 1,
-                            },
+                            }
                         )
                     ],
                 }

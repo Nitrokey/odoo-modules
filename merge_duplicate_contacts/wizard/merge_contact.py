@@ -1,7 +1,7 @@
 import logging
 from ast import literal_eval
 
-from odoo import fields, models
+from odoo import Command, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class MergePartnerAutomatic(models.TransientModel):
             values.update(
                 {
                     "current_line_id": current_line.id,
-                    "partner_ids": [(6, 0, current_partner_ids)],
+                    "partner_ids": [Command.set(current_partner_ids)],
                     "dst_partner_id": current_partner_ids[0],
                     "state": "selection",
                 }
