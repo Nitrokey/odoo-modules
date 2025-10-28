@@ -5,12 +5,11 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="account.res_config_settings_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[@data-key='account']/h2[4]" position="before">
+            <xpath expr="//app[@name='account']" position="inside">
                 <h2>Minimum Unused Bitcoin Addresses</h2>
                 <div class="row mt16 o_settings_container">
                     <div class="col-12 col-lg-8 o_setting_box">
-                        <div class="o_setting_left_pane">
-                        </div>
+                        <div class="o_setting_left_pane" />
                         <div class="o_setting_right_pane">
                             <div class="content-group">
                                 <div class="mt16">
@@ -19,9 +18,9 @@
                                     >Send notification to users when amount of unused Bitcoin
                                         addresses are less than or equal
                                         <field
-                                            style="width:10%;"
-                                            name="min_unused_bitcoin"
-                                        />
+                                        style="width:10%;"
+                                        name="min_unused_bitcoin"
+                                    />
                                     </span>
                                 </div>
                             </div>
@@ -31,5 +30,4 @@
             </xpath>
         </field>
     </record>
-
 </odoo>

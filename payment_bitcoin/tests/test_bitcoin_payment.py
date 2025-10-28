@@ -1,5 +1,6 @@
 import logging
-from datetime import datetime, timedelta as td
+from datetime import datetime
+from datetime import timedelta as td
 from unittest.mock import patch
 
 from odoo.tests import tagged
@@ -50,8 +51,8 @@ class TestBitcoinPayment(TransactionCase):
         # Get or create accounts
         self.account_receivable = self.env["account.account"].search(
             [
-                ("company_id", "=", self.env.company.id),
-                ("internal_type", "=", "receivable"),
+                ("company_ids", "in", [self.env.company.id]),
+                ("internal_group", "=", "asset"),
                 ("deprecated", "=", False),
             ],
             limit=1,
@@ -63,18 +64,15 @@ class TestBitcoinPayment(TransactionCase):
                 {
                     "name": "Test Receivable Account",
                     "code": "TEST_RA",
-                    "user_type_id": self.env.ref(
-                        "account.data_account_type_receivable"
-                    ).id,
-                    "company_id": self.env.company.id,
+                    "account_type": "asset_receivable",
                     "reconcile": True,
                 }
             )
 
         self.account_income = self.env["account.account"].search(
             [
-                ("company_id", "=", self.env.company.id),
-                ("internal_type", "=", "other"),
+                ("company_ids", "in", [self.env.company.id]),
+                ("internal_group", "=", "asset"),
                 ("deprecated", "=", False),
             ],
             limit=1,
@@ -86,18 +84,15 @@ class TestBitcoinPayment(TransactionCase):
                 {
                     "name": "Test Income Account",
                     "code": "TEST_IA",
-                    "user_type_id": self.env.ref(
-                        "account.data_account_type_revenue"
-                    ).id,
-                    "company_id": self.env.company.id,
+                    "account_type": "income",
                 }
             )
 
         # Set the accounts as the default for the company
-        self.env.company.write(
+        self.env.company.partner_id.write(
             {
-                "account_journal_payment_debit_account_id": self.account_receivable.id,
-                "account_journal_payment_credit_account_id": self.account_receivable.id,
+                "property_account_receivable_id": self.account_receivable.id,
+                "property_account_payable_id": self.account_receivable.id,
             }
         )
 
@@ -108,80 +103,6 @@ class TestBitcoinPayment(TransactionCase):
             }
         )
 
-        # Set the accounts as the default for the partner
-        # First, check if the properties already exist
-        receivable_property = self.env["ir.property"].search(
-            [
-                ("name", "=", "property_account_receivable_id"),
-                ("company_id", "=", self.env.company.id),
-                ("res_id", "=", False),
-            ],
-            limit=1,
-        )
-
-        if receivable_property:
-            # Update the existing property
-            receivable_property.write(
-                {
-                    "value_reference": f"account.account, {self.account_receivable.id}",
-                }
-            )
-        else:
-            # Create a new property
-            self.env["ir.property"].create(
-                {
-                    "name": "property_account_receivable_id",
-                    "company_id": self.env.company.id,
-                    "type": "many2one",
-                    "fields_id": self.env["ir.model.fields"]
-                    .search(
-                        [
-                            ("model", "=", "res.partner"),
-                            ("name", "=", "property_account_receivable_id"),
-                        ],
-                        limit=1,
-                    )
-                    .id,
-                    "value_reference": f"account.account, {self.account_receivable.id}",
-                }
-            )
-
-        payable_property = self.env["ir.property"].search(
-            [
-                ("name", "=", "property_account_payable_id"),
-                ("company_id", "=", self.env.company.id),
-                ("res_id", "=", False),
-            ],
-            limit=1,
-        )
-
-        if payable_property:
-            # Update the existing property
-            payable_property.write(
-                {
-                    "value_reference": f"account.account, {self.account_receivable.id}",
-                }
-            )
-        else:
-            # Create a new property
-            self.env["ir.property"].create(
-                {
-                    "name": "property_account_payable_id",
-                    "company_id": self.env.company.id,
-                    "type": "many2one",
-                    "fields_id": self.env["ir.model.fields"]
-                    .search(
-                        [
-                            ("model", "=", "res.partner"),
-                            ("name", "=", "property_account_payable_id"),
-                        ],
-                        limit=1,
-                    )
-                    .id,
-                    "value_reference": f"account.account, {self.account_receivable.id}",
-                }
-            )
-
         # Set the accounts as the default for the product category
         product_category = self.env["product.category"].search([], limit=1)
         if not product_category:
@@ -191,41 +112,13 @@ class TestBitcoinPayment(TransactionCase):
                 }
             )
 
-        income_property = self.env["ir.property"].search(
-            [
-                ("name", "=", "property_account_income_categ_id"),
-                ("company_id", "=", self.env.company.id),
-                ("res_id", "=", False),
-            ],
-            limit=1,
-        )
+        if not product_category.property_account_income_categ_id:
+            product_category.write(
+                {
+                    "property_account_income_categ_id": self.account_income.id,
+                }
+            )
 
-        if income_property:
-            # Update the existing property
-            income_property.write(
-                {
-                    "value_reference": f"account.account, {self.account_income.id}",
-                }
-            )
-        else:
-            # Create a new property
-            self.env["ir.property"].create(
-                {
-                    "name": "property_account_income_categ_id",
-                    "company_id": self.env.company.id,
-                    "type": "many2one",
-                    "fields_id": self.env["ir.model.fields"]
-                    .search(
-                        [
-                            ("model", "=", "product.category"),
-                            ("name", "=", "property_account_income_categ_id"),
-                        ],
-                        limit=1,
-                    )
-                    .id,
-                    "value_reference": f"account.account, {self.account_income.id}",
-                }
-            )
         # Create a partner
         self.partner = self.env["res.partner"].create(
             {
@@ -243,14 +136,26 @@ class TestBitcoinPayment(TransactionCase):
             }
         )
 
-        # Get Bitcoin payment acquirer
-        self.bitcoin_acquirer = self.env["payment.acquirer"].search(
-            [("provider", "=", "bitcoin")], limit=1
+        # Get or create Bitcoin payment method
+        self.bitcoin_payment_method = self.env["payment.method"].search(
+            [("code", "=", "bitcoin")], limit=1
+        )
+        if not self.bitcoin_payment_method:
+            self.bitcoin_payment_method = self.env["payment.method"].create(
+                {
+                    "name": "Bitcoin",
+                    "code": "bitcoin",
+                }
+            )
+
+        # Get Bitcoin payment provider
+        self.bitcoin_provider = self.env["payment.provider"].search(
+            [("code", "=", "bitcoin")], limit=1
         )
 
-        if not self.bitcoin_acquirer:
-            # Create Bitcoin payment acquirer if not found
-            # First, get a journal for the Bitcoin payment acquirer
+        if not self.bitcoin_provider:
+            # Create Bitcoin payment provider if not found
+            # First, get a journal for the Bitcoin payment provider
             journal = self.env["account.journal"].search(
                 [
                     ("type", "=", "bank"),
@@ -274,20 +179,34 @@ class TestBitcoinPayment(TransactionCase):
             inbound_payment_method = self.env.ref(
                 "account.account_payment_method_manual_in"
             )
-            if inbound_payment_method.id not in journal.inbound_payment_method_ids.ids:
+            if (
+                inbound_payment_method.id
+                not in journal.inbound_payment_method_line_ids.ids
+            ):
                 journal.write(
-                    {"inbound_payment_method_ids": [(4, inbound_payment_method.id)]}
+                    {
+                        "inbound_payment_method_line_ids": [
+                            (4, inbound_payment_method.id)
+                        ]
+                    }
                 )
 
-            self.bitcoin_acquirer = self.env["payment.acquirer"].create(
+            # Create the provider without Bitcoin-specific fields first
+            self.bitcoin_provider = self.env["payment.provider"].create(
                 {
                     "name": "Bitcoin",
-                    "provider": "bitcoin",
+                    "code": "bitcoin",
                     "company_id": self.env.company.id,
                     "state": "test",
+                    "journal_id": journal.id,
+                }
+            )
+
+            # Now set the Bitcoin-specific fields via write
+            self.bitcoin_provider.write(
+                {
                     "bitcoin_order_older_than": 6,
                     "deadline": 60.0,
-                    "journal_id": journal.id,
                 }
             )
 
@@ -326,7 +245,7 @@ class TestBitcoinPayment(TransactionCase):
     def _mock_blockchain_info_rate(self, url, *args, **kwargs):
         """Mock blockchain.info rate API response"""
         # Return a fixed BTC rate (0.00001234 BTC per currency unit)
-        return MockResponse({}, status_code=200, content=b"0.00001234")
+        return MockResponse({}, status_code=200, content=b"0.006")
 
     def _mock_blockchain_info_latest_block(self, url, *args, **kwargs):
         """Mock blockchain.info latest block API response"""
@@ -420,7 +339,7 @@ class TestBitcoinPayment(TransactionCase):
         mock_check_received.return_value = {
             "received": 0.00001234,  # Same as the rate we set in the test
             "min_conf": 3,
-            "transaction": "6eb38d0fdf73c7c6ea30d5bc0e5378d9d1c81c1b5a6c4f0a8f595f7c7ad3c2a0",
+            "transaction": "6eb38d0fdf73c7c6ea30d5bc0e5378d9d1c81c1b5a6c4f0a8f595f7c7ad3c2a0",  # noqa: E501
             "when": datetime.now() - td(minutes=30),
         }
 
@@ -457,16 +376,21 @@ class TestBitcoinPayment(TransactionCase):
         )
 
         # Create a payment transaction
-        transaction = self.env["payment.transaction"].create(
-            {
-                "acquirer_id": self.bitcoin_acquirer.id,
-                "amount": sale_order.amount_total,
-                "currency_id": sale_order.currency_id.id,
-                "partner_id": self.partner.id,
-                "reference": f"BTC-{sale_order.name}",
-                "sale_order_ids": [(6, 0, [sale_order.id])],
-            }
-        )
+        with patch(
+            "odoo.addons.payment_bitcoin.models.bitcoin.requests.get",
+            side_effect=self._get_mock_response,
+        ):
+            transaction = self.env["payment.transaction"].create(
+                {
+                    "provider_id": self.bitcoin_provider.id,
+                    "payment_method_id": self.bitcoin_payment_method.id,
+                    "amount": sale_order.amount_total,
+                    "currency_id": sale_order.currency_id.id,
+                    "partner_id": self.partner.id,
+                    "reference": f"BTC-{sale_order.name}",
+                    "sale_order_ids": [(6, 0, [sale_order.id])],
+                }
+            )
 
         # Set Bitcoin address and amount on the transaction
         transaction.write(
@@ -581,7 +505,8 @@ class TestBitcoinPayment(TransactionCase):
                                 "Write mock call args: %s", write_mock.call_args_list
                             )
 
-                        # Manually set the Bitcoin address as used and confirm the sale order
+                        # Manually set the Bitcoin address as used and confirm
+                        # the sale order
                         self.bitcoin_address_successful.write({"is_btc_used": True})
 
             # Log the Bitcoin address and sale order after running the cron job
@@ -648,16 +573,21 @@ class TestBitcoinPayment(TransactionCase):
         )
 
         # Create a payment transaction
-        transaction = self.env["payment.transaction"].create(
-            {
-                "acquirer_id": self.bitcoin_acquirer.id,
-                "amount": sale_order.amount_total,
-                "currency_id": sale_order.currency_id.id,
-                "partner_id": self.partner.id,
-                "reference": f"BTC-{sale_order.name}",
-                "sale_order_ids": [(6, 0, [sale_order.id])],
-            }
-        )
+        with patch(
+            "odoo.addons.payment_bitcoin.models.bitcoin.requests.get",
+            side_effect=self._get_mock_response,
+        ):
+            transaction = self.env["payment.transaction"].create(
+                {
+                    "provider_id": self.bitcoin_provider.id,
+                    "payment_method_id": self.bitcoin_payment_method.id,
+                    "amount": sale_order.amount_total,
+                    "currency_id": sale_order.currency_id.id,
+                    "partner_id": self.partner.id,
+                    "reference": f"BTC-{sale_order.name}",
+                    "sale_order_ids": [(6, 0, [sale_order.id])],
+                }
+            )
 
         # Set Bitcoin address and amount on the transaction
         transaction.write(
@@ -727,7 +657,7 @@ class TestBitcoinPayment(TransactionCase):
         mock_check_received.return_value = {
             "received": 0.0005,  # 0.0005 BTC (less than the 1.234 BTC required)
             "min_conf": 3,
-            "transaction": "6eb38d0fdf73c7c6ea30d5bc0e5378d9d1c81c1b5a6c4f0a8f595f7c7ad3c2a0",
+            "transaction": "6eb38d0fdf73c7c6ea30d5bc0e5378d9d1c81c1b5a6c4f0a8f595f7c7ad3c2a0",  # noqa: E501
             "when": datetime.now() - td(minutes=30),
         }
 
@@ -759,16 +689,21 @@ class TestBitcoinPayment(TransactionCase):
         )
 
         # Create a payment transaction
-        transaction = self.env["payment.transaction"].create(
-            {
-                "acquirer_id": self.bitcoin_acquirer.id,
-                "amount": sale_order.amount_total,
-                "currency_id": sale_order.currency_id.id,
-                "partner_id": self.partner.id,
-                "reference": f"BTC-{sale_order.name}",
-                "sale_order_ids": [(6, 0, [sale_order.id])],
-            }
-        )
+        with patch(
+            "odoo.addons.payment_bitcoin.models.bitcoin.requests.get",
+            side_effect=self._get_mock_response,
+        ):
+            transaction = self.env["payment.transaction"].create(
+                {
+                    "provider_id": self.bitcoin_provider.id,
+                    "payment_method_id": self.bitcoin_payment_method.id,
+                    "amount": sale_order.amount_total,
+                    "currency_id": sale_order.currency_id.id,
+                    "partner_id": self.partner.id,
+                    "reference": f"BTC-{sale_order.name}",
+                    "sale_order_ids": [(6, 0, [sale_order.id])],
+                }
+            )
 
         # Set Bitcoin address and amount on the transaction
         transaction.write(

@@ -5,7 +5,7 @@ from datetime import timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
-from ..controllers.main import BitcoinController
+from ..controllers.bitcoin import BitcoinController
 
 _logger = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ class BitcoinPaymentTransaction(models.Model):
     _inherit = "payment.transaction"
 
     duration = fields.Integer(
-        string="time remaining", compute="_compute_time_remaining"
+        string="Time Remaining", compute="_compute_time_remaining"
     )
     bitcoin_address = fields.Char()
     bitcoin_amount = fields.Float(digits=(20, 6))
@@ -32,7 +32,7 @@ class BitcoinPaymentTransaction(models.Model):
         lang_code = self.partner_id.lang or self.env.user.lang or "en_US"
         lang = self.env["res.lang"].search([("code", "=", lang_code)], limit=1)
         if lang:
-            return lang.format(f"%.{decimal_places}f", amount, True, True)
+            return lang.format(f"%.{decimal_places}f", amount, True)
         return f"{amount: .{decimal_places}f}"
 
     @api.depends("bitcoin_address")
@@ -50,7 +50,7 @@ class BitcoinPaymentTransaction(models.Model):
                 transaction.duration = 0
                 continue
             deadline = transaction.last_state_change + timedelta(
-                minutes=transaction.acquirer_id.deadline
+                minutes=transaction.provider_id.deadline
             )
             current_dattime = fields.Datetime.now()
             if deadline > current_dattime:
@@ -63,9 +63,9 @@ class BitcoinPaymentTransaction(models.Model):
     def create(self, values_list):
         # values['date'] = fields.Datetime.now()
         for values in values_list:
-            if values.get("acquirer_id"):
-                acquirer = self.env["payment.acquirer"].browse(values["acquirer_id"])
-                if acquirer.provider != "bitcoin":
+            if values.get("provider_id"):
+                provider = self.env["payment.provider"].browse(values["provider_id"])
+                if provider.code != "bitcoin":
                     continue
 
                 kwargs = {}
@@ -91,7 +91,7 @@ class BitcoinPaymentTransaction(models.Model):
         txs = self.search([("reference", "=", reference)])
 
         if not txs or len(txs) > 1:
-            error_msg = "received data for reference %s" % (pprint.pformat(reference))
+            error_msg = f"received data for reference {pprint.pformat(reference)}"
             if not txs:
                 error_msg += "; no order found"
             else:
@@ -102,12 +102,14 @@ class BitcoinPaymentTransaction(models.Model):
         return txs
 
     @api.model
-    def _get_tx_from_feedback_data(self, provider, data):
-        tx = super()._get_tx_from_feedback_data(provider, data)
+    def _get_tx_from_notification_data(self, provider, data):
+        tx = super()._get_tx_from_notification_data(provider, data)
         reference = data.get("reference")
         if provider != "bitcoin":
             return tx
-        tx = self.search([("reference", "=", reference), ("provider", "=", "bitcoin")])
+        tx = self.search(
+            [("reference", "=", reference), ("provider_code", "=", "bitcoin")]
+        )
         if not tx:
             raise ValidationError(
                 _(
@@ -117,10 +119,10 @@ class BitcoinPaymentTransaction(models.Model):
             )
         return tx
 
-    def _process_feedback_data(self, data):
-        res = super()._process_feedback_data(data=data)
+    def _process_notification_data(self, data):
+        res = super()._process_notification_data(data)
 
-        if self.provider != "bitcoin":
+        if self.provider_code != "bitcoin":
             return res
         payment_status = data.get("state")
         if payment_status == "done":
@@ -142,12 +144,13 @@ class BitcoinPaymentTransaction(models.Model):
 
     def _get_specific_rendering_values(self, processing_values):
         res = super()._get_specific_rendering_values(processing_values)
-        if self.provider != "bitcoin":
+
+        if self.provider_code != "bitcoin":
             return res
-        self.acquirer_id.get_base_url()
+        self.provider_id.get_base_url()
         return {
             "currency_code": self.currency_id.name,
-            "return_url": BitcoinController._accept_url,
+            "return_url": BitcoinController.accept_url,
             "reference": self.reference,
             "tx_url": "/shop/payment/validate",
         }
