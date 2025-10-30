@@ -38,10 +38,6 @@ repos:
         entry: found a en.po file
         language: fail
         files: '[a-zA-Z0-9_]*/i18n/en\.po$'
-  - repo: https://github.com/sbidoul/whool
-    rev: v1.2
-    hooks:
-      - id: whool-init
   - repo: https://github.com/OCA/odoo-pre-commit-hooks
     rev: v0.0.33
     hooks:
