@@ -5,25 +5,20 @@ from odoo.exceptions import UserError
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    def name_get(self):
-        """Context has only_show_customer_id and not show_address,show_address_only,
-        show_email,html_format then return list of tuple partner record
-        """
-        ctx = self._context.copy() or {}
-        if (
-            ctx.get("only_show_customer_id")
-            and "show_address" not in ctx
-            and "show_address_only" not in ctx
-            and "show_email" not in ctx
-            and "html_format" not in ctx
+    def _compute_display_name(self):
+        """Custom display_name logic depending on context."""
+        ctx = self._context or {}
+        if ctx.get("only_show_customer_id") and not any(
+            k in ctx
+            for k in ["show_address", "show_address_only", "show_email", "html_format"]
         ):
-            res = []
             for record in self:
-                res.append((record.id, str(record.id)))
-            return res
-        return super().name_get()
+                record.display_name = f"{record.id}"  # : {record.name or ''}
+        else:
+            return super()._compute_display_name()
 
     def prepare_wizard_data(self):
+        """Prepare default data for merge wizard."""
         return {
             "group_by_name": True,
             "state": "option",
@@ -41,16 +36,16 @@ class ResPartner(models.Model):
         }
 
     def open_wizard_action(self):
+        """Open the partner merge wizard with selected partners."""
         if len(self.ids) < 2:
             raise UserError(
                 _("At least two records are needed to perform this action.")
             )
-        context = {}
         data = self.prepare_wizard_data()
         wizard = self.env["base.partner.merge.automatic.wizard"].create(data)
-        wizard.with_context(context=context)._process_query(
-            "select min(id), array_agg(id) from res_partner where id in %s"
-            % (tuple(self.ids),),
+        wizard.with_context(**{})._process_query(
+            f"SELECT MIN(id), ARRAY_AGG(id) FROM res_partner WHERE id IN\
+            {tuple(self.ids)}",
             ignore_occurence=False,
         )
         return wizard._action_new_next_screen()

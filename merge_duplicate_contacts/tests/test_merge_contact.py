@@ -87,14 +87,18 @@ class TestPartnerMerge(common.SingleTransactionCase):
             )
         )
         for line in sale_order.order_line:
-            line.product_id_change()
+            line._compute_name()
 
-        sale_order.onchange_partner_id()
-        sale_order._compute_tax_id()
+        sale_order._onchange_partner_id()
+        sale_order._onchange_fpos_id_show_update_fpos()
         sale_order.action_confirm()
 
-        self.partner2.with_context(**{"only_show_customer_id": True}).name_get()
-        self.partner1.with_context(**{"only_show_customer_id": True}).name_get()
+        self.partner2.with_context(
+            **{"only_show_customer_id": True}
+        )._compute_display_name()
+        self.partner1.with_context(
+            **{"only_show_customer_id": True}
+        )._compute_display_name()
         wiz_act = partner_pool.open_wizard_action()
         partner_name = self.partner2.name
         partner_phone = self.partner1.phone
@@ -175,14 +179,18 @@ class TestPartnerMerge(common.SingleTransactionCase):
             )
         )
         for line in sale_order.order_line:
-            line.product_id_change()
+            line._compute_name()
 
-        sale_order.onchange_partner_id()
-        sale_order._compute_tax_id()
+        sale_order._onchange_partner_id()
+        sale_order._onchange_fpos_id_show_update_fpos()
         sale_order.action_confirm()
 
-        self.partner2.with_context(**{"only_show_customer_id": True}).name_get()
-        self.partner1.with_context(**{"only_show_customer_id": True}).name_get()
+        self.partner2.with_context(
+            **{"only_show_customer_id": True}
+        )._compute_display_name()
+        self.partner1.with_context(
+            **{"only_show_customer_id": True}
+        )._compute_display_name()
         wiz_act = partner_pool.open_wizard_action()
         partner_name = self.partner2.name
         partner_phone = self.partner1.phone
@@ -331,14 +339,18 @@ class TestPartnerMerge(common.SingleTransactionCase):
             )
         )
         for line in sale_order.order_line:
-            line.product_id_change()
+            line._compute_name()
 
-        sale_order.onchange_partner_id()
-        sale_order._compute_tax_id()
+        sale_order._onchange_partner_id()
+        sale_order._onchange_fpos_id_show_update_fpos()
         sale_order.action_confirm()
 
-        self.partner2.with_context(**{"only_show_customer_id": True}).name_get()
-        self.partner1.with_context(**{"only_show_customer_id": True}).name_get()
+        self.partner2.with_context(
+            **{"only_show_customer_id": True}
+        )._compute_display_name()
+        self.partner1.with_context(
+            **{"only_show_customer_id": True}
+        )._compute_display_name()
         wiz_act = partner_pool.open_wizard_action()
         partner_name = self.partner1.name
         partner_phone = self.partner1.phone
@@ -484,14 +496,18 @@ class TestPartnerMerge(common.SingleTransactionCase):
             )
         )
         for line in sale_order.order_line:
-            line.product_id_change()
+            line._compute_name()
 
-        sale_order.onchange_partner_id()
-        sale_order._compute_tax_id()
+        sale_order._onchange_partner_id()
+        sale_order._onchange_fpos_id_show_update_fpos()
         sale_order.action_confirm()
 
-        self.partner2.with_context(**{"only_show_customer_id": True}).name_get()
-        self.partner1.with_context(**{"only_show_customer_id": True}).name_get()
+        self.partner2.with_context(
+            **{"only_show_customer_id": True}
+        )._compute_display_name()
+        self.partner1.with_context(
+            **{"only_show_customer_id": True}
+        )._compute_display_name()
         wiz_act = partner_pool.open_wizard_action()
         partner_name = self.partner1.name
         partner_phone = self.partner2.phone
@@ -570,13 +586,17 @@ class TestPartnerMerge(common.SingleTransactionCase):
             )
         )
         for line in sale_order.order_line:
-            line.product_id_change()
+            line._compute_name()
 
-        sale_order.onchange_partner_id()
-        sale_order._compute_tax_id()
+        sale_order._onchange_partner_id()
+        sale_order._onchange_fpos_id_show_update_fpos()
         sale_order.action_confirm()
-        self.partner2.with_context(**{"only_show_customer_id": True}).name_get()
-        self.partner1.with_context(**{"only_show_customer_id": True}).name_get()
+        self.partner2.with_context(
+            **{"only_show_customer_id": True}
+        )._compute_display_name()
+        self.partner1.with_context(
+            **{"only_show_customer_id": True}
+        )._compute_display_name()
         wiz_act = partner_pool.open_wizard_action()
         merge_wizard = (
             self.env[wiz_act["res_model"]]

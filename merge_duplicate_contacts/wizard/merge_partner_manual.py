@@ -1,10 +1,9 @@
 import itertools
 import logging
-import operator
 from ast import literal_eval
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -173,12 +172,9 @@ class MergePartnerManualCheck(models.TransientModel):
     @api.depends("name", "name2")
     def _compute_name_show_icon(self):
         for record in self:
-            if (not record.name and not record.name2) or (record.name == record.name2):
-                record.name_show_icon = True
-            else:
-                record.name_show_icon = False
+            record.name_show_icon = not record.name or record.name == record.name2
 
-    @api.depends("company_id", "company_id")
+    @api.depends("company_id", "company_id2")
     def _compute_company_show_icon(self):
         for record in self:
             if (not record.company_id and not record.company_id2) or (
@@ -308,32 +304,34 @@ class MergePartnerManualCheck(models.TransientModel):
 
     @api.onchange("keep1")
     def _onchange_keep1(self):
+        self.ensure_one()
         if self.keep1:
             self.keep2 = False
             self.dst_partner_id = self.partner_ids and self.partner_ids[0].id or False
 
     @api.onchange("keep2")
     def _onchange_keep2(self):
+        self.ensure_one()
         if self.keep2:
             self.keep1 = False
             self.dst_partner_id = self.partner_ids and self.partner_ids[1].id or False
 
     def action_skip(self):
-        if self.partner_wizard_id.current_line_id:
-            skipped_partner_ids = self.partner_ids.ids
-            new_aggr_ids = list(
-                set(literal_eval(self.partner_wizard_id.current_line_id.aggr_ids))
-                - set(skipped_partner_ids)
-            )
-            if not new_aggr_ids or len(new_aggr_ids) == 1:
-                self.partner_wizard_id.current_line_id.unlink()
-            else:
-                self.partner_wizard_id.current_line_id.write({"aggr_ids": new_aggr_ids})
-        else:
-            return {
-                "warning": {"title": _("Warning"), "message": _("No duplicates found")}
-            }
+        """Skip the current duplicate partner pair and move to the next."""
+        wizard_line = self.partner_wizard_id.current_line_id
+        if wizard_line:
+            skipped_ids = set(self.partner_ids.ids)
+            current_aggr_ids = set(literal_eval(wizard_line.aggr_ids or "[]"))
+            remaining_ids = list(current_aggr_ids - skipped_ids)
 
+            if not remaining_ids or len(remaining_ids) == 1:
+                wizard_line.unlink()
+            else:
+                wizard_line.write({"aggr_ids": remaining_ids})
+        else:
+            raise UserError(_("No duplicates found."))
+
+        # Move to the next duplicate
         self.partner_wizard_id.write(
             {
                 "duplicate_position": self.partner_wizard_id.duplicate_position + 1,
@@ -341,12 +339,10 @@ class MergePartnerManualCheck(models.TransientModel):
         )
         return self.partner_wizard_id._action_new_next_screen()
 
-    def _get_ordered_partner(self, partner_ids, context=None):
+    def _get_ordered_partner(self, partner_ids):
         partners = self.env["res.partner"].browse(list(partner_ids))
-        ordered_partners = sorted(
-            sorted(partners, key=operator.attrgetter("create_date"), reverse=True),
-            key=operator.attrgetter("active"),
-            reverse=True,
+        ordered_partners = partners.sorted(
+            lambda p: (not p.active, p.create_date), reverse=True
         )
         return ordered_partners
 
@@ -359,7 +355,7 @@ class MergePartnerManualCheck(models.TransientModel):
             dst_partner.id,
         )
 
-    def _update_foreign_keys(self, src_partners, dst_partner, context=None):
+    def _update_foreign_keys(self, src_partners, dst_partner):
         res = self.env["base.partner.merge.automatic.wizard"]._update_foreign_keys(
             src_partners, dst_partner
         )
@@ -373,24 +369,20 @@ class MergePartnerManualCheck(models.TransientModel):
 
     @api.model
     def _update_values(self, src_partners, dst_partner):
+        """Update destination partner with values from source partners,
+        excluding certain form fields and computed fields."""
         _logger.debug(
             "_update_values for dst_partner: %s for src_partners: %r",
             dst_partner.id,
             src_partners.ids,
         )
 
-        model_fields = dst_partner.fields_get().keys()
-
         def write_serializer(item):
-            if isinstance(item, models.BaseModel):
-                return item.id
-            else:
-                return item
+            """Convert recordsets to IDs for safe write operations."""
+            return item.id if isinstance(item, models.BaseModel) else item
 
-        # get all fields that are not computed or x2many
-        values = dict()
-
-        form_fields = [
+        # Fields to exclude from merging
+        excluded_fields = {
             "name",
             "email",
             "phone",
@@ -402,212 +394,176 @@ class MergePartnerManualCheck(models.TransientModel):
             "country_id",
             "is_company",
             "vat",
-        ]
-        for column in model_fields:
-            field = dst_partner._fields[column]
+        }
+
+        values = {}
+        for field_name, field in dst_partner._fields.items():
             if (
                 field.type not in ("many2many", "one2many")
-                and field.compute is None
-                and column not in form_fields
+                and not field.compute
+                and field_name not in excluded_fields
             ):
-                for item in itertools.chain(src_partners, [dst_partner]):
-                    if item[column]:
-                        values[column] = write_serializer(item[column])
+                for record in itertools.chain(src_partners, [dst_partner]):
+                    if record[field_name]:
+                        values[field_name] = write_serializer(record[field_name])
 
-        # remove fields that can not be updated (id and parent_id)
+        # Remove non-writable fields
         values.pop("id", None)
         parent_id = values.pop("parent_id", None)
+
+        # Ensure company flag consistency
         if dst_partner.child_ids and "is_company" not in values:
-            values.update({"is_company": dst_partner.is_company})
+            values["is_company"] = dst_partner.is_company
+
+        # Apply updates
         dst_partner.write(values)
-        # try to update the parent_id
+
+        # Handle parent_id carefully to avoid recursion errors
         if parent_id and parent_id != dst_partner.id:
             try:
                 dst_partner.write({"parent_id": parent_id})
             except ValidationError:
                 _logger.info(
-                    "Skip recursive partner hierarchies for parent_id %s of partner: %s",
+                    "Skipped recursive hierarchy for parent_id %s of partner %s",
                     parent_id,
                     dst_partner.id,
                 )
 
     def action_merge(self, context=None):
+        """Merge two partners based on selection (keep1/keep2) with VAT bypass."""
         context = dict(context or {}, active_test=False)
-        this = self
-        if this.keep1 is False and this.keep2 is False:
+        if not (self.keep1 or self.keep2):
             raise Warning(_("Please select a contact to keep."))
-        if this.keep1:
-            this.dst_partner_id = this.partner_ids and this.partner_ids[0].id or False
-            if this.dst_partner_id:
-                this.dst_partner_id.write(
-                    {
-                        "parent_id": this.company_id and this.company_id.id or False,
-                        "company_name": this.company_name or False,
-                        "name": this.name or False,
-                        "email": this.email or False,
-                        "phone": this.phone or False,
-                        "mobile": this.mobile or False,
-                        "street": this.street or False,
-                        "street2": this.street11 or False,
-                        "zip": this.zip or False,
-                        "city": this.city or False,
-                        "state_id": this.state_id and this.state_id.id or False,
-                        "country_id": this.country_id and this.country_id.id or False,
-                        "is_company": this.is_company2 or False,
-                        "vat": this.vat_1 or False,
-                    }
+
+        def update_partner_data(dst, data, vat_value):
+            """Helper to write partner data and bypass VAT validation."""
+            dst.write(data)
+            if vat_value:
+                self._cr.execute(
+                    "UPDATE res_partner SET vat = %s WHERE id = %s",
+                    (vat_value, dst.id),
                 )
-                # To Avoid VAT Validation, updated it using query.
-                if this.vat_1:
-                    self._cr.execute(
-                        """
-                        UPDATE res_partner SET vat = %s WHERE id = %s
-                        """,
-                        (this.vat_1, this.dst_partner_id.id),
-                    )
+
+        if self.keep1:
+            self.dst_partner_id = self.partner_ids[:1].id
+            if self.dst_partner_id:
+                update_partner_data(
+                    self.dst_partner_id,
+                    {
+                        "parent_id": self.company_id.id if self.company_id else False,
+                        "company_name": self.company_name or False,
+                        "name": self.name or False,
+                        "email": self.email or False,
+                        "phone": self.phone or False,
+                        "mobile": self.mobile or False,
+                        "street": self.street or False,
+                        "street2": self.street11 or False,
+                        "zip": self.zip or False,
+                        "city": self.city or False,
+                        "state_id": self.state_id.id if self.state_id else False,
+                        "country_id": self.country_id.id if self.country_id else False,
+                        "is_company": self.is_company2 or False,
+                        "vat": self.vat_1 or False,
+                    },
+                    self.vat_1,
+                )
         else:
-            this.dst_partner_id = this.partner_ids and this.partner_ids[1].id or False
-            if this.dst_partner_id:
-                this.dst_partner_id.write(
+            self.dst_partner_id = self.partner_ids[1:2].id
+            if self.dst_partner_id:
+                update_partner_data(
+                    self.dst_partner_id,
                     {
-                        "parent_id": this.company_id2 and this.company_id2.id or False,
-                        "company_name": this.company_name2 or False,
-                        "name": this.name2 or False,
-                        "email": this.email2 or False,
-                        "phone": this.phone2 or False,
-                        "mobile": this.mobile2 or False,
-                        "street": this.street2 or False,
-                        "street2": this.street22 or False,
-                        "zip": this.zip2 or False,
-                        "city": this.city2 or False,
-                        "state_id": this.state_id2 and this.state_id2.id or False,
-                        "country_id": this.country_id2 and this.country_id2.id or False,
-                        "is_company": this.is_company2 or False,
-                        "vat": this.vat_2 or False,
-                    }
+                        "parent_id": self.company_id2.id if self.company_id2 else False,
+                        "company_name": self.company_name2 or False,
+                        "name": self.name2 or False,
+                        "email": self.email2 or False,
+                        "phone": self.phone2 or False,
+                        "mobile": self.mobile2 or False,
+                        "street": self.street2 or False,
+                        "street2": self.street22 or False,
+                        "zip": self.zip2 or False,
+                        "city": self.city2 or False,
+                        "state_id": self.state_id2.id if self.state_id2 else False,
+                        "country_id": self.country_id2.id
+                        if self.country_id2
+                        else False,
+                        "is_company": self.is_company2 or False,
+                        "vat": self.vat_2 or False,
+                    },
+                    self.vat_2,
                 )
 
-                # To Avoid VAT Validation, updated it using query.
-                if this.vat_2:
-                    self._cr.execute(
-                        """
-                        UPDATE res_partner SET vat = %s WHERE id = %s
-                        """,
-                        (this.vat_2, this.dst_partner_id.id),
-                    )
-
-        partner_ids = set(map(int, this.partner_ids))  # [:2]
-        #         custom_partner_ids = set(map(int, this.custom_partner_ids))
+        partner_ids = set(map(int, self.partner_ids))
         if not partner_ids:
-            this.write({"state": "finished"})
+            self.write({"state": "finished"})
             return {
                 "type": "ir.actions.act_window",
-                "res_model": this._name,
-                "res_id": this.id,
+                "res_model": self._name,
+                "res_id": self.id,
                 "view_mode": "form",
                 "target": "new",
             }
 
         self.env["base.partner.merge.automatic.wizard"]._merge(
-            partner_ids, this.dst_partner_id
+            partner_ids, self.dst_partner_id
         )
 
-        if this.partner_wizard_id.current_line_id:
-            deleted_partner_ids = list(set(partner_ids) - {this.dst_partner_id.id})
-            new_aggr_ids = list(
-                set(literal_eval(this.partner_wizard_id.current_line_id.aggr_ids))
-                - set(deleted_partner_ids)
-            )
-            if not new_aggr_ids or len(new_aggr_ids) == 1:
-                this.partner_wizard_id.current_line_id.unlink()
-            else:
-                this.partner_wizard_id.current_line_id.write({"aggr_ids": new_aggr_ids})
+        if self.partner_wizard_id.current_line_id:
+            deleted_ids = list(partner_ids - {self.dst_partner_id.id})
+            aggr_ids = literal_eval(self.partner_wizard_id.current_line_id.aggr_ids)
+            new_aggr_ids = list(set(aggr_ids) - set(deleted_ids))
 
-        this.partner_wizard_id.write(
+            if not new_aggr_ids or len(new_aggr_ids) == 1:
+                self.partner_wizard_id.current_line_id.unlink()
+            else:
+                self.partner_wizard_id.current_line_id.write({"aggr_ids": new_aggr_ids})
+
+        self.partner_wizard_id.write(
             {
-                "duplicate_position": this.partner_wizard_id.duplicate_position + 1,
+                "duplicate_position": self.partner_wizard_id.duplicate_position + 1,
             }
         )
 
-        return this.partner_wizard_id._action_new_next_screen()
+        return self.partner_wizard_id.with_context(**context)._action_new_next_screen()
+
+    def _swap_field_values(self, direction):
+        mapping = [
+            ("company_id", "company_id2"),
+            ("company_name", "company_name2"),
+            ("name", "name2"),
+            ("email", "email2"),
+            ("phone", "phone2"),
+            ("mobile", "mobile2"),
+            ("street", "street2"),
+            ("street11", "street22"),
+            ("zip", "zip2"),
+            ("city", "city2"),
+            ("state_id", "state_id2"),
+            ("country_id", "country_id2"),
+            ("is_company", "is_company2"),
+            ("vat_1", "vat_2"),
+        ]
+        ctx_field = self._context.get("field_name")
+        for left, right in mapping:
+            if ctx_field in (left, right):
+                if direction == "left":
+                    setattr(self, left, getattr(self, right))
+                else:
+                    setattr(self, right, getattr(self, left))
+                break
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "new",
+        }
 
     def swap_to_left(self):
-        context = self._context.get("field_name")
-        if context == "company_id2":
-            self.company_id = self.company_id2
-        if context == "company_name2":
-            self.company_name = self.company_name2
-        if context == "name2":
-            self.name = self.name2
-        if context == "email2":
-            self.email = self.email2
-        if context == "phone2":
-            self.phone = self.phone2
-        if context == "mobile2":
-            self.mobile = self.mobile2
-        if context == "street2":
-            self.street = self.street2
-        if context == "street22":
-            self.street11 = self.street22
-        if context == "zip2":
-            self.zip = self.zip2
-        if context == "city2":
-            self.city = self.city2
-        if context == "state_id2":
-            self.state_id = self.state_id2
-        if context == "country_id2":
-            self.country_id = self.country_id2
-        if context == "is_company2":
-            self.is_company = self.is_company2
-        if context == "vat_2":
-            self.vat_1 = self.vat_2
-
-        return {
-            "type": "ir.actions.act_window",
-            "res_model": self._name,
-            "res_id": self.id,
-            "view_mode": "form",
-            "target": "new",
-        }
+        return self._swap_field_values("left")
 
     def swap_to_right(self):
-        context = self._context.get("field_name")
-        if context == "company_id":
-            self.company_id2 = self.company_id
-        if context == "company_name":
-            self.company_name2 = self.company_name
-        if context == "name":
-            self.name2 = self.name
-        if context == "email":
-            self.email2 = self.email
-        if context == "phone":
-            self.phone2 = self.phone
-        if context == "mobile":
-            self.mobile2 = self.mobile
-        if context == "street":
-            self.street2 = self.street
-        if context == "street11":
-            self.street22 = self.street11
-        if context == "zip":
-            self.zip2 = self.zip
-        if context == "city":
-            self.city2 = self.city
-        if context == "state_id":
-            self.state_id2 = self.state_id.id
-        if context == "country_id":
-            self.country_id2 = self.country_id.id
-        if context == "is_company":
-            self.is_company2 = self.is_company
-        if context == "vat_1":
-            self.vat_2 = self.vat_1
-
-        return {
-            "type": "ir.actions.act_window",
-            "res_model": self._name,
-            "res_id": self.id,
-            "view_mode": "form",
-            "target": "new",
-        }
+        return self._swap_field_values("right")
 
     def dummy_button(self):
         return {

@@ -6,10 +6,12 @@ class MergePartnerLine(models.TransientModel):
     _order = "aggr_ids_count asc, min_id asc"
 
     aggr_ids_count = fields.Integer(
-        "Total Aggr IDs", compute="_compute_aggr_ids_count", store=True
+        string="Total Aggr IDs",
+        compute="_compute_aggr_ids_count",
+        store=True,
     )
 
     @api.depends("aggr_ids")
     def _compute_aggr_ids_count(self):
         for record in self:
-            record.aggr_ids_count = len(record.aggr_ids)
+            record.aggr_ids_count = len(record.aggr_ids or [])
