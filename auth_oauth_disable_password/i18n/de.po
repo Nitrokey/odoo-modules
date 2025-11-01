@@ -1,0 +1,27 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * nitrokey_auth
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-29 08:58+0000\n"
+"PO-Revision-Date: 2024-05-29 08:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: nitrokey_auth
+#: model:ir.model.fields,field_description:nitrokey_auth.field_res_users__disable_password_login
+msgid "Disable Password Login"
+msgstr "Deaktiviere Passwordlogin"
+
+#. module: nitrokey_auth
+#: code:addons/nitrokey_auth/models/res_users.py:0
+#, python-format
+msgid "Password login is disabled"
+msgstr "Passwortlogin ist deaktiviert"
