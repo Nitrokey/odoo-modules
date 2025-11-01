@@ -1,7 +1,8 @@
 # Migration Guide: website_sale_embargo (15.0 → 18.0)
 
 ## Overview
-This document describes the changes made to migrate the `website_sale_embargo` module from Odoo 15.0 to 18.0.
+This document describes the changes made to migrate the `website_sale_embargo` module
+from Odoo 15.0 to 18.0.
 
 ## Summary of Changes
 
@@ -14,7 +15,8 @@ This document describes the changes made to migrate the `website_sale_embargo` m
 
 #### Critical Bug Fix
 **Issue**: Missing return statement in `confirm_order` method
-- **Impact**: The method didn't properly return the result from the parent class, causing potential issues with the checkout flow
+- **Impact**: The method didn't properly return the result from the parent class,
+  causing potential issues with the checkout flow
 - **Fix**: Added `return` statement before `super().shop_confirm_order(**post)`
 
 #### Method Name Changes (Odoo 18.0 API)
@@ -27,15 +29,18 @@ The WebsiteSale controller in Odoo 18.0 renamed several methods:
 
 2. **address → shop_address**
    - **Before**: `def address(self, **kw):`
-   - **After**: `def shop_address(self, partner_id=None, address_type='billing', use_delivery_as_billing=None, **query_params):`
+   - **After**:
+     `def shop_address(self, partner_id=None, address_type='billing', use_delivery_as_billing=None, **query_params):`
    - **Reason**: Odoo 18.0 refactored the address handling with explicit parameters
 
 #### Method Signature Updates
 
 **shop_address Method**:
-- **New parameters**: `partner_id`, `address_type`, `use_delivery_as_billing` are now explicit parameters
+-  **New parameters**: `partner_id`, `address_type`, `use_delivery_as_billing` are now
+  explicit parameters
 - **Replaced**: `**kw` with `**query_params` for clarity
-- **Added**: Import of `str2bool` from `odoo.tools` for proper boolean parameter handling
+- **Added**: Import of `str2bool` from `odoo.tools` for proper boolean parameter
+  handling
 
 #### Logic Improvements
 
@@ -46,10 +51,12 @@ The WebsiteSale controller in Odoo 18.0 renamed several methods:
 2. **Updated address validation logic**
    - Changed from `mode[1] == "shipping"` to `address_type == "delivery"`
    - Updated to use `_prepare_address_update()` from parent class
-   - Updated to use `_prepare_address_form_values()` instead of deprecated `_get_country_related_render_values()`
+   - Updated to use `_prepare_address_form_values()` instead of deprecated
+     `_get_country_related_render_values()`
 
 3. **Added cart validation**
-   - Added `if redirection := self._check_cart(order):` to ensure cart is valid before proceeding
+   - Added `if redirection := self._check_cart(order):` to ensure cart is valid before 
+     proceeding
 
 ### 3. Models (No Changes Required)
 
@@ -82,8 +89,8 @@ The WebsiteSale controller in Odoo 18.0 renamed several methods:
 - The module only extends existing models with a Many2many field
 - No custom database tables are created
 - No data transformation is needed
-- The Many2many field (`country_id` on `hs.code`) will be automatically created by Odoo's ORM during module upgrade
-
+- The Many2many field (`country_id` on `hs.code`) will be automatically created by
+  Odoo's ORM during module upgrade
 ## Testing Checklist
 
 After migration, test the following scenarios:
@@ -166,7 +173,7 @@ If you encounter issues after migration:
 
 ## Credits
 
-**Migration Author**: AI Assistant (Cline)  
-**Migration Date**: October 2025  
-**Original Module Author**: Nitrokey GmbH  
+**Migration Author**: AI Assistant (Cline)
+**Migration Date**: October 2025
+**Original Module Author**: Nitrokey GmbH
 **Original Module License**: AGPL-3.0 or later

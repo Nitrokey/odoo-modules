@@ -144,7 +144,9 @@ class TestWebsiteSaleEmbargo(TransactionCase):
         # Check that no embargo is detected for US
         embargo_msg = order.check_for_product_embargo(self.country_us)
 
-        self.assertFalse(embargo_msg, "No embargo should be detected for allowed country")
+        self.assertFalse(
+            embargo_msg, "No embargo should be detected for allowed country"
+        )
 
     def test_check_for_product_embargo_without_hs_code(self):
         """Test products without HS code are allowed"""
@@ -303,9 +305,7 @@ class TestWebsiteSaleEmbargo(TransactionCase):
         embargo_msg = order.check_for_product_embargo(self.env["res.country"])
 
         # Should return False since there's no country to check against
-        self.assertFalse(
-            embargo_msg, "Should handle missing country without error"
-        )
+        self.assertFalse(embargo_msg, "Should handle missing country without error")
 
     def test_hs_code_country_field_many2many(self):
         """Test that HS code country_id is a proper Many2many field"""

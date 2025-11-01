@@ -19,14 +19,19 @@ class WebsiteSale(WebsiteSale):
         return super().shop_confirm_order(**post)
 
     @http.route(
-        ["/shop/address"], type="http", methods=["GET"], auth="public", website=True, sitemap=False,
+        ["/shop/address"],
+        type="http",
+        methods=["GET"],
+        auth="public",
+        website=True,
+        sitemap=False,
     )
     def shop_address(
         self,
         partner_id=None,
         address_type="billing",
         use_delivery_as_billing=None,
-        **query_params
+        **query_params,
     ):
         order = request.website.sale_get_order()
 
@@ -47,7 +52,8 @@ class WebsiteSale(WebsiteSale):
             if embargo_status:
                 # Get the partner to edit, if any
                 partner_sudo, address_type = self._prepare_address_update(
-                    order, partner_id=partner_id and int(partner_id), address_type=address_type
+                    order, partner_id=partner_id and int(partner_id),
+                    address_type=address_type
                 )
 
                 # Get the base render values from parent
@@ -55,8 +61,10 @@ class WebsiteSale(WebsiteSale):
                     order,
                     partner_sudo,
                     address_type=address_type,
-                    use_delivery_as_billing=str2bool(use_delivery_as_billing or "false"),
-                    **query_params
+                    use_delivery_as_billing=str2bool(
+                        use_delivery_as_billing or "false"
+                    ),
+                    **query_params,
                 )
 
                 # Add error information
@@ -72,5 +80,5 @@ class WebsiteSale(WebsiteSale):
             partner_id=partner_id,
             address_type=address_type,
             use_delivery_as_billing=use_delivery_as_billing,
-            **query_params
+            **query_params,
         )

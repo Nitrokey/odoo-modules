@@ -25,5 +25,7 @@ class SaleOrder(models.Model):
 
     def _action_confirm(self):
         for order in self:
-            order.check_for_product_embargo(order.partner_shipping_id.country_id, raise_error=True)
+            order.check_for_product_embargo(
+                order.partner_shipping_id.country_id, raise_error=True
+            )
         return super()._action_confirm()
