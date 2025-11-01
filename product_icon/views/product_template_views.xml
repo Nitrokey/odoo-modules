@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="product_template_form_view" model="ir.ui.view">
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Icons" name="product_icons">
+                    <field
+                        name="icon_ids"
+                        class="o_website_sale_image_list"
+                        context="{'default_product_template_id': id}"
+                        nolabel="1"
+                    >
+                        <kanban string="Icons">
+                            <field name="id" />
+                            <field name="image_128" />
+                            <field name="name" />
+                            <field name="sequence" widget="handle" />
+                            <templates>
+                                <t t-name="kanban-box">
+                                    <div
+                                        class="o_attachment oe_kanban_global_click o_website_sale_image_card"
+                                    >
+                                        <div class="o_attachment_wrap">
+                                            <div class="o_image_box">
+                                                <img
+                                                    t-att-alt="record.name.value"
+                                                    t-if="record.image_128.raw_value"
+                                                    t-att-src="kanban_image('product.icon', 'image_128', record.id.raw_value)"
+                                                />
+                                                <div
+                                                    class="o_website_sale_image_card_title"
+                                                    t-att-title="name"
+                                                >
+                                                    <field name="name" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
