@@ -14,7 +14,7 @@
     "summary": """
         Add Embargo to Product's HS Code
     """,
-    "website": "https://github.com/OCA/server-tools",
+    "website": "https://github.com/Nitrokey/odoo-modules",
     "license": "AGPL-3",
     "data": [
         "views/hs_code.xml",
