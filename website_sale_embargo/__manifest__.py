@@ -9,7 +9,7 @@
         "sale",
         "website_sale",
     ],
-    "author": "Nitrokey GmbH, Odoo Community Association (OCA)",
+    "author": "Nitrokey GmbH",
     "category": "",
     "summary": """
         Add Embargo to Product's HS Code
