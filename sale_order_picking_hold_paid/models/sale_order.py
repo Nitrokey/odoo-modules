@@ -18,6 +18,18 @@ class SaleOrder(models.Model):
                 order.delivery_block_id = block_reason
         return order
 
+    @api.onchange("partner_id")
+    def onchange_partner_id(self):
+        """Avoid unsetting delivery block reason if it's not set on partner."""
+        block_reason_before_onchange = self.delivery_block_id
+        res = super().onchange_partner_id()
+        if block_reason_before_onchange and not self.delivery_block_id:
+            if partner_block_reason := self.partner_id.default_delivery_block:
+                self.delivery_block_id = partner_block_reason
+            else:
+                self.delivery_block_id = block_reason_before_onchange
+        return res
+
     @api.onchange("payment_term_id")
     def _onchange_payment_term_id(self):
         """Set delivery block when payment term has a delivery block reason."""
