@@ -6,7 +6,7 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     @api.model
-    def get_mention_suggestions(self, search, limit=8):
+    def get_mention_suggestions(self, search, limit=8, channel_id=None):
         """override the default method and customize the search filter"""
         search_dom = expression.OR(
             [[("name", "ilike", search)], [("email", "ilike", search)]]
