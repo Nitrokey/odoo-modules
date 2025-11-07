@@ -21,7 +21,7 @@ msgid "&amp;nbsp;"
 msgstr ""
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/controllers/main.py:0
+#: code:addons/payment_bitcoin/controllers/bitcoin.py:0
 #, python-format
 msgid ""
 "<div class=\"panel-body\" style=\"padding-bottom:0px;\">\n"
@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/controllers/main.py:0
+#: code:addons/payment_bitcoin/controllers/bitcoin.py:0
 #, python-format
 msgid ""
 "<div class=\"panel-body\" style=\"padding-bottom:0px;\">\n"
@@ -151,7 +151,7 @@ msgstr "Adresslink"
 #. module: payment_bitcoin
 #: model:ir.model.fields,help:payment_bitcoin.field_payment_acquirer__bitcoin_order_older_than
 msgid "Address check for orders which are not older than"
-msgstr ""
+msgstr "Adressprüfung für Bestellungen, die nicht älter als"
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line__amount
@@ -259,6 +259,9 @@ msgid ""
 "%(max_amount_received)s                             BTC too much. The"
 "                             corresponding payment is posted: %(invoices)s"
 msgstr ""
+"Bitcoin-Transaktion %(transaction)s für "
+"%(address)s mit %(amount)s BTC wurde bestätigt. Dies ist "
+"%(max_amount_received)s BTC zu viel. Die entsprechende Zahlung wurde gebucht: %(invoices)s."
 
 #. module: payment_bitcoin
 #: code:addons/payment_bitcoin/models/bitcoin.py:0
@@ -269,6 +272,8 @@ msgid ""
 "                                     confirmed. The corresponding payment is"
 "                                      posted: %(invoices)s"
 msgstr ""
+"Bitcoin-Transaktion %(transaction)s für "
+"%(address)s mit %(amount)s BTC wurde bestätigt. Die entsprechende Zahlung wurde gebucht: %(invoices)s."
 
 #. module: payment_bitcoin
 #: code:addons/payment_bitcoin/models/bitcoin.py:0
@@ -294,6 +299,7 @@ msgstr "Bitcoin Adressprüfung"
 #, python-format
 msgid "Bitcoin: No transaction found matching reference %s."
 msgstr ""
+"Bitcoin: Keine Transaktion mit der Referenz %s gefunden."
 
 #. module: payment_bitcoin
 #: model:mail.template,name:payment_bitcoin.mail_template_data_bit_coin_order_notification
@@ -304,7 +310,7 @@ msgstr ""
 #: code:addons/payment_bitcoin/models/payment_transaction.py:0
 #, python-format
 msgid "Bitcoin: Received data with invalid payment status: %s"
-msgstr ""
+msgstr "Bitcoin: Empfangene Daten mit ungültigem Zahlungsstatus: %s"
 
 #. module: payment_bitcoin
 #: model:ir.model,name:payment_bitcoin.model_res_config_settings
@@ -379,6 +385,8 @@ msgid ""
 "If amount of unused Bitcoin addresses goes below this, than system sends "
 "notifications to its related users."
 msgstr ""
+"Wenn die Anzahl ungenutzter Bitcoin-Adressen unter diesen Wert sinkt, sendet das System eine Nachricht."
+"Benachrichtigungen an die zugehörigen Nutzer.“
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_address__invoice_id
@@ -388,12 +396,12 @@ msgstr ""
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_rate_line__invoice_id
 msgid "Invoice ID"
-msgstr ""
+msgstr "Rechnungs-ID"
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_bitcoin_address__is_btc_used
 msgid "Is Bitcoin used?"
-msgstr ""
+msgstr "Wird Bitcoin verwendet?"
 
 #. module: payment_bitcoin
 #: model:ir.model,name:payment_bitcoin.model_account_move
@@ -486,11 +494,11 @@ msgid "Payment reference required"
 msgstr "Zahlungsreferenz erforderlich"
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/controllers/main.py:0
-#, python-format
+#. odoo-python
+#: code:addons/payment_bitcoin/controllers/bitcoin.py:0
 msgid ""
-"Please send %(amount_btc)s %(unit_btc)s (%(amount_mbtc)s %(unit_mbtc)s)"
-"             to the address %(address)s by %(deadline_date)s UTC."
+"Please send %(amount_btc)s %(unit_btc)s         (%(amount_mbtc)s "
+"%(unit_mbtc)s)         to the address %(address)s by %(deadline_date)s UTC."
 msgstr ""
 "Bitte senden Sie den Betrag von %(amount_btc)s %(unit_btc)s (%(amount_mbtc)s"
 " %(unit_mbtc)s) bis um %(deadline_date)s UTC an die Adresse %(address)s"
@@ -526,6 +534,8 @@ msgid ""
 "Send notification to users when amount of unused Bitcoin\n"
 "                                        addresses are less than or equal"
 msgstr ""
+"Benachrichtigung an Nutzer senden, wenn die Menge ungenutzter Bitcoin-Adressen kleiner oder gleich ist“
+"Adressen“
 
 #. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_bitcoin_rate_form
@@ -538,7 +548,7 @@ msgid "The Payment Service Provider to use with this acquirer"
 msgstr "Der mit diesem Zahlungsanbieter zu verwendende Dienstleister"
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/controllers/main.py:0
+#: code:addons/payment_bitcoin/controllers/bitcoin.py:0
 #, python-format
 msgid "The access token is invalid."
 msgstr ""
@@ -558,7 +568,7 @@ msgstr "Ungebraucht"
 #. module: payment_bitcoin
 #: model_terms:payment.acquirer,auth_msg:payment_bitcoin.payment_acquirer_bitcoin
 msgid "Your payment has been authorized."
-msgstr ""
+msgstr "Ihre Zahlung wurde autorisiert."
 
 #. module: payment_bitcoin
 #: model:ir.model.fields,help:payment_bitcoin.field_bitcoin_rate__valid_minutes
@@ -567,7 +577,7 @@ msgstr ""
 "Nach dieser Zeit wird der Kurs erneut auf den gleichen Betrag überprüft"
 
 #. module: payment_bitcoin
-#: code:addons/payment_bitcoin/controllers/main.py:0
+#: code:addons/payment_bitcoin/controllers/bitcoin.py:0
 #, python-format
 msgid "bitcoin:%(address)s$$amount=%(bt_amt)s*$message=%(msg)s"
 msgstr ""
@@ -581,4 +591,4 @@ msgstr ""
 #. module: payment_bitcoin
 #: model:ir.model.fields,field_description:payment_bitcoin.field_payment_transaction__duration
 msgid "Time remaining"
-msgstr ""
+msgstr "Time bitcoining"
