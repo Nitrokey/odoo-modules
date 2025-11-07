@@ -1,3 +1,5 @@
+import re
+
 from odoo import http
 from odoo.http import request
 
@@ -5,6 +7,8 @@ from odoo.addons.web.controllers.home import Home as WebHome
 
 
 class Website(WebHome):
+    """Override Odoo's default language switch to support translated URLs."""
+
     @http.route(
         "/website/lang/<lang>",
         type="http",
@@ -13,33 +17,43 @@ class Website(WebHome):
         multilang=False,
     )
     def change_lang(self, lang, r="/", **kwargs):
-        """Override website language change to support translated menu URLs.
-        Handle language change while keeping translated URLs."""
-        TRANSLATE = request.env["ir.translation"].sudo()
-        lang_code = request.env["res.lang"]._lang_get_code(lang)
-        page_url = r.replace(f"/{lang}", "")
-        trans_r = r.replace(f"{lang}/", "")
+        """Redirect user to translated URL when changing language."""
+        website = request.website
+        default_lang = website.default_lang_id.url_code
 
-        # Search translation record matching language and source URL
-        trans_rec = TRANSLATE.search(
-            [("lang", "=", lang_code), ("src", "=", trans_r)], limit=1
+        # Resolve target language code
+        lang_data = request.env["res.lang"]._get_data(url_code=lang)
+        lang_code = lang_data.code or lang
+        request.update_context(lang=lang_code)
+
+        # Remove any language prefix (e.g. /de/contactus → /contactus)
+        clean_url = re.sub(r"^/[a-z]{2}(?:_[A-Z]{2})?/", "/", r or "/")
+
+        # Get translated page URL (if available)
+        translated_url = self._get_translated_url(clean_url, lang_code)
+
+        # Build redirect target
+        redirect_url = (
+            f"/{lang}{translated_url}" if lang != default_lang else translated_url
         )
+        redirect = request.redirect(redirect_url)
+        redirect.set_cookie("frontend_lang", lang_code)
+        return redirect
 
-        if trans_rec:
-            r = f"/{lang}{(trans_rec.value or trans_rec.src)}"
-        else:
-            # Try reverse lookup by translated value or src
-            trans_val = TRANSLATE.search(
-                [("value", "=", page_url)], limit=1
-            ) or TRANSLATE.search([("src", "=", page_url)], limit=1)
+    def _get_translated_url(self, src_url, lang_code):
+        """Return translated page URL for the given language."""
+        web_page = request.env["website.page"].sudo()
+        clean_url = re.sub(r"^/[a-z]{2}(?:_[A-Z]{2})?/", "/", src_url or "/")
 
-            if trans_val:
-                src = trans_val.src
-                trans_lang = TRANSLATE.search(
-                    [("src", "=", src), ("lang", "=", lang_code)], limit=1
-                )
-                trans_text = trans_lang.value or trans_lang.src if trans_lang else src
-                r = f"/{lang}{trans_text}"
+        # Try to find the page in ANY language to get the base source
+        page = None
+        for lang in web_page.env["res.lang"].search([("active", "=", True)]):
+            candidate = web_page.with_context(lang=lang.code).search(
+                [("url", "=", clean_url)], limit=1
+            )
+            if candidate:
+                page = candidate
+                break
 
-        # Call parent Home controller’s language switch
-        return super().change_lang(lang=lang, r=r, **kwargs)
+        # Return translated version or fallback to clean URL
+        return page.with_context(lang=lang_code).url if page else clean_url

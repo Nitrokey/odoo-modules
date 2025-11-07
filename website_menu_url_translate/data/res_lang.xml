@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Activate German language -->
+    <record id="base.lang_de" model="res.lang">
+        <field name="active">True</field>
+    </record>
+</odoo>
