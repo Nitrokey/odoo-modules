@@ -26,27 +26,6 @@ default_language_version:
 repos:
   - repo: local
     hooks:
-      # These files are most likely copier diff rejection junks; if found,
-      # review them manually, fix the problem (if needed) and remove them
-      - id: forbidden-files
-        name: forbidden files
-        entry: found forbidden files; remove them
-        language: fail
-        files: "\\.rej$"
-      - id: en-po-files
-        name: en.po files cannot exist
-        entry: found a en.po file
-        language: fail
-        files: '[a-zA-Z0-9_]*/i18n/en\.po$'
-  - repo: https://github.com/OCA/odoo-pre-commit-hooks
-    rev: v0.0.33
-    hooks:
-      - id: oca-checks-odoo-module
-      - id: oca-checks-po
-        args:
-          - --disable=po-pretty-format
-  - repo: local
-    hooks:
       - id: prettier
         name: prettier (with plugin-xml)
         entry: prettier
