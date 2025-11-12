@@ -1,11 +1,19 @@
 # Copyright 2025 Nitrokey GmbH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, models
+from odoo import _, api, fields, models
 
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
+
+    delivery_block_id = fields.Many2one(
+        states={
+            "draft": [("readonly", False)],
+            "sent": [("readonly", False)],
+            "sale": [("readonly", False)]
+        }
+    )
 
     @api.model
     def create(self, vals):
@@ -41,7 +49,14 @@ class SaleOrder(models.Model):
         elif payment_term and not payment_term.delivery_block_reason_id:
             # Remove delivery block if payment term doesn't have a delivery block reason
             if self.delivery_block_id and self.delivery_block_id.remove_on_payment:
-                self.action_remove_delivery_block()
+                self.delivery_block_id = False
+                return {
+                    'warning': {
+                        'title': _("Manual stock picking triggering required"),
+                        'message': _("After Delivery Block Reason was unset, manual generation of stock pickings "
+                                     "is required. Please use 'Release Delivery Block' button to do that."),
+                    },
+                }
 
     def action_confirm(self):
         """Ensure delivery block is set if payment term requires it."""

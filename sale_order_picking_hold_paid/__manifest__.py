@@ -19,6 +19,7 @@
     "data": [
         "views/account_payment_term_views.xml",
         "views/sale_stock_picking_blocking_reason_view.xml",
+        "views/sale_order_views.xml"
     ],
     "demo": [],
     "installable": True,
