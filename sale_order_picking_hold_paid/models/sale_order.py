@@ -33,14 +33,15 @@ class SaleOrder(models.Model):
     @api.onchange("payment_term_id")
     def _onchange_payment_term_id(self):
         """Set delivery block when payment term has a delivery block reason."""
-        if self.payment_term_id and self.payment_term_id.delivery_block_reason_id:
-            block_reason = self.payment_term_id.get_delivery_block_reason()
+        payment_term = self.payment_term_id
+        if payment_term and payment_term.delivery_block_reason_id:
+            block_reason = payment_term.get_delivery_block_reason()
             if block_reason:
                 self.delivery_block_id = block_reason
-        elif self.payment_term_id and not self.payment_term_id.delivery_block_reason_id:
+        elif payment_term and not payment_term.delivery_block_reason_id:
             # Remove delivery block if payment term doesn't have a delivery block reason
             if self.delivery_block_id and self.delivery_block_id.remove_on_payment:
-                self.delivery_block_id = False
+                self.action_remove_delivery_block()
 
     def action_confirm(self):
         """Ensure delivery block is set if payment term requires it."""
