@@ -10,7 +10,6 @@
     "data": [
         "data/res_lang.xml",
         "views/website_page.xml",
-        "data/test_website_menu_url_data.xml",
     ],
     "installable": True,
     "application": False,
