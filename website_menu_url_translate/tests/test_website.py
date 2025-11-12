@@ -1,4 +1,5 @@
 import logging
+
 from odoo.tests.common import HttpCase, tagged
 
 _logger = logging.getLogger(__name__)
