@@ -2,9 +2,10 @@
    :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
    :alt: License: LGPL-3
 
-=============================
+============================
 Website Menu URL Translation
-=============================
+============================
+
 This module allows you to translate the URL of the website menu in case if you have a multilanguage website
 
 Usage
