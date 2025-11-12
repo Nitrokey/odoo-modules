@@ -2,28 +2,17 @@
    :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
    :alt: License: LGPL-3
 
-=============================
-Website Menus URL Translation
-=============================
 
 This module allows you to translate the URL of the website menu in case if you have a multilanguage website
 
 Usage
 =====
 
-To use this module, you need to:
+1. Go to Website -> Configuration -> Menus
+2. Create a new menu entry or open an existing one.
+3. You will see an icon over the field URL for translation (e.g. "EN" for English).
+4. Click on that icon and change the URL of the required language and save.
 
-* To translate the URL of the website menu in case if you have a multilanguage website,
-  go to Website App.
-* Then go to Site -> Pages and click the ✏️ Edit (pencil) icon to modify the website page.
-* You will see an Icon over the field which translates the url(suppose for english
-  language, icon would be "En").
-* Click on that icon and change the url of the required language and save.
-
-
-.. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
-   :alt: Try me on Runbot
-   :target: https://runbot.odoo-community.org/runbot/186/8.0
 
 Credits
 =======
@@ -32,23 +21,4 @@ Contributors
 ------------
 
 * Nilesh Sheliya <sheliyanilesh@gmail.com>
-
-Sponsors
---------
-
-* Sponsored by Nitrokey: www.nitrokey.com
-
-Maintainer
-----------
-
-.. image:: https://odoo-community.org/logo.png
-   :alt: Odoo Community Association
-   :target: https://odoo-community.org
-
-This module is maintained by the OCA.
-
-OCA, or the Odoo Community Association, is a nonprofit organization whose
-mission is to support the collaborative development of Odoo features and
-promote its widespread use.
-
-To contribute to this module, please visit https://odoo-community.org.
+* Nitrokey: www.nitrokey.com
