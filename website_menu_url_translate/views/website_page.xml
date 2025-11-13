@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_website_page_tree_inherit_edit" model="ir.ui.view">
+        <field name="name">website.page.tree.inherit.edit.button</field>
+        <field name="model">website.page</field>
+        <field name="inherit_id" ref="website.website_pages_tree_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <button
+                    name="action_edit_page_form"
+                    type="object"
+                    string="Edit"
+                    icon="fa-pencil-square-o"
+                    context="{'default_id': id}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

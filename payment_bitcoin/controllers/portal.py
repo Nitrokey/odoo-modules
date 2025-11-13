@@ -27,7 +27,10 @@ class CustomerPortalBitcoin(CustomerPortal):
             **kw,
         )
         order = request.env["sale.order"].sudo().browse(order_id)
-        last_transaction = order.transaction_ids[-1]
+        if order and order.transaction_ids:
+            last_transaction = order.transaction_ids[-1]
+        else:
+            return res
         if last_transaction and last_transaction.provider_code == "bitcoin":
             lang_code = (
                 request.env.context.get("lang") or order.partner_id.lang or "en_US"
