@@ -260,4 +260,4 @@ class MergePartnerAutomatic(models.TransientModel):
             self._compute_selected_groupby(), self.maximum_group
         )
         self.with_context(context=context)._process_query(query)
-        return self.with_context({"pass_warning": True})._action_new_next_screen()
+        return self.with_context(pass_warning=True)._action_new_next_screen()
