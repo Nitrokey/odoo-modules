@@ -11,7 +11,7 @@ class SaleOrder(models.Model):
         states={
             "draft": [("readonly", False)],
             "sent": [("readonly", False)],
-            "sale": [("readonly", False)]
+            "sale": [("readonly", False)],
         }
     )
 
@@ -51,10 +51,12 @@ class SaleOrder(models.Model):
             if self.delivery_block_id and self.delivery_block_id.remove_on_payment:
                 self.delivery_block_id = False
                 return {
-                    'warning': {
-                        'title': _("Manual stock picking triggering required"),
-                        'message': _("After Delivery Block Reason was unset, manual generation of stock pickings "
-                                     "is required. Please use 'Release Delivery Block' button to do that."),
+                    "warning": {
+                        "title": _("Manual stock picking triggering required"),
+                        "message": _(
+                            "After Delivery Block Reason was unset, manual generation of stock pickings "
+                            "is required. Please use 'Release Delivery Block' button to do that."
+                        ),
                     },
                 }
 
