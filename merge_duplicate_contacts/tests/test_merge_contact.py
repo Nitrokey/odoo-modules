@@ -28,7 +28,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             .create({"keep2": True, "keep1": False})
         )
         merge_wizard._onchange_keep2()
-        merge_wizard.with_context({"active_id": merge_wizard.id}).action_merge()
+        merge_wizard.with_context(active_id=merge_wizard.id).action_merge()
         partner_id = self.env["res.partner"].browse(self.partner2.id).exists()
         self.assertTrue(partner_id)
         self.assertEqual(self.partner2.id, merge_wizard.dst_partner_id.id)
@@ -118,7 +118,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
                 "field_name": "phone2",
             }
         ).swap_to_left()
-        merge_wizard.with_context({"active_id": merge_wizard.id}).action_merge()
+        merge_wizard.with_context(active_id=merge_wizard.id).action_merge()
         partner_id = self.env["res.partner"].browse(self.partner2.id).exists()
         self.assertTrue(partner_id)
         self.assertEqual(partner_phone, merge_wizard.dst_partner_id.phone)
@@ -278,7 +278,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             }
         ).swap_to_right()
         # Ends gere
-        merge_wizard.sudo().with_context({"active_id": merge_wizard.id}).action_merge()
+        merge_wizard.sudo().with_context(active_id=merge_wizard.id).action_merge()
         partner_id = self.env["res.partner"].browse(self.partner2.id).exists()
         self.assertTrue(partner_id)
         self.assertEqual(partner_phone, merge_wizard.dst_partner_id.phone)
@@ -437,7 +437,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
                 "field_name": "is_company2",
             }
         ).swap_to_left()
-        merge_wizard.sudo().with_context({"active_id": merge_wizard.id}).action_merge()
+        merge_wizard.sudo().with_context(active_id=merge_wizard.id).action_merge()
         partner_id = self.env["res.partner"].browse(self.partner2.id).exists()
         self.assertTrue(partner_id)
         self.assertEqual(partner_phone, merge_wizard.dst_partner_id.phone)
@@ -527,7 +527,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
                 "field_name": "phone2",
             }
         ).swap_to_left()
-        merge_wizard.with_context({"active_id": merge_wizard.id}).action_merge()
+        merge_wizard.with_context(active_id=merge_wizard.id).action_merge()
         partner_id = self.env["res.partner"].browse(self.partner2.id).exists()
         self.assertTrue(partner_id)
         self.assertEqual(partner_phone, merge_wizard.dst_partner_id.phone)
@@ -614,7 +614,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
                 "field_name": "phone2",
             }
         ).swap_to_left()
-        merge_wizard.with_context({"active_id": merge_wizard.id}).action_skip()
+        merge_wizard.with_context(active_id=merge_wizard.id).action_skip()
         partner_id1 = self.env["res.partner"].browse(self.partner1.id).exists()
         partner_id2 = self.env["res.partner"].browse(self.partner2.id).exists()
         self.assertTrue(partner_id1)
