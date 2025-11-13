@@ -313,9 +313,9 @@ class MergePartnerManualCheck(models.TransientModel):
     @api.onchange("keep_type")
     def _onchange_keep_type(self):
         self.ensure_one()
-        if self.keep_type == 'keep1':
+        if self.keep_type == "keep1":
             self.keep1 = True
-        elif self.keep_type == 'keep2':
+        elif self.keep_type == "keep2":
             self.keep2 = True
 
     @api.onchange("keep1")

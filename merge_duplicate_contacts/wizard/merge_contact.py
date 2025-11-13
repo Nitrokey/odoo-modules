@@ -1,7 +1,7 @@
 import logging
 from ast import literal_eval
 
-from odoo import Command, fields, models, _
+from odoo import Command, _, fields, models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -39,11 +39,13 @@ class MergePartnerAutomatic(models.TransientModel):
                 )
             else:
                 # Manual merge wizard — end process
-                self.write({
-                    "current_line_id": False,
-                    "partner_ids": [],
-                    "state": "finished",
-                })
+                self.write(
+                    {
+                        "current_line_id": False,
+                        "partner_ids": [],
+                        "state": "finished",
+                    }
+                )
                 return
 
         current_line = self.line_ids[0]
@@ -258,4 +260,4 @@ class MergePartnerAutomatic(models.TransientModel):
             self._compute_selected_groupby(), self.maximum_group
         )
         self.with_context(context=context)._process_query(query)
-        return self.with_context({'pass_warning': True})._action_new_next_screen()
+        return self.with_context({"pass_warning": True})._action_new_next_screen()

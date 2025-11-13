@@ -976,13 +976,23 @@
 
                     <div class="row align-items-center mb-2">
                         <div class="col-2">
-                            <label colspan="1" string="Keep" for="keep_type" style="min-width: 108px;" />
+                            <label
+                                colspan="1"
+                                string="Keep"
+                                for="keep_type"
+                                style="min-width: 108px;"
+                            />
                         </div>
                         <div class="col-3">
                             <field colspan="5" name="keep1" nolabel="1" invisible="1" />
                         </div>
                         <div class="col-3">
-                            <field name="keep_type" widget="radio" options="{'horizontal': True}" nolabel="1" />
+                            <field
+                                name="keep_type"
+                                widget="radio"
+                                options="{'horizontal': True}"
+                                nolabel="1"
+                            />
                             <!-- It's in odoo 15.0 but removed but not using in 18.0 -->
                             <!-- <button
                                 colspan="1"
