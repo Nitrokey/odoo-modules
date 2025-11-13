@@ -932,7 +932,8 @@
                             />
                         </div>
                         <div class="col-3">
-                            <button
+                            <!-- It's in odoo 15.0 but removed but not using in 18.0 -->
+                            <!-- <button
                                 name="swap_to_left"
                                 type="object"
                                 title="left"
@@ -961,7 +962,7 @@
                                 title="right"
                                 class="fa fa-arrow-right oe_inline"
                                 context="{'field_name':'is_company'}"
-                            />
+                            /> -->
                         </div>
                         <div class="col-3">
                             <field
@@ -975,13 +976,15 @@
 
                     <div class="row align-items-center mb-2">
                         <div class="col-2">
-                            <label colspan="1" for="keep1" style="min-width: 108px;" />
+                            <label colspan="1" string="Keep" for="keep_type" style="min-width: 108px;" />
                         </div>
                         <div class="col-3">
-                            <field colspan="5" name="keep1" nolabel="1" />
+                            <field colspan="5" name="keep1" nolabel="1" invisible="1" />
                         </div>
                         <div class="col-3">
-                            <button
+                            <field name="keep_type" widget="radio" options="{'horizontal': True}" nolabel="1" />
+                            <!-- It's in odoo 15.0 but removed but not using in 18.0 -->
+                            <!-- <button
                                 colspan="1"
                                 name="swap_to_left"
                                 type="object"
@@ -998,10 +1001,10 @@
                                 class="fa fa-arrow-right"
                                 style="display:none;"
                                 context="{'field_name': 'company_id', 'field_name2': 'company_id2'}"
-                            />
+                            /> -->
                         </div>
                         <div class="col-3">
-                            <field colspan="4" name="keep2" nolabel="1" />
+                            <field colspan="4" name="keep2" nolabel="1" invisible="1" />
                         </div>
                     </div>
                 </sheet>

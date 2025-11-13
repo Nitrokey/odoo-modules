@@ -100,6 +100,14 @@ class MergePartnerManualCheck(models.TransientModel):
 
     keep1 = fields.Boolean("Keep", default=True)
     keep2 = fields.Boolean("Keep 2")
+    keep_type = fields.Selection(
+        [
+            ("keep1", "Keep Left"),
+            ("keep2", "Keep Right"),
+        ],
+        string="Keep Type",
+        default="keep1",
+    )
 
     partner_wizard_id = fields.Many2one("base.partner.merge.automatic.wizard", "Wizard")
     partner_ids = fields.Many2many(
@@ -301,6 +309,14 @@ class MergePartnerManualCheck(models.TransientModel):
                 record.is_company_show_icon = True
             else:
                 record.is_company_show_icon = False
+
+    @api.onchange("keep_type")
+    def _onchange_keep_type(self):
+        self.ensure_one()
+        if self.keep_type == 'keep1':
+            self.keep1 = True
+        elif self.keep_type == 'keep2':
+            self.keep2 = True
 
     @api.onchange("keep1")
     def _onchange_keep1(self):

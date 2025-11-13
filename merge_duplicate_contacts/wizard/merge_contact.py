@@ -1,7 +1,8 @@
 import logging
 from ast import literal_eval
 
-from odoo import Command, fields, models
+from odoo import Command, fields, models, _
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -27,11 +28,23 @@ class MergePartnerAutomatic(models.TransientModel):
         self.env.registry.clear_cache()
         values, context = {}, {}
 
+        # Handle no mergeable contacts
         if not self.line_ids:
-            self.write(
-                {"current_line_id": False, "partner_ids": [], "state": "finished"}
-            )
-            return
+            active_id = self.env.context.get("active_id", False)
+            show_warning = self.env.context.get("pass_warning", False)
+            if show_warning or not active_id:
+                # Automatic merge wizard — raise popup warning
+                raise UserError(
+                    _("No mergeable contacts were found for the selected criteria.")
+                )
+            else:
+                # Manual merge wizard — end process
+                self.write({
+                    "current_line_id": False,
+                    "partner_ids": [],
+                    "state": "finished",
+                })
+                return
 
         current_line = self.line_ids[0]
         current_partner_ids = sorted(literal_eval(current_line.aggr_ids)[-2:])
@@ -245,4 +258,4 @@ class MergePartnerAutomatic(models.TransientModel):
             self._compute_selected_groupby(), self.maximum_group
         )
         self.with_context(context=context)._process_query(query)
-        return self._action_new_next_screen()
+        return self.with_context({'pass_warning': True})._action_new_next_screen()
