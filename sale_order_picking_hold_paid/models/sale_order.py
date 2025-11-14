@@ -54,8 +54,9 @@ class SaleOrder(models.Model):
                     "warning": {
                         "title": _("Manual stock picking triggering required"),
                         "message": _(
-                            "After Delivery Block Reason was unset, manual generation of stock pickings "
-                            "is required. Please use 'Release Delivery Block' button to do that."
+                            "After Delivery Block Reason was unset, manual "
+                            "generation of stock pickings is required. "
+                            "Please use 'Release Delivery Block' button to do that."
                         ),
                     },
                 }
