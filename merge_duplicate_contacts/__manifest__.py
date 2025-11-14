@@ -12,9 +12,9 @@
         "data/ir_domain_email.xml",
         "wizard/merge_contact_view.xml",
     ],
-    'assets': {
-        'web.assets_backend': [
-            'merge_duplicate_contacts/static/src/css/merge_radio.css',
+    "assets": {
+        "web.assets_backend": [
+            "merge_duplicate_contacts/static/src/css/merge_radio.css",
         ],
     },
     "installable": True,
