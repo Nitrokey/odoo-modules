@@ -3,7 +3,10 @@
     <!-- /shop/address route -->
     <template id="address_inherit" inherit_id="website_sale.address" priority="110">
         <!-- Hide the B2B section (VAT, Company, etc.) -->
-        <xpath expr="//t[@t-if='website._display_partner_b2b_fields()']" position="replace"/>
+        <xpath
+            expr="//t[@t-if='website._display_partner_b2b_fields()']"
+            position="replace"
+        />
         <!-- Show the type wise fields -->
         <xpath
             expr="//form[hasclass('checkout_autoformat')]/div/div[1]"
@@ -65,50 +68,56 @@
             </div>
             <!-- Company Section -->
             <!-- <t t-if="website._display_partner_b2b_fields()"> -->
-                <div class="w-100"/>
-                <!-- <t t-if="show_vat"> -->
-                    <t t-set="vat_warning" t-value="partner_sudo.vat and not can_edit_vat"/>
-                    <div id="company_name_div" class="col-lg-6 mb-2 d-none">
-                        <label
-                            class="col-form-label fw-normal label-optional"
-                            for="o_company_name"
-                        >
-                            Company Name
-                        </label>
-                        <input
-                            id="o_company_name"
-                            type="text"
-                            name="company_name"
-                            t-att-value="partner_sudo.commercial_company_name"
-                            t-att-readonly="'1' if vat_warning else None"
-                            class="form-control"
-                        />
-                        <small t-if="vat_warning" class="form-text text-muted d-block d-lg-none">
-                            Changing company name is not allowed once document(s) have been issued for your account. Please contact us directly for this operation.
-                        </small>
-                    </div>
-                    <div id="div_vat" class="col-lg-6 mb-2 d-none">
-                        <label class="col-form-label fw-normal label-optional" for="o_vat">
-                            TIN / VAT
-                        </label>
-                        <input
-                            type="text"
-                            id="o_vat"
-                            name="vat"
-                            t-att-value="partner_sudo.vat"
-                            t-att-readonly="'1' if vat_warning else None"
-                            class="form-control"
-                        />
-                        <small t-if="vat_warning" class="form-text text-muted d-block d-lg-none">
-                            Changing VAT number is not allowed once document(s) have been issued for your account. Please contact us directly for this operation.
-                        </small>
-                    </div>
-                    <div t-if="vat_warning" class="col-12 d-none d-lg-block mb-1">
-                        <small class="form-text text-muted">
-                            Changing company name or VAT number is not allowed once document(s) have been issued for your account. Please contact us directly for this operation.
-                        </small>
-                    </div>
-                <!-- </t> -->
+            <div class="w-100" />
+            <!-- <t t-if="show_vat"> -->
+            <t t-set="vat_warning" t-value="partner_sudo.vat and not can_edit_vat" />
+            <div id="company_name_div" class="col-lg-6 mb-2 d-none">
+                <label
+                    class="col-form-label fw-normal label-optional"
+                    for="o_company_name"
+                >
+                Company Name
+                </label>
+                <input
+                    id="o_company_name"
+                    type="text"
+                    name="company_name"
+                    t-att-value="partner_sudo.commercial_company_name"
+                    t-att-readonly="'1' if vat_warning else None"
+                    class="form-control"
+                />
+                <small
+                    t-if="vat_warning"
+                    class="form-text text-muted d-block d-lg-none"
+                >
+                    Changing company name is not allowed once document(s) have been issued for your account. Please contact us directly for this operation.
+                </small>
+            </div>
+            <div id="div_vat" class="col-lg-6 mb-2 d-none">
+                <label class="col-form-label fw-normal label-optional" for="o_vat">
+                    TIN / VAT
+                </label>
+                <input
+                    type="text"
+                    id="o_vat"
+                    name="vat"
+                    t-att-value="partner_sudo.vat"
+                    t-att-readonly="'1' if vat_warning else None"
+                    class="form-control"
+                />
+                <small
+                    t-if="vat_warning"
+                    class="form-text text-muted d-block d-lg-none"
+                >
+                    Changing VAT number is not allowed once document(s) have been issued for your account. Please contact us directly for this operation.
+                </small>
+            </div>
+            <div t-if="vat_warning" class="col-12 d-none d-lg-block mb-1">
+                <small class="form-text text-muted">
+                    Changing company name or VAT number is not allowed once document(s) have been issued for your account. Please contact us directly for this operation.
+                </small>
+            </div>
+            <!-- </t> -->
             <!-- </t> -->
         </xpath>
     </template>

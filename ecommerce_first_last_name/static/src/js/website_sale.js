@@ -36,7 +36,6 @@ websiteSaleAddress.include({
             companyInput.required = isCompany;
             if (!isCompany) {
                 companyInput.required = false;
-                // companyInput.value = ""; // clear if switching back to individual
             }
         }
     },

@@ -1,7 +1,6 @@
 import logging
 
 from odoo.addons.website_sale.controllers.main import WebsiteSale
-from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -18,16 +17,10 @@ class WebsiteSaleFirstLastname(WebsiteSale):
         **kwargs,
     ):
         """Raise validation save time"""
-        invalid_fields, missing_fields, error_messages = super()._validate_address_values(
-            address_values,
-            partner_sudo,
-            address_type,
-            use_delivery_as_billing,
-            required_fields,
-            is_main_address,
-            **kwargs
+        invalid_fields, missing_fields, error_messages = (
+            super()._validate_address_values(address_values, partner_sudo, address_type, use_delivery_as_billing, required_fields, is_main_address, **kwargs)
         )
-        # Change first or last name 
+        # Change first or last name
         if partner_sudo and not partner_sudo._can_edit_name():
             full_name = partner_sudo.name or ""
             old_first, old_last = (full_name.split(" ", 1) + [""])[:2]
@@ -48,7 +41,7 @@ class WebsiteSaleFirstLastname(WebsiteSale):
                 invalid_fields.add("name")
             # Case 3: only last name changed
             elif last_name_changed and not first_name_changed:
-                invalid_fields.discard("name") 
+                invalid_fields.discard("name")
                 invalid_fields.add("last_name")
 
         return invalid_fields, missing_fields, error_messages
