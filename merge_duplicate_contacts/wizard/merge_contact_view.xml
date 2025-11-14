@@ -983,37 +983,15 @@
                                 style="min-width: 108px;"
                             />
                         </div>
-                        <div class="col-3">
+                        <div class="col-9">
                             <field colspan="5" name="keep1" nolabel="1" invisible="1" />
-                        </div>
-                        <div class="col-3">
                             <field
                                 name="keep_type"
                                 widget="radio"
                                 options="{'horizontal': True}"
                                 nolabel="1"
+                                class="keep-type-radio"
                             />
-                            <!-- It's in odoo 15.0 but removed but not using in 18.0 -->
-                            <!-- <button
-                                colspan="1"
-                                name="swap_to_left"
-                                type="object"
-                                title="left"
-                                class="fa fa-arrow-left"
-                                style="display:none;"
-                                context="{'field_name': 'company_id2', 'field_name2': 'company_id'}"
-                            />
-                            <button
-                                colspan="1"
-                                name="swap_to_right"
-                                type="object"
-                                title="right"
-                                class="fa fa-arrow-right"
-                                style="display:none;"
-                                context="{'field_name': 'company_id', 'field_name2': 'company_id2'}"
-                            /> -->
-                        </div>
-                        <div class="col-3">
                             <field colspan="4" name="keep2" nolabel="1" invisible="1" />
                         </div>
                     </div>

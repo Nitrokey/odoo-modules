@@ -102,8 +102,8 @@ class MergePartnerManualCheck(models.TransientModel):
     keep2 = fields.Boolean("Keep 2")
     keep_type = fields.Selection(
         [
-            ("keep1", "Keep Left"),
-            ("keep2", "Keep Right"),
+            ("keep1", ""),
+            ("keep2", ""),
         ],
         default="keep1",
     )
