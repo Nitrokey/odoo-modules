@@ -105,7 +105,6 @@ class MergePartnerManualCheck(models.TransientModel):
             ("keep1", "Keep Left"),
             ("keep2", "Keep Right"),
         ],
-        string="Keep Type",
         default="keep1",
     )
 
