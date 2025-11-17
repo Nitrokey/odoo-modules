@@ -19,8 +19,14 @@ class WebsiteSaleFirstLastname(WebsiteSale):
         """Raise validation save time"""
         invalid_fields, missing_fields, error_messages = (
             super()._validate_address_values(
-                address_values, partner_sudo, address_type, use_delivery_as_billing,
-                required_fields, is_main_address, **kwargs)
+                address_values,
+                partner_sudo,
+                address_type,
+                use_delivery_as_billing,
+                required_fields,
+                is_main_address,
+                **kwargs,
+            )
         )
         # Change first or last name
         if partner_sudo and not partner_sudo._can_edit_name():
