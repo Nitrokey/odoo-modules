@@ -5,4 +5,5 @@ from . import (
     payment_acquirer,
     payment_transaction,
     res_config_settings,
+    sale,
 )
