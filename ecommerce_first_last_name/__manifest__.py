@@ -1,11 +1,11 @@
 {
-    "name": "Ecommerce First last name",
+    "name": "Ecommerce First Last Name",
     "category": "other",
     "version": "18.0.1.0.0",
-    "author": "Nitrokey GmbH," "Odoo Community Association (OCA)",
+    "author": "Nitrokey GmbH",
     "summary": """Ecommerce First last name""",
     "sequence": "1",
-    "website": "https://github.com/OCA/e-commerce",
+    "website": "https://github.com/Nitrokey/odoo-modules",
     "license": "AGPL-3",
     "depends": ["website_sale"],
     "data": [
