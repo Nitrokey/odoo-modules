@@ -3,7 +3,7 @@
         <h2 class="oe_slogan" style="color:#875A7B;">Sale Order Picking Hold Paid</h2>
         <h3 class="oe_slogan">Hold delivery orders until invoices are paid</h3>
         <div class="oe_demo oe_picture oe_screenshot">
-            <p>This module adds a checkbox "Hold Picking Until Paid" to payment terms. If a sale order is validated with a payment term where this checkbox is enabled, the creation of the picking will be held until the invoice has been fully paid.</p>
+            <p>This module adds a dropdown field "Delivery Block Reason" to payment terms. If a sale order is validated with a payment term where a delivery block reason is selected, the creation of the picking will be held until the invoice has been fully paid.</p>
         </div>
     </div>
 </section>
@@ -14,9 +14,10 @@
         <div class="oe_span6">
             <div class="oe_demo oe_picture oe_screenshot">
                 <ul>
-                    <li>Add "Hold Picking Until Paid" checkbox to payment terms</li>
-                    <li>Automatically hold delivery orders for sale orders with payment terms that have this option enabled</li>
-                    <li>Automatically create delivery orders when invoices are fully paid</li>
+                    <li>Add "Delivery Block Reason" dropdown to payment terms</li>
+                    <li>Add "Remove Block on Payment" checkbox to delivery block reasons for automatic removal upon payment</li>
+                    <li>Automatically hold delivery orders for sale orders with payment terms that have a delivery block reason selected</li>
+                    <li>Automatically create delivery orders when invoices are fully paid (if the block reason has "Remove Block on Payment" enabled)</li>
                     <li>Allow manufacturing orders to be created even when delivery is on hold</li>
                 </ul>
             </div>
@@ -34,7 +35,8 @@
             <ol>
                 <li>Go to Accounting > Configuration > Payment Terms</li>
                 <li>Edit or create a payment term</li>
-                <li>Check the "Hold Picking Until Paid" checkbox if you want to hold deliveries until payment</li>
+                <li>Select a "Delivery Block Reason" from the dropdown if you want to hold deliveries until payment</li>
+                <li>On the delivery block reason itself, enable "Remove Block on Payment" if you want the block to be automatically removed when the invoice is paid</li>
             </ol>
         </div>
     </div>
@@ -48,11 +50,11 @@
                 To use this module:
             </p>
             <ol>
-                <li>Create a sale order and select a payment term with "Hold Picking Until Paid" enabled</li>
+                <li>Create a sale order and select a payment term with a "Delivery Block Reason" selected</li>
                 <li>Confirm the sale order</li>
                 <li>Create and post an invoice for the sale order</li>
                 <li>No delivery order will be created until the invoice is fully paid</li>
-                <li>Once the invoice is paid, the delivery order will be automatically created</li>
+                <li>Once the invoice is paid, the delivery order will be automatically created if the block reason has "Remove Block on Payment" enabled</li>
             </ol>
             <p>For products with Make-to-order and Manufacturing routes, manufacturing orders will be created immediately upon sale order confirmation, regardless of payment status.</p>
         </div>
