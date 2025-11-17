@@ -9,6 +9,11 @@ from odoo.tests.common import TransactionCase
 class TestSaleOrderPickingHoldPaid(TransactionCase):
     def setUp(self):
         super().setUp()
+        currency = self.env.ref("base.main_company").currency_id
+        self.pricelist = self.env["product.pricelist"].create({
+            "name": "Test Pricelist",
+            "currency_id": currency.id,
+        })
         self.product = self.env["product.product"].create(
             {
                 "name": "Test Product",
@@ -100,6 +105,7 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
         so_form = Form(self.env["sale.order"])
         so_form.partner_id = self.partner
         so_form.payment_term_id = payment_term
+        so_form.pricelist_id = self.pricelist
 
         for product, qty in products:
             with so_form.order_line.new() as line:
