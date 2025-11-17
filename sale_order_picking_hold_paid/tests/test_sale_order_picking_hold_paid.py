@@ -10,10 +10,12 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
     def setUp(self):
         super().setUp()
         currency = self.env.ref("base.main_company").currency_id
-        self.pricelist = self.env["product.pricelist"].create({
-            "name": "Test Pricelist",
-            "currency_id": currency.id,
-        })
+        self.pricelist = self.env["product.pricelist"].create(
+            {
+                "name": "Test Pricelist",
+                "currency_id": currency.id,
+            }
+        )
         self.product = self.env["product.product"].create(
             {
                 "name": "Test Product",
