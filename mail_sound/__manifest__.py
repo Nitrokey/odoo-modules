@@ -3,7 +3,7 @@
     "version": "18.0.1.0.0",
     "category": "Discuss",
     "summary": "Play sound when receiving messages regardless of focus",
-    "author": "Nitrokey GmbH",
+    "author": "Nitrokey GmbH, Odoo Community Association (OCA)",
     "website": "https://www.nitrokey.com",
     "license": "AGPL-3",
     "depends": ["mail"],
