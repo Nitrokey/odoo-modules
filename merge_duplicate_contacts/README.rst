@@ -18,6 +18,9 @@ Usage
 3) You can use "Swap Right" or "Swap Left" for changing the records value and if you go to the bottom of the "Wizard" you will see the keep (boolean)
 4) The selected record will be kept and the other will be merged into it.
 
+.. image:: static/img/merge_contact.png
+   :alt: Merge Contact Wizard
+
 Credits
 =======
 
