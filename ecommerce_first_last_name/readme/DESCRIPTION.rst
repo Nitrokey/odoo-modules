@@ -1,2 +1,2 @@
-Ecommerce First Last Name module is a part of Ecommerce and used in website to
-modify first name and last name of current user based on company type
+This module is used in website and during checkout shows two fields, first name and last name,
+instead of just one name field.
