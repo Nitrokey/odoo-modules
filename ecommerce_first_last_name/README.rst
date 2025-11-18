@@ -18,15 +18,6 @@ Usage
 3. Toggle between "Private Customer" and "Business Customer" radio buttons and notice how the "Company Name" and
   "TIN / VAT" fields appear and hide based on selection
 
-Bug Tracker
-===========
-
-Bugs are tracked on `GitHub Issues <https://github.com/OCA/e-commerce/issues>`_.
-In case of trouble, please check there if your issue has already been reported.
-If you spotted it first, help us smashing it by providing a detailed and welcomed.
-
-Do not contact contributors directly about support or help with technical issues.
-
 Credits
 =======
 
