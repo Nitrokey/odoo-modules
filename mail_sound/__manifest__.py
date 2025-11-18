@@ -10,7 +10,7 @@
     "data": [],
     "assets": {
         "web.assets_backend": [
-            "mail_sound/static/src/services/out_of_focus_service_patch.js",
+            "mail_sound/static/src/js/out_of_focus_service_patch.js",
         ],
     },
     "installable": True,
