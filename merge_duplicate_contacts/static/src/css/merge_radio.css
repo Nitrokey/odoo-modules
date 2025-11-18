@@ -1,0 +1,13 @@
+.keep-type-radio .o_radio {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.keep-type-radio .o_radio_item:first-child {
+    margin-left: 0px;
+}
+
+.keep-type-radio .o_radio_item:last-child {
+    margin-left: 451px;
+}
