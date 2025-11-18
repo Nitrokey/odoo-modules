@@ -4,7 +4,7 @@
     "category": "Accounting",
     "author": "Nitrokey GmbH",
     "license": "AGPL-3",
-    "website": "https://www.nitrokey.com",
+    "website": "https://github.com/OCA/server-tools",
     "summary": "Automatically send invoice emails when reconciling bank payments",
     "depends": [
         "account",
