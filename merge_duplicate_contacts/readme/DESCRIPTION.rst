@@ -1,2 +1,2 @@
-Merge duplicate partner contact based on partner fields You have option to "store"
-the contact which has keep(boolean) enabled
+Show and compare two partners's fields next to each other and allow to change fields and choose
+one partner to keep after merging.

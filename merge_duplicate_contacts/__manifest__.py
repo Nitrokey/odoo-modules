@@ -3,7 +3,7 @@
     "version": "18.0.1.0.0",
     "summary": "Merge duplicate partner contacts separated by partner fields.",
     "category": "Contacts",
-    "author": "Nitrokey GmbH, Odoo Community Association (OCA)",
+    "author": "Nitrokey GmbH",
     "website": "https://github.com/Nitrokey/odoo-modules",
     "license": "AGPL-3",
     "depends": ["base", "sale_management"],
