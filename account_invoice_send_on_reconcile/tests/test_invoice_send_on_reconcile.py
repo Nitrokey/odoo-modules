@@ -77,7 +77,7 @@ class TestInvoiceSendOnReconcile(TestCommon, TestInvoiceSendOnReconcileMixin):
 
         # Get the receivable line from invoice
         receivable_line = invoice.line_ids.filtered(
-            lambda l: l.account_id.user_type_id.type == "receivable"
+            lambda line: line.account_id.user_type_id.type == "receivable"
         )
 
         # Reconcile statement line with invoice
@@ -136,7 +136,7 @@ class TestInvoiceSendOnReconcile(TestCommon, TestInvoiceSendOnReconcileMixin):
 
         # Get the receivable line from invoice
         receivable_line = invoice.line_ids.filtered(
-            lambda l: l.account_id.user_type_id.type == "receivable"
+            lambda line: line.account_id.user_type_id.type == "receivable"
         )
 
         # Reconcile statement line with invoice

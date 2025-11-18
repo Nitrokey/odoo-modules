@@ -2,17 +2,21 @@
 
 ## Overview
 
-This Odoo 15.0 module automatically sends customer invoice emails when bank payments are reconciled with invoices from bank statements.
+This Odoo 15.0 module automatically sends customer invoice emails when bank payments are
+reconciled with invoices from bank statements.
 
 ## Features
 
-- **Automatic Invoice Sending**: When reconciling bank statement lines with customer invoices, the module automatically sends the invoice email to the customer
-- **Duplicate Prevention**: Uses the `is_move_sent` flag to prevent sending duplicate emails
+- **Automatic Invoice Sending**: When reconciling bank statement lines with customer
+  invoices, the module automatically sends the invoice email to the customer
+- **Duplicate Prevention**: Uses the `is_move_sent` flag to prevent sending duplicate
+  emails
 - **Smart Filtering**: Only sends for:
   - Posted customer invoices
   - Fully paid invoices
   - Invoices not already marked as sent
-- **Error Handling**: Email sending errors are logged but don't break the reconciliation process
+- **Error Handling**: Email sending errors are logged but don't break the reconciliation
+  process
 
 ## Configuration
 
