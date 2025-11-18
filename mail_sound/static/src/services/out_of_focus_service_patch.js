@@ -1,4 +1,4 @@
-/** @odoo-module **/
+/* @odoo-module */
 
 import {OutOfFocusService} from "@mail/core/common/out_of_focus_service";
 import {patch} from "@web/core/utils/patch";
@@ -17,9 +17,8 @@ patch(OutOfFocusService.prototype, {
      *
      * @override
      * @param {Object} message - The message object
-     * @param {Object} thread - The thread object
      */
-    async notify(message, thread) {
+    async notify(message) {
         // Call parent implementation to maintain standard notification behavior
         await super.notify(...arguments);
         const currentUser = this.env.services["mail.store"].self;
