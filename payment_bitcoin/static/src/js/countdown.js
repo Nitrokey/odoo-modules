@@ -1,4 +1,4 @@
-/** @odoo-module **/
+/* @odoo-module */
 
 import publicWidget from "@web/legacy/js/public/public_widget";
 
@@ -24,7 +24,8 @@ publicWidget.registry.reloadDuration = publicWidget.Widget.extend({
         let seconds = secondsNode ? parseInt(secondsNode.textContent || "0", 10) : 0;
         const timeCounter = document.getElementById("timecounter");
         if (!timeCounter) {
-            return; // Nothing to update.
+            // Nothing to update.
+            return;
         }
         timeCounter.style.fontSize = "60px";
 
