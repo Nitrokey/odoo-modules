@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-
     <record id="product_attribute_form_view_extended" model="ir.ui.view">
         <field name="name">product.attribute.form.view.extended</field>
         <field name="model">product.attribute</field>
@@ -13,5 +12,4 @@
             </field>
         </field>
     </record>
-
 </odoo>
