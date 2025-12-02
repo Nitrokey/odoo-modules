@@ -1,13 +1,10 @@
 {
-    "name": "Website Attribute Description",
+    "name": "Website Product Attribute Description",
     "version": "18.0.1.0.0",
     "category": "Website",
-    "author": "ERP Harbor Consulting Services,"
-    "Nitrokey GmbH,"
-    "Odoo Community Association (OCA)",
-    "website": "https://github.com/OCA/e-commerce",
+    "author": "ERP Harbor Consulting Services, Nitrokey GmbH",
+    "website": "https://github.com/nitrokey/odoo-modules",
     "summary": """
-    Website Attribute Description
     This module adds the information icon next to the attribute name in the
     website and display the related description on mouse hover.
      """,
