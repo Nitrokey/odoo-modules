@@ -8,5 +8,5 @@
     "external_dependencies": {"python": ["phonenumbers"]},
     "depends": ["phone_validation"],
     "author": "Nitrokey GmbH",
-    "website": "https://github.com/OCA/server-tools",
+    "website": "https://github.com/Nitrokey/odoo-modules",
 }

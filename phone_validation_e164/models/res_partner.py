@@ -37,17 +37,26 @@ class ResPartner(models.Model):
     # --- 1. FIX Odoo Core Behavior ---
     # Override the @onchange methods to use E164 instead of INTERNATIONAL
 
+    def _format_onchange_number(self, field_name):
+        number = getattr(self, field_name)
+        country = self.country_id if self.country_id else None
+        if number:
+            formatted = _format_number_to_e164(number, country)
+            # If formatting failed and number starts with '+', try without country
+            if formatted == number and number.startswith('+'):
+                formatted_intl = _format_number_to_e164(number, None)
+                if formatted_intl != number:
+                    setattr(self, field_name, formatted_intl)
+                    return
+            setattr(self, field_name, formatted)
+
     @api.onchange('phone', 'country_id', 'company_id')
     def _onchange_phone_validation(self):
-        if self.phone:
-            # Call _phone_format, BUT force E164
-            # (This function comes from the Odoo Core phone.validation mixin)
-            self.phone = self._phone_format(fname='phone', force_format='E164') or self.phone
+        self._format_onchange_number('phone')
 
     @api.onchange('mobile', 'country_id', 'company_id')
     def _onchange_mobile_validation(self):
-        if self.mobile:
-            self.mobile = self._phone_format(fname='mobile', force_format='E164') or self.mobile
+        self._format_onchange_number('mobile')
 
     # --- 2. ADD Save Logic (for Website/API) ---
     # Catches all save actions that bypass @onchange
