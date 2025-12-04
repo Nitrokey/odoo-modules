@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="product_variants_extended" inherit_id="website_sale.variants">
+        <xpath
+            expr="//select[@t-att-data-attribute_id='attribute.id']"
+            position="replace"
+        >
+            <div class="d-flex align-items-center">
+                <t
+                    t-if="ptal.attribute_id.description and attribute.display_type == 'select'"
+                >
+                    <i
+                        class="fa fa-info-circle"
+                        data-toggle="tooltip"
+                        data-placement="bottom"
+                        t-att-title="ptal.attribute_id.description"
+                        style="margin-right: 5px; margin-bottom: 5px;"
+                        id="description_tooltip"
+                    />
+                </t>
+                <select
+                    t-att-data-attribute_id="attribute.id"
+                    t-attf-class="form-select css_attribute_select o_wsale_product_attribute js_variant_change #{attribute.create_variant} #{'d-none' if single_and_custom else ''}"
+                    t-att-name="'ptal-%s' % ptal.id"
+                >
+                    <t t-foreach="ptavs" t-as="ptav">
+                        <option
+                            t-att-value="ptav.id"
+                            t-att-data-attribute-value-id="ptav.product_attribute_value_id.id"
+                            t-att-data-value_id="ptav.id"
+                            t-att-data-value_name="ptav.name"
+                            t-att-data-attribute_name="attribute.name"
+                            t-att-data-is_custom="ptav.is_custom"
+                            t-att-selected="ptav in combination"
+                            t-att-data-is_single="single"
+                            t-att-data-is_single_and_custom="single_and_custom"
+                        >
+                            <span t-field="ptav.name" />
+                            <t t-call="website_sale.badge_extra_price" />
+                        </option>
+                    </t>
+                </select>
+            </div>
+        </xpath>
+        <xpath
+            expr="//ul[@t-att-data-attribute_id='attribute.id']/t[@t-foreach='ptavs']"
+            position="before"
+        >
+            <t
+                t-if="ptal.attribute_id.description and attribute.display_type in ('radio', 'multi')"
+            >
+                <i
+                    class="fa fa-info-circle"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    t-att-title="ptal.attribute_id.description"
+                    style="margin-right: 5px;"
+                    id="description_tooltip"
+                />
+            </t>
+        </xpath>
+        <xpath
+            expr="//ul[@data-bs-toggle='buttons']/t[@t-foreach='ptavs']"
+            position="before"
+        >
+            <t
+                t-if="ptal.attribute_id.description and attribute.display_type == 'pills'"
+            >
+                <i
+                    class="fa fa-info-circle"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    t-att-title="ptal.attribute_id.description"
+                    style="margin-right: 5px;"
+                    id="description_tooltip"
+                />
+            </t>
+        </xpath>
+        <xpath
+            expr="//ul[@t-att-data-attribute_id='attribute.id']/li[@t-foreach='ptavs']"
+            position="before"
+        >
+            <t
+                t-if="ptal.attribute_id.description and attribute.display_type == 'color'"
+            >
+                <i
+                    class="fa fa-info-circle"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    t-att-title="ptal.attribute_id.description"
+                    style="margin-right: 5px;"
+                    id="description_tooltip"
+                />
+            </t>
+        </xpath>
+    </template>
+</odoo>
