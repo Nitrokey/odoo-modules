@@ -4,7 +4,7 @@
     "category": "Sales",
     "summary": "Set the first payment term as default when creating a new sales order",
     "author": "Nitrokey GmbH",
-    "website": "https://github.com/OCA/server-tools",
+    "website": "https://github.com/nitrokey/odoo-modules",
     "license": "AGPL-3",
     "depends": ["sale", "account"],
     "data": [],
