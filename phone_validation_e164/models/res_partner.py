@@ -18,6 +18,7 @@ def _format_number_to_e164(number_str, country):
     if not number_str:
         return number_str
 
+    number_str = str(number_str)
     country_code = country.code if country else None
 
     try:
