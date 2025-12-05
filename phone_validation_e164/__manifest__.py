@@ -9,6 +9,6 @@
     "version": "18.0.1.0.0",
     "external_dependencies": {"python": ["phonenumbers"]},
     "depends": ["phone_validation"],
-    "author": "Nitrokey GmbH, Odoo Community Association (OCA)",
+    "author": "Nitrokey GmbH",
     "website": "https://github.com/Nitrokey/odoo-modules",
 }
