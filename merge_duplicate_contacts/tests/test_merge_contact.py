@@ -9,7 +9,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1",
                 "email": "test@example.com",
-                "phone": 987654,
+                "phone": "+49987654",
             }
         )
         partner_pool |= self.partner1
@@ -17,7 +17,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1 (copy)",
                 "email": "test@example.com",
-                "phone": 987654,
+                "phone": "+49987654",
             }
         )
         partner_pool |= self.partner2
@@ -39,7 +39,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1",
                 "email": "test@example.com",
-                "phone": 987654,
+                "phone": "+49987654",
                 "vat": "BE0477472701",
             }
         )
@@ -48,7 +48,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1 (copy)",
                 "email": "test@example.com",
-                "phone": 987654321,
+                "phone": "+49987654321",
                 "company_id": self.env.user.company_id.id,
             }
         )
@@ -131,7 +131,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1",
                 "email": "test@example.com",
-                "phone": 987654,
+                "phone": "+49987654",
                 "vat": "BE0477472701",
             }
         )
@@ -140,7 +140,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1 (copy)",
                 "email": "test@example.com",
-                "phone": 987654321,
+                "phone": "+49987654321",
                 "company_id": self.env.user.company_id.id,
             }
         )
@@ -203,7 +203,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
                     "keep1": True,
                     "company_id": self.env.user.company_id.id,
                     "company_name": "Test Abc",
-                    "phone": "987654",
+                    "phone": "+49987654",
                     "mobile": "+156778978",
                     "street": "test street",
                     "street11": "test street 11",
@@ -291,7 +291,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1",
                 "email": "test@example.com",
-                "phone": 987654,
+                "phone": "+49987654",
                 "vat": "BE0477472701",
             }
         )
@@ -300,7 +300,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1 (copy)",
                 "email": "test@example.com",
-                "phone": 987654321,
+                "phone": "+49987654321",
                 "company_id": self.env.user.company_id.id,
             }
         )
@@ -363,7 +363,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
                     "keep1": True,
                     "company_id2": self.env.user.company_id.id,
                     "company_name2": "Test Abc",
-                    "phone2": "987654",
+                    "phone2": "+49987654",
                     "mobile2": "+156778978",
                     "street2": "test street",
                     "street22": "test street 22",
@@ -450,7 +450,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1",
                 "email": "test@example.com",
-                "phone": 987654,
+                "phone": "+49987654",
             }
         )
         partner_pool |= self.partner1
@@ -458,7 +458,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1 (copy)",
                 "email": "test@example.com",
-                "phone": 987654321,
+                "phone": "+49987654321",
             }
         )
         partner_pool |= self.partner2
@@ -540,7 +540,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1",
                 "email": "test@example.com",
-                "phone": 987654,
+                "phone": "+49987654",
             }
         )
         partner_pool |= self.partner1
@@ -548,7 +548,7 @@ class TestPartnerMerge(common.SingleTransactionCase):
             {
                 "name": "test1 (copy)",
                 "email": "test@example.com",
-                "phone": 987654321,
+                "phone": "+49987654321",
             }
         )
         partner_pool |= self.partner2
