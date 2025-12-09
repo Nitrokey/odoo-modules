@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Odoo 18.0 module automatically sends customer invoice emails when bank payments are
+This module automatically sends customer invoice emails when bank payments are
 reconciled with invoices from bank statements.
 
 ## Features
