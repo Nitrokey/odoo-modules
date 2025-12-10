@@ -27,7 +27,6 @@
                                     t-att-src="image_data_uri(product.image_512)"
                                     t-attf-style="max-width: 100%; max-height: 100%; object-fit: contain;"
                                 />
-                                <!-- t-att-src="'data:image/png;base64,' + (product.image_512.decode('utf-8') if isinstance(product.image_512, bytes) else product.image_512 or '')" -->
                             </div>
                         </div>
                     </t>
