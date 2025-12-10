@@ -3,7 +3,7 @@
     "category": "other",
     "version": "18.0.1.0.1",
     "summary": """Prints product barcode along with product image""",
-    "author": "Nitrokey GmbH, Odoo Community Association (OCA)",
+    "author": "Nitrokey GmbH",
     "website": "https://github.com/Nitrokey/odoo-modules",
     "license": "AGPL-3",
     "depends": ["product"],
