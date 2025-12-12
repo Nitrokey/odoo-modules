@@ -5,9 +5,9 @@
     This module will show confirmation dialog while sending message
     from chatter when any one follower of the record is not internal user.
     """,
-    "author": "Nitrokey GmbH, Odoo Community Association (OCA)",
+    "author": "Nitrokey GmbH",
     "license": "LGPL-3",
-    "website": "https://github.com/OCA/server-tools",
+    "website": "https://github.com/nitrokey/odoo-modules",
     "maintainer": "Nitrokey GmbH",
     "depends": ["mail", "base"],
     "data": [],
