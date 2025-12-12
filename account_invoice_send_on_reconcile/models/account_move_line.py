@@ -24,7 +24,7 @@ class AccountMoveLine(models.Model):
             lambda m: m.is_invoice(include_receipts=True)
         )
         _logger.info(
-            "Invoices are %s",
+            "Invoices are %s names: %s",
             invoices,
             invoices.mapped("name"),
         )
