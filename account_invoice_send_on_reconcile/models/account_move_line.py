@@ -27,6 +27,7 @@ class AccountMoveLine(models.Model):
         for invoice in invoices:
             # Skip if not a valid invoice for sending
             if not self._should_send_invoice_after_reconciliation(invoice):
+                aaa
                 continue
 
             # Send invoice email with error handling
@@ -40,6 +41,7 @@ class AccountMoveLine(models.Model):
                     "account.email_template_edi_invoice", raise_if_not_found=False
                 )
                 if template:
+                    bbbb
                     # Send email using template
                     template.send_mail(invoice.id, force_send=True)
 
@@ -48,10 +50,12 @@ class AccountMoveLine(models.Model):
 
                     _logger.info("Successfully sent invoice email for %s", invoice.name)
                 else:
+                    cccc
                     _logger.warning(
                         "No email template found for invoice %s", invoice.name
                     )
             except Exception as e:
+                dddd
                 # Log error but don't break reconciliation process
                 _logger.error(
                     "Failed to send invoice email for %s: %s",
