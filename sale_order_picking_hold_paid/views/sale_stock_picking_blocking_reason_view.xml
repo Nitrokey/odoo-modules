@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record
+        id="sale_stock_picking_blocking_reason_form_view_inherit"
+        model="ir.ui.view"
+    >
+        <field name="name">sale.delivery.block.reason.form.inherit</field>
+        <field name="model">sale.delivery.block.reason</field>
+        <field
+            name="inherit_id"
+            ref="sale_stock_picking_blocking.sale_stock_picking_blocking_reason_form_view"
+        />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="remove_on_payment" />
+            </field>
+        </field>
+    </record>
+</odoo>
