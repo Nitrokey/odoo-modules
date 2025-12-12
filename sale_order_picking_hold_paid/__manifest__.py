@@ -6,7 +6,7 @@
     "category": "Sales/Sales",
     "summary": "Hold pickings until invoice is paid based on payment terms",
     "author": "initOS GmbH, Nitrokey GmbH",
-    "website": "https://www.initos.com",
+    "website": "https://github.com/nitrokey/odoo-modules",
     "license": "AGPL-3",
     "depends": [
         "sale_stock",
