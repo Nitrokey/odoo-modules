@@ -9,18 +9,10 @@ from odoo.tests.common import TransactionCase
 class TestSaleOrderPickingHoldPaid(TransactionCase):
     def setUp(self):
         super().setUp()
-        currency = self.env.ref("base.main_company").currency_id
-        self.pricelist = self.env["product.pricelist"].create(
-            {
-                "name": "Test Pricelist",
-                "currency_id": currency.id,
-            }
-        )
         self.product = self.env["product.product"].create(
             {
                 "name": "Test Product",
-                "type": "product",
-                "invoice_policy": "order",
+                "type": "consu",
             }
         )
 
@@ -42,28 +34,19 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
                         0,
                         0,
                         {
-                            "value": "balance",
-                            "days": 30,
+                            "value": "percent",
+                            "nb_days": 30,
+                            "value_amount": 100,
                         },
                     ),
                 ],
             }
         )
 
-        self.payment_term_hold = self.env["account.payment.term"].create(
+        self.payment_term_hold = self.payment_term_normal.copy(\
             {
-                "name": "Hold Until Paid",
-                "delivery_block_reason_id": self.delivery_block_reason.id,
-                "line_ids": [
-                    (
-                        0,
-                        0,
-                        {
-                            "value": "balance",
-                            "days": 30,
-                        },
-                    ),
-                ],
+                "name": "Hold Payment Term",
+                "default_delivery_block_reason_id": self.delivery_block_reason.id
             }
         )
 
@@ -84,7 +67,7 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
         self.product_mto_mfg = self.env["product.product"].create(
             {
                 "name": "Test MTO+MFG Product",
-                "type": "product",
+                "type": "consu",
                 "invoice_policy": "order",
                 "route_ids": [(6, 0, [self.mto_route.id, self.manufacture_route.id])],
             }
@@ -107,7 +90,6 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
         so_form = Form(self.env["sale.order"])
         so_form.partner_id = self.partner
         so_form.payment_term_id = payment_term
-        so_form.pricelist_id = self.pricelist
 
         for product, qty in products:
             with so_form.order_line.new() as line:
@@ -254,7 +236,7 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
     def test_delivery_block_reason_selection(self):
         """Test that delivery block reason is properly selected."""
         # Get the delivery block reason for the hold payment term
-        block_reason = self.payment_term_hold.get_delivery_block_reason()
+        block_reason = self.payment_term_hold.default_delivery_block_reason_id
 
         self.assertTrue(block_reason, "Delivery block reason should be selected")
         self.assertEqual(
