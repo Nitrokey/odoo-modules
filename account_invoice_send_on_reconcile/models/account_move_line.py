@@ -25,7 +25,8 @@ class AccountMoveLine(models.Model):
         )
         _logger.info(
             "Invoices are %s",
-            invoices, invoices.mapped('name'),
+            invoices,
+            invoices.mapped("name"),
         )
 
         for invoice in invoices:
