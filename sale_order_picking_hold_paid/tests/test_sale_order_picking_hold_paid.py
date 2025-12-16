@@ -43,10 +43,10 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
             }
         )
 
-        self.payment_term_hold = self.payment_term_normal.copy(\
+        self.payment_term_hold = self.payment_term_normal.copy(
             {
                 "name": "Hold Payment Term",
-                "default_delivery_block_reason_id": self.delivery_block_reason.id
+                "default_delivery_block_reason_id": self.delivery_block_reason.id,
             }
         )
 
