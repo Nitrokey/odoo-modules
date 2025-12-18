@@ -37,14 +37,12 @@ class StockPicking(models.Model):
                         lot_name += lot_line.lot_id.name
                     else:
                         lot_name += lot_line.lot_id.name + ", "
-            product_data += """
+            product_data += f"""
                 <tr>
-                    <td class="border">{}</td>
-                    <td>{}</td>
+                    <td class="border">{name}</td>
+                    <td>{lot_name}</td>
                 </tr>
-            """.format(
-                name, lot_name
-            )
+            """
         product_data += """
                         </tbody>
                         </table>
