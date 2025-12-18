@@ -18,25 +18,24 @@ Features
 Configuration
 -------------
 
-To configure this module, you need to:
-
-1. Go to Accounting > Configuration > Payment Terms
+1. Go to: "Accounting" -> "Configuration" -> "Invoicing" -> "Payment Terms"
 2. Edit or create a payment term
-3. Select a "Delivery Block Reason" from the dropdown if you want to hold deliveries until payment
-4. On the delivery block reason itself, enable "Remove Block on Payment" if you want the block to be automatically removed when the invoice is paid
+3. In the "Delivery Block Reason" field choose or create an option and
+4. Expand the option that you choose
+5. In the expanded view you will see the "Remove Block on Payment" option; enable it
 
 Usage
 -----
 
-To use this module:
+1. Go to: "Sales" -> "Orders" -> "Orders" -> "+New"
+2. In the "Payment Terms" field make sure that the option you choose has "Remove Block on Payment" enabled
+3. Confirm the sale order
+4. Create the invoice and then confirm it
+5. The delivery order will not be created until the invoice is fully paid
+6. Once the invoice is paid go back into the sale order section
+7. The delivery order will be automatically created if the "Delivery Block Reason" field that has the option selected with the "Remove Block on Payment" enabled
 
-1. Create a sale order and select a payment term with a "Delivery Block Reason" selected
-2. Confirm the sale order
-3. Create and post an invoice for the sale order
-4. No delivery order will be created until the invoice is fully paid
-5. Once the invoice is paid, the delivery order will be automatically created if the block reason has "Remove Block on Payment" enabled
-
-For products with Make-to-order and Manufacturing routes, manufacturing and delivery orders will be created immediately upon sale order confirmation, regardless of payment status.
+For products with Make-to-order (MTO) and Manufacturing routes enabled, manufacturing and delivery orders will be created upon clicking "Release Delivery Block" on Sale Order, regardless of payment status.
 
 Bug Tracker
 -----------
