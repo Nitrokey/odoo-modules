@@ -15,55 +15,92 @@ patch(Composer.prototype, {
     },
 
     async sendMessage() {
-        if (this.props.type === "message") {
-            // Get thread information for backend check
+        if (this.props.type === "message" || this.props.type === "note") {
             const res_id = this.props.composer?.thread?.id;
             const model = this.props.composer?.thread?.model;
 
             if (!res_id || !model) {
-                console.warn(
-                    "mail_external_confirmation: Missing thread_id or thread_model, sending without confirmation"
-                );
-                // Fallback to original behavior on error
+                console.warn("Missing thread info, sending without confirmation");
                 super.sendMessage();
                 return;
             }
 
-            // Call controller to check for external users
-            await rpc("/message/external_users/check", {
+            // Prepare check data
+            const checkData = {
                 rec_id: res_id,
                 model: model,
-            })
-                .then((hasExternalUsers) => {
-                    if (hasExternalUsers) {
-                        // Show confirmation dialog before sending to external partners
-                        this.dialog.add(ConfirmationDialog, {
-                            title: _t("Confirmation For Chatter"),
-                            body: _t(
-                                "Your message will be sent to external partners (e.g. customers)."
-                            ),
-                            confirmLabel: _t("Send"),
-                            cancelLabel: _t("Cancel"),
-                            confirm: async () => {
-                                super.sendMessage();
-                            },
-                            cancel: () => {
-                                // Empty function to display the cancel button
-                            },
-                        });
-                    } else {
-                        // No external users, send directly
-                        super.sendMessage();
-                    }
-                })
-                .catch((error) => {
-                    // On error, send without confirmation to avoid blocking the user
-                    console.error("External user check failed:", error);
-                    // Fallback to original behavior on error
+            };
+
+            // Add mentioned partner IDs for notes
+            if (this.props.type === "note") {
+                var mentionedPartners = this.props.composer?.mentionedPartners || null;
+                const partnerIds = this._extractPartnerIds(mentionedPartners);
+
+                if (partnerIds.length > 0) {
+                    checkData.mentioned_partner_ids = partnerIds;
+                } else {
                     super.sendMessage();
-                });
+                    return;
+                }
+            }
+
+            // Make a single RPC call to check everything
+            try {
+                const result = await rpc("/message/external_users/check", checkData);
+
+                if (result.needs_confirmation) {
+                    await this._showConfirmationDialog(result.confirmation_message);
+                } else {
+                    super.sendMessage();
+                }
+            } catch (error) {
+                console.error("External check failed:", error);
+                super.sendMessage();
+            }
         } else {
             super.sendMessage();
         }
+    },
+
+    /**
+     * Extract partner IDs from mentionedPartners
+     */
+    _extractPartnerIds(mentionedPartners) {
+        if (!mentionedPartners?.data?.length) {
+            return [];
+        }
+
+        return mentionedPartners.data
+            .map((item) => {
+                if (typeof item === "string") {
+                    const match = item.match(/AND\s+(\d+)$/);
+                    return match ? parseInt(match[1], 10) : null;
+                } else if (item && typeof item === "object") {
+                    return item.id || item.resId || item.partner_id;
+                }
+                return null;
+            })
+            .filter((id) => id !== null);
+    },
+
+    /**
+     * Show confirmation dialog
+     */
+    async _showConfirmationDialog(message) {
+        return new Promise((resolve) => {
+            this.dialog.add(ConfirmationDialog, {
+                title: _t("External Partner Confirmation"),
+                body: message,
+                confirmLabel: _t("Send"),
+                cancelLabel: _t("Cancel"),
+                confirm: async () => {
+                    super.sendMessage();
+                    resolve();
+                },
+                cancel: () => {
+                    resolve();
+                },
+            });
+        });
     },
 });
