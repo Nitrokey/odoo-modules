@@ -29,19 +29,38 @@ patch(Composer.prototype, {
             const checkData = {
                 rec_id: res_id,
                 model: model,
+                msg_type: this.props.type,
+                mentioned_partner_ids: [],
             };
 
-            // Add mentioned partner IDs for notes
-            if (this.props.type === "note") {
-                var mentionedPartners = this.props.composer?.mentionedPartners || null;
-                const partnerIds = this._extractPartnerIds(mentionedPartners);
+            // Add mentioned partner IDs in notes/messages
+            var mentionedPartners = this.props.composer?.mentionedPartners || null;
+            const partnerIds = this._extractPartnerIds(mentionedPartners);
 
-                if (partnerIds.length > 0) {
-                    checkData.mentioned_partner_ids = partnerIds;
-                } else {
-                    super.sendMessage();
-                    return;
-                }
+            if (partnerIds.length > 0) {
+                checkData.mentioned_partner_ids.push(...partnerIds);
+            } else {
+                // Don't have any menssion partners
+            }
+            if (this.props.type === "note" && partnerIds.length === 0) {
+                super.sendMessage();
+                return;
+            }
+
+            // Remove all followers and check checkbox of the partner email
+            const checkedPartnerIds = this.props.composer.thread.suggestedRecipients
+                .filter(
+                    (recipient) =>
+                        recipient.checked &&
+                        recipient.partner_id &&
+                        this.props.type === "message"
+                )
+                .map((recipient) => recipient.partner_id);
+            // This.props.composer.thread.followersCount //followers exist or not
+            if (checkedPartnerIds.length > 0) {
+                checkData.mentioned_partner_ids.push(...checkedPartnerIds);
+            } else {
+                // Don't have any suggestedRecipients checked
             }
 
             // Make a single RPC call to check everything
