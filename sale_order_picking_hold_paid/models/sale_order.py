@@ -1,0 +1,73 @@
+# Copyright 2025 Nitrokey GmbH
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
+from odoo import api, models
+
+
+class SaleOrder(models.Model):
+    _inherit = "sale.order"
+
+    @api.model_create_multi
+    def create(self, vals):
+        """Set delivery block when creating quotation with payment term that has
+        delivery block reason."""
+        order = super().create(vals)
+        if payment_term := order.payment_term_id:
+            order.delivery_block_id = payment_term.default_delivery_block_reason_id
+        return order
+
+    def action_confirm(self):
+        """Ensure delivery block is set if payment term requires it."""
+        result = super().action_confirm()
+        for order in self:
+            payment_term = order.payment_term_id
+            block_reason = payment_term.default_delivery_block_reason_id
+            if payment_term and block_reason and not order.delivery_block_id:
+                order.delivery_block_id = block_reason
+        return result
+
+    def action_remove_delivery_block(self):
+        """Remove the delivery block and create procurements as usual."""
+        if self.env.context.get("auto_removal_on_payment"):
+            self = self.filtered("delivery_block_id.remove_on_payment")
+        return super().action_remove_delivery_block()
+
+
+class SaleOrderLine(models.Model):
+    _inherit = "sale.order.line"
+
+    def _action_launch_stock_rule(self, previous_product_uom_qty=False):
+        """Allow manufacturing orders even when delivery is blocked."""
+        # Check if this line has manufacturing route
+        mto_route = self.env.ref("stock.route_warehouse0_mto", raise_if_not_found=False)
+        manufacture_route = self.env.ref(
+            "mrp.route_warehouse0_manufacture", raise_if_not_found=False
+        )
+
+        lines_to_process = self.env["sale.order.line"]
+
+        for line in self:
+            # Allow if no delivery block
+            if not line.order_id.delivery_block_id:
+                lines_to_process |= line
+            # Allow manufacturing lines even with delivery block
+            elif mto_route and manufacture_route:
+                # Get all routes for the product (including category routes)
+                product_routes = (
+                    line.product_id.route_ids | line.product_id.categ_id.route_ids
+                )
+                # Also check warehouse routes
+                warehouse = line.order_id.warehouse_id
+                if warehouse:
+                    product_routes |= warehouse.route_ids
+
+                # Check if product has both MTO and Manufacturing routes
+                has_mto_manufacture = (
+                    mto_route in product_routes and manufacture_route in product_routes
+                )
+                if has_mto_manufacture:
+                    lines_to_process |= line
+
+        return super(SaleOrderLine, lines_to_process)._action_launch_stock_rule(
+            previous_product_uom_qty=previous_product_uom_qty
+        )
