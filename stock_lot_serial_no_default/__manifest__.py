@@ -4,7 +4,7 @@
     "category": "Inventory/Inventory",
     "summary": "Prevent automatic serial number selection in stock operations",
     "author": "Nitrokey GmbH",
-    "website": "https://www.nitrokey.com",
+    "website": "https://www.github.com/nitrokey/odoo-modules/",
     "license": "AGPL-3",
     "depends": [
         "stock",
