@@ -46,6 +46,6 @@ Usage
 2. Create a product and set Track Inventory By Unique Serial Number
 3. Create a delivery order / stock transfer / manufacturing order for serial-tracked products
 4. Click "Check Availability" to reserve stock
-5. The quantity will be reserved but serial number fields will be empty
+5. The quantity will be reserved but serial number fields will be empty. In delivery orders you might need to enable the column "Serial Number" if it's not shown by default.
 6. Staff must manually scan or enter the serial number for each item
 7. Validate the operation as usual
