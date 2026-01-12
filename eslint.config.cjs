@@ -155,7 +155,9 @@ const config = [{
         strict: ["error", "function"],
         "use-isnan": "error",
 
-        "jsdoc/check-tag-names": "warn",
+        "jsdoc/check-tag-names": ["warn", {
+            definedTags: ["odoo-module"],
+        }],
         "jsdoc/check-types": "warn",
         "jsdoc/require-param-description": "off",
         "jsdoc/require-return": "off",
@@ -200,6 +202,24 @@ const config = [{
     languageOptions: {
         ecmaVersion: 2024,
         sourceType: "module",
+    },
+}, {
+    // Node-only build tooling (esbuild bundling, etc.)
+    files: ["**/tools/**/*.js", "**/tools/**/*.mjs"],
+
+    languageOptions: {
+        ecmaVersion: 2024,
+        sourceType: "module",
+        globals: {
+            ...globals.node,
+        },
+    },
+}, {
+    // This addon intentionally has some higher-complexity integration code.
+    // Keep the global bar strict, but avoid failing CI on warnings here.
+    files: ["discuss_livekit_integration/static/src/**/*.js"],
+    rules: {
+        complexity: ["warn", 30],
     },
 }];
 

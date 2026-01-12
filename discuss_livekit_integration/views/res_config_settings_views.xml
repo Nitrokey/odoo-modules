@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_livekit" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.livekit</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <div
+                    class="app_settings_block"
+                    data-string="LiveKit Integration"
+                    string="LiveKit Integration"
+                    data-key="discuss_livekit_integration"
+                >
+                    <h2>LiveKit Video Conferencing</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="livekit_enabled" />
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <div class="content-group">
+                                    <div class="mt8">
+                                        <label
+                                            for="livekit_enabled"
+                                            class="o_form_label"
+                                            string="Enable LiveKit"
+                                        />
+                                        <div class="text-muted">
+                                            When enabled and configured, Discuss calls use LiveKit media instead of Odoo's native RTC.
+                                            A full page reload may be required after changing this setting.
+                                        </div>
+                                    </div>
+                                    <div class="mt8">
+                                        <label
+                                            for="livekit_server_url"
+                                            class="o_form_label"
+                                            string="Server URL"
+                                        />
+                                        <field
+                                            name="livekit_server_url"
+                                            placeholder="wss://your-livekit-server.com"
+                                        />
+                                    </div>
+                                    <div class="mt8">
+                                        <label
+                                            for="livekit_api_key"
+                                            class="o_form_label"
+                                            string="API Key"
+                                        />
+                                        <field
+                                            name="livekit_api_key"
+                                            password="True"
+                                            placeholder="Your LiveKit API Key"
+                                        />
+                                    </div>
+                                    <div class="mt8">
+                                        <label
+                                            for="livekit_api_secret"
+                                            class="o_form_label"
+                                            string="API Secret"
+                                        />
+                                        <field
+                                            name="livekit_api_secret"
+                                            password="True"
+                                            placeholder="Your LiveKit API Secret"
+                                        />
+                                    </div>
+                                    <div class="mt8 text-muted">
+                                        Configure your LiveKit credentials to enable video conferencing in Discuss channels.
+                                        Get your credentials from your LiveKit Cloud dashboard or self-hosted server.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
