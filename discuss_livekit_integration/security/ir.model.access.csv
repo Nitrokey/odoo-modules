@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_discuss_channel_livekit_session,discuss.channel.livekit.session,model_discuss_channel_livekit_session,base.group_user,0,0,0,0

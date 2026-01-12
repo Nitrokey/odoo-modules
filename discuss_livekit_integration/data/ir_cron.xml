@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="ir_cron_gc_livekit_inactive_sessions" model="ir.cron">
+        <field name="name">LiveKit: GC inactive presence sessions</field>
+        <field name="active" eval="True" />
+        <field name="user_id" ref="base.user_root" />
+        <field name="model_id" ref="discuss_livekit_integration.model_discuss_channel_livekit_session" />
+        <field name="state">code</field>
+        <field name="code">model._gc_inactive_sessions()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+    </record>
+</odoo>

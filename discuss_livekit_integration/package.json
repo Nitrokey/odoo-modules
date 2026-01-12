@@ -1,0 +1,15 @@
+{
+  "name": "discuss_livekit_integration",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "esbuild": "^0.20.2"
+  },
+  "dependencies": {
+    "livekit-client": "2.16.0",
+    "@livekit/track-processors": "0.7.0"
+  },
+  "scripts": {
+    "bundle:livekit": "node ./tools/bundle_livekit.mjs"
+  }
+}
