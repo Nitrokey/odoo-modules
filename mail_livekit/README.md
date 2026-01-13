@@ -48,50 +48,29 @@ This addon reads the following configuration parameters:
 - `mail_livekit.livekit_api_key` (string)
 - `mail_livekit.livekit_api_secret` (string)
 
-Frontend assets are conditionally loaded only when LiveKit is enabled and credentials
-are present (see `views/livekit_assets_templates.xml`).
-
-### Backend endpoints
-
-- `POST /livekit/token` (JSON)
-  - Issues a LiveKit JWT for a Discuss channel.
-  - Works for authenticated users and guests/public pages.
-- Presence/session endpoints (public + guest-aware):
-  - `POST /mail/livekit/channel/join_call`
-  - `POST /mail/livekit/channel/leave_call`
-  - `POST /mail/livekit/session/update_and_broadcast`
-  - `POST /discuss/livekit/channel/ping`
-
 ## Notes
 
 - **Public channels / guests** are supported.
 - **Only microphone selection is implemented** (parity with the existing Odoo call
   settings UI). Camera/speaker selection are intentionally not added.
 
-## Vendor pinning / self-hosting
-
-### Bundled vendor JS (recommended)
+### Bundled vendor JS
 
 This repo includes a small bundling setup that produces a browser-ready vendor bundle:
 
 - Output: `static/lib/bundles/livekit_vendor_entry.js`
 - Build: `npm install` then `npm run bundle:livekit`
 
+To build the bundle manually:
+
+1. Open a terminal in the module's root:
+   `cd /code/repos/nitrokey-odoo-modules/mail_livekit`
+2. Run: `node tools/bundle_livekit.mjs`
+3. It will build the bundle and log: "Built LiveKit vendor bundle into [path]".
+4. If successful, the output file(s) will be in `static/lib/bundles/`.
+
 The addon asset bundle includes the generated vendor file, so production does not need
 Node and does not need a CDN.
 
-Practical options:
-
-- Keep versions pinned and allowlist the CDN in your CSP.
-- Replace the CDN URLs in the loader files with your own hosted URLs.
 - If you upgrade LiveKit, upgrade both the client and processors together and test
   reconnect + screen share paths.
-
-## Dev quickstart
-
-From the workspace root (`/code`):
-
-- Build: `./build`
-- Start services: `docker-compose up -d`
-- Enter container: `./bash`
-- Run Odoo (install/update module): `./start -u mail_livekit`
