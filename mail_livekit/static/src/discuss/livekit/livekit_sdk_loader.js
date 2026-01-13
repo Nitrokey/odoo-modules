@@ -1,7 +1,7 @@
 /** @odoo-module */
 
 const LIVEKIT_VENDOR_BUNDLE_URL =
-    "/discuss_livekit_integration/static/lib/bundles/livekit_vendor_entry.js";
+    "/mail_livekit/static/lib/bundles/livekit_vendor_entry.js";
 
 function getLivekitClient() {
     // `browser.globalThis` is not defined in Odoo's browser service.

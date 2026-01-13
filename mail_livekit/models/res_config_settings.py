@@ -6,18 +6,18 @@ class ResConfigSettings(models.TransientModel):
 
     livekit_enabled = fields.Boolean(
         string="Enable LiveKit",
-        config_parameter="discuss_livekit_integration.livekit_enabled",
+        config_parameter="mail_livekit.livekit_enabled",
     )
 
     livekit_api_key = fields.Char(
         string="LiveKit API Key",
-        config_parameter="discuss_livekit_integration.livekit_api_key",
+        config_parameter="mail_livekit.livekit_api_key",
     )
     livekit_api_secret = fields.Char(
         string="LiveKit API Secret",
-        config_parameter="discuss_livekit_integration.livekit_api_secret",
+        config_parameter="mail_livekit.livekit_api_secret",
     )
     livekit_server_url = fields.Char(
         string="LiveKit Server URL",
-        config_parameter="discuss_livekit_integration.livekit_server_url",
+        config_parameter="mail_livekit.livekit_server_url",
     )

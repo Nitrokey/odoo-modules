@@ -3,8 +3,10 @@
 This addon integrates **LiveKit** as the media layer (audio/video/screen share) for
 **Odoo Discuss calls**, while keeping Odoo’s **native call UI and semantics**.
 
-It is designed to be safe to install even when LiveKit is not configured: when LiveKit
-is disabled/misconfigured, Discuss falls back to the default Odoo RTC behavior.
+It is designed to be safe to install even when LiveKit is not configured. When livekit
+has credentials and is enabled its assets will be added to the relevant pages. Upon
+toggling livekit, it may be necessary to hard refresh the browser to ensure assets are
+reloaded.
 
 ## What it does
 
@@ -41,10 +43,10 @@ Configure in **Settings → LiveKit Integration**:
 
 This addon reads the following configuration parameters:
 
-- `discuss_livekit_integration.livekit_enabled` (boolean)
-- `discuss_livekit_integration.livekit_server_url` (string)
-- `discuss_livekit_integration.livekit_api_key` (string)
-- `discuss_livekit_integration.livekit_api_secret` (string)
+- `mail_livekit.livekit_enabled` (boolean)
+- `mail_livekit.livekit_server_url` (string)
+- `mail_livekit.livekit_api_key` (string)
+- `mail_livekit.livekit_api_secret` (string)
 
 Frontend assets are conditionally loaded only when LiveKit is enabled and credentials
 are present (see `views/livekit_assets_templates.xml`).
@@ -92,4 +94,4 @@ From the workspace root (`/code`):
 - Build: `./build`
 - Start services: `docker-compose up -d`
 - Enter container: `./bash`
-- Run Odoo (install/update module): `./start -u discuss_livekit_integration`
+- Run Odoo (install/update module): `./start -u mail_livekit`

@@ -6,7 +6,7 @@
         <field name="user_id" ref="base.user_root" />
         <field
             name="model_id"
-            ref="discuss_livekit_integration.model_discuss_channel_livekit_session"
+            ref="mail_livekit.model_discuss_channel_livekit_session"
         />
         <field name="state">code</field>
         <field name="code">model._gc_inactive_sessions()</field>

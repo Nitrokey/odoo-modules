@@ -12,24 +12,24 @@
         <xpath expr="//t[@t-call='web.conditional_assets_tests']" position="after">
             <t
                 t-set="livekit_enabled"
-                t-value="request.env['ir.config_parameter'].sudo().get_param('discuss_livekit_integration.livekit_enabled', False)"
+                t-value="request.env['ir.config_parameter'].sudo().get_param('mail_livekit.livekit_enabled', False)"
             />
             <t
                 t-set="livekit_server_url"
-                t-value="request.env['ir.config_parameter'].sudo().get_param('discuss_livekit_integration.livekit_server_url')"
+                t-value="request.env['ir.config_parameter'].sudo().get_param('mail_livekit.livekit_server_url')"
             />
             <t
                 t-set="livekit_api_key"
-                t-value="request.env['ir.config_parameter'].sudo().get_param('discuss_livekit_integration.livekit_api_key')"
+                t-value="request.env['ir.config_parameter'].sudo().get_param('mail_livekit.livekit_api_key')"
             />
             <t
                 t-set="livekit_api_secret"
-                t-value="request.env['ir.config_parameter'].sudo().get_param('discuss_livekit_integration.livekit_api_secret')"
+                t-value="request.env['ir.config_parameter'].sudo().get_param('mail_livekit.livekit_api_secret')"
             />
             <t
                 t-if="(livekit_enabled in (True, 'True', 'true', '1', 1)) and livekit_server_url and livekit_api_key and livekit_api_secret"
             >
-                <t t-call-assets="discuss_livekit_integration.assets_livekit" />
+                <t t-call-assets="mail_livekit.assets_livekit" />
             </t>
         </xpath>
     </template>
@@ -42,24 +42,24 @@
         <xpath expr="//t[@t-call-assets='mail.assets_public']" position="after">
             <t
                 t-set="livekit_enabled"
-                t-value="request.env['ir.config_parameter'].sudo().get_param('discuss_livekit_integration.livekit_enabled', False)"
+                t-value="request.env['ir.config_parameter'].sudo().get_param('mail_livekit.livekit_enabled', False)"
             />
             <t
                 t-set="livekit_server_url"
-                t-value="request.env['ir.config_parameter'].sudo().get_param('discuss_livekit_integration.livekit_server_url')"
+                t-value="request.env['ir.config_parameter'].sudo().get_param('mail_livekit.livekit_server_url')"
             />
             <t
                 t-set="livekit_api_key"
-                t-value="request.env['ir.config_parameter'].sudo().get_param('discuss_livekit_integration.livekit_api_key')"
+                t-value="request.env['ir.config_parameter'].sudo().get_param('mail_livekit.livekit_api_key')"
             />
             <t
                 t-set="livekit_api_secret"
-                t-value="request.env['ir.config_parameter'].sudo().get_param('discuss_livekit_integration.livekit_api_secret')"
+                t-value="request.env['ir.config_parameter'].sudo().get_param('mail_livekit.livekit_api_secret')"
             />
             <t
                 t-if="(livekit_enabled in (True, 'True', 'true', '1', 1)) and livekit_server_url and livekit_api_key and livekit_api_secret"
             >
-                <t t-call-assets="discuss_livekit_integration.assets_livekit" />
+                <t t-call-assets="mail_livekit.assets_livekit" />
             </t>
         </xpath>
     </template>

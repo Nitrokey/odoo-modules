@@ -34,15 +34,13 @@ class LivekitController(http.Controller):
             raise NotFound()
 
         icp = request.env["ir.config_parameter"].sudo()
-        raw_enabled = icp.get_param("discuss_livekit_integration.livekit_enabled")
+        raw_enabled = icp.get_param("mail_livekit.livekit_enabled")
         livekit_enabled = str2bool(
             raw_enabled if isinstance(raw_enabled, str) else "False"
         )
-        raw_livekit_url = icp.get_param(
-            "discuss_livekit_integration.livekit_server_url"
-        )
-        raw_api_key = icp.get_param("discuss_livekit_integration.livekit_api_key")
-        raw_api_secret = icp.get_param("discuss_livekit_integration.livekit_api_secret")
+        raw_livekit_url = icp.get_param("mail_livekit.livekit_server_url")
+        raw_api_key = icp.get_param("mail_livekit.livekit_api_key")
+        raw_api_secret = icp.get_param("mail_livekit.livekit_api_secret")
 
         livekit_url: str = ""
         api_key: str = ""

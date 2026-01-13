@@ -10,7 +10,7 @@
                     class="app_settings_block"
                     data-string="LiveKit Integration"
                     string="LiveKit Integration"
-                    data-key="discuss_livekit_integration"
+                    data-key="mail_livekit"
                 >
                     <h2>LiveKit Video Conferencing</h2>
                     <div class="row mt16 o_settings_container">

@@ -217,7 +217,7 @@ const config = [{
 }, {
     // This addon intentionally has some higher-complexity integration code.
     // Keep the global bar strict, but avoid failing CI on warnings here.
-    files: ["discuss_livekit_integration/static/src/**/*.js"],
+    files: ["mail_livekit/static/src/**/*.js"],
     rules: {
         complexity: ["warn", 30],
     },
