@@ -61,16 +61,5 @@ This repo includes a small bundling setup that produces a browser-ready vendor b
 - Output: `static/lib/bundles/livekit_vendor_entry.js`
 - Build: `npm install` then `npm run bundle:livekit`
 
-To build the bundle manually:
-
-1. Open a terminal in the module's root:
-   `cd /code/repos/nitrokey-odoo-modules/mail_livekit`
-2. Run: `node tools/bundle_livekit.mjs`
-3. It will build the bundle and log: "Built LiveKit vendor bundle into [path]".
-4. If successful, the output file(s) will be in `static/lib/bundles/`.
-
-The addon asset bundle includes the generated vendor file, so production does not need
-Node and does not need a CDN.
-
 - If you upgrade LiveKit, upgrade both the client and processors together and test
   reconnect + screen share paths.
