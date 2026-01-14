@@ -1,7 +1,5 @@
 /** @odoo-module */
 
-import {getLivekitClient} from "./livekit_sdk_loader";
-
 export class LivekitMicrophoneManager {
     constructor(env, state, warn, log) {
         this.env = env;
@@ -30,7 +28,7 @@ export class LivekitMicrophoneManager {
     }
 
     async _createLocalMicrophoneTrack() {
-        const LivekitClient = getLivekitClient();
+        const LivekitClient = window.LivekitClient;
         if (!LivekitClient?.createLocalAudioTrack) {
             throw new Error("LiveKit client missing createLocalAudioTrack");
         }
@@ -71,7 +69,7 @@ export class LivekitMicrophoneManager {
         if (!this.state.room) {
             return;
         }
-        const LivekitClient = getLivekitClient();
+        const LivekitClient = window.LivekitClient;
         const micSource =
             LivekitClient?.Track?.Source?.Microphone ||
             LivekitClient?.TrackSource?.Microphone;

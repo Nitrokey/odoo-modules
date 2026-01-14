@@ -15,19 +15,10 @@
     ],
     "assets": {
         "mail_livekit.assets_livekit": [
-            "mail_livekit/static/lib/bundles/livekit_vendor_entry.js",
-            "mail_livekit/static/src/discuss/livekit/livekit_camera_manager.js",
-            "mail_livekit/static/src/discuss/livekit/livekit_microphone_manager.js",
-            "mail_livekit/static/src/discuss/livekit/livekit_cross_tab_coordinator.js",
-            "mail_livekit/static/src/discuss/livekit/livekit_presence_service.js",
-            "mail_livekit/static/src/discuss/livekit/livekit_room_manager.js",
-            "mail_livekit/static/src/discuss/livekit/livekit_screen_share_manager.js",
-            "mail_livekit/static/src/discuss/livekit/livekit_sdk_loader.js",
-            "mail_livekit/static/src/discuss/livekit/livekit_service.js",
-            "mail_livekit/static/src/discuss/livekit/livekit_utils.js",
-            "mail_livekit/static/src/discuss/call_participant_video_livekit_patch.js",
-            "mail_livekit/static/src/discuss/livekit_rtc_adapter_service.js",
-            "mail_livekit/static/src/discuss/rtc_livekit_patch.js",
+            "mail_livekit/static/lib/livekit/livekit-client.umd.js",
+            "mail_livekit/static/lib/livekit/livekit-track-processors.umd.min.js",
+            "mail_livekit/static/src/discuss/livekit/*.js",
+            "mail_livekit/static/src/discuss/*.js",
         ],
     },
     "external_dependencies": {

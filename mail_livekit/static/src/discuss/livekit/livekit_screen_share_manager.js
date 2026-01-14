@@ -5,12 +5,11 @@
  * Owns enable/disable logic and bridges local screen-share tracks into the native call UI.
  */
 export class LivekitScreenShareManager {
-    constructor(env, state, warn, publicationToType, getLivekitClient) {
+    constructor(env, state, warn, publicationToType) {
         this.env = env;
         this.state = state;
         this.warn = warn;
         this.publicationToType = publicationToType;
-        this.getLivekitClient = getLivekitClient;
     }
 
     async _enableScreenShareFallback(localParticipant, LivekitClient) {
@@ -102,7 +101,7 @@ export class LivekitScreenShareManager {
             return;
         }
 
-        const LivekitClient = this.getLivekitClient();
+        const LivekitClient = window.LivekitClient;
         this.state.screenShareEnabled = Boolean(enabled);
 
         // Prefer built-in helper if available.

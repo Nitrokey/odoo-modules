@@ -7,7 +7,6 @@ import {
     LIVEKIT_HOST_MSG,
     parseLivekitIdentity,
 } from "./livekit_utils";
-import {ensureSdkLoaded, getLivekitClient} from "./livekit_sdk_loader";
 import {LivekitCameraManager} from "./livekit_camera_manager";
 import {LivekitCrossTabCoordinator} from "./livekit_cross_tab_coordinator";
 import {LivekitMicrophoneManager} from "./livekit_microphone_manager";
@@ -223,8 +222,7 @@ export const livekitService = {
             env,
             state,
             warn,
-            publicationToType,
-            getLivekitClient
+            publicationToType
         );
 
         const crossTabCoordinator = new LivekitCrossTabCoordinator(state, warn);
@@ -491,15 +489,13 @@ export const livekitService = {
                     );
                 }
 
-                await ensureSdkLoaded();
-
                 // Register presence first so invites/indicators can react even if connect is slow.
                 // Only the host tab should register presence to avoid duplicate sessions
                 const presence = env.services["discuss.livekit_presence"];
                 await presence?.joinPresence(channel, {audio, camera});
 
                 const payload = await rpc("/livekit/token", {channel_id: channel.id});
-                const LivekitClient = getLivekitClient();
+                const LivekitClient = window.LivekitClient;
 
                 const room = new LivekitClient.Room();
                 clearTracks();

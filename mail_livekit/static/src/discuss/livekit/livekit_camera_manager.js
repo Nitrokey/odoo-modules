@@ -1,10 +1,5 @@
 /** @odoo-module */
 
-import {
-    ensureTrackProcessorsLoaded,
-    getLivekitClient,
-    getLivekitTrackProcessors,
-} from "./livekit_sdk_loader";
 import {BLUR_PROCESSOR_MAX_FPS} from "./livekit_utils";
 import {onChange} from "@mail/utils/common/misc";
 
@@ -271,8 +266,7 @@ export class LivekitCameraManager {
      * @returns {Promise<Object>} The background blur processor
      */
     async _createBackgroundBlurProcessor() {
-        await ensureTrackProcessorsLoaded();
-        const tp = getLivekitTrackProcessors();
+        const tp = window.LivekitTrackProcessors;
         if (!tp) {
             throw new Error("Track processors not available");
         }
@@ -297,7 +291,7 @@ export class LivekitCameraManager {
      * @returns {Promise<Object>} The created camera track
      */
     async _createLocalCameraTrack() {
-        const LivekitClient = getLivekitClient();
+        const LivekitClient = window.LivekitClient;
         if (!LivekitClient?.createLocalVideoTrack) {
             throw new Error("LiveKit client missing createLocalVideoTrack");
         }
@@ -423,66 +417,72 @@ export class LivekitCameraManager {
         }
     }
 
+    async _publishLocalCameraTrack() {
+        // Ensure any leftover camera tracks are removed first.
+        await this._unpublishLocalCameraPublications({stopTracks: false});
+
+        const track = await this._createLocalCameraTrack();
+        const LivekitClient = window.LivekitClient;
+        const cameraSource =
+            LivekitClient?.Track?.Source?.Camera || LivekitClient?.TrackSource?.Camera;
+        const publishOpts = cameraSource ? {source: cameraSource} : undefined;
+
+        await this.state.room.localParticipant.publishTrack(track, publishOpts);
+        this.localPublishedCameraTrack = track;
+        this.state.cameraEnabled = true;
+    }
+
+    async _handleCameraEnableError(error) {
+        this.warn("camera enable failed", error);
+        this.env.services.notification.add(
+            `Camera failed: ${error?.message || error}`,
+            {
+                type: "warning",
+            }
+        );
+
+        const store = this.env.services["mail.store"];
+        if (store?.settings?.useBlur) {
+            try {
+                store.settings.useBlur = false;
+            } catch (err) {
+                this.warn("Failed to disable blur setting:", err);
+            }
+        }
+
+        await this._cleanupLocalCamera();
+        this.state.cameraEnabled = false;
+    }
+
+    async _updateCameraPresence() {
+        const presence = this.env.services["discuss.livekit_presence"];
+        if (this.state.channel && this.state.isHost) {
+            if (typeof presence?.updatePresence === "function") {
+                await presence.updatePresence(this.state.channel, {
+                    is_camera_on: this.state.cameraEnabled,
+                });
+            }
+        }
+    }
+
     async setCameraEnabled(enabled) {
         return this.withCameraLock(async () => {
             if (!this.state.room) {
                 return;
             }
-            const shouldEnable = Boolean(enabled);
 
-            if (shouldEnable) {
+            if (enabled) {
                 try {
-                    // Ensure any leftover camera tracks are removed first.
-                    await this._unpublishLocalCameraPublications({stopTracks: false});
-                    const track = await this._createLocalCameraTrack();
-                    const LivekitClient = getLivekitClient();
-                    const cameraSource =
-                        LivekitClient?.Track?.Source?.Camera ||
-                        LivekitClient?.TrackSource?.Camera;
-                    const publishOpts = cameraSource
-                        ? {source: cameraSource}
-                        : undefined;
-                    await this.state.room.localParticipant.publishTrack(
-                        track,
-                        publishOpts
-                    );
-                    this.localPublishedCameraTrack = track;
-                    this.state.cameraEnabled = true;
+                    await this._publishLocalCameraTrack();
                 } catch (e) {
-                    this.warn("camera enable failed", e);
-                    this.env.services.notification.add(
-                        `Camera failed: ${e?.message || e}`,
-                        {
-                            type: "warning",
-                        }
-                    );
-                    // If blur was requested but failed to init, fall back gracefully.
-                    const store = this.env.services["mail.store"];
-                    if (store?.settings?.useBlur) {
-                        try {
-                            store.settings.useBlur = false;
-                        } catch (err) {
-                            this.warn("Failed to disable blur setting:", err);
-                        }
-                    }
-                    await this._cleanupLocalCamera();
-                    this.state.cameraEnabled = false;
+                    await this._handleCameraEnableError(e);
                 }
             } else {
                 await this._cleanupLocalCamera();
                 this.state.cameraEnabled = false;
             }
 
-            const presence = this.env.services["discuss.livekit_presence"];
-            // Only host should update presence
-            if (this.state.channel && this.state.isHost) {
-                if (typeof presence?.updatePresence === "function") {
-                    await presence.updatePresence(this.state.channel, {
-                        is_camera_on: this.state.cameraEnabled,
-                    });
-                }
-            }
-
+            await this._updateCameraPresence();
             await this.refreshLocalCameraBridge();
         });
     }
