@@ -40,18 +40,18 @@ class DeliveryCarrier(models.Model):
     dhl_account_no = fields.Char(
         string="DHL Account Number",
         help="The Account(EKP) number sent to you by DHL and it must "
-             "be maximum 10 digit allow.",
+        "be maximum 10 digit allow.",
     )
     dhl_procedure_no = fields.Char(
         string="DHL Procedure Number",
         help="The Procedure refers to DHL products that are used for "
-             "shipping and max length is 2 digit.",
+        "shipping and max length is 2 digit.",
     )
     dhl_participation_no = fields.Char(
         string="DHL Participation Number",
         help="Participation number referred to as Partner ID in the web service."
-             "The participation is 2 numerical digits from 00 to 99 or "
-             "alphanumerical digits from AA to ZZ.",
+        "The participation is 2 numerical digits from 00 to 99 or "
+        "alphanumerical digits from AA to ZZ.",
     )
     dhl_premium = fields.Boolean()
 
@@ -128,7 +128,9 @@ class DeliveryCarrier(models.Model):
                     find_sale_line_id = order_lines.filtered_domain(domain)[:1]
 
                 if not find_sale_line_id:
-                    raise ValidationError("Proper data of sale order lines not found.")
+                    raise ValidationError(
+                        _("Proper data of sale order lines not found.")
+                    )
 
                 single_unit_price = (
                     find_sale_line_id.price_subtotal / find_sale_line_id.product_uom_qty
@@ -178,7 +180,7 @@ class DeliveryCarrier(models.Model):
 
         res = [field for field in required_fields if not address_id[field]]
         if res:
-            return "Missing Values For Address :\n %s" % ", ".join(res).replace( # noqa: UP031
+            return "Missing Values For Address :\n %s" % ", ".join(res).replace(  # noqa: UP031
                 "_id", ""
             )
 
@@ -211,15 +213,15 @@ class DeliveryCarrier(models.Model):
             return {
                 "success": False,
                 "price": 0.0,
-                "error_message": "%s %s  %s " # noqa: UP031
+                "error_message": "%s %s  %s "  # noqa: UP031
                 % (
-                    "Shipper Address : %s \n" % (shipper_address_error) # noqa: UP031
+                    "Shipper Address : %s \n" % (shipper_address_error)  # noqa: UP031
                     if shipper_address_error
                     else "",
-                    "Recipient Address : %s \n" % (recipient_address_error) # noqa: UP031
+                    "Recipient Address : %s \n" % (recipient_address_error)  # noqa: UP031
                     if recipient_address_error
                     else "",
-                    "product weight is not available : %s" % (product_name) # noqa: UP031
+                    "product weight is not available : %s" % (product_name)  # noqa: UP031
                     if product_name
                     else "",
                 ),
@@ -382,7 +384,7 @@ class DeliveryCarrier(models.Model):
 
         for package in packages:
             package_type = package_types.filtered(
-                lambda x: x.shipper_package_code == package.packaging_type # noqa: B023
+                lambda x: x.shipper_package_code == package.packaging_type  # noqa: B023
             )
             if package.weight > package_type.max_weight:
                 raise ValidationError(
@@ -465,10 +467,14 @@ class DeliveryCarrier(models.Model):
     def dhl_parcel_de_provider_create_shipment(
         self, request_type, api_url, request_data, header
     ):
-        _logger.debug("Shipment Request API URL:::: %s" % api_url) # noqa:UP031
-        _logger.debug("Shipment Request Data:::: %s" % request_data) # noqa:UP031
+        _logger.debug("Shipment Request API URL:::: %s" % api_url)  # noqa:UP031
+        _logger.debug("Shipment Request Data:::: %s" % request_data)  # noqa:UP031
         response_data = requests.request(
-            method=request_type, url=api_url, headers=header, data=request_data
+            method=request_type,
+            url=api_url,
+            headers=header,
+            data=request_data,
+            timeout=30,
         )
         if response_data.status_code in [200, 207]:
             response_data = response_data.json()
@@ -495,13 +501,14 @@ class DeliveryCarrier(models.Model):
             or recipient_address_error
             or not picking.shipping_weight
         ):
+            # pylint: disable=C8107
             raise ValidationError(
-                "%s %s  %s " # noqa:UP031
+                "%s %s  %s "  # noqa:UP031
                 % (
-                    "Shipper Address : %s \n" % (shipper_address_error) # noqa:UP031
+                    "Shipper Address : %s \n" % (shipper_address_error)  # noqa:UP031
                     if shipper_address_error
                     else "",
-                    "Recipient Address : %s \n" % (recipient_address_error) # noqa:UP031
+                    "Recipient Address : %s \n" % (recipient_address_error)  # noqa:UP031
                     if recipient_address_error
                     else "",
                     "Shipping weight is missing!"
@@ -523,7 +530,9 @@ class DeliveryCarrier(models.Model):
                 "Content-Type": "application/json",
                 "Authorization": authrization_data,
             }
-            api_url = f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders" # noqa:E501
+            api_url = (
+                f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders"  # noqa:E501
+            )
             request_type = "POST"
             (
                 response_status,
@@ -549,7 +558,7 @@ class DeliveryCarrier(models.Model):
                         picking.message_post(
                             body=message,
                             attachments=[
-                                ("Label-%s.pdf" % tracking_number, binary_data) # noqa:UP031
+                                ("Label-%s.pdf" % tracking_number, binary_data)  # noqa:UP031
                             ],
                         )
                         final_tracking_number.append(tracking_number)
@@ -563,10 +572,11 @@ class DeliveryCarrier(models.Model):
                             picking.message_post(
                                 body=message,
                                 attachments=[
-                                    ("CustomsDoc-%s.pdf" % tracking_number, binary_data) # noqa:UP031
+                                    ("CustomsDoc-%s.pdf" % tracking_number, binary_data)  # noqa:UP031
                                 ],
                             )
                     else:
+                        # pylint: disable=C8107
                         raise ValidationError(response_data)
                 shipping_data = {
                     "exact_price": 0.0,
@@ -587,7 +597,7 @@ class DeliveryCarrier(models.Model):
         encode_data = base64.b64encode(data.encode("utf-8"))
         authrization_data = "Basic {}".format(encode_data.decode("utf-8"))
         try:
-            api_url = f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?profile=STANDARD_GRUPPENPROFIL" # noqa:E501
+            api_url = f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?profile=STANDARD_GRUPPENPROFIL"  # noqa:E501
             awb_numbers = picking.carrier_tracking_ref.split(",")
             for shipment in awb_numbers:
                 api_url += f"&shipment={shipment}"
@@ -620,4 +630,4 @@ class DeliveryCarrier(models.Model):
             for number in tracking_no:
                 return f"{self.company_id.dhl_tracking_url}{number}"
         else:
-            raise ValidationError("Please Set Tracking URL In Company")
+            raise ValidationError(_("Please Set Tracking URL In Company"))

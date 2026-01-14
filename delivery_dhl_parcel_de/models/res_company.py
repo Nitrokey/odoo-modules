@@ -17,14 +17,14 @@ class ResCompany(models.Model):
         "DHL UserId",
         copy=False,
         help="When use the sandbox account developer id use as the userId."
-             "When use the live account application id use as the userId.",
+        "When use the live account application id use as the userId.",
     )
     dhl_password = fields.Char(
         "DHL Password",
         copy=False,
         help="When use the sandbox account developer portal password use "
-             "to as the password.When use the live account application "
-             "token use to as the password.",
+        "to as the password.When use the live account application "
+        "token use to as the password.",
     )
     dhl_api_key = fields.Char(
         "DHL API Key",
