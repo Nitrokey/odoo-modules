@@ -3,7 +3,7 @@ from odoo.tools.float_utils import float_compare
 
 
 class ChooseDeliveryPackage(models.TransientModel):
-    _inherit = 'choose.delivery.package'
+    _inherit = "choose.delivery.package"
 
     # Insurance is now calculated dynamically at shipping time
     # No need for stored fields or complex default_get logic
@@ -16,12 +16,21 @@ def action_put_in_pack(self):
     picking_move_lines = self.picking_id.move_line_ids
     move_line_ids = picking_move_lines.filtered(
         lambda ml: float_compare(
-            ml.quantity, 0.0, precision_rounding=ml.product_uom_id.rounding) > 0 and not ml.result_package_id
+            ml.quantity, 0.0, precision_rounding=ml.product_uom_id.rounding
+        )
+        > 0
+        and not ml.result_package_id
     )
     if not move_line_ids:
         move_line_ids = picking_move_lines.filtered(
-            lambda ml: float_compare(ml.product_uom_qty, 0.0, precision_rounding=ml.product_uom_id.rounding) > 0
-                       and float_compare(ml.quantity, 0.0, precision_rounding=ml.product_uom_id.rounding) == 0
+            lambda ml: float_compare(
+                ml.product_uom_qty, 0.0, precision_rounding=ml.product_uom_id.rounding
+            )
+            > 0
+            and float_compare(
+                ml.quantity, 0.0, precision_rounding=ml.product_uom_id.rounding
+            )
+            == 0
         )
 
     delivery_package = self.picking_id._put_in_pack(move_line_ids)
