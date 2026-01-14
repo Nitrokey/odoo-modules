@@ -155,6 +155,7 @@ const config = [{
         strict: ["error", "function"],
         "use-isnan": "error",
 
+        "jsdoc/check-tag-names": "warn",
         "jsdoc/check-types": "warn",
         "jsdoc/require-param-description": "off",
         "jsdoc/require-return": "off",
