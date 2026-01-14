@@ -1,6 +1,6 @@
-=============================================
+==============================================
 DHL Parcel (Post & Parcel Germany) Integration
-=============================================
+==============================================
 
 This module provides integration with DHL Parcel Germany (Post & Parcel Germany) for Odoo.
 
