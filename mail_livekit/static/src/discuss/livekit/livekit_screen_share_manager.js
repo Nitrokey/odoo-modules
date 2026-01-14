@@ -12,26 +12,40 @@ export class LivekitScreenShareManager {
         this.publicationToType = publicationToType;
     }
 
-    async _enableScreenShareFallback(localParticipant, LivekitClient) {
-        // Fallback: create a screen share track and publish it.
-        const createFn =
+    _getScreenShareCreateFn(LivekitClient) {
+        return (
             LivekitClient?.createLocalScreenTracks ||
             LivekitClient?.createLocalTracks ||
-            null;
+            null
+        );
+    }
+
+    _getScreenShareSource(LivekitClient) {
+        return (
+            LivekitClient?.Track?.Source?.ScreenShare ||
+            LivekitClient?.TrackSource?.ScreenShare ||
+            "screen_share"
+        );
+    }
+
+    async _publishScreenShareVideoTracks(localParticipant, tracks, source) {
+        for (const t of tracks || []) {
+            if (t?.kind !== "video") {
+                continue;
+            }
+            await localParticipant.publishTrack(t, {source});
+        }
+    }
+
+    async _enableScreenShareFallback(localParticipant, LivekitClient) {
+        const createFn = this._getScreenShareCreateFn(LivekitClient);
         if (typeof createFn !== "function") {
             throw new Error("LiveKit screen share not supported by this SDK build");
         }
+
         const tracks = await createFn({audio: false, video: true, screen: true});
-        for (const t of tracks || []) {
-            if (t?.kind === "video") {
-                await localParticipant.publishTrack(t, {
-                    source:
-                        LivekitClient?.Track?.Source?.ScreenShare ||
-                        LivekitClient?.TrackSource?.ScreenShare ||
-                        "screen_share",
-                });
-            }
-        }
+        const source = this._getScreenShareSource(LivekitClient);
+        await this._publishScreenShareVideoTracks(localParticipant, tracks, source);
     }
 
     async _disableScreenShareFallback(localParticipant) {

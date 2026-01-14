@@ -453,127 +453,143 @@ export const livekitService = {
             }
         }
 
+        function _getPresenceService() {
+            return env.services["discuss.livekit_presence"];
+        }
+
+        async function _disconnectIfConnected() {
+            if (!state.connected) {
+                return;
+            }
+            log("Already connected; leaving first", {channelId: state.channel?.id});
+            await leave();
+        }
+
+        async function _takeOverIfHostActive(channel) {
+            const hostActive = await crossTabCoordinator.probeForActiveHost(channel.id);
+            if (!hostActive) {
+                return;
+            }
+
+            log("Active host detected in another tab; taking over as new host", {
+                channelId: channel.id,
+            });
+
+            crossTabCoordinator.postBroadcast({
+                type: LIVEKIT_HOST_MSG.CLOSE,
+                channelId: channel.id,
+                reason: "takeover",
+            });
+
+            await new Promise((resolve) => setTimeout(resolve, HOST_TAKEOVER_DELAY_MS));
+        }
+
+        async function _createAndConnectRoom(channel, payload) {
+            const LivekitClient = window.LivekitClient;
+
+            const room = new LivekitClient.Room();
+            clearTracks();
+
+            roomManager.setupRoomEventHandlers(room, channel, LivekitClient);
+
+            log("room.connect()", {url: payload?.livekit_url});
+            await room.connect(payload.livekit_url, payload.token);
+
+            try {
+                await room.startAudio();
+            } catch {
+                warn("room.startAudio() failed (autoplay policy?)");
+            }
+
+            return room;
+        }
+
+        function _markConnectedAndClaimHost(room, channel, presence) {
+            state.room = room;
+            state.connected = true;
+            updateTalkingFromRoom(room, channel);
+
+            state.isHost = true;
+            state.hostedChannelId = channel.id;
+            state.hostedSessionId = presence?.state?.selfSessionIdByChannelId?.get(
+                channel.id
+            );
+
+            crossTabCoordinator.sendHostSnapshot();
+            crossTabCoordinator.startHostPing();
+        }
+
+        async function _initMicAndPresenceAfterJoin(channel, presence, audio) {
+            try {
+                await microphoneManager.setMicrophoneEnabled(Boolean(audio));
+            } catch (e) {
+                warn("microphone init failed; joining muted", e);
+                env.services.notification.add(`Microphone failed: ${e?.message || e}`, {
+                    type: "warning",
+                });
+                try {
+                    await microphoneManager.setMicrophoneEnabled(false);
+                } catch {
+                    // Ignore
+                }
+            }
+
+            state.cameraEnabled = false;
+
+            await presence?.updatePresence(channel, {
+                is_muted: !state.micEnabled,
+                is_camera_on: state.cameraEnabled,
+            });
+        }
+
+        async function _enableCameraIfRequested(camera) {
+            if (!camera) {
+                return;
+            }
+            await cameraManager.setCameraEnabled(true);
+        }
+
+        function _ensurePageHideBeacon() {
+            pageHideCleanup =
+                pageHideCleanup ||
+                (() => {
+                    try {
+                        const channelId = state.channel?.id;
+                        if (!channelId) {
+                            return;
+                        }
+                        _sendJsonRpcBeacon("/mail/livekit/channel/leave_call", {
+                            channel_id: channelId,
+                        });
+                    } catch {
+                        // Ignore
+                    }
+                });
+            browser.addEventListener("pagehide", pageHideCleanup);
+        }
+
         async function join(channel, {audio = true, camera = false} = {}) {
             state.connecting = true;
             try {
-                if (state.connected) {
-                    log("Already connected; leaving first", {
-                        channelId: state.channel?.id,
-                    });
-                    await leave();
-                }
+                await _disconnectIfConnected();
 
                 // Set early so media events can always map to a channel.
                 state.channel = channel;
 
-                // Check for an active host tab
-                const hostActive = await crossTabCoordinator.probeForActiveHost(
-                    channel.id
-                );
-                if (hostActive) {
-                    log(
-                        "Active host detected in another tab; taking over as new host",
-                        {
-                            channelId: channel.id,
-                        }
-                    );
-                    // Broadcast takeover message to force old host to disconnect
-                    crossTabCoordinator.postBroadcast({
-                        type: LIVEKIT_HOST_MSG.CLOSE,
-                        channelId: channel.id,
-                        reason: "takeover",
-                    });
-                    // Small delay to let old host process the close message
-                    await new Promise((resolve) =>
-                        setTimeout(resolve, HOST_TAKEOVER_DELAY_MS)
-                    );
-                }
+                await _takeOverIfHostActive(channel);
 
-                // Register presence first so invites/indicators can react even if connect is slow.
-                // Only the host tab should register presence to avoid duplicate sessions
-                const presence = env.services["discuss.livekit_presence"];
+                const presence = _getPresenceService();
                 await presence?.joinPresence(channel, {audio, camera});
 
                 const payload = await rpc("/livekit/token", {channel_id: channel.id});
-                const LivekitClient = window.LivekitClient;
+                const room = await _createAndConnectRoom(channel, payload);
 
-                const room = new LivekitClient.Room();
-                clearTracks();
+                _markConnectedAndClaimHost(room, channel, presence);
 
-                // Setup all room event handlers
-                roomManager.setupRoomEventHandlers(room, channel, LivekitClient);
+                await _initMicAndPresenceAfterJoin(channel, presence, audio);
+                await _enableCameraIfRequested(camera);
 
-                log("room.connect()", {url: payload?.livekit_url});
-                await room.connect(payload.livekit_url, payload.token);
-
-                // Ensures remote audio can start playing in browsers with stricter autoplay policies.
-                // This should run in the user gesture flow (call button click).
-                try {
-                    await room.startAudio();
-                } catch {
-                    warn("room.startAudio() failed (autoplay policy?)");
-                }
-
-                state.room = room;
-                state.connected = true;
-                updateTalkingFromRoom(room, channel);
-
-                // Claim host for cross-tab coordination
-                state.isHost = true;
-                state.hostedChannelId = channel.id;
-                const selfSessionId = presence?.state?.selfSessionIdByChannelId?.get(
-                    channel.id
-                );
-                state.hostedSessionId = selfSessionId;
-
-                // Broadcast host claim to other tabs
-                crossTabCoordinator.sendHostSnapshot();
-                crossTabCoordinator.startHostPing();
-
-                try {
-                    await microphoneManager.setMicrophoneEnabled(Boolean(audio));
-                } catch (e) {
-                    warn("microphone init failed; joining muted", e);
-                    env.services.notification.add(
-                        `Microphone failed: ${e?.message || e}`,
-                        {type: "warning"}
-                    );
-                    try {
-                        await microphoneManager.setMicrophoneEnabled(false);
-                    } catch {
-                        // Ignore
-                    }
-                }
-                state.cameraEnabled = false;
-
-                // Only host updates presence (we just claimed host above)
-                await presence?.updatePresence(channel, {
-                    is_muted: !state.micEnabled,
-                    is_camera_on: state.cameraEnabled,
-                });
-
-                // Publish camera after connect, using our pipeline (blur/no-blur).
-                if (camera) {
-                    await cameraManager.setCameraEnabled(true);
-                }
-
-                // Best-effort cleanup on tab close / navigation.
-                pageHideCleanup =
-                    pageHideCleanup ||
-                    (() => {
-                        try {
-                            const channelId = state.channel?.id;
-                            if (!channelId) {
-                                return;
-                            }
-                            _sendJsonRpcBeacon("/mail/livekit/channel/leave_call", {
-                                channel_id: channelId,
-                            });
-                        } catch {
-                            // Ignore
-                        }
-                    });
-                browser.addEventListener("pagehide", pageHideCleanup);
+                _ensurePageHideBeacon();
                 return true;
             } catch (error) {
                 warn("join() failed", error);
