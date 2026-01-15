@@ -27,7 +27,7 @@ Testing
 For testing, you can use the following sandbox credentials (mentioned in official documentation):
 * Username (UserID): user-valid
 * Password: SandboxPasswort2023!
-* API Key: FENtYydXijyFIG8a8aQIioOVhHgRaIYS
+* API Key: you should generate one by creating Application via DHL developer portal
 
 For shipment to generate correctly and avoid incorrect billing number error, you can use the following delivery method configuration:
 * Product name: "V53WPAK-DHL Paket International"

@@ -11,13 +11,14 @@
     "depends": [
         "stock_delivery",
         "base_iso3166",
+        "stock_picking_declared_value",
     ],
     "data": [
         "view/res_company.xml",
         "view/delivery_carrier.xml",
     ],
-    "author": "Vraja Technologies, initOS",
-    "website": "http://www.vrajatechnologies.com",
-    "maintainer": "initOS",
+    "author": "Vraja Technologies, initOS, Nitrokey",
+    "website": "https://www.nitrokey.com",
+    "maintainer": ["initOS", "Nitrokey"],
     "installable": True,
 }
