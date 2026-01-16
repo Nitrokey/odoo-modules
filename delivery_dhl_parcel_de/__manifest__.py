@@ -14,6 +14,7 @@
         "stock_picking_declared_value",
     ],
     "data": [
+        "data/ir_cron.xml",
         "views/res_company.xml",
         "views/delivery_carrier.xml",
         "views/stock_picking.xml",

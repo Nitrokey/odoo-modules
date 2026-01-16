@@ -71,7 +71,9 @@ class ResCompany(models.Model):
         }
 
         try:
-            response = requests.request("POST", url, headers=headers, data=payload, timeout=30)
+            response = requests.request(
+                "POST", url, headers=headers, data=payload, timeout=30
+            )
             if response.status_code in [200, 201]:
                 response_data = response.json()
                 if response_data["access_token"]:

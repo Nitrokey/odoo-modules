@@ -30,6 +30,11 @@
                             password="True"
                             required="use_dhl_parcel_de_shipping_provider == True"
                         />
+                        <field
+                            name="dhl_api_secret"
+                            password="True"
+                            required="use_dhl_parcel_de_shipping_provider != False"
+                        />
                         <field name="dhl_tracking_url" />
                         <button
                             name="dhl_parcel_de_get_access_token"

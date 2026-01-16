@@ -404,7 +404,7 @@ class DeliveryCarrier(models.Model):
             package_type = package_types.filtered(
                 lambda x: x.shipper_package_code == package.packaging_type  # noqa: B023
             )
-            if package.weight > package_type.max_weight:
+            if package_type and package.weight > package_type[:1].max_weight:
                 raise ValidationError(
                     _(
                         "The weight of your package is higher than the maximum "
