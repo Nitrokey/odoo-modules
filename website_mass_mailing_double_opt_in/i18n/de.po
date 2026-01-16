@@ -1,0 +1,61 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* website_mass_mailing_double_opt_in
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-05-18 12:34+0000\n"
+"PO-Revision-Date: 2022-05-18 12:34+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: website_mass_mailing_double_opt_in
+#: model:ir.model.fields,field_description:website_mass_mailing_double_opt_in.field_mailing_subscription__access_token
+msgid "Access Token"
+msgstr "Zugriffs-Token"
+
+#. module: website_mass_mailing_double_opt_in
+#: model:mail.template,subject:website_mass_mailing_double_opt_in.newsletter_confirmation_request_template
+msgid "Confirm your newsletter subscription"
+msgstr "Bestätigen Sie Ihr Newsletter Abonnement"
+
+#. module: website_mass_mailing_double_opt_in
+#: model:res.groups,name:website_mass_mailing_double_opt_in.group_mass_mailing_editor
+msgid "Editor"
+msgstr ""
+
+#. module: website_mass_mailing_double_opt_in
+#: model:ir.model.fields,field_description:website_mass_mailing_double_opt_in.field_mailing_subscription__mail_language
+msgid "Mail Language"
+msgstr ""
+
+#. module: website_mass_mailing_double_opt_in
+#: model:ir.model,name:website_mass_mailing_double_opt_in.model_mailing_subscription
+msgid "Mass Mailing Subscription Information"
+msgstr "Informationen zum Massenmailing-Abonnement"
+
+#. module: website_mass_mailing_double_opt_in
+#: model:mail.template,name:website_mass_mailing_double_opt_in.newsletter_confirmation_success_template
+msgid "Newsletter Subscribed"
+msgstr "Newsletter abonniert"
+
+#. module: website_mass_mailing_double_opt_in
+#: model:mail.template,name:website_mass_mailing_double_opt_in.newsletter_confirmation_request_template
+msgid "Newsletter Subscription"
+msgstr "Newsletter-Abonnement"
+
+#. module: website_mass_mailing_double_opt_in
+#: model_terms:ir.ui.view,arch_db:website_mass_mailing_double_opt_in.invalid_subscription_confirmation_template
+msgid "This confirmation link is invalid."
+msgstr "Dieser Bestätigungslink ist ungültig"
+
+#. module: website_mass_mailing_double_opt_in
+#: model:mail.template,subject:website_mass_mailing_double_opt_in.newsletter_confirmation_success_template
+msgid "You Have Subscribed to the Newsletter"
+msgstr "Sie haben den Newsletter abonniert"

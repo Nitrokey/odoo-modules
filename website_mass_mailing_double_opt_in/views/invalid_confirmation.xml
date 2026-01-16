@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Invalid subscription Website View -->
+    <template id="invalid_subscription_confirmation_template">
+        <t t-call="website.layout">
+            <div class="container">
+                <span style="text-align: center;">
+                    <h2 style="color: red;">This confirmation link is invalid.</h2>
+                </span>
+            </div>
+        </t>
+    </template>
+</odoo>
