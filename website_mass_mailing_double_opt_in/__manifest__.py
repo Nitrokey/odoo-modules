@@ -29,7 +29,7 @@
     "assets": {
         "web.assets_tests": [
             "website_mass_mailing_double_opt_in/static/tests/**/*",
-            'website_mass_mailing_double_opt_in/static/tests/tours/**/*',
+            "website_mass_mailing_double_opt_in/static/tests/tours/**/*",
         ],
     },
     "installable": True,

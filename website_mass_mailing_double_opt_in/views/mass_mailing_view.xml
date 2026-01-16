@@ -33,7 +33,7 @@
         </field>
     </record>
 
-   <menuitem
+    <menuitem
         name="Mailings"
         id="mass_mailing.mass_mailing_menu"
         parent="mass_mailing.mass_mailing_menu_root"
