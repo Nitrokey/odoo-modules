@@ -14,8 +14,9 @@
         "stock_picking_declared_value",
     ],
     "data": [
-        "view/res_company.xml",
-        "view/delivery_carrier.xml",
+        "views/res_company.xml",
+        "views/delivery_carrier.xml",
+        "views/stock_picking.xml",
     ],
     "author": "Vraja Technologies, initOS, Nitrokey",
     "website": "https://www.nitrokey.com",

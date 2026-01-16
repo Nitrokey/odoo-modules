@@ -31,6 +31,18 @@
                             required="use_dhl_parcel_de_shipping_provider == True"
                         />
                         <field name="dhl_tracking_url" />
+                        <button
+                            name="dhl_parcel_de_get_access_token"
+                            type="object"
+                            string="Generate Authentication Token"
+                            class="fa fa-arrow-right oe_link"
+                        />
+                    </group>
+                    <group>
+                        <field
+                            name="dhl_access_token"
+                            invisible="use_dhl_parcel_de_shipping_provider != True"
+                        />
                     </group>
                 </page>
             </xpath>

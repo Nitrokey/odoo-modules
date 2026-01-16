@@ -45,12 +45,29 @@
                                 name="dhl_participation_no"
                                 required="delivery_type == 'dhl_parcel_de_provider'"
                             />
-                            <field name="dhl_export_type" />
+                        </group>
+                        <group>
+                            <field name="dhl_bulky_goods" />
+                            <field name="dhl_premium" />
+                            <field
+                                name="dhl_endorsement"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                            <field name="dhl_document_format" required="1" />
+                            <field
+                                name="dhl_export_type"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
                             <field
                                 name="dhl_export_type_description"
-                                string="Description"
                                 required="dhl_export_type == 'OTHER'"
                                 invisible="dhl_export_type != 'OTHER'"
+                            />
+                            <field name="is_return_shipment" />
+                            <field
+                                name="dhl_return_receiver_id"
+                                required="is_return_shipment"
+                                invisible="not is_return_shipment"
                             />
                         </group>
                     </group>

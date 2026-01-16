@@ -1,4 +1,3 @@
-import base64
 import binascii
 import json
 import logging
@@ -53,8 +52,14 @@ class DeliveryCarrier(models.Model):
         "The participation is 2 numerical digits from 00 to 99 or "
         "alphanumerical digits from AA to ZZ.",
     )
-    dhl_premium = fields.Boolean()
-
+    dhl_bulky_goods = fields.Boolean(string="Bulky Goods", copy=False)
+    dhl_premium = fields.Boolean(string="Premium", copy=False)
+    dhl_document_format = fields.Selection(
+        [("PDF", "PDF"), ("ZPL2", "ZPL2")],
+        string="Label Format",
+        help="Label Format",
+        default="PDF",
+    )
     # international
     dhl_export_type = fields.Selection(
         [
@@ -69,7 +74,17 @@ class DeliveryCarrier(models.Model):
         help="This contains the category of goods contained in parcel.",
     )
     dhl_export_type_description = fields.Char(
-        help="Detailed description for OTHER goods."
+        string="Description", help="Detailed description for OTHER goods."
+    )
+    dhl_endorsement = fields.Selection(
+        [("RETURN", "Return"), ("ABANDON", "Abandon")],
+        string="Endorsement",
+        help="Endorsement",
+        default="RETURN",
+    )
+    is_return_shipment = fields.Boolean(string="Is Return Order", copy=False)
+    dhl_return_receiver_id = fields.Char(
+        string="Receiver ID", help="The receiver id of the return shipment."
     )
 
     def _calculate_package_insurance(self, picking, package_weight, total_weight):
@@ -174,7 +189,7 @@ class DeliveryCarrier(models.Model):
         """
         check the address of Shipper and Recipient
         param : address_id: res.partner,
-                required_fields: ['city', 'country_id', 'street']
+                required_fields: ['zip', 'city', 'country_id', 'street']
         return: missing address message
         """
 
@@ -344,7 +359,10 @@ class DeliveryCarrier(models.Model):
 
         if self.dhl_premium:
             services["premium"] = True
-
+        if self.dhl_bulky_goods:
+            services["bulkyGoods"] = True
+        if self.dhl_endorsement:
+            services["endorsement"] = True
         if services:
             package_data["services"] = services
 
@@ -476,7 +494,7 @@ class DeliveryCarrier(models.Model):
             data=request_data,
             timeout=30,
         )
-        if response_data.status_code in [200, 207]:
+        if response_data.status_code in [200, 201, 207]:
             response_data = response_data.json()
             _logger.debug(f">>> Response Data {response_data}")
             return True, response_data
@@ -491,10 +509,10 @@ class DeliveryCarrier(models.Model):
         )
         recipient_address_id = picking.partner_id
         shipper_address_error = self.check_address_details(
-            shipper_address_id, ["city", "country_id", "street"]
+            shipper_address_id, ["zip", "city", "country_id", "street"]
         )
         recipient_address_error = self.check_address_details(
-            recipient_address_id, ["city", "country_id", "street"]
+            recipient_address_id, ["zip", "city", "country_id", "street"]
         )
         if (
             shipper_address_error
@@ -518,21 +536,13 @@ class DeliveryCarrier(models.Model):
             )
         packages = self.dhl_parcel_de_provider_packages(picking)
         request_data = json.dumps({"shipments": packages})
-        api_userid = self.company_id.dhl_userid
-        api_password = self.company_id.dhl_password
-        data = f"{api_userid}:{api_password}"
-        encode_data = base64.b64encode(data.encode("utf-8"))
-        authrization_data = "Basic {}".format(encode_data.decode("utf-8"))
         try:
             header = {
-                "dhl-api-key": self.company_id.dhl_api_key,
                 "accept": "application/json",
                 "Content-Type": "application/json",
-                "Authorization": authrization_data,
+                "Authorization": f"Bearer {self.company_id.dhl_access_token}",
             }
-            api_url = (
-                f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders"  # noqa:E501
-            )
+            api_url = f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?docFormat={self.dhl_document_format}"  # noqa: E501
             request_type = "POST"
             (
                 response_status,
@@ -547,10 +557,15 @@ class DeliveryCarrier(models.Model):
                 and response_data.get("status").get("statusCode") in [200, 207]
             ):
                 for package_id in response_data.get("items"):
-                    if package_id.get("sstatus").get("status") in [200, 207]:
+                    if package_id.get("sstatus").get("status") != 400:
                         tracking_number = package_id.get("shipmentNo")
-                        label_data = package_id.get("label").get("b64")
-                        binary_data = binascii.a2b_base64(str(label_data))
+                        label_data = (
+                            package_id.get("label").get("b64")
+                            if self.dhl_document_format == "PDF"
+                            else package_id.get("label").get("zpl2")
+                        )
+                        if self.dhl_document_format == "PDF":
+                            label_data = binascii.a2b_base64(label_data)
                         message = _(
                             "Label created!<br/> <b>Shipping  Number : </b>%s<br/>",
                             tracking_number,
@@ -558,7 +573,14 @@ class DeliveryCarrier(models.Model):
                         picking.message_post(
                             body=message,
                             attachments=[
-                                ("Label-%s.pdf" % tracking_number, binary_data)  # noqa:UP031
+                                (
+                                    "Shipping-Label-%s.%s"  # noqa:UP031
+                                    % (
+                                        tracking_number,
+                                        self.dhl_document_format[:3].lower(),
+                                    ),
+                                    label_data,
+                                )  # noqa:UP031
                             ],
                         )
                         final_tracking_number.append(tracking_number)
@@ -591,22 +613,16 @@ class DeliveryCarrier(models.Model):
 
     def dhl_parcel_de_provider_cancel_shipment(self, picking):
         company_id = self.company_id
-        api_userid = self.company_id.dhl_userid
-        api_password = self.company_id.dhl_password
-        data = f"{api_userid}:{api_password}"
-        encode_data = base64.b64encode(data.encode("utf-8"))
-        authrization_data = "Basic {}".format(encode_data.decode("utf-8"))
         try:
-            api_url = f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?profile=STANDARD_GRUPPENPROFIL"  # noqa:E501
+            api_url = f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?profile=STANDARD_GRUPPENPROFIL"  # noqa: E501
             awb_numbers = picking.carrier_tracking_ref.split(",")
             for shipment in awb_numbers:
                 api_url += f"&shipment={shipment}"
             request_data = {}
             header = {
-                "dhl-api-key": company_id.dhl_api_key,
                 "accept": "application/json",
                 "Content-Type": "application/json",
-                "Authorization": authrization_data,
+                "Authorization": f"Bearer {company_id.dhl_access_token}",
             }
             request_type = "DELETE"
             (
