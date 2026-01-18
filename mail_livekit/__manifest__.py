@@ -19,6 +19,7 @@
             "mail_livekit/static/lib/livekit/livekit-track-processors.umd.min.js",
             "mail_livekit/static/src/discuss/livekit/*.js",
             "mail_livekit/static/src/discuss/*.js",
+            "mail_livekit/static/src/discuss/call_settings_livekit_patch.xml",
         ],
     },
     "external_dependencies": {

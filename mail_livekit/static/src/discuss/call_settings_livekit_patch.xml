@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t
+        t-name="discuss.CallSettings.content"
+        t-inherit="discuss.CallSettings.content"
+        t-inherit-mode="extension"
+    >
+        <!-- Hide edge blur intensity control when using LiveKit -->
+        <xpath expr="//div[label[@title='Edge blur intensity']]" position="attributes">
+            <attribute name="t-if">False</attribute>
+        </xpath>
+
+        <!-- Make background blur full width when edge blur is hidden -->
+        <xpath
+            expr="//div[label[@title='Background blur intensity']]"
+            position="attributes"
+        >
+            <attribute name="t-att-class">'w-100'</attribute>
+        </xpath>
+    </t>
+
+</templates>

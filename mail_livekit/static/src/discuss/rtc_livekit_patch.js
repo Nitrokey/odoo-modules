@@ -106,6 +106,8 @@ patch(Rtc.prototype, {
             return;
         }
         enterNativeCallSafely({adapter, presence, channel});
+        // Play the outgoing call sound to match base RTC behavior
+        this.soundEffectsService.play("channel-join");
     },
 
     async joinCall(channel, {audio = true, camera = false} = {}) {
@@ -128,6 +130,8 @@ patch(Rtc.prototype, {
             return;
         }
         enterNativeCallSafely({adapter, presence, channel});
+        // Play the outgoing call sound to match base RTC behavior
+        this.soundEffectsService.play("channel-join");
     },
 
     async leaveCall(channel = this.state.channel) {
@@ -214,6 +218,26 @@ patch(Rtc.prototype, {
         // In LiveKit mode, muting means disabling the microphone.
         if (typeof livekit.setMicEnabled === "function") {
             await livekit.setMicEnabled(!isSelfMuted);
+        }
+    },
+
+    async setTalking(isTalking) {
+        const livekit = this.store.env.services["discuss.livekit"];
+        if (!livekit?.state?.connected) {
+            return await super.setTalking(isTalking);
+        }
+        // Update the visual state
+        if (this.selfSession) {
+            this.selfSession.isTalking = isTalking;
+        }
+        // Notify the push-to-talk extension if present
+        const pttExtService = this.store.env.services["discuss.pttExtension"];
+        if (pttExtService && typeof pttExtService.notifyIsTalking === "function") {
+            pttExtService.notifyIsTalking(Boolean(isTalking));
+        }
+        // Control the LiveKit microphone
+        if (typeof livekit.setMicEnabled === "function") {
+            await livekit.setMicEnabled(Boolean(isTalking));
         }
     },
 
