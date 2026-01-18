@@ -20,21 +20,6 @@ async function leaveLivekitCall({livekit, adapter, channelId, fullscreen}) {
     }
 }
 
-function getPresenceSessions(presence, channel) {
-    if (!presence || typeof presence.getSessions !== "function") {
-        return [];
-    }
-    return presence.getSessions(channel) || [];
-}
-
-function getEffectiveCameraFromOngoingSessions({presence, channel, camera}) {
-    const sessions = getPresenceSessions(presence, channel);
-    const ongoingHasVideo = sessions.some((s) =>
-        Boolean(s?.isCameraOn || s?.isScreenSharingOn)
-    );
-    return Boolean(camera || ongoingHasVideo);
-}
-
 function enterNativeCallSafely({adapter, presence, channel}) {
     try {
         if (adapter && typeof adapter.syncChannelById === "function") {
@@ -93,14 +78,9 @@ patch(Rtc.prototype, {
             return super.endCall(channel);
         }
 
-        const effectiveCamera = getEffectiveCameraFromOngoingSessions({
-            presence,
-            channel,
-            camera,
-        });
         const ok = await livekit.join(channel, {
             audio,
-            camera: effectiveCamera,
+            camera: camera,
         });
         if (!ok) {
             return;
@@ -117,14 +97,9 @@ patch(Rtc.prototype, {
         if (!livekit) {
             return await super.joinCall(channel, {audio, camera});
         }
-        const effectiveCamera = getEffectiveCameraFromOngoingSessions({
-            presence,
-            channel,
-            camera,
-        });
         const ok = await livekit.join(channel, {
             audio,
-            camera: effectiveCamera,
+            camera: camera,
         });
         if (!ok) {
             return;
