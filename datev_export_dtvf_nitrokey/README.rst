@@ -1,5 +1,5 @@
-=============================
-DATEV, nitrokey customization
-=============================
+========================================
+DATEV Export DTVF Nitrokey Customization
+========================================
 
-- implement custom logic to fill field Buchungstext
+Implement custom logic to fill field Buchungstext (e.g. SO number).
