@@ -1,7 +1,7 @@
 # Copyright 2024 Hunki Enterprises BV
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 {
-    "name": "DATEV, nitrokey customization",
+    "name": "DATEV Export DTVF Nitrokey Customization",
     "summary": "Export Data for DATEV (dtvf)",
     "version": "18.0.1.0.0",
     "development_status": "Beta",
