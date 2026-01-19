@@ -83,13 +83,3 @@ docs/_build/
 # Backup files
 *~
 *.swp
-
-# Node
-node_modules/
-**/node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-odoo.conf
