@@ -8,12 +8,13 @@
     "website": "https://github.com/nitrokey/odoo-modules",
     "license": "AGPL-3",
     "summary": """
-    Website Mass Mailing Double opt-in
-    Website Mass Mailing Double Opt in is part of website and used to get
-    subscription list from newsletter template.
+    This module extends Odoo's website mass mailing capabilities by implementing
+    a double opt-in subscription process for newsletter signups.
 
-    All the Subscriber can be see under mailing list under newsletter template.
-    Added custom template for subscribed message.
+    When visitors subscribe to a newsletter through the website, they must confirm
+    their subscription via a confirmation email before being added to the mailing
+    list. This two-step verification process helps ensure legitimate subscriptions
+    and compliance with email marketing regulations (like GDPR)
     """,
     "depends": [
         "website_mass_mailing",
