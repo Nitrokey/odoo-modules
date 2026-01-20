@@ -51,13 +51,13 @@ export class LiveKitAdapter {
             return this._emit("track", {
                 sessionId: participantId,
                 type: "audio",
-                track: track.mediaStreamTrack,
-                active: true,
+                track: track?.mediaStreamTrack,
+                active: !track?.isMuted,
             });
         }
         this._emit("trackSubscribed", {
             sessionId: participantId,
-            type: source === Source.SCREEN ? "screen" : source,
+            type: source === Source.SCREEN ? "screen" : "camera",
             track: track,
         });
     }
