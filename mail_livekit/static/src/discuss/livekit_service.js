@@ -191,7 +191,7 @@ class LivekitService {
         } catch (error) {
             log("Failed to connect to LiveKit room:", error);
             this.room = null;
-            this.initiated = false; // Reset on failure
+            this.initiated = false;
             this.connected = false;
             throw error;
         }
@@ -238,7 +238,7 @@ class LivekitService {
                 log("Publishing new track for source:", source);
                 await this.room?.localParticipant.publishTrack(mediaStreamTrack, {
                     source,
-                    simulcast: source !== window.LivekitClient.Track.Source.Microphone, // Only use simulcast for video
+                    simulcast: source !== window.LivekitClient.Track.Source.Microphone,
                 });
             } else if (publication.track) {
                 log("Replacing track for source:", source);
