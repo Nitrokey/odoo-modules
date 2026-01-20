@@ -50,6 +50,10 @@ class LivekitService {
 
     handleTrackSubscribed(track, publication, participant) {
         log("Track subscribed", track, publication, participant);
+        if (track.kind == "audio") {
+            log("Attaching audio track to DOM");
+            document.body.appendChild(track.attach());
+        }
         for (const listener of this.trackSubscribedListeners.values()) {
             listener(participant.identity, publication.source, track);
         }
@@ -165,25 +169,6 @@ class LivekitService {
         this.connected = false;
     }
 
-    async setCameraEnabled(enabled) {
-        log("Setting camera enabled:", enabled, this.room);
-        await this.room?.localParticipant?.setCameraEnabled(enabled);
-    }
-
-    async setBlurEnabled(enabled) {
-        log("Setting blur enabled:", enabled, this.room);
-    }
-
-    async setScreenShareEnabled(enabled) {
-        log("Setting screen share enabled:", enabled, this.room);
-        await this.room?.localParticipant?.setScreenShareEnabled(enabled);
-    }
-
-    async setMicrophoneEnabled(enabled) {
-        log("Setting microphone enabled:", enabled, this.room);
-        await this.room?.localParticipant?.setMicrophoneEnabled(enabled);
-    }
-
     async setTrackEnabled(source, enabled, mediaStreamTrack = null) {
         log("Setting track enabled:", source, enabled, this.room);
         const publication = this.room?.localParticipant.getTrackPublication(source);
@@ -193,12 +178,15 @@ class LivekitService {
                 log("Publishing new track for source:", source);
                 await this.room?.localParticipant.publishTrack(mediaStreamTrack, {
                     source,
+                    simulcast: true,
                 });
             } else if (enabled && publication) {
+                log("Replacing track for source:", source);
                 await publication.track.replaceTrack(mediaStreamTrack);
                 publication?.track?.unmute();
             }
         } else if (publication) {
+            log("Muting/unmuting existing track for source:", source);
             await publication.track.mute();
         }
     }
