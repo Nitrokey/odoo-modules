@@ -35,7 +35,7 @@ export class LiveKitAdapter {
                 : source === "camera"
                   ? Source.CAMERA
                   : Source.SCREEN;
-        livekitService?.setTrackEnabled(livekitSource, Boolean(track), track);
+        await livekitService?.setTrackEnabled(livekitSource, Boolean(track), track);
     }
 
     updateDownload() {

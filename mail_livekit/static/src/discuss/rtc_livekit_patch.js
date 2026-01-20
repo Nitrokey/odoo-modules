@@ -63,9 +63,19 @@ patch(Rtc.prototype, {
         this.network.addEventListener("updateTrack", async (event) => {
             if (event.detail.name === "trackSubscribed") {
                 const {sessionId, type, track} = event.detail.payload;
+
+                if (
+                    this.selfSession &&
+                    String(sessionId) === String(this.selfSession.id)
+                ) {
+                    console.log(`Ignoring own track subscription for ${type}`);
+                    return;
+                }
+
                 console.log(
                     `Track subscribed for session ${sessionId}, type ${type}. Triggering rebind.`
                 );
+
                 const rtcSession = await this.store.RtcSession.getWhenReady(sessionId);
 
                 // Store LiveKit track separately
@@ -92,8 +102,14 @@ patch(Rtc.prototype, {
     async updateUpload() {
         console.log("Updating uploads for tracks...");
         await this.network?.updateUpload(Source.MICROPHONE, this.state.audioTrack);
-        await this.network?.updateUpload(Source.CAMERA, this.state.cameraTrack);
-        await this.network?.updateUpload(Source.SCREEN, this.state.screenTrack);
+        await this.network?.updateUpload(
+            Source.CAMERA,
+            this.state.sendCamera ? this.state.cameraTrack : null
+        );
+        await this.network?.updateUpload(
+            Source.SCREEN,
+            this.state.sendScreen ? this.state.screenTrack : null
+        );
 
         // Trigger rebind for local tracks after upload
         if (this.selfSession) {
@@ -149,12 +165,31 @@ patch(Rtc.prototype, {
 
     clear() {
         this.network?.disconnect();
+        // Clear LiveKit tracks from all sessions
         if (this.state.channel) {
             for (const session of this.state.channel.rtcSessions) {
-                session.livekitTracks.clear();
+                if (session.livekitTracks) {
+                    // Detach all tracks before clearing
+                    for (const track of session.livekitTracks.values()) {
+                        try {
+                            track?.detach?.();
+                        } catch (e) {
+                            console.warn("Error detaching track:", e);
+                        }
+                    }
+                    session.livekitTracks.clear();
+                }
             }
         }
         if (this.selfSession?.livekitTracks) {
+            // Detach all tracks before clearing
+            for (const track of this.selfSession.livekitTracks.values()) {
+                try {
+                    track?.detach?.();
+                } catch (e) {
+                    console.warn("Error detaching track:", e);
+                }
+            }
             this.selfSession.livekitTracks.clear();
         }
         return super.clear();

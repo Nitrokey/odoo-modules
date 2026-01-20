@@ -19,6 +19,10 @@ class LivekitService {
     initiated = false;
     connected = false;
 
+    _get_audio_element(identity) {
+        return document.getElementById(`livekit-audio-${identity}`);
+    }
+
     _start() {
         const urlParams = new URLSearchParams(window.location.search);
         debug = urlParams.get("debug") !== null;
@@ -49,10 +53,23 @@ class LivekitService {
     }
 
     handleTrackSubscribed(track, publication, participant) {
+        if (
+            this.room?.localParticipant &&
+            participant.sid === this.room.localParticipant.sid
+        ) {
+            log("Ignoring own track subscription");
+            return;
+        }
+
         log("Track subscribed", track, publication, participant);
+
         if (track.kind == "audio") {
-            log("Attaching audio track to DOM");
-            document.body.appendChild(track.attach());
+            let audioElement = this._get_audio_element(participant.identity);
+            audioElement?.remove();
+
+            audioElement = track.attach();
+            audioElement.id = `livekit-audio-${participant.identity}`;
+            document.body.appendChild(audioElement);
         }
         for (const listener of this.trackSubscribedListeners.values()) {
             listener(participant.identity, publication.source, track);
@@ -62,6 +79,12 @@ class LivekitService {
     handleTrackUnsubscribed(track, publication, participant) {
         log("Track unsubscribed", track, publication, participant);
         track.detach();
+
+        if (track.kind === "audio") {
+            const audioElement = this._get_audio_element(participant.identity);
+            audioElement?.remove();
+        }
+
         for (const listener of this.trackMutedListeners.values()) {
             listener(participant.identity, publication.source, publication.track, true);
         }
@@ -78,6 +101,7 @@ class LivekitService {
 
     handleDisconnect() {
         log("Disconnected from LiveKit room");
+        this.connected = false;
     }
 
     // Requires functions that accept info as parameter
@@ -116,7 +140,7 @@ class LivekitService {
             },
         });
 
-        this.room.prepareConnection(url, token);
+        await this.room.prepareConnection(url, token);
 
         this.room
             .on(RoomEvent.TrackSubscribed, (...args) =>
@@ -144,7 +168,7 @@ class LivekitService {
             .on(RoomEvent.TrackUnmuted, (...args) => this.handleTrackUnmuted(...args))
             .on(RoomEvent.AudioPlaybackStatusChanged, () => {
                 if (!this.room?.canPlaybackAudio) {
-                    log("Issue with audi playback: requires UI interaction");
+                    log("Issue with audio playback: requires UI interaction");
                 }
             });
 
@@ -162,36 +186,52 @@ class LivekitService {
         log("Clearing info change listeners");
         this.infoChangeListeners.clear();
         this.trackSubscribedListeners.clear();
+        this.trackMutedListeners.clear();
         log("Disconnecting from LiveKit");
-        await this.room?.disconnect();
+
+        if (this.room) {
+            for (const [, participant] of this.room.remoteParticipants) {
+                const audioElement = this._get_audio_element(participant.identity);
+                audioElement?.remove();
+            }
+        }
+        const roomToDisconnect = this.room;
         this.room = null;
         this.initiated = false;
         this.connected = false;
+
+        if (roomToDisconnect) {
+            await roomToDisconnect.disconnect();
+        }
     }
 
     async setTrackEnabled(source, enabled, mediaStreamTrack = null) {
         log("Setting track enabled:", source, enabled, this.room);
+        if (!this.room?.localParticipant) {
+            log("Cannot set track - no local participant");
+            return;
+        }
         const publication = this.room?.localParticipant.getTrackPublication(source);
 
-        if (mediaStreamTrack) {
-            if (enabled && !publication) {
+        if (mediaStreamTrack && enabled) {
+            if (!publication) {
                 log("Publishing new track for source:", source);
                 await this.room?.localParticipant.publishTrack(mediaStreamTrack, {
                     source,
-                    simulcast: true,
+                    simulcast: source !== window.LivekitClient.Track.Source.Microphone, // Only use simulcast for video
                 });
-            } else if (enabled && publication) {
+            } else if (publication.track) {
                 log("Replacing track for source:", source);
                 await publication.track.replaceTrack(mediaStreamTrack);
                 if (
-                    mediaStreamTrack?.enabled ||
                     publication.track.source !==
-                        window.LivekitClient.Track.Source.Microphone
+                        window.LivekitClient.Track.Source.Microphone ||
+                    mediaStreamTrack?.enabled
                 ) {
                     publication?.track?.unmute();
                 }
             }
-        } else if (publication) {
+        } else if (!enabled && publication?.track) {
             log("Muting/unmuting existing track for source:", source);
             await publication.track.mute();
         }
@@ -208,10 +248,14 @@ class LivekitService {
 
     async publishInfo(info) {
         log("Publishing info change:", info);
-        const data = JSON.stringify({type: "info_change", info});
-        const payload = new TextEncoder().encode(data);
-        await this.room?.localParticipant.publishData(payload, {reliable: true});
-        await this.setMicrophoneMuted(info.isSelfMuted);
+        try {
+            const data = JSON.stringify({type: "info_change", info});
+            const payload = new TextEncoder().encode(data);
+            await this.room?.localParticipant.publishData(payload, {reliable: true});
+            await this.setMicrophoneMuted(info.isSelfMuted);
+        } catch (error) {
+            log("Error publishing info:", error);
+        }
     }
 
     async setMicrophoneMuted(muted) {
@@ -219,7 +263,7 @@ class LivekitService {
         const publication = this.room?.localParticipant.getTrackPublication(
             window.LivekitClient.Track.Source.Microphone
         );
-        if (publication && publication.track.isMuted !== muted) {
+        if (publication?.track && publication.track.isMuted !== muted) {
             if (muted) {
                 await publication.track.mute();
             } else {
