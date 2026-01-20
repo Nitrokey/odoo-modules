@@ -105,7 +105,7 @@ patch(Rtc.prototype, {
     },
 
     async call() {
-        if (this.network?.isConnected()) {
+        if (!this.network || this.network.isConnected()) {
             return;
         }
         try {
