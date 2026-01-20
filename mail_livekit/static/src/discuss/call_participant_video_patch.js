@@ -51,9 +51,12 @@ patch(CallParticipantVideo.prototype, {
                 `Attaching LiveKit track for session ${rtcSession.id}, type ${type}`
             );
 
-            // Detach old track if different
             if (this.livekitTrack && this.livekitTrack !== livekitTrack) {
-                this.livekitTrack.detach(this.root.el);
+                try {
+                    this.livekitTrack.detach(this.root.el);
+                } catch (e) {
+                    console.warn("Error detaching old track:", e);
+                }
             }
 
             // Attach new LiveKit track directly to video element

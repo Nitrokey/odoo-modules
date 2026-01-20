@@ -124,9 +124,20 @@ class LivekitService {
     }
 
     async connect(url, token) {
-        if (this.initiated || (this.room && this.room.isConnected)) {
+        if (this.initiated) {
             log("Already connected or connecting to LiveKit");
             return;
+        }
+
+        // If there's an existing room, disconnect it WITHOUT clearing listeners
+        if (this.room) {
+            log("Disconnecting existing room before reconnecting");
+            const roomToDisconnect = this.room;
+            this.room = null;
+            this.connected = false;
+            await roomToDisconnect.disconnect();
+            // Note: We don't clear listeners or set initiated=false here
+            // because we're reconnecting
         }
 
         this.initiated = true;
@@ -179,11 +190,19 @@ class LivekitService {
         } catch (error) {
             log("Failed to connect to LiveKit room:", error);
             this.room = null;
+            this.initiated = false; // Reset on failure
+            this.connected = false;
+            throw error;
         }
     }
 
     async disconnect() {
         log("Clearing info change listeners");
+
+        if (!this.room && !this.initiated) {
+            log("Already disconnected");
+            return;
+        }
         this.infoChangeListeners.clear();
         this.trackSubscribedListeners.clear();
         this.trackMutedListeners.clear();
