@@ -137,7 +137,12 @@ class LivekitService {
                 }
             })
             .on(RoomEvent.TrackMuted, (...args) => this.handleTrackMuted(...args))
-            .on(RoomEvent.TrackUnmuted, (...args) => this.handleTrackUnmuted(...args));
+            .on(RoomEvent.TrackUnmuted, (...args) => this.handleTrackUnmuted(...args))
+            .on(RoomEvent.AudioPlaybackStatusChanged, () => {
+                if (!this.room?.canPlaybackAudio) {
+                    log("Issue with audi playback: requires UI interaction");
+                }
+            });
 
         try {
             await this.room.connect(url, token);
