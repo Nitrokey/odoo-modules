@@ -149,8 +149,10 @@ patch(Rtc.prototype, {
 
     clear() {
         this.network?.disconnect();
-        for (const session of this.state.channel.rtcSessions) {
-            session.livekitTracks.clear();
+        if (this.state.channel) {
+            for (const session of this.state.channel.rtcSessions) {
+                session.livekitTracks.clear();
+            }
         }
         if (this.selfSession?.livekitTracks) {
             this.selfSession.livekitTracks.clear();
