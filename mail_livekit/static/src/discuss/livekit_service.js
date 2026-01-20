@@ -183,7 +183,9 @@ class LivekitService {
             } else if (enabled && publication) {
                 log("Replacing track for source:", source);
                 await publication.track.replaceTrack(mediaStreamTrack);
-                publication?.track?.unmute();
+                if (publication.mediaStreamTrack.enabled) {
+                    publication?.track?.unmute();
+                }
             }
         } else if (publication) {
             log("Muting/unmuting existing track for source:", source);
@@ -205,6 +207,21 @@ class LivekitService {
         const data = JSON.stringify({type: "info_change", info});
         const payload = new TextEncoder().encode(data);
         await this.room?.localParticipant.publishData(payload, {reliable: true});
+        await this.setMicrophoneMuted(info.isSelfMuted);
+    }
+
+    async setMicrophoneMuted(muted) {
+        log("Setting microphone mute to:", muted);
+        const publication = this.room?.localParticipant.getTrackPublication(
+            window.LivekitClient.Track.Source.Microphone
+        );
+        if (publication && publication.track.isMuted !== muted) {
+            if (muted) {
+                await publication.track.mute();
+            } else {
+                await publication.track.unmute();
+            }
+        }
     }
 
     async switchAudioInputDevice(deviceId) {
