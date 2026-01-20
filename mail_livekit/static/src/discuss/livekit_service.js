@@ -58,6 +58,9 @@ class LivekitService {
     handleTrackUnsubscribed(track, publication, participant) {
         log("Track unsubscribed", track, publication, participant);
         track.detach();
+        for (const listener of this.trackMutedListeners.values()) {
+            listener(participant.identity, publication.source, publication.track, true);
+        }
     }
 
     handleLocalTrackUnpublished(publication, participant) {
