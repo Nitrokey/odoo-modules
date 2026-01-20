@@ -204,16 +204,44 @@ class LivekitService {
             return;
         }
 
+        log("Disconnecting from LiveKit");
+
+        // Unpublish and stop all local tracks before disconnecting
+        if (this.room?.localParticipant) {
+            log("Unpublishing all local tracks");
+            const localTracks = Array.from(
+                this.room.localParticipant.trackPublications.values()
+            );
+
+            for (const publication of localTracks) {
+                if (publication.track) {
+                    log("Stopping and unpublishing track:", publication.source);
+                    try {
+                        // Stop the track first
+                        publication.track.stop();
+                        // Then unpublish it
+                        await this.room.localParticipant.unpublishTrack(
+                            publication.track
+                        );
+                    } catch (e) {
+                        log("Error unpublishing track:", e);
+                    }
+                }
+            }
+        }
+
         log("Clearing info change listeners");
         this.infoChangeListeners.clear();
         this.trackSubscribedListeners.clear();
         this.trackMutedListeners.clear();
-        log("Disconnecting from LiveKit");
+
+        log("Removing all audio elements");
         const allLivekitAudio = document.querySelectorAll(".livekit-audio-element");
         allLivekitAudio.forEach((element) => {
             log("Removing orphaned audio element:", element.id);
             element.remove();
         });
+
         const roomToDisconnect = this.room;
         this.room = null;
         this.initiated = false;
