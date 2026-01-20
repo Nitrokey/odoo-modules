@@ -187,6 +187,7 @@ class LivekitService {
             await this.room.connect(url, token);
             log("Connected to LiveKit room");
             this.connected = true;
+            this.initiated = false;
         } catch (error) {
             log("Failed to connect to LiveKit room:", error);
             this.room = null;
@@ -197,12 +198,12 @@ class LivekitService {
     }
 
     async disconnect() {
-        log("Clearing info change listeners");
-
         if (!this.room && !this.initiated) {
             log("Already disconnected");
             return;
         }
+
+        log("Clearing info change listeners");
         this.infoChangeListeners.clear();
         this.trackSubscribedListeners.clear();
         this.trackMutedListeners.clear();
