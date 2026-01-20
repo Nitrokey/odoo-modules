@@ -69,6 +69,7 @@ class LivekitService {
 
             audioElement = track.attach();
             audioElement.id = `livekit-audio-${participant.identity}`;
+            audioElement.classList.add("livekit-audio-element");
             document.body.appendChild(audioElement);
         }
         for (const listener of this.trackSubscribedListeners.values()) {
@@ -208,13 +209,11 @@ class LivekitService {
         this.trackSubscribedListeners.clear();
         this.trackMutedListeners.clear();
         log("Disconnecting from LiveKit");
-
-        if (this.room) {
-            for (const [, participant] of this.room.remoteParticipants) {
-                const audioElement = this._get_audio_element(participant.identity);
-                audioElement?.remove();
-            }
-        }
+        const allLivekitAudio = document.querySelectorAll(".livekit-audio-element");
+        allLivekitAudio.forEach((element) => {
+            log("Removing orphaned audio element:", element.id);
+            element.remove();
+        });
         const roomToDisconnect = this.room;
         this.room = null;
         this.initiated = false;
