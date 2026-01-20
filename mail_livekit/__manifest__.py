@@ -6,7 +6,7 @@
     "license": "LGPL-3",
     "category": "Discuss",
     "depends": ["mail"],
-    "website": "https://www.solvti.com",
+    "website": "https://github.com/Nitrokey/odoo-modules/",
     "data": [
         "views/res_config_settings_views.xml",
         "views/livekit_assets_templates.xml",
