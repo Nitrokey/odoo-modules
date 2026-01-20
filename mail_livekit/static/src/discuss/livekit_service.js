@@ -183,7 +183,11 @@ class LivekitService {
             } else if (enabled && publication) {
                 log("Replacing track for source:", source);
                 await publication.track.replaceTrack(mediaStreamTrack);
-                if (mediaStreamTrack?.enabled) {
+                if (
+                    mediaStreamTrack?.enabled ||
+                    publication.track.source !==
+                        window.LivekitClient.Track.Source.Microphone
+                ) {
                     publication?.track?.unmute();
                 }
             }
