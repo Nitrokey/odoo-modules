@@ -184,24 +184,41 @@ patch(Rtc.prototype, {
         }
     },
 
-    async _triggerRebind(channel) {
-        if (!channel) return;
+    async _triggerRebind() {
+        if (this.state.channel && this.network.livekitService?.room) {
+            const room = this.network.livekitService.room;
 
-        for (const session of this.state.channel.rtcSessions) {
-            if (session.eq(this.selfSession)) {
-                continue;
-            }
-            // Check if session has livekit tracks that need to be rebound
-            if (session.livekitTracks && session.livekitTracks.size > 0) {
-                for (const [type, track] of session.livekitTracks.entries()) {
-                    console.log(
-                        `Rebinding existing track for session ${session.id}, type ${type}, track ${track}`
-                    );
-                    this.store.env.bus.trigger("LIVEKIT:TRACK:REBIND", {
-                        sessionId: session.id,
-                        type: type,
-                        identity: `partner:${session.partnerId}`,
-                    });
+            for (const [identity, participant] of room.remoteParticipants.entries()) {
+                console.log(`Processing existing participant: ${identity}`);
+
+                // Process audio tracks
+                const audioTracks = Array.from(
+                    participant.audioTrackPublications.values()
+                );
+                for (const publication of audioTracks) {
+                    if (publication.track && publication.isSubscribed) {
+                        console.log(`Found existing audio track for ${identity}`);
+                        await this.network.livekitAdapter.handleTrackSubscribed(
+                            publication.track,
+                            publication,
+                            participant
+                        );
+                    }
+                }
+
+                // Process video tracks
+                const videoTracks = Array.from(
+                    participant.videoTrackPublications.values()
+                );
+                for (const publication of videoTracks) {
+                    if (publication.track && publication.isSubscribed) {
+                        console.log(`Found existing video track for ${identity}`);
+                        await this.network.livekitAdapter.handleTrackSubscribed(
+                            publication.track,
+                            publication,
+                            participant
+                        );
+                    }
                 }
             }
         }
@@ -219,7 +236,7 @@ patch(Rtc.prototype, {
             );
             this.selfSession.connectionState = "connected";
 
-            this._triggerRebind(this.state.channel);
+            this._triggerRebind();
         } catch (error) {
             console.error("Failed to connect to LiveKit server:", error);
             this.selfSession.connectionState = "failed";
