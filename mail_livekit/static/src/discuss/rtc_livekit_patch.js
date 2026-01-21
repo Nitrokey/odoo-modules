@@ -184,6 +184,29 @@ patch(Rtc.prototype, {
         }
     },
 
+    async _triggerRebind(channel) {
+        if (!channel) return;
+
+        for (const session of this.state.channel.rtcSessions) {
+            if (session.eq(this.selfSession)) {
+                continue;
+            }
+            // Check if session has livekit tracks that need to be rebound
+            if (session.livekitTracks && session.livekitTracks.size > 0) {
+                for (const [type, track] of session.livekitTracks.entries()) {
+                    console.log(
+                        `Rebinding existing track for session ${session.id}, type ${type}, track ${track}`
+                    );
+                    this.store.env.bus.trigger("LIVEKIT:TRACK:REBIND", {
+                        sessionId: session.id,
+                        type: type,
+                        identity: `partner:${session.partnerId}`,
+                    });
+                }
+            }
+        }
+    },
+
     async call() {
         if (!this.network || this.network.isConnected()) {
             return;
@@ -195,6 +218,8 @@ patch(Rtc.prototype, {
                 this.selfSession.livekit_token
             );
             this.selfSession.connectionState = "connected";
+
+            this._triggerRebind(this.state.channel);
         } catch (error) {
             console.error("Failed to connect to LiveKit server:", error);
             this.selfSession.connectionState = "failed";
