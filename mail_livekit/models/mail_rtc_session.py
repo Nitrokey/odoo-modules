@@ -71,9 +71,15 @@ class MailRtcSession(models.Model):
             else "Guest " + str(self.channel_member_id.id)
         )
 
+        identity = (
+            f"partner:{self.partner_id.id}"
+            if self.partner_id
+            else f"guest:{self.channel_member_id.id}"
+        )
+
         token = (
             AccessToken(livekit_params.get("api_key"), livekit_params.get("api_secret"))
-            .with_identity(str(self.id))
+            .with_identity(identity)
             .with_name(name)
             .with_grants(grants)
             .to_jwt()

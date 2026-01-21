@@ -5,27 +5,44 @@ import {CallParticipantVideo} from "@mail/discuss/call/common/call_participant_v
 import {patch} from "@web/core/utils/patch";
 
 patch(CallParticipantVideo.prototype, {
+    setIdentity() {
+        this.identity = this.props.session
+            ? this.props.session.partnerId
+                ? `partner:${this.props.session.partnerId}`
+                : `guest:${this.props.session.channelMember.id}`
+            : null;
+    },
+
+    removeLiveKitTrack() {
+        if (this.livekitTrack) {
+            this.livekitTrack.detach();
+        }
+        this.livekitTrack = null;
+    },
+
     setup() {
         super.setup(...arguments);
         this.livekitTrack = null;
 
+        this.setIdentity();
+
         // Subscribe to track rebind events
         useExternalListener(this.env.bus, "LIVEKIT:TRACK:REBIND", (event) => {
-            const {sessionId, type} = event.detail;
-            if (this.props.session?.id === sessionId && this.props.type === type) {
+            const {sessionId, identity, type} = event.detail;
+            if (this.props.identity == identity && this.props.type === type) {
                 console.log(
-                    `LIVEKIT:TRACK:REBIND for session ${sessionId}, type ${type}`
+                    `LIVEKIT:TRACK:REBIND for identity ${identity}, type ${type}`
                 );
+                if (sessionId && this.props.session.id !== sessionId) {
+                    this.removeLiveKitTrack();
+                }
                 this._update();
             }
         });
 
         onWillUnmount(() => {
             // Detach LiveKit track on unmount
-            if (this.livekitTrack && this.root.el) {
-                this.livekitTrack.detach(this.root.el);
-            }
-            this.livekitTrack = null;
+            this.removeLiveKitTrack();
         });
     },
 

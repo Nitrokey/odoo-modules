@@ -47,22 +47,15 @@ export class LiveKitAdapter {
     }
 
     handleTrackSubscribed(participantId, source, track) {
-        if (source === Source.MICROPHONE) {
-            return this._emit("track", {
-                sessionId: participantId,
-                type: "audio",
-                track: track?.mediaStreamTrack,
-                active: !track?.isMuted,
-            });
-        }
         this._emit("trackSubscribed", {
-            sessionId: participantId,
+            identity: participantId,
             type: source === Source.SCREEN ? "screen" : "camera",
             track: track,
         });
     }
 
     handleTrackMuted(participantId, source, track, muted) {
+        console.log("Track muted event:", participantId, source, track, muted);
         const type =
             source === Source.MICROPHONE
                 ? "audio"
@@ -71,7 +64,7 @@ export class LiveKitAdapter {
                   : "camera";
         if (muted) {
             return this._emit("track", {
-                sessionId: participantId,
+                identity: participantId,
                 type: type,
                 track: track,
                 active: false,
@@ -82,17 +75,33 @@ export class LiveKitAdapter {
 
     addLivekitListeners() {
         livekitService.subscribeToInfoChange("adapter", (info) => {
+            console.log("received Info change event:", info);
             this._emit("info_change", info);
         });
         livekitService.subscribeToTrackSubscribed(
             "adapter",
-            (participantId, source, track) =>
-                this.handleTrackSubscribed(participantId, source, track)
+            (participantId, source, track) => {
+                console.log(
+                    "received Track subscribed event:",
+                    participantId,
+                    source,
+                    track
+                );
+                this.handleTrackSubscribed(participantId, source, track);
+            }
         );
         livekitService.subscribeToTrackMuted(
             "adapter",
-            (participantId, source, track, muted) =>
-                this.handleTrackMuted(participantId, source, track, muted)
+            (participantId, source, track, muted) => {
+                console.log(
+                    "received Track muted event:",
+                    participantId,
+                    source,
+                    track,
+                    muted
+                );
+                this.handleTrackMuted(participantId, source, track, muted);
+            }
         );
     }
 

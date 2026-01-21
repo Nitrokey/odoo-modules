@@ -45,54 +45,96 @@ patch(Rtc.prototype, {
         });
     },
 
+    identityToSessionId(identity) {
+        // Convert LiveKit identity back to session ID
+        if (identity.startsWith("partner:")) {
+            const partnerId = parseInt(identity.split(":")[1], 10);
+            // Find the session with this partner ID
+            for (const session of this.state.channel.rtcSessions) {
+                if (session.partnerId === partnerId) {
+                    return session.id;
+                }
+            }
+        } else if (identity.startsWith("guest:")) {
+            const guestId = parseInt(identity.split(":")[1], 10);
+            // Find the session with this channel member ID
+            for (const session of this.state.channel.rtcSessions) {
+                if (session.channelMember.id === guestId) {
+                    return session.id;
+                }
+            }
+        }
+        return identity;
+    },
+
+    fixEventIds(eventdata) {
+        if (eventdata.detail.payload.identity && !eventdata.detail.payload.sessionId) {
+            eventdata.detail.payload.sessionId = this.identityToSessionId(
+                eventdata.detail.payload.identity
+            );
+        }
+        if (
+            eventdata.detail.name == "info_change" &&
+            Object.keys(eventdata.detail.payload)[0].includes(":")
+        ) {
+            const fixedIdentity = this.identityToSessionId(
+                Object.keys(eventdata.detail.payload)[0]
+            );
+            eventdata.detail.payload = {
+                [fixedIdentity]:
+                    eventdata.detail.payload[Object.keys(eventdata.detail.payload)[0]],
+            };
+        }
+    },
+
+    async _handleNetworkUpdates(eventdata) {
+        console.log("LIVEKIT: Network update received", eventdata);
+        this.fixEventIds(eventdata);
+        return super._handleNetworkUpdates(eventdata);
+    },
+
+    async handleTrackSubscribed(eventdata) {
+        console.log("LIVEKIT: Track subscribed event received", eventdata);
+        this.fixEventIds(eventdata);
+        if (eventdata.detail.name === "trackSubscribed") {
+            const {identity, type, track} = eventdata.detail.payload;
+            const sessionId = this.identityToSessionId(identity);
+
+            console.log(
+                `Track subscribed for session ${sessionId}, type ${type}. Triggering rebind.`
+            );
+
+            const rtcSession = await this.store.RtcSession.getWhenReady(sessionId);
+
+            // Store LiveKit track separately
+            rtcSession.livekitTracks.set(type, track);
+
+            // Create dummy MediaStream for UI rendering (hasVideo check)
+            const dummyStream = new window.MediaStream();
+            rtcSession.videoStreams.set(type, dummyStream);
+            await rtcSession.updateStreamState(type, true);
+
+            // Trigger bus event to notify CallParticipantVideo to attach track
+            this.store.env.bus.trigger("LIVEKIT:TRACK:REBIND", {
+                sessionId: rtcSession.id,
+                type: type,
+                identity: identity,
+            });
+        }
+    },
+
     async _initConnection() {
         this.selfSession.connectionState = "selecting network type";
-        this.network?.disconnect();
+        await this.network?.disconnect();
         this.network = new LiveKitAdapter();
         this.state.connectionType = CONNECTION_TYPES.SERVER;
 
-        this.network.addEventListener("update", (event) => {
-            try {
-                this._handleNetworkUpdates(event);
-            } catch (error) {
-                if (!error.message?.includes("closed")) {
-                    console.error("Error in network update:", error);
-                }
-            }
-        });
-        this.network.addEventListener("updateTrack", async (event) => {
-            if (event.detail.name === "trackSubscribed") {
-                const {sessionId, type, track} = event.detail.payload;
+        this.network.addEventListener("update", this._handleNetworkUpdates.bind(this));
+        this.network.addEventListener(
+            "updateTrack",
+            this.handleTrackSubscribed.bind(this)
+        );
 
-                if (
-                    this.selfSession &&
-                    String(sessionId) === String(this.selfSession.id)
-                ) {
-                    console.log(`Ignoring own track subscription for ${type}`);
-                    return;
-                }
-
-                console.log(
-                    `Track subscribed for session ${sessionId}, type ${type}. Triggering rebind.`
-                );
-
-                const rtcSession = await this.store.RtcSession.getWhenReady(sessionId);
-
-                // Store LiveKit track separately
-                rtcSession.livekitTracks.set(type, track);
-
-                // Create dummy MediaStream for UI rendering (hasVideo check)
-                const dummyStream = new window.MediaStream();
-                rtcSession.videoStreams.set(type, dummyStream);
-                await rtcSession.updateStreamState(type, true);
-
-                // Trigger bus event to notify CallParticipantVideo to attach track
-                this.store.env.bus.trigger("LIVEKIT:TRACK:REBIND", {
-                    sessionId: rtcSession.id,
-                    type: type,
-                });
-            }
-        });
         if (this.state.channel) {
             await this.call();
             await this.updateUpload();
@@ -163,35 +205,34 @@ patch(Rtc.prototype, {
         return super.updateActiveSession(session, videoType, {addVideo});
     },
 
-    clear() {
-        this.network?.disconnect();
-        // Clear LiveKit tracks from all sessions
-        if (this.state.channel) {
-            for (const session of this.state.channel.rtcSessions) {
-                if (session.livekitTracks) {
-                    // Detach all tracks before clearing
-                    for (const track of session.livekitTracks.values()) {
-                        try {
-                            track?.detach?.();
-                        } catch (e) {
-                            console.warn("Error detaching track:", e);
-                        }
-                    }
-                    session.livekitTracks.clear();
+    _clearRemoteLiveKitTracks(channel) {
+        for (const session of channel.rtcSessions) {
+            if (session.livekitTracks) {
+                // Detach all tracks before clearing
+                for (const track of session.livekitTracks.values()) {
+                    track?.detach?.();
                 }
+                session.livekitTracks.clear();
             }
         }
+    },
+
+    _clearLocalLiveKitTracks() {
         if (this.selfSession?.livekitTracks) {
             // Detach all tracks before clearing
             for (const track of this.selfSession.livekitTracks.values()) {
-                try {
-                    track?.detach?.();
-                } catch (e) {
-                    console.warn("Error detaching track:", e);
-                }
+                track?.detach?.();
             }
             this.selfSession.livekitTracks.clear();
         }
+    },
+
+    clear() {
+        this.network?.disconnect();
+        if (this.state.channel) {
+            this._clearRemoteLiveKitTracks(this.state.channel);
+        }
+        this._clearLocalLiveKitTracks();
         return super.clear();
     },
 });

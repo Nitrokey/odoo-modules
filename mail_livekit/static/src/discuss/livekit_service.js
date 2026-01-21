@@ -2,6 +2,16 @@ const {Room, VideoPresets, RoomEvent} = window.LivekitClient;
 
 // This script should be the only contact point with Livekit SDK
 
+const Source = {
+    CAMERA: window.LivekitClient.Track.Source.Camera,
+    MICROPHONE: window.LivekitClient.Track.Source.Microphone,
+    SCREEN: window.LivekitClient.Track.Source.ScreenShare,
+};
+
+console.log("Livekit Source constants:", Source);
+
+Object.freeze(Source);
+
 let debug = false;
 
 function log(...args) {
@@ -19,8 +29,12 @@ class LivekitService {
     initiated = false;
     connected = false;
 
-    _get_audio_element(identity) {
-        return document.getElementById(`livekit-audio-${identity}`);
+    _formAudioElementId(identity) {
+        return `livekit-audio-${identity}`;
+    }
+
+    get audioElementClass() {
+        return "livekit-audio-element";
     }
 
     _start() {
@@ -64,16 +78,18 @@ class LivekitService {
         log("Track subscribed", track, publication, participant);
 
         if (track.kind == "audio") {
-            let audioElement = this._get_audio_element(participant.identity);
+            const audioElementId = this._formAudioElementId(participant.identity);
+            let audioElement = document.getElementById(audioElementId);
             audioElement?.remove();
 
             audioElement = track.attach();
-            audioElement.id = `livekit-audio-${participant.identity}`;
-            audioElement.classList.add("livekit-audio-element");
+            audioElement.id = audioElementId;
+            audioElement.classList.add(this.audioElementClass);
             document.body.appendChild(audioElement);
-        }
-        for (const listener of this.trackSubscribedListeners.values()) {
-            listener(participant.identity, publication.source, track);
+        } else {
+            for (const listener of this.trackSubscribedListeners.values()) {
+                listener(participant.identity, publication.source, track);
+            }
         }
     }
 
@@ -82,7 +98,8 @@ class LivekitService {
         track.detach();
 
         if (track.kind === "audio") {
-            const audioElement = this._get_audio_element(participant.identity);
+            const audioElementId = this._formAudioElementId(participant.identity);
+            const audioElement = document.getElementById(audioElementId);
             audioElement?.remove();
         }
 
@@ -265,14 +282,13 @@ class LivekitService {
                 log("Publishing new track for source:", source);
                 await this.room?.localParticipant.publishTrack(mediaStreamTrack, {
                     source,
-                    simulcast: source !== window.LivekitClient.Track.Source.Microphone,
+                    simulcast: source !== Source.Microphone,
                 });
             } else if (publication.track) {
                 log("Replacing track for source:", source);
                 await publication.track.replaceTrack(mediaStreamTrack);
                 if (
-                    publication.track.source !==
-                        window.LivekitClient.Track.Source.Microphone ||
+                    publication.track.source !== Source.Microphone ||
                     mediaStreamTrack?.enabled
                 ) {
                     publication?.track?.unmute();
@@ -308,7 +324,7 @@ class LivekitService {
     async setMicrophoneMuted(muted) {
         log("Setting microphone mute to:", muted);
         const publication = this.room?.localParticipant.getTrackPublication(
-            window.LivekitClient.Track.Source.Microphone
+            Source.Microphone
         );
         if (publication?.track && publication.track.isMuted !== muted) {
             if (muted) {
@@ -326,15 +342,5 @@ class LivekitService {
 }
 
 export const livekitService = new LivekitService();
-
-const Source = {
-    CAMERA: window.LivekitClient.Track.Source.Camera,
-    MICROPHONE: window.LivekitClient.Track.Source.Microphone,
-    SCREEN: window.LivekitClient.Track.Source.ScreenShare,
-};
-
-console.log("Livekit Source constants:", Source);
-
-Object.freeze(Source);
 
 export {Source};
