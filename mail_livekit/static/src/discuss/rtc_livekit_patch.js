@@ -184,46 +184,6 @@ patch(Rtc.prototype, {
         }
     },
 
-    async _triggerRebind() {
-        if (this.state.channel && this.network.livekitService?.room) {
-            const room = this.network.livekitService.room;
-
-            for (const [identity, participant] of room.remoteParticipants.entries()) {
-                console.log(`Processing existing participant: ${identity}`);
-
-                // Process audio tracks
-                const audioTracks = Array.from(
-                    participant.audioTrackPublications.values()
-                );
-                for (const publication of audioTracks) {
-                    if (publication.track && publication.isSubscribed) {
-                        console.log(`Found existing audio track for ${identity}`);
-                        await this.network.livekitAdapter.handleTrackSubscribed(
-                            publication.track,
-                            publication,
-                            participant
-                        );
-                    }
-                }
-
-                // Process video tracks
-                const videoTracks = Array.from(
-                    participant.videoTrackPublications.values()
-                );
-                for (const publication of videoTracks) {
-                    if (publication.track && publication.isSubscribed) {
-                        console.log(`Found existing video track for ${identity}`);
-                        await this.network.livekitAdapter.handleTrackSubscribed(
-                            publication.track,
-                            publication,
-                            participant
-                        );
-                    }
-                }
-            }
-        }
-    },
-
     async call() {
         if (!this.network || this.network.isConnected()) {
             return;
@@ -235,8 +195,6 @@ patch(Rtc.prototype, {
                 this.selfSession.livekit_token
             );
             this.selfSession.connectionState = "connected";
-
-            this._triggerRebind();
         } catch (error) {
             console.error("Failed to connect to LiveKit server:", error);
             this.selfSession.connectionState = "failed";

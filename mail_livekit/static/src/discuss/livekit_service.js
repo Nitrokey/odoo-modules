@@ -143,6 +143,46 @@ class LivekitService {
         }
     }
 
+    // Add this method to the LivekitService class
+    async rebindExistingTracks() {
+        if (!this.room || !this.connected) {
+            log("Cannot rebind - not connected to room");
+            return;
+        }
+
+        log("Rebinding existing participant tracks");
+
+        for (const [identity, participant] of this.room.remoteParticipants.entries()) {
+            log(`Processing existing participant: ${identity}`);
+
+            // Process audio tracks
+            const audioTracks = Array.from(participant.audioTrackPublications.values());
+            for (const publication of audioTracks) {
+                if (publication.track && publication.isSubscribed) {
+                    log(`Rebinding existing audio track for ${identity}`);
+                    this.handleTrackSubscribed(
+                        publication.track,
+                        publication,
+                        participant
+                    );
+                }
+            }
+
+            // Process video tracks
+            const videoTracks = Array.from(participant.videoTrackPublications.values());
+            for (const publication of videoTracks) {
+                if (publication.track && publication.isSubscribed) {
+                    log(`Rebinding existing video track for ${identity}`);
+                    this.handleTrackSubscribed(
+                        publication.track,
+                        publication,
+                        participant
+                    );
+                }
+            }
+        }
+    }
+
     async connect(url, token) {
         if (this.initiated) {
             log("Already connected or connecting to LiveKit");
@@ -201,6 +241,10 @@ class LivekitService {
                 if (!this.room?.canPlaybackAudio) {
                     log("Issue with audio playback: requires UI interaction");
                 }
+            })
+            .on(RoomEvent.Connected, () => {
+                log("Room connected - rebinding existing tracks");
+                setTimeout(() => this.rebindExistingTracks(), 100);
             });
 
         try {
