@@ -77,19 +77,21 @@ class LivekitService {
 
         log("Track subscribed", track, publication, participant);
 
+        let audioElement = null;
+
         if (track.kind == "audio") {
             const audioElementId = this._formAudioElementId(participant.identity);
-            let audioElement = document.getElementById(audioElementId);
+            audioElement = document.getElementById(audioElementId);
             audioElement?.remove();
 
             audioElement = track.attach();
             audioElement.id = audioElementId;
             audioElement.classList.add(this.audioElementClass);
             document.body.appendChild(audioElement);
-        } else {
-            for (const listener of this.trackSubscribedListeners.values()) {
-                listener(participant.identity, publication.source, track);
-            }
+        }
+
+        for (const listener of this.trackSubscribedListeners.values()) {
+            listener(participant.identity, publication.source, track, audioElement);
         }
     }
 

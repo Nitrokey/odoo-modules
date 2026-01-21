@@ -33,6 +33,7 @@ patch(PeerToPeer.prototype, {
 patch(Rtc.prototype, {
     start() {
         super.start();
+
         browser.addEventListener("pagehide", () => {
             if (this.state.channel) {
                 const data = JSON.stringify({
@@ -91,6 +92,27 @@ patch(Rtc.prototype, {
         console.log("LIVEKIT: Network update received", eventdata);
         this.fixEventIds(eventdata);
         return super._handleNetworkUpdates(eventdata);
+    },
+
+    async setAudioVolume(sessionId, element = null) {
+        const rtcSession = await this.store.RtcSession.getWhenReady(sessionId);
+        if (element) {
+            rtcSession.audioElement = element;
+        }
+        const volumeSetting = this.store.Volume.getForPartnerId(rtcSession.partnerId);
+        const volume = volumeSetting ? volumeSetting.volume / 100 : 1.0;
+        if (rtcSession.audioElement) {
+            rtcSession.audioElement.volume = volume;
+        }
+    },
+
+    async handleSetAudioVolume(eventdata) {
+        console.log("LIVEKIT: Set audio volume event received", eventdata);
+        this.fixEventIds(eventdata);
+        return this.setAudioVolume(
+            eventdata.detail.payload.sessionId,
+            eventdata.detail.payload.element
+        );
     },
 
     async handleTrackSubscribed(eventdata) {

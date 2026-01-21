@@ -46,7 +46,14 @@ export class LiveKitAdapter {
         livekitService.publishInfo(info);
     }
 
-    handleTrackSubscribed(participantId, source, track) {
+    handleTrackSubscribed(participantId, source, track, audioElement = null) {
+        if (track.kind === "audio") {
+            return this._emit("setAudioVolume", {
+                identity: participantId,
+                element: audioElement,
+            });
+        }
+
         this._emit("trackSubscribed", {
             identity: participantId,
             type: source === Source.SCREEN ? "screen" : "camera",

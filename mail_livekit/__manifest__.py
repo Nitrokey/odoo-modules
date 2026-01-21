@@ -19,6 +19,7 @@
             "mail_livekit/static/src/discuss/rtc_livekit_patch.js",
             "mail_livekit/static/src/discuss/thread_actions_patch.js",
             "mail_livekit/static/src/discuss/call_participant_video_patch.js",
+            "mail_livekit/static/src/discuss/call_context_menu_patch.js",
         ],
     },
     "external_dependencies": {
