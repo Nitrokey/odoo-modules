@@ -10,17 +10,18 @@ Features
 * Update tracking information in Odoo from DHL
 * Generate and print shipping labels in Odoo
 
+Note that shipping rates are not retrieved from DHL but need to be configured.
 
 Configuration
-=============
+-------------
 
-Company Configuration
-~~~~~~~~~~~~~~~~~~~~~
+Company
+^^^^^^^
 
 1. "Settings" -> "Users & Companies" -> "Companies"
 2. Select or create a company
 3. "DHL Parcel DE Configuration" tab -> set the "Use DHL Parcel DE Shipping Provider" as active
-4. Fill out the necessary information (the information below is only meant for testing purposes):
+4. Fill out the necessary information. The information below is only meant for testing purposes:
 
    * DHL API URL: ``https://api-sandbox.dhl.com``
    * DHL UserId: ``user-valid``
@@ -31,12 +32,12 @@ Company Configuration
 5. Save your changes
 
 Create Delivery Methods
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
-1. "Inventory" -> "Configuration" -> "Delivery" -> "Shipping Methods"
+1. "Inventory" -> "Configuration" -> "Delivery" -> "Delivery Methods"
 2. Select or create a method
 3. Set the "Provider" to "DHL Parcel DE"
-4. Fill out the necessary information:
+4. Fill out the necessary information. The information below is only meant as an example:
 
    * Company: Company Name
    * DHL Weight UOM: ``KG``
@@ -63,17 +64,17 @@ Create Delivery Methods
 
 
 Testing
-=======
+-------
 
 1. Create a Sales Order
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
 1. "Sales" -> "Orders" -> "Quotations" -> "+New"
 2. Fill out the necessary information
 3. "Add Shipping" button -> set "Shipping Method" as "DHL Parcel DE" -> "Get Rate" button -> "Add" button -> "Confirm" button
 
 2. Create Delivery Order
-~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 1. Click the "Delivery" button at the top of the panel in the sales order
 2. In the delivery order, set the shipping details:
@@ -88,15 +89,16 @@ Testing
 
 
 Credits
-=======
+-------
 
 Authors
-~~~~~~~
+^^^^^^^
 
 * Vraja Technologies
 * initOS GmbH
+* Nitrokey GmbH
 
 Contributors
-~~~~~~~~~~~~
+^^^^^^^^^^^^
 
 * Dmytro Kashuba <dmytro.kashuba@ext.initos.com>

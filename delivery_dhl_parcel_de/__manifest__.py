@@ -20,7 +20,7 @@
         "views/stock_picking.xml",
     ],
     "author": "Vraja Technologies, initOS, Nitrokey",
-    "website": "https://www.nitrokey.com",
+    "website": "https://github.com/Nitrokey/odoo-modules/",
     "maintainer": ["initOS", "Nitrokey"],
     "installable": True,
 }
