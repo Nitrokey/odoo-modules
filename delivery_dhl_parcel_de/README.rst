@@ -10,33 +10,82 @@ Features
 * Update tracking information in Odoo from DHL
 * Generate and print shipping labels in Odoo
 
-Instructions
-------------
-* For integration to work, you need the following information from DHL account:
-  * account username
-  * account password
-  * API key
 
-1. Enable DHL Parcel DE shipping: "Users & Companies" -> "Companies" -> select company -> "DHL Parcel DE Configuration"
-2. Configure the DHL credentials: "DHL UserId", "DHL Password", "DHL API Key"
-3. Configure DHL Parcel Delivery Method: "Inventory" -> "Configuration" -> "Delivery Methods" -> select provider "DHL Parcel DE" by setting all required fields
-4. Publish delivery method on website if needed.
+Configuration
+=============
+
+Company Configuration
+~~~~~~~~~~~~~~~~~~~~~
+
+1. "Settings" -> "Users & Companies" -> "Companies"
+2. Select or create a company
+3. "DHL Parcel DE Configuration" tab -> set the "Use DHL Parcel DE Shipping Provider" as active
+4. Fill out the necessary information (the information below is only meant for testing purposes):
+
+   * DHL API URL: ``https://api-sandbox.dhl.com``
+   * DHL UserId: ``user-valid``
+   * DHL Password: ``SandboxPasswort2023!``
+   * DHL API Key: Add your own API key here
+   * DHL Tracking URL: (optional) Leave empty or use: ``https://www.dhl.de/en/privatkunden/pakete-empfangen/verfolgen.html?piececode=``
+
+5. Save your changes
+
+Create Delivery Methods
+~~~~~~~~~~~~~~~~~~~~~~~
+
+1. "Inventory" -> "Configuration" -> "Delivery" -> "Shipping Methods"
+2. Select or create a method
+3. Set the "Provider" to "DHL Parcel DE"
+4. Fill out the necessary information:
+
+   * Company: Company Name
+   * DHL Weight UOM: ``KG``
+   * DHL Services Name: ``V53WPAK-DHL Paket``
+   * DHL Account number: ``3333333333`` (sandbox account)
+   * DHL Procedure number: ``01``
+   * DHL Participation number: ``02``
+   * DHL Package Info: Create package type
+
+     1. Click "Create"
+     2. Fill in package details:
+
+        * Package Type Name: ``DHL Parcel DE``
+        * Carrier Code: e.g., ``DHL-Paket``
+        * Height: e.g., ``5.00`` cm
+        * Width: e.g., ``5.00`` cm
+        * Length: e.g., ``5.00`` cm
+        * Weight: e.g., ``0.5`` kg
+        * Max Weight: e.g., ``10.00`` kg
+
+     3. Save your changes
+
+5. Save your changes
+
 
 Testing
--------
-For testing, you can use the following sandbox credentials (mentioned in official documentation):
-* Username (UserID): user-valid
-* Password: SandboxPasswort2023!
-* API Key: you should generate one by creating Application via DHL developer portal
-
-For shipment to generate correctly and avoid incorrect billing number error, you can use the following delivery method configuration:
-* Product name: "V53WPAK-DHL Paket International"
-* DHL Account number: "3333333333"
-* DHL Procedure number: "53"
-* DHL Participation number: "01"
-You can find other working configurations of these parameters in the documentation: https://developer.dhl.com/api-reference/parcel-de-shipping-post-parcel-germany-v2#get-started-section/
-
 =======
+
+1. Create a Sales Order
+~~~~~~~~~~~~~~~~~~~~~~~
+
+1. "Sales" -> "Orders" -> "Quotations" -> "+New"
+2. Fill out the necessary information
+3. "Add Shipping" button -> set "Shipping Method" as "DHL Parcel DE" -> "Get Rate" button -> "Add" button -> "Confirm" button
+
+2. Create Delivery Order
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Click the "Delivery" button at the top of the panel in the sales order
+2. In the delivery order, set the shipping details:
+
+   * "Carrier" is set to your DHL Parcel DE method
+   * Ensure products have a weight configured
+
+3. "Validate" button -> set "Number Of Packages" to minimum 1 -> "Apply" button
+4. In the "Additional Info" tab, there should be a field called "Tracking Reference" (shows the shipment number for the product)
+5. At the top of the panel, look for the "Tracking" button (it will take you to the DHL tracking section)
+6. At the top of the panel, look for the "Valuation" button (it will display the minused quantities)
+
 
 Credits
 =======
