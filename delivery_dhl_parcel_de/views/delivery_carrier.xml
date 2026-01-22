@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="dhl_parcel_de_shiipping_provider_details" model="ir.ui.view">
+        <field name="name">delivery.carrier</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='destination']" position='before'>
+                <page
+                    name="dhl_parcel_de_configuration"
+                    string="Configuration"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
+                >
+                    <group>
+                        <group>
+                            <field
+                                name="company_id"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                            <field
+                                name="dhl_parcel_de_provider_package_id"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                            <field
+                                name="dhl_weight_uom"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                            <field
+                                name="dhl_services_name"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                            <field
+                                name="dhl_premium"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                            <field
+                                name="dhl_account_no"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                            <field
+                                name="dhl_procedure_no"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                            <field
+                                name="dhl_participation_no"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                        </group>
+                        <group>
+                            <field name="dhl_bulky_goods" />
+                            <field name="dhl_premium" />
+                            <field
+                                name="dhl_endorsement"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                            <field name="dhl_document_format" required="1" />
+                            <field
+                                name="dhl_export_type"
+                                required="delivery_type == 'dhl_parcel_de_provider'"
+                            />
+                            <field
+                                name="dhl_export_type_description"
+                                required="dhl_export_type == 'OTHER'"
+                                invisible="dhl_export_type != 'OTHER'"
+                            />
+                            <field name="is_return_shipment" />
+                            <field
+                                name="dhl_return_receiver_id"
+                                required="is_return_shipment"
+                                invisible="not is_return_shipment"
+                            />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

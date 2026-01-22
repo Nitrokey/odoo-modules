@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="dhl_return_label_form_view" model="ir.ui.view">
+            <field name="name">stock.picking</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form" />
+            <field name="arch" type="xml">
+                <xpath expr="/form/header/button[last()]" position="after">
+                    <button
+                        name="dhl_parcel_de_provider_return_shipment"
+                        string="Get Return Label"
+                        type="object"
+                        invisible="delivery_type != 'dhl_parcel_de_provider' or picking_type_code != 'incoming' or is_return_shipment != False"
+                    />
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="is_return_shipment" invisible="1" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
