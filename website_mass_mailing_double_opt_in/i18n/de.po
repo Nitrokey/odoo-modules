@@ -49,6 +49,36 @@ msgid ""
 "            </div>\n"
 "        "
 msgstr ""
+"<div style=\"margin: -10px -10px; padding:50px 30px 50px 30px; height:100%;\">\n"
+"                <div style=\"margin:0 auto; max-width:660px;\">\n"
+"                    <div style=\"float: left; background-color: #FFFFFF; padding:10px 30px 10px 30px; border: 1px solid #DDDDDD;\">\n"
+"                        <div style=\"float: left; max-width:470px;\">\n"
+"                            <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">\n"
+"                                <strong style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;\">Bestätigen Sie Ihr Newsletter-Abonnement\n"
+"                                </strong>\n"
+"                            </p>\n"
+"                            <div style=\"line-height: 21px; min-height: 100px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Vielen Dank für Ihre Anmeldung zu unserem E-Mail-Verteiler.\n"
+"                                </p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Sie gestatten, dass wir Sie per E-Mail kontaktieren, um Ihnen Neuigkeiten, Updates\n"
+"                                    und Produktinformationen zukommen zu lassen. Wenn Sie Ihre Einwilligung widerrufen und keine weiteren Nachrichten von uns erhalten möchten,\n"
+"                                    klicken Sie einfach auf den Abmeldelink am Ende jeder E-Mail. Mit Ihrer Anmeldung\n"
+"                                    erklären Sie sich damit einverstanden, dass wir Ihre Daten gemäß unserer Datenschutzerklärung verarbeiten dürfen.\n"
+"                                </p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Bitte bestätigen Sie Ihr Abonnement, indem Sie auf die Schaltfläche unten klicken:\n"
+"                                </p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px; margin-bottom: 25px; padding: 15px; text-align: center;\">\n"
+"                                    <a t-attf-href=\"/newsletter/confirmation/{{ object.access_token }}\" style=\"background-color: #449d44; padding: 12px; font-weight: 12px; text-decoration: none; color: #fff; border-radius: 5px; font-size:16px;\">Bestätigen\n"
+"                                    </a>\n"
+"                                </p>\n"
+"                                <p style=\"line-height: 21px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 12px;\">Vielen Dank,<br/>\n"
+"                                </p>\n"
+"                            </div>\n"
+"                        </div>\n"
+"                    </div>\n"
+"                </div>\n"
+"            </div>\n"
+"        "
 
 #. module: website_mass_mailing_double_opt_in
 #: model:mail.template,body_html:website_mass_mailing_double_opt_in.newsletter_confirmation_success_template
@@ -64,6 +94,16 @@ msgid ""
 "            </div>\n"
 "        "
 msgstr ""
+"<div>\n"
+"                <p>Hallo,</p>\n"
+"                <p>vielen Dank für die Anmeldung zum Newsletter.</p>\n"
+"                <br/>\n"
+"                <p>Viele Grüße,\n"
+"                    <br/>\n"
+"                    Ihr Team\n"
+"                </p>\n"
+"            </div>\n"
+"        "
 
 #. module: website_mass_mailing_double_opt_in
 #: model:ir.model.fields,field_description:website_mass_mailing_double_opt_in.field_mailing_subscription__access_token
@@ -78,7 +118,7 @@ msgstr "Bestätigen Sie Ihr Newsletter Abonnement"
 #. module: website_mass_mailing_double_opt_in
 #: model_terms:ir.ui.view,arch_db:website_mass_mailing_double_opt_in.subscribe_newsletter
 msgid "Continue exploring our"
-msgstr ""
+msgstr "Entdecken Sie unsere"
 
 #. module: website_mass_mailing_double_opt_in
 #: model:res.groups,name:website_mass_mailing_double_opt_in.group_mass_mailing_editor
@@ -88,7 +128,7 @@ msgstr ""
 #. module: website_mass_mailing_double_opt_in
 #: model:ir.model.fields,field_description:website_mass_mailing_double_opt_in.field_mailing_subscription__mail_language
 msgid "Mail Language"
-msgstr ""
+msgstr "Sprache der E-Mail"
 
 #. module: website_mass_mailing_double_opt_in
 #: model:ir.model,name:website_mass_mailing_double_opt_in.model_mailing_subscription
@@ -117,10 +157,10 @@ msgstr "Sie haben den Newsletter abonniert"
 
 #. module: website_mass_mailing_double_opt_in
 #: model_terms:ir.ui.view,arch_db:website_mass_mailing_double_opt_in.subscribe_newsletter
-msgid "You're subscribed to the Newsletter!"
-msgstr "Sie Zijn den Newsletter abonniert!"
+msgid "You have subscribed to the newsletter."
+msgstr "Sie haben den Newsletter abonniert."
 
 #. module: website_mass_mailing_double_opt_in
 #: model_terms:ir.ui.view,arch_db:website_mass_mailing_double_opt_in.subscribe_newsletter
 msgid "webpage..."
-msgstr "webpagina..."
+msgstr "Webseite..."
