@@ -5,8 +5,8 @@
     "name": "DATEV Export XML Nitrokey customization",
     "version": "18.0.1.0.0",
     "category": "Hidden",
-    "author": "initOS GmbH",
-    "website": "https://www.initos.com",
+    "author": "initOS GmbH, Nitrokey GmbH",
+    "website": "https://github.com/Nitrokey/odoo-modules/",
     "license": "AGPL-3",
     "summary": "DATEV export will contain sales order number instead of "
     "invoice number.",

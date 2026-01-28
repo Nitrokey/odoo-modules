@@ -16,7 +16,7 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
         # Call BaseCommon setup, not the parent TestDatevExport
         # to avoid loading missing demo data
         super(test_datev_export.TestDatevExport, cls).setUpClass()
-        
+
         # Now set up all the required attributes that parent class expects
         cls.company = cls.env.company
         cls.JournalObj = cls.env["account.journal"]
@@ -70,7 +70,7 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
             [("company_id", "=", cls.company.id)]
         ).unlink()
         cls.env.company.datev_default_period = "week"
-        
+
         # Create demo data that tests rely on if not present
         cls._ensure_demo_data()
 
@@ -95,230 +95,282 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
     @classmethod
     def _ensure_customers(cls):
         """Create customer partners if they don't exist."""
-        if not hasattr(cls, 'customer_de') or not cls.customer_de:
-            cls.customer_de = cls.PartnerObj.create({
-                "name": "Customer DE Test",
-                "street": "Test Street 123",
-                "city": "Berlin",
-                "zip": "10115",
-                "country_id": cls.env.ref("base.de").id,
-                "is_company": True,
-            })
+        if not hasattr(cls, "customer_de") or not cls.customer_de:
+            cls.customer_de = cls.PartnerObj.create(
+                {
+                    "name": "Customer DE Test",
+                    "street": "Test Street 123",
+                    "city": "Berlin",
+                    "zip": "10115",
+                    "country_id": cls.env.ref("base.de").id,
+                    "is_company": True,
+                }
+            )
 
-        if not hasattr(cls, 'customer_eu') or not cls.customer_eu:
+        if not hasattr(cls, "customer_eu") or not cls.customer_eu:
             country_fr = cls.env.ref("base.fr", raise_if_not_found=False)
             if not country_fr:
-                country_fr = cls.env["res.country"].create({
-                    "name": "France",
-                    "code": "FR",
-                })
-            cls.customer_eu = cls.PartnerObj.create({
-                "name": "Customer EU Test",
-                "street": "Rue de Test 456",
-                "city": "Paris",
-                "zip": "75001",
-                "country_id": country_fr.id,
-                "is_company": True,
-            })
+                country_fr = cls.env["res.country"].create(
+                    {
+                        "name": "France",
+                        "code": "FR",
+                    }
+                )
+            cls.customer_eu = cls.PartnerObj.create(
+                {
+                    "name": "Customer EU Test",
+                    "street": "Rue de Test 456",
+                    "city": "Paris",
+                    "zip": "75001",
+                    "country_id": country_fr.id,
+                    "is_company": True,
+                }
+            )
 
-        if not hasattr(cls, 'customer_noneu') or not cls.customer_noneu:
+        if not hasattr(cls, "customer_noneu") or not cls.customer_noneu:
             country_us = cls.env.ref("base.us", raise_if_not_found=False)
             if not country_us:
-                country_us = cls.env["res.country"].create({
-                    "name": "United States",
-                    "code": "US",
-                })
-            cls.customer_noneu = cls.PartnerObj.create({
-                "name": "Customer NonEU Test",
-                "street": "Test Avenue 789",
-                "city": "New York",
-                "zip": "10001",
-                "country_id": country_us.id,
-                "is_company": True,
-            })
+                country_us = cls.env["res.country"].create(
+                    {
+                        "name": "United States",
+                        "code": "US",
+                    }
+                )
+            cls.customer_noneu = cls.PartnerObj.create(
+                {
+                    "name": "Customer NonEU Test",
+                    "street": "Test Avenue 789",
+                    "city": "New York",
+                    "zip": "10001",
+                    "country_id": country_us.id,
+                    "is_company": True,
+                }
+            )
 
     @classmethod
     def _ensure_vendors(cls):
         """Create vendor partners if they don't exist."""
-        if not hasattr(cls, 'vendor_de') or not cls.vendor_de:
-            cls.vendor_de = cls.PartnerObj.create({
-                "name": "Vendor DE Test",
-                "street": "Vendor Street 321",
-                "city": "Munich",
-                "zip": "80331",
-                "country_id": cls.env.ref("base.de").id,
-                "is_company": True,
-                "supplier_rank": 1,
-            })
+        if not hasattr(cls, "vendor_de") or not cls.vendor_de:
+            cls.vendor_de = cls.PartnerObj.create(
+                {
+                    "name": "Vendor DE Test",
+                    "street": "Vendor Street 321",
+                    "city": "Munich",
+                    "zip": "80331",
+                    "country_id": cls.env.ref("base.de").id,
+                    "is_company": True,
+                    "supplier_rank": 1,
+                }
+            )
 
-        if not hasattr(cls, 'vendor_eu') or not cls.vendor_eu:
+        if not hasattr(cls, "vendor_eu") or not cls.vendor_eu:
             country_fr = cls.env.ref("base.fr", raise_if_not_found=False)
             if not country_fr:
-                country_fr = cls.env["res.country"].create({
-                    "name": "France",
-                    "code": "FR",
-                })
-            cls.vendor_eu = cls.PartnerObj.create({
-                "name": "Vendor EU Test",
-                "street": "Rue Vendor 654",
-                "city": "Lyon",
-                "zip": "69001",
-                "country_id": country_fr.id,
-                "is_company": True,
-                "supplier_rank": 1,
-            })
+                country_fr = cls.env["res.country"].create(
+                    {
+                        "name": "France",
+                        "code": "FR",
+                    }
+                )
+            cls.vendor_eu = cls.PartnerObj.create(
+                {
+                    "name": "Vendor EU Test",
+                    "street": "Rue Vendor 654",
+                    "city": "Lyon",
+                    "zip": "69001",
+                    "country_id": country_fr.id,
+                    "is_company": True,
+                    "supplier_rank": 1,
+                }
+            )
 
-        if not hasattr(cls, 'vendor_noneu') or not cls.vendor_noneu:
+        if not hasattr(cls, "vendor_noneu") or not cls.vendor_noneu:
             country_us = cls.env.ref("base.us", raise_if_not_found=False)
             if not country_us:
-                country_us = cls.env["res.country"].create({
-                    "name": "United States",
-                    "code": "US",
-                })
-            cls.vendor_noneu = cls.PartnerObj.create({
-                "name": "Vendor NonEU Test",
-                "street": "Vendor Street 987",
-                "city": "Los Angeles",
-                "zip": "90001",
-                "country_id": country_us.id,
-                "is_company": True,
-                "supplier_rank": 1,
-            })
+                country_us = cls.env["res.country"].create(
+                    {
+                        "name": "United States",
+                        "code": "US",
+                    }
+                )
+            cls.vendor_noneu = cls.PartnerObj.create(
+                {
+                    "name": "Vendor NonEU Test",
+                    "street": "Vendor Street 987",
+                    "city": "Los Angeles",
+                    "zip": "90001",
+                    "country_id": country_us.id,
+                    "is_company": True,
+                    "supplier_rank": 1,
+                }
+            )
 
     @classmethod
     def _ensure_accounts(cls):
         """Create accounting accounts if they don't exist."""
-        if not hasattr(cls, 'account_income') or not cls.account_income:
-            cls.account_income = cls.AccountObj.create({
-                "name": "Test Income Account",
-                "code": "10000",
-                "account_type": "income",
-            })
+        if not hasattr(cls, "account_income") or not cls.account_income:
+            cls.account_income = cls.AccountObj.create(
+                {
+                    "name": "Test Income Account",
+                    "code": "10000",
+                    "account_type": "income",
+                }
+            )
 
-        if not hasattr(cls, 'account_expense') or not cls.account_expense:
-            cls.account_expense = cls.AccountObj.create({
-                "name": "Test Expense Account",
-                "code": "50000",
-                "account_type": "expense",
-            })
+        if not hasattr(cls, "account_expense") or not cls.account_expense:
+            cls.account_expense = cls.AccountObj.create(
+                {
+                    "name": "Test Expense Account",
+                    "code": "50000",
+                    "account_type": "expense",
+                }
+            )
 
     @classmethod
     def _ensure_products(cls):
         """Create products if they don't exist."""
-        if not hasattr(cls, 'consulting') or not cls.consulting:
-            cls.consulting = cls.ProductObj.create({
-                "name": "Consulting Service",
-                "default_code": "CONSULT-01",
-                "type": "service",
-                "list_price": 120.00,
-            })
+        if not hasattr(cls, "consulting") or not cls.consulting:
+            cls.consulting = cls.ProductObj.create(
+                {
+                    "name": "Consulting Service",
+                    "default_code": "CONSULT-01",
+                    "type": "service",
+                    "list_price": 120.00,
+                }
+            )
 
-        if not hasattr(cls, 'lease') or not cls.lease:
-            cls.lease = cls.ProductObj.create({
-                "name": "Lease Service",
-                "default_code": "LEASE-01",
-                "type": "service",
-                "list_price": 900.00,
-            })
+        if not hasattr(cls, "lease") or not cls.lease:
+            cls.lease = cls.ProductObj.create(
+                {
+                    "name": "Lease Service",
+                    "default_code": "LEASE-01",
+                    "type": "service",
+                    "list_price": 900.00,
+                }
+            )
 
     @classmethod
     def _ensure_analytic_accounts(cls):
         """Create analytic accounts if they don't exist."""
-        if not hasattr(cls, 'analytic_account_it') or not cls.analytic_account_it:
+        if not hasattr(cls, "analytic_account_it") or not cls.analytic_account_it:
             analytic_plan = cls.env["account.analytic.plan"].search([], limit=1)
             if not analytic_plan:
-                analytic_plan = cls.env["account.analytic.plan"].create({
-                    "name": "Test Plan",
-                })
+                analytic_plan = cls.env["account.analytic.plan"].create(
+                    {
+                        "name": "Test Plan",
+                    }
+                )
 
-            cls.analytic_account_it = cls.AnalyticAccountObj.create({
-                "name": "IT Department",
-                "plan_id": analytic_plan.id,
-            })
+            cls.analytic_account_it = cls.AnalyticAccountObj.create(
+                {
+                    "name": "IT Department",
+                    "plan_id": analytic_plan.id,
+                }
+            )
 
         if (
-            not hasattr(cls, 'analytic_account_office')
+            not hasattr(cls, "analytic_account_office")
             or not cls.analytic_account_office
         ):
             analytic_plan = cls.env["account.analytic.plan"].search([], limit=1)
             if not analytic_plan:
-                analytic_plan = cls.env["account.analytic.plan"].create({
-                    "name": "Test Plan",
-                })
+                analytic_plan = cls.env["account.analytic.plan"].create(
+                    {
+                        "name": "Test Plan",
+                    }
+                )
 
-            cls.analytic_account_office = cls.AnalyticAccountObj.create({
-                "name": "Office Department",
-                "plan_id": analytic_plan.id,
-            })
+            cls.analytic_account_office = cls.AnalyticAccountObj.create(
+                {
+                    "name": "Office Department",
+                    "plan_id": analytic_plan.id,
+                }
+            )
 
     @classmethod
     def _ensure_parent_child_customers(cls):
         """Create parent/child customer relationships if needed."""
-        if not hasattr(cls, 'parent_customer') or not cls.parent_customer:
-            cls.parent_customer = cls.PartnerObj.create({
-                "name": "Parent Customer Test",
-                "street": "Parent Street 111",
-                "city": "Hamburg",
-                "zip": "20095",
-                "country_id": cls.env.ref("base.de").id,
-                "is_company": True,
-            })
+        if not hasattr(cls, "parent_customer") or not cls.parent_customer:
+            cls.parent_customer = cls.PartnerObj.create(
+                {
+                    "name": "Parent Customer Test",
+                    "street": "Parent Street 111",
+                    "city": "Hamburg",
+                    "zip": "20095",
+                    "country_id": cls.env.ref("base.de").id,
+                    "is_company": True,
+                }
+            )
 
-        if not hasattr(cls, 'child_customer') or not cls.child_customer:
-            cls.child_customer = cls.PartnerObj.create({
-                "name": "Child Customer Test",
-                "parent_id": cls.parent_customer.id,
-                "street": "Child Street 222",
-                "city": "Hamburg",
-                "zip": "20095",
-                "country_id": cls.env.ref("base.de").id,
-                "is_company": False,
-            })
+        if not hasattr(cls, "child_customer") or not cls.child_customer:
+            cls.child_customer = cls.PartnerObj.create(
+                {
+                    "name": "Child Customer Test",
+                    "parent_id": cls.parent_customer.id,
+                    "street": "Child Street 222",
+                    "city": "Hamburg",
+                    "zip": "20095",
+                    "country_id": cls.env.ref("base.de").id,
+                    "is_company": False,
+                }
+            )
 
     @classmethod
     def _ensure_attachments(cls):
         """Create dummy PDF attachments for vendor invoices."""
-        if not hasattr(cls, 'inv_attach_de') or not cls.inv_attach_de:
-            cls.inv_attach_de = cls.AttachmentObj.create({
-                "name": "invoice_de.pdf",
-                "datas": base64.b64encode(b"Test PDF content"),
-                "mimetype": "application/pdf",
-            })
+        if not hasattr(cls, "inv_attach_de") or not cls.inv_attach_de:
+            cls.inv_attach_de = cls.AttachmentObj.create(
+                {
+                    "name": "invoice_de.pdf",
+                    "datas": base64.b64encode(b"Test PDF content"),
+                    "mimetype": "application/pdf",
+                }
+            )
 
-        if not hasattr(cls, 'inv_attach_eu') or not cls.inv_attach_eu:
-            cls.inv_attach_eu = cls.AttachmentObj.create({
-                "name": "invoice_eu.pdf",
-                "datas": base64.b64encode(b"Test PDF content"),
-                "mimetype": "application/pdf",
-            })
+        if not hasattr(cls, "inv_attach_eu") or not cls.inv_attach_eu:
+            cls.inv_attach_eu = cls.AttachmentObj.create(
+                {
+                    "name": "invoice_eu.pdf",
+                    "datas": base64.b64encode(b"Test PDF content"),
+                    "mimetype": "application/pdf",
+                }
+            )
 
-        if not hasattr(cls, 'inv_attach_noneu') or not cls.inv_attach_noneu:
-            cls.inv_attach_noneu = cls.AttachmentObj.create({
-                "name": "invoice_noneu.pdf",
-                "datas": base64.b64encode(b"Test PDF content"),
-                "mimetype": "application/pdf",
-            })
+        if not hasattr(cls, "inv_attach_noneu") or not cls.inv_attach_noneu:
+            cls.inv_attach_noneu = cls.AttachmentObj.create(
+                {
+                    "name": "invoice_noneu.pdf",
+                    "datas": base64.b64encode(b"Test PDF content"),
+                    "mimetype": "application/pdf",
+                }
+            )
 
-        if not hasattr(cls, 'refund_attach_de') or not cls.refund_attach_de:
-            cls.refund_attach_de = cls.AttachmentObj.create({
-                "name": "refund_de.pdf",
-                "datas": base64.b64encode(b"Test PDF content"),
-                "mimetype": "application/pdf",
-            })
+        if not hasattr(cls, "refund_attach_de") or not cls.refund_attach_de:
+            cls.refund_attach_de = cls.AttachmentObj.create(
+                {
+                    "name": "refund_de.pdf",
+                    "datas": base64.b64encode(b"Test PDF content"),
+                    "mimetype": "application/pdf",
+                }
+            )
 
-        if not hasattr(cls, 'refund_attach_eu') or not cls.refund_attach_eu:
-            cls.refund_attach_eu = cls.AttachmentObj.create({
-                "name": "refund_eu.pdf",
-                "datas": base64.b64encode(b"Test PDF content"),
-                "mimetype": "application/pdf",
-            })
+        if not hasattr(cls, "refund_attach_eu") or not cls.refund_attach_eu:
+            cls.refund_attach_eu = cls.AttachmentObj.create(
+                {
+                    "name": "refund_eu.pdf",
+                    "datas": base64.b64encode(b"Test PDF content"),
+                    "mimetype": "application/pdf",
+                }
+            )
 
-        if not hasattr(cls, 'refund_attach_noneu') or not cls.refund_attach_noneu:
-            cls.refund_attach_noneu = cls.AttachmentObj.create({
-                "name": "refund_noneu.pdf",
-                "datas": base64.b64encode(b"Test PDF content"),
-                "mimetype": "application/pdf",
-            })
+        if not hasattr(cls, "refund_attach_noneu") or not cls.refund_attach_noneu:
+            cls.refund_attach_noneu = cls.AttachmentObj.create(
+                {
+                    "name": "refund_noneu.pdf",
+                    "datas": base64.b64encode(b"Test PDF content"),
+                    "mimetype": "application/pdf",
+                }
+            )
 
     def test_01_out_invoice_de_datev_export(self):
         return super().test_01_out_invoice_de_datev_export()
