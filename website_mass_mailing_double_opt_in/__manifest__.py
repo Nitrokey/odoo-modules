@@ -4,7 +4,7 @@
     "name": "Website Mass Mailing Double opt-in",
     "version": "18.0.1.0.0",
     "category": "Website",
-    "author": "Nitrokey GmbH",
+    "author": "Nitrokey GmbH, Odoo Community Association (OCA)",
     "website": "https://github.com/nitrokey/odoo-modules",
     "license": "AGPL-3",
     "summary": """

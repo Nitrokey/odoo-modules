@@ -1,9 +1,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import logging
-import uuid
 
-from odoo import tools
+from odoo import _
 from odoo.http import Controller, request, route
 
 from odoo.addons.mass_mailing.controllers.main import MassMailController
@@ -12,69 +11,35 @@ _logger = logging.getLogger(__name__)
 
 
 class MassMailController(MassMailController):
-    @staticmethod
-    def subscribe_to_newsletter(
-        subscription_type, value, list_id, fname, address_name=None
-    ):
-        subscription = request.env["mailing.subscription"].sudo()
-        ContactSubscription = request.env["mailing.subscription"].sudo()
-        Contacts = request.env["mailing.contact"].sudo()
+    @route("/website_mass_mailing/subscribe", type="json", website=True, auth="public")
+    def subscribe(self, list_id, value, subscription_type, **post):
+        if not request.env["ir.http"]._verify_request_recaptcha_token(
+            "website_mass_mailing_subscribe"
+        ):
+            return {
+                "toast_type": "danger",
+                "toast_content": _("Suspicious activity detected by Google reCaptcha."),
+            }
+
+        fname = self._get_fname(subscription_type)
+        # Customisation Start
         if subscription_type == "email":
-            name, value = tools.parse_contact_from_email(value)
-            if not name:
-                name = address_name
-        elif subscription_type == "mobile":
-            name = value
-
-        subscription = ContactSubscription.search(
-            [("list_id", "=", int(list_id)), (f"contact_id.{fname}", "=", value)],
-            limit=1,
-        )
-        if not subscription:
-            # inline add_to_list as we've already called half of it
-            # Customisation Start
-            contact_id = Contacts.search([(fname, "=", value)], limit=1)
-            language = request.lang.code
-            if subscription_type == "email":
-                created = False
-                if not contact_id:
-                    contact_id = Contacts.create({"name": name, fname: value})
-                    created = True
-                domain = [("contact_id", "=", contact_id.id), ("list_id", "=", list_id)]
-                mailing_list_contact = ContactSubscription.search(domain)
-
-                if not mailing_list_contact:
-                    created = True
-                    mailing_list_contact = ContactSubscription.create(
-                        {
-                            "contact_id": contact_id.id,
-                            "list_id": list_id,
-                            "opt_out": True,
-                        }
-                    )
-
-                created = True
-                if created:
-                    mailing_list_contact.write(
-                        {
-                            "opt_out": True,
-                            "access_token": str(uuid.uuid4().hex),
-                            "mail_language": language,
-                        }
-                    )
-                    template = mailing_list_contact.double_opt_in_mail_template().sudo()
-                    template.with_context(lang=language).send_mail(
-                        mailing_list_contact.id, force_send=True
-                    )
-            else:
-                # Customisation End
-                ContactSubscription.create(
-                    {"contact_id": contact_id.id, "list_id": int(list_id)}
+            subscription = request.env["mailing.subscription"].sudo()
+            # add email to session
+            request.session["mass_mailing_email"] = (
+                subscription.double_opt_in_subscribe(
+                    list_id,
+                    value,
+                    language=post.get("language") or request.lang.code,
                 )
-        elif subscription.opt_out:
-            subscription.opt_out = False
-        # add email to session
-        request.session[f"mass_mailing_{fname}"] = value
+            )
+        else:
+            self.subscribe_to_newsletter(subscription_type, value, list_id, fname)
+        # Customisation End
+        return {
+            "toast_type": "success",
+            "toast_content": _("Thanks for subscribing!"),
+        }
 
 
 class ConsentController(Controller):
@@ -129,8 +94,14 @@ class ConsentController(Controller):
 
             # Send email with explicit user context for template rendering
             language = mailing_list_contact.mail_language or request.lang.code
-            template.sudo().with_context(lang=language).send_mail(
-                mailing_list_contact.id, force_send=True
+            if not request.env.user:
+                request.env.user = mailing_list_contact.create_uid
+            template.with_context(
+                lang=language,
+            ).send_mail(
+                mailing_list_contact.id,
+                force_send=True,
+                email_values={"email_from": mailing_list_contact.contact_id.email},
             )
 
             return self.consent_success()

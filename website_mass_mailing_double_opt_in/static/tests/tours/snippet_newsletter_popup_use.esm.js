@@ -1,5 +1,3 @@
-/** @odoo-module */
-
 import {registry} from "@web/core/registry";
 
 registry.category("web_tour.tours").add("snippet_newsletter_popup_use_double_opt", {

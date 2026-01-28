@@ -4,9 +4,11 @@
     <template id="invalid_subscription_confirmation_template">
         <t t-call="website.layout">
             <div class="container">
-                <span style="text-align: center;">
-                    <h2 style="color: red;">This confirmation link is invalid.</h2>
-                </span>
+                <div class="row">
+                    <span>
+                        <h2>This confirmation link is invalid.</h2>
+                    </span>
+                </div>
             </div>
         </t>
     </template>
