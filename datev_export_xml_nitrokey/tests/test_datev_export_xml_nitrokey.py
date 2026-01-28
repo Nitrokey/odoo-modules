@@ -1,8 +1,11 @@
 import base64
 import io
 import zipfile
+from datetime import timedelta
 
 from lxml import etree
+
+from odoo import fields
 
 from odoo.addons.datev_export_xml.tests import test_datev_export
 
@@ -10,23 +13,88 @@ from odoo.addons.datev_export_xml.tests import test_datev_export
 class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
     @classmethod
     def setUpClass(cls):
-        super().setUpClass()
+        # Call BaseCommon setup, not the parent TestDatevExport
+        # to avoid loading missing demo data
+        super(test_datev_export.TestDatevExport, cls).setUpClass()
+        
+        # Now set up all the required attributes that parent class expects
+        cls.company = cls.env.company
+        cls.JournalObj = cls.env["account.journal"]
+        cls.sale_journal = cls.JournalObj.search(
+            [
+                ("type", "=", "sale"),
+                ("company_id", "=", cls.company.id),
+            ],
+            limit=1,
+        )
+        if not cls.sale_journal:
+            cls.sale_journal = cls.JournalObj.create(
+                {
+                    "name": "Test sale journal",
+                    "code": "sale",
+                    "type": "sale",
+                    "company_id": cls.company.id,
+                }
+            )
+        cls.purchase_journal = cls.JournalObj.search(
+            [
+                ("type", "=", "purchase"),
+                ("company_id", "=", cls.company.id),
+            ],
+            limit=1,
+        )
+        if not cls.purchase_journal:
+            cls.purchase_journal = cls.JournalObj.create(
+                {
+                    "name": "Test purchase journal",
+                    "code": "purchase",
+                    "type": "purchase",
+                    "company_id": cls.company.id,
+                }
+            )
+        cls.AccountObj = cls.env["account.account"]
+        cls.PartnerObj = cls.env["res.partner"]
+        cls.AnalyticAccountObj = cls.env["account.analytic.account"]
+        cls.ProductObj = cls.env["product.product"]
+        cls.today = fields.Date.today()
+        cls.InvoiceObj = cls.env["account.move"]
+        cls.InvoiceLineObj = cls.env["account.move.line"]
+        cls.AttachmentObj = cls.env["ir.attachment"]
+        cls.DatevExportObj = cls.env["datev.export.xml"]
+
+        # Dates setup
+        cls.refund_date = cls.today - timedelta(days=55)
+        cls.start_date = cls.today - timedelta(days=34)
+        cls.end_date = cls.today - timedelta(days=32)
+        cls.InvoiceObj.with_context(force_delete=True).search(
+            [("company_id", "=", cls.company.id)]
+        ).unlink()
+        cls.env.company.datev_default_period = "week"
+        
         # Create demo data that tests rely on if not present
         cls._ensure_demo_data()
 
     @classmethod
     def _ensure_demo_data(cls):
         """Create all necessary demo data for tests to work with empty DB."""
-        # Check if demo data already exists, if not create it
-        
-        # Create countries if they don't exist
+        cls._ensure_countries()
+        cls._ensure_customers()
+        cls._ensure_vendors()
+        cls._ensure_accounts()
+        cls._ensure_products()
+        cls._ensure_analytic_accounts()
+        cls._ensure_parent_child_customers()
+        cls._ensure_attachments()
+
+    @classmethod
+    def _ensure_countries(cls):
+        """Ensure required countries exist."""
         if not cls.env.ref("base.de", raise_if_not_found=False):
-            cls.env["res.country"].create({
-                "name": "Germany",
-                "code": "DE",
-            })
-        
-        # Create customers if they don't exist
+            cls.env["res.country"].create({"name": "Germany", "code": "DE"})
+
+    @classmethod
+    def _ensure_customers(cls):
+        """Create customer partners if they don't exist."""
         if not hasattr(cls, 'customer_de') or not cls.customer_de:
             cls.customer_de = cls.PartnerObj.create({
                 "name": "Customer DE Test",
@@ -36,9 +104,8 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 "country_id": cls.env.ref("base.de").id,
                 "is_company": True,
             })
-        
+
         if not hasattr(cls, 'customer_eu') or not cls.customer_eu:
-            # Get or create France
             country_fr = cls.env.ref("base.fr", raise_if_not_found=False)
             if not country_fr:
                 country_fr = cls.env["res.country"].create({
@@ -53,9 +120,8 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 "country_id": country_fr.id,
                 "is_company": True,
             })
-        
+
         if not hasattr(cls, 'customer_noneu') or not cls.customer_noneu:
-            # Get or create USA
             country_us = cls.env.ref("base.us", raise_if_not_found=False)
             if not country_us:
                 country_us = cls.env["res.country"].create({
@@ -70,8 +136,10 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 "country_id": country_us.id,
                 "is_company": True,
             })
-        
-        # Create vendors if they don't exist
+
+    @classmethod
+    def _ensure_vendors(cls):
+        """Create vendor partners if they don't exist."""
         if not hasattr(cls, 'vendor_de') or not cls.vendor_de:
             cls.vendor_de = cls.PartnerObj.create({
                 "name": "Vendor DE Test",
@@ -82,7 +150,7 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 "is_company": True,
                 "supplier_rank": 1,
             })
-        
+
         if not hasattr(cls, 'vendor_eu') or not cls.vendor_eu:
             country_fr = cls.env.ref("base.fr", raise_if_not_found=False)
             if not country_fr:
@@ -99,7 +167,7 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 "is_company": True,
                 "supplier_rank": 1,
             })
-        
+
         if not hasattr(cls, 'vendor_noneu') or not cls.vendor_noneu:
             country_us = cls.env.ref("base.us", raise_if_not_found=False)
             if not country_us:
@@ -116,23 +184,27 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 "is_company": True,
                 "supplier_rank": 1,
             })
-        
-        # Create accounts if they don't exist
+
+    @classmethod
+    def _ensure_accounts(cls):
+        """Create accounting accounts if they don't exist."""
         if not hasattr(cls, 'account_income') or not cls.account_income:
             cls.account_income = cls.AccountObj.create({
                 "name": "Test Income Account",
                 "code": "10000",
                 "account_type": "income",
             })
-        
+
         if not hasattr(cls, 'account_expense') or not cls.account_expense:
             cls.account_expense = cls.AccountObj.create({
                 "name": "Test Expense Account",
                 "code": "50000",
                 "account_type": "expense",
             })
-        
-        # Create products if they don't exist
+
+    @classmethod
+    def _ensure_products(cls):
+        """Create products if they don't exist."""
         if not hasattr(cls, 'consulting') or not cls.consulting:
             cls.consulting = cls.ProductObj.create({
                 "name": "Consulting Service",
@@ -140,7 +212,7 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 "type": "service",
                 "list_price": 120.00,
             })
-        
+
         if not hasattr(cls, 'lease') or not cls.lease:
             cls.lease = cls.ProductObj.create({
                 "name": "Lease Service",
@@ -148,34 +220,40 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 "type": "service",
                 "list_price": 900.00,
             })
-        
-        # Create analytic accounts if they don't exist
+
+    @classmethod
+    def _ensure_analytic_accounts(cls):
+        """Create analytic accounts if they don't exist."""
         if not hasattr(cls, 'analytic_account_it') or not cls.analytic_account_it:
-            # Get or create analytic plan
             analytic_plan = cls.env["account.analytic.plan"].search([], limit=1)
             if not analytic_plan:
                 analytic_plan = cls.env["account.analytic.plan"].create({
                     "name": "Test Plan",
                 })
-            
+
             cls.analytic_account_it = cls.AnalyticAccountObj.create({
                 "name": "IT Department",
                 "plan_id": analytic_plan.id,
             })
-        
-        if not hasattr(cls, 'analytic_account_office') or not cls.analytic_account_office:
+
+        if (
+            not hasattr(cls, 'analytic_account_office')
+            or not cls.analytic_account_office
+        ):
             analytic_plan = cls.env["account.analytic.plan"].search([], limit=1)
             if not analytic_plan:
                 analytic_plan = cls.env["account.analytic.plan"].create({
                     "name": "Test Plan",
                 })
-            
+
             cls.analytic_account_office = cls.AnalyticAccountObj.create({
                 "name": "Office Department",
                 "plan_id": analytic_plan.id,
             })
-        
-        # Create parent/child customers if needed
+
+    @classmethod
+    def _ensure_parent_child_customers(cls):
+        """Create parent/child customer relationships if needed."""
         if not hasattr(cls, 'parent_customer') or not cls.parent_customer:
             cls.parent_customer = cls.PartnerObj.create({
                 "name": "Parent Customer Test",
@@ -185,7 +263,7 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 "country_id": cls.env.ref("base.de").id,
                 "is_company": True,
             })
-        
+
         if not hasattr(cls, 'child_customer') or not cls.child_customer:
             cls.child_customer = cls.PartnerObj.create({
                 "name": "Child Customer Test",
@@ -196,43 +274,45 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 "country_id": cls.env.ref("base.de").id,
                 "is_company": False,
             })
-        
-        # Create dummy attachments for vendor invoices if they don't exist
+
+    @classmethod
+    def _ensure_attachments(cls):
+        """Create dummy PDF attachments for vendor invoices."""
         if not hasattr(cls, 'inv_attach_de') or not cls.inv_attach_de:
             cls.inv_attach_de = cls.AttachmentObj.create({
                 "name": "invoice_de.pdf",
                 "datas": base64.b64encode(b"Test PDF content"),
                 "mimetype": "application/pdf",
             })
-        
+
         if not hasattr(cls, 'inv_attach_eu') or not cls.inv_attach_eu:
             cls.inv_attach_eu = cls.AttachmentObj.create({
                 "name": "invoice_eu.pdf",
                 "datas": base64.b64encode(b"Test PDF content"),
                 "mimetype": "application/pdf",
             })
-        
+
         if not hasattr(cls, 'inv_attach_noneu') or not cls.inv_attach_noneu:
             cls.inv_attach_noneu = cls.AttachmentObj.create({
                 "name": "invoice_noneu.pdf",
                 "datas": base64.b64encode(b"Test PDF content"),
                 "mimetype": "application/pdf",
             })
-        
+
         if not hasattr(cls, 'refund_attach_de') or not cls.refund_attach_de:
             cls.refund_attach_de = cls.AttachmentObj.create({
                 "name": "refund_de.pdf",
                 "datas": base64.b64encode(b"Test PDF content"),
                 "mimetype": "application/pdf",
             })
-        
+
         if not hasattr(cls, 'refund_attach_eu') or not cls.refund_attach_eu:
             cls.refund_attach_eu = cls.AttachmentObj.create({
                 "name": "refund_eu.pdf",
                 "datas": base64.b64encode(b"Test PDF content"),
                 "mimetype": "application/pdf",
             })
-        
+
         if not hasattr(cls, 'refund_attach_noneu') or not cls.refund_attach_noneu:
             cls.refund_attach_noneu = cls.AttachmentObj.create({
                 "name": "refund_noneu.pdf",
