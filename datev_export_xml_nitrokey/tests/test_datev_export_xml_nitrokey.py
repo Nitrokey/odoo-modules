@@ -457,15 +457,7 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
             }
         )
 
-        # Create an account with code >= 10000 to satisfy DATEV XSD validation
-        valid_account = self.env["account.account"].create(
-            {
-                "name": "Test Income Account",
-                "code": "10000",
-                "account_type": "income",
-            }
-        )
-
+        # Use the existing income account (already has code >= 10000)
         invoice = self.InvoiceObj.create(
             {
                 "partner_id": valid_partner.id,
@@ -484,7 +476,7 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                             "quantity": 1.0,
                             "price_unit": 100.00,
                             "tax_ids": [(6, 0, tax.ids)],
-                            "account_id": valid_account.id,
+                            "account_id": self.account_income.id,
                             "analytic_distribution": {self.analytic_account_it.id: 100},
                         },
                     ),
