@@ -1,0 +1,16 @@
+<odoo>
+    <template
+        id="export_invoice_line"
+        inherit_id="datev_export_xml.export_invoice_line"
+    >
+        <invoice_item_list position="before">
+            <t t-if="prices['total_excluded'] != 0" />
+        </invoice_item_list>
+        <xpath expr="./t[@t-if]" position="inside">
+            <xpath expr="./invoice_item_list" position="move" />
+            <xpath expr="./invoice_item_list" position="move" />
+            <xpath expr="./invoice_item_list" position="move" />
+            <xpath expr="./invoice_item_list" position="move" />
+        </xpath>
+    </template>
+</odoo>
