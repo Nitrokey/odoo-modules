@@ -67,9 +67,6 @@ class Website(WebHome):
         if page:
             return page.with_context(lang=lang_code).url
 
-        # Return original My URL with Default language prefix if present
-        # if default_lang == lang_url and clean_url.startswith("/my/"):
-        #     return clean_url
         # Return original URL without default language
         if default_lang == lang_url and not clean_url.startswith("/my/"):
             return src_url
