@@ -13,7 +13,7 @@
     ],
     "assets": {
         "mail_livekit.assets_livekit": [
-            "mail_livekit/static/lib/livekit/livekit-client.umd.js",
+            "mail_livekit/static/lib/livekit/livekit-client.umd.min.js",
             "mail_livekit/static/src/discuss/livekit_service.js",
             "mail_livekit/static/src/discuss/livekit_adapter.js",
             "mail_livekit/static/src/discuss/rtc_livekit_patch.js",
