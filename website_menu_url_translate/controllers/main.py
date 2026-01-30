@@ -27,26 +27,27 @@ class Website(WebHome):
         request.update_context(lang=lang_code)
 
         # Get translated page URL (if available)
-        translated_url = self._get_translated_url(r, lang_code)
+        translated_url = self._get_translated_url(
+            r, lang_code, lang_data.url_code, default_lang
+        )
 
-        # Build redirect target
-        if translated_url in [f"/{lang}", "/"]:
-            redirect_url = f"/{lang}" if lang != default_lang else translated_url
-        else:
-            redirect_url = (
-                f"/{lang}{translated_url}" if lang != default_lang else translated_url
-            )
+        redirect_url = (
+            f"/{lang}{translated_url}" if lang != default_lang else translated_url
+        )
 
         redirect = request.redirect(redirect_url)
         redirect.set_cookie("frontend_lang", lang_code)
         return redirect
 
-    def _get_translated_url(self, src_url, lang_code):
+    def _get_translated_url(self, src_url, lang_code, lang_url, default_lang):
         """Return translated page URL for the given language."""
         web_page = request.env["website.page"].sudo()
 
         # Handle empty URL
         if not src_url:
+            return "/"
+        # Handle empty URL with Language
+        if src_url in [f"/{lang_url}", "/"]:
             return "/"
 
         # Clean URL by removing language prefix (e.g. /de/contactus → /contactus)
@@ -66,9 +67,15 @@ class Website(WebHome):
         if page:
             return page.with_context(lang=lang_code).url
 
+        # Return original My URL with Default language prefix if present
+        # if default_lang == lang_url and clean_url.startswith("/my/"):
+        #     return clean_url
+        # Return original URL without default language
+        if default_lang == lang_url and not clean_url.startswith("/my/"):
+            return src_url
         # If no page found and URL starts with /my/, it's a controller route
-        # Return original URL without language prefix if present
-        if clean_url.startswith("/my/"):
+        # Return original My URL without language prefix if present
+        elif default_lang != lang_url and clean_url.startswith("/my/"):
             return clean_url
 
         # For other non-website pages, return clean URL
