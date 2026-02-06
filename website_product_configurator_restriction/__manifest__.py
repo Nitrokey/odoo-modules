@@ -2,9 +2,9 @@
     "name": "Website Product Configurator Restriction",
     "version": "18.0.1.0.0",
     "summary": """Website configure products restriction in e-shop""",
-    "author": "Pledra, Odoo Community Association (OCA)",
+    "author": "Nitrokey GmbH, Odoo Community Association (OCA)",
+    "website": "https://github.com/nitrokey/odoo-modules",
     "license": "AGPL-3",
-    "website": "https://github.com/OCA/product-configurator",
     "category": "website",
     "depends": [
         "website_sale",
@@ -19,11 +19,9 @@
     "application": True,
     "installable": True,
     "development_status": "Beta",
-    "maintainers": ["PCatinean"],
     "assets": {
         "web.assets_frontend": [
             "website_product_configurator_restriction/static/src/js/variant_mixin.js",
-            "website_product_configurator_restriction/static/src/js/website_sale.js",
         ],
         # "web.assets_tests": [
         #     "website_product_configurator_restriction/static/tests/tours/**/*"

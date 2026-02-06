@@ -1,13 +1,17 @@
-odoo.define("website_product_configurator_restriction.tour_configuration_restriction", function(require) {
-    "use strict";
+odoo.define(
+    "website_product_configurator_restriction.tour_configuration_restriction",
+    function (require) {
+        "use strict";
 
-    var tour = require("web_tour.tour");
-    const tourUtils = require('website_sale.tour_utils');
+        var tour = require("web_tour.tour");
+        const tourUtils = require("website_sale.tour_utils");
 
-    tour.register("website_configurator_restriction", {
-            test: true,
-            url: "/shop",
-        },
+        tour.register(
+            "website_configurator_restriction",
+            {
+                test: true,
+                url: "/shop",
+            },
             [
                 {
                     content: "search 2 series",
@@ -48,7 +52,8 @@ odoo.define("website_product_configurator_restriction.tour_configuration_restric
                 },
                 {
                     content: "click to select Transmission",
-                    trigger: '.js_variant_change[data-value_name="Automatic Sport (Steptronic)"]',
+                    trigger:
+                        '.js_variant_change[data-value_name="Automatic Sport (Steptronic)"]',
                 },
                 {
                     content: "click to select Options",
@@ -56,7 +61,7 @@ odoo.define("website_product_configurator_restriction.tour_configuration_restric
                 },
                 {
                     content: "Click on add to cart",
-                    trigger: '#add_to_cart',
+                    trigger: "#add_to_cart",
                 },
                 tourUtils.goToCart(),
                 {

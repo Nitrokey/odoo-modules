@@ -26,7 +26,7 @@ class SaleOrder(models.Model):
         product = product_with_context.browse(int(product_id))
 
         if not product.product_tmpl_id.config_ok:
-            return super(SaleOrder, self)._cart_update(
+            return super()._cart_update(
                 product_id=product_id,
                 line_id=line_id,
                 add_qty=add_qty,
@@ -191,7 +191,7 @@ class SaleOrder(models.Model):
 
     def _cart_find_product_line(self, product_id=None, line_id=None, **kwargs):
         """Include Config session in search."""
-        order_line = super(SaleOrder, self)._cart_find_product_line(
+        order_line = super()._cart_find_product_line(
             product_id=product_id, line_id=line_id, **kwargs
         )
         # Onchange quantity in cart
@@ -212,12 +212,12 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     def create(self, vals):
-        res = super(SaleOrderLine, self).create(vals)
+        res = super().create(vals)
         return res
 
     def _get_real_price_currency(self, product, rule_id, qty, uom, pricelist_id):
         if not product.config_ok:
-            return super(SaleOrderLine, self)._get_real_price_currency(
+            return super()._get_real_price_currency(
                 product=product,
                 rule_id=rule_id,
                 qty=qty,
