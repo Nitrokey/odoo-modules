@@ -1,22 +1,20 @@
-from ..tests.test_website_product_configurator_values import (
-    TestProductConfiguratorValues,
+from ..tests.test_website_product_configurator_restriction import (
+    ProductConfiguratorRestrictionTestCases,
 )
 
 
-class TestSaleOrder(TestProductConfiguratorValues):
+class TestSaleOrder(ProductConfiguratorRestrictionTestCases):
     def setUp(self):
         super().setUp()
         self.partner = self.env.ref("base.res_partner_1")
-        self.product = self.env["product.product"].create({"name": "test product"})
+        self.product = self.env["product.product"].create({"name": "Test Product"})
         self.product_uom_unit = self.env.ref("uom.product_uom_unit")
-        self.pricelist = self.env.ref("product.list0")
         self.sale_order = self.env["sale.order"].create(
             {
-                "name": "test SO",
+                "name": "Test SO",
                 "partner_id": self.partner.id,
                 "partner_invoice_id": self.partner.id,
                 "partner_shipping_id": self.partner.id,
-                "pricelist_id": self.pricelist.id,
                 "order_line": [
                     (
                         0,
@@ -99,30 +97,3 @@ class TestSaleOrder(TestProductConfiguratorValues):
             1,
             "If wrong value is added then Order Line quantity as it is.",
         )
-
-    def test_get_real_price_currency(self):
-        price, rule_id = self.sale_order.pricelist_id.get_product_price_rule(
-            self.sale_order.order_line.product_id,
-            self.sale_order.order_line.product_uom_qty,
-            self.sale_order.partner_id,
-        )
-        self.sale_order.order_line._get_real_price_currency(
-            self.sale_order.order_line.product_id,
-            rule_id,
-            self.sale_order.order_line.product_uom_qty,
-            self.sale_order.order_line.product_uom,
-            self.sale_order.pricelist_id.id,
-        )
-        self.assertFalse(
-            self.product.product_tmpl_id.config_ok, "product is config_ok True"
-        )
-        self.product.product_tmpl_id.write({"config_ok": True})
-        price, currency = self.sale_order.order_line._get_real_price_currency(
-            self.sale_order.order_line.product_id,
-            rule_id,
-            self.sale_order.order_line.product_uom_qty,
-            self.sale_order.order_line.product_uom,
-            self.sale_order.pricelist_id.id,
-        )
-        self.assertEqual(price, 0.0)
-        self.assertEqual(currency, self.env.ref("base.USD"))

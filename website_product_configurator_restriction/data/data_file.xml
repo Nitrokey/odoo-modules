@@ -18,12 +18,8 @@
         <field name="name">Create Product Variants</field>
         <field name="model_id" ref="product.model_product_template" />
         <field name="binding_model_id" ref="product.model_product_template" />
-        <field name="binding_view_types">list,form</field>
-        <field eval="False" name="active" />
+        <field name="binding_view_types">form,list</field>
         <field name="state">code</field>
-        <field name="code">
-            if records:
-            action = records._create_dynamic_variant_ids()
-        </field>
+        <field name="code">action = records._create_dynamic_variant_ids()</field>
     </record>
 </odoo>

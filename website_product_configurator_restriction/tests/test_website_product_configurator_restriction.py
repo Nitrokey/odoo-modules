@@ -2,12 +2,10 @@ from datetime import timedelta
 
 from odoo import fields
 
-from odoo.addons.product_configurator.tests import test_product_configurator_test_cases
+from odoo.addons.product_configurator.tests.common import ProductConfiguratorTestCases
 
 
-class TestProductConfiguratorValues(
-    test_product_configurator_test_cases.ProductConfiguratorTestCases
-):
+class ProductConfiguratorRestrictionTestCases(ProductConfiguratorTestCases):
     def setUp(self):
         super().setUp()
         self.productConfigStepLine = self.env["product.config.step.line"]

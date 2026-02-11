@@ -1,9 +1,9 @@
-from ..tests.test_website_product_configurator_values import (
-    TestProductConfiguratorValues,
+from ..tests.test_website_product_configurator_restriction import (
+    ProductConfiguratorRestrictionTestCases,
 )
 
 
-class TestProductConfig(TestProductConfiguratorValues):
+class TestProductConfig(ProductConfiguratorRestrictionTestCases):
     def test_remove_inactive_config_sessions(self):
         self.session_id.remove_inactive_config_sessions()
         sessions_to_remove = self.productConfigSession.search(

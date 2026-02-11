@@ -1,6 +1,6 @@
 import logging
 
-from odoo import http
+from odoo import Command, http
 from odoo.http import request
 from odoo.tools.safe_eval import safe_eval
 
@@ -97,9 +97,9 @@ class ProductConfigWebsiteRestriction(WebsiteSale):
             "product_tmpl_id": product_tmpl_id.id,
             "product_preset_id": config_session_id.product_preset_id.id,
             "price": config_session_id.price,
-            "value_ids": [[6, False, config_session_id.value_ids.ids]],
+            "value_ids": [Command.set(config_session_id.value_ids.ids)],
             "attribute_line_ids": [
-                [4, line.id, False] for line in product_tmpl_id.attribute_line_ids
+                Command.link(line.id) for line in product_tmpl_id.attribute_line_ids
             ],
         }
         config_fields.update(form_vals)
@@ -131,8 +131,8 @@ class ProductConfigWebsiteRestriction(WebsiteSale):
         config_vals = {}
         for attr_line in product_tmpl_id.attribute_line_ids.sorted():
             attribute_id = attr_line.attribute_id.id
-            field_name = "%s%s" % (field_prefix, attribute_id)
-            custom_field = "%s%s" % (custom_field_prefix, attribute_id)
+            field_name = f"{field_prefix}{attribute_id}"
+            custom_field = f"{custom_field_prefix}{attribute_id}"
 
             field_value = values.get(field_name, [])
             field_value = [int(s) for s in field_value]
@@ -170,7 +170,8 @@ class ProductConfigWebsiteRestriction(WebsiteSale):
             if value_records:
                 attribute = value_records[0].attribute_id
             else:
-                # If no values, infer attribute ID from the key (e.g. '__attribute_2' → 2)
+                # If no values, infer attribute ID from the key
+                # (e.g. '__attribute_2' → 2)
                 try:
                     attribute_id = int(key.replace("__attribute_", ""))
                     attribute = request.env["product.attribute"].browse(attribute_id)
@@ -192,9 +193,15 @@ class ProductConfigWebsiteRestriction(WebsiteSale):
         ["/check/configurator/restriction"], type="json", auth="user", methods=["POST"]
     )
     def check_exist_product(
-        self, product_template_id=False, attribute_id=False, ptav_id=False, form_data={}
+        self,
+        product_template_id=False,
+        attribute_id=False,
+        ptav_id=False,
+        form_data=None,
     ):
         """bypass custom value product create time from sale product configurator"""
+        if form_data is None:
+            form_data = {}
         product_configurator_obj = request.env["product.configurator"]
         product_template_id = request.env["product.template"].browse(
             int(product_template_id)
@@ -211,9 +218,11 @@ class ProductConfigWebsiteRestriction(WebsiteSale):
             config_session_id = self.get_config_session(
                 product_tmpl_id=product_template_id
             )
-        except Exception:
+        except Exception as e:
+            _logger.error("Error while configuration session: %s", e)
             pass
 
+        form_domain = {}
         if config_session_id:
             # prepare dictionary in formate needed to pass in onchage
             form_values = self.get_restrict_orm_form_vals(
@@ -226,7 +235,7 @@ class ProductConfigWebsiteRestriction(WebsiteSale):
             # Convert template value IDs to attribute value IDs
             for key in attribute_keys:
                 ptav_id = form_values[key]
-                if ptav_id:
+                if ptav_id and isinstance(ptav_id, int):
                     ptav = request.env["product.template.attribute.value"].browse(
                         int(ptav_id)
                     )
@@ -243,11 +252,10 @@ class ProductConfigWebsiteRestriction(WebsiteSale):
 
             # call onchange
             specs = product_configurator_obj._onchange_spec()
-            form_domain = {}
             try:
                 field_name = f"__attribute_{attribute_id.id}"
                 form_domain = product_configurator_obj.sudo().apply_onchange_values(
-                    values=config_vals, field_names=field_name, field_onchange=specs
+                    values=config_vals, field_names=[field_name], field_onchange=specs
                 )
                 form_domain["domain"] = self.convert_data_domain(form_domain["domain"])
                 form_domain["is_configured"] = product_template_id.config_ok
@@ -255,5 +263,4 @@ class ProductConfigWebsiteRestriction(WebsiteSale):
                 _logger.error("Error while resetting configuration session: %s", e)
                 pass
 
-        print("\n\n My form_domain--------------", form_domain["domain"])
         return form_domain

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="tour_menu_website_configuration_restriction" model="web_tour.tour">
+        <field name="name">website_configuration_restriction_tour</field>
+        <field name="sequence">20</field>
+    </record>
+</odoo>

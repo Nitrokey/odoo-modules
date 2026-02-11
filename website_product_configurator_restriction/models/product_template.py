@@ -19,7 +19,8 @@ class ProductTemplate(models.Model):
         variants_to_unlink = Product
 
         for tmpl_id in self:
-            lines_without_no_variants = tmpl_id.valid_product_template_attribute_line_ids._without_no_variant_attributes()
+            ptal_ids = tmpl_id.valid_product_template_attribute_line_ids
+            lines_without_no_variants = ptal_ids._without_no_variant_attributes()
 
             all_variants = tmpl_id.with_context(
                 active_test=False
@@ -56,13 +57,14 @@ class ProductTemplate(models.Model):
             }
 
             # Determine which product variants need to be created based on the attribute
-            # configuration. If any attribute is set to generate variants dynamically, skip the
-            # process.
-            # Technical note: if there is no attribute, a variant is still created because
-            # 'not any([])' and 'set([]) not in set([])' are True.
+            # configuration. If any attribute is set to generate variants dynamically,
+            # skip the process.
+            # Technical note: if there is no attribute, a variant is still created
+            # because 'not any([])' and 'set([]) not in set([])' are True.
             if not tmpl_id.has_dynamic_attributes():
-                # Iterator containing all possible `product.template.attribute.value` combination
-                # The iterator is used to avoid MemoryError in case of a huge number of combination.
+                # Iterator containing all possible `product.template.attribute.value`
+                # combination. The iterator is used to avoid MemoryError in case of a
+                # huge number of combinations.
                 all_combinations = itertools.product(
                     *[
                         ptal.product_template_value_ids._only_active()
@@ -90,9 +92,12 @@ class ProductTemplate(models.Model):
                         if len(current_variants_to_create) > int(variant_limit):
                             raise UserError(
                                 _(
-                                    "The number of variants to generate is above allowed limit. "
-                                    "You should either not generate variants for each combination or generate them on demand from the sales order. "
-                                    "To do so, open the form view of attributes and change the mode of *Create Variants*."
+                                    "The number of variants to generate is above "
+                                    "allowed limit. You should either not generate "
+                                    "variants for each combination or generate them "
+                                    "on demand from the sales order. To do so, open "
+                                    "the form view of attributes and change the mode "
+                                    "of *Create Variants*."
                                 )
                             )
                 variants_to_create += current_variants_to_create
@@ -103,12 +108,16 @@ class ProductTemplate(models.Model):
                     variant.product_template_attribute_value_ids
                     for variant in existing_variants.values()
                 ]
+                impossible_combinations = (
+                    tmpl_id._filter_combinations_impossible_by_config(
+                        variants_combinations,
+                        ignore_no_variant=True,
+                    )
+                )
                 current_variants_to_activate += Product.concat(
                     *[
                         existing_variants[possible_combination]
-                        for possible_combination in tmpl_id._filter_combinations_impossible_by_config(
-                            variants_combinations, ignore_no_variant=True
-                        )
+                        for possible_combination in impossible_combinations
                     ]
                 )
                 variants_to_activate += current_variants_to_activate
@@ -125,7 +134,9 @@ class ProductTemplate(models.Model):
             if self.exists() != self:
                 raise UserError(
                     _(
-                        "This configuration of product attributes, values, and exclusions would lead to no possible variant. Please archive or delete your product directly if intended."
+                        "This configuration of product attributes, values, and "
+                        "exclusions would lead to no possible variant. Please archive "
+                        "or delete your product directly if intended."
                     )
                 )
         for variant in variants_to_unlink:
@@ -150,6 +161,4 @@ class ProductTemplate(models.Model):
             "views": [(False, "form")],
             "target": "current",
         }
-
-
-# Customization End
+        # Customization End
