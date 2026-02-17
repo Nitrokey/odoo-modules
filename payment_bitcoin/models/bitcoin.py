@@ -439,11 +439,7 @@ class BitcoinAddress(models.Model):
         if unused_address_count <= min_unused_bitcoin:
             # Only notify users with Accountant permission
             group = self.sudo().env.ref("account.group_account_manager", False)
-            if group:
-                groups = group
-            else:
-                groups = self.env["res.groups"].browse()
-
+            groups = group or self.env["res.groups"].browse()
             for user in groups.mapped("users"):
                 user.partner_id.activity_schedule(
                     "mail.mail_activity_data_todo",
