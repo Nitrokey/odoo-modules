@@ -16,11 +16,6 @@ class MailingSubscription(models.Model):
             "website_mass_mailing_double_opt_in.newsletter_confirmation_request_template"
         )
 
-    def consent_mail_template(self):
-        return self.env.ref(
-            "website_mass_mailing_double_opt_in.newsletter_confirmation_success_template"
-        )
-
     def double_opt_in_subscribe(self, list_id, email, language):
         contacts = self.env["mailing.contact"]
         name, email = tools.parse_contact_from_email(email)
@@ -48,7 +43,6 @@ class MailingSubscription(models.Model):
                 {"contact_id": contact.id, "list_id": list_id, "opt_out": True}
             )
 
-        created = True
         if created:
             mailing_list_contact.write(
                 {

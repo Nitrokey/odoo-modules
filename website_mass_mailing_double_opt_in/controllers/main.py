@@ -84,26 +84,33 @@ class ConsentController(Controller):
                 return self.consent_failure()
 
             mailing_list_contact.write({"opt_out": False})
-            template = mailing_list_contact.consent_mail_template().sudo()
-            if not template:
-                _logger.warning(
-                    "No consent mail template found for subscription ID: %s",
-                    mailing_list_contact.id,
-                )
-                return self.consent_failure()
 
             # Send email with explicit user context for template rendering
             language = mailing_list_contact.mail_language or request.lang.code
             if not request.env.user:
                 request.env.user = mailing_list_contact.create_uid
-            template.with_context(
-                lang=language,
-            ).send_mail(
-                mailing_list_contact.id,
-                force_send=True,
-                email_values={"email_from": mailing_list_contact.contact_id.email},
-            )
-
+            try:
+                mail_values = {
+                    'subject': 'Newsletter Confirmation',
+                    'body_html': f'''
+                        <div>
+                            <p>Hi!</p>
+                            <p>Thank you for subscribing the newsletter.</p>
+                            <br />
+                            <p>Best regards,
+                                <br />
+                                your team
+                            </p>
+                        </div>
+                    ''',
+                    'email_from': request.env.user.partner_id.email,
+                    'email_to': mailing_list_contact.contact_id.email,
+                    'state': 'outgoing',
+                }
+                mail = request.env['mail.mail'].sudo().create(mail_values)
+                mail.sudo().send()
+            except Exception as e:
+                _logger.warning("Send mail issue: %s", e)
             return self.consent_success()
 
         except Exception as e:
