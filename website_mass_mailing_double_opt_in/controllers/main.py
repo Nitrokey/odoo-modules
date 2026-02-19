@@ -91,8 +91,8 @@ class ConsentController(Controller):
                 request.env.user = mailing_list_contact.create_uid
             try:
                 mail_values = {
-                    'subject': 'Newsletter Confirmation',
-                    'body_html': f'''
+                    "subject": "Newsletter Confirmation",
+                    "body_html": """
                         <div>
                             <p>Hi!</p>
                             <p>Thank you for subscribing the newsletter.</p>
@@ -102,13 +102,13 @@ class ConsentController(Controller):
                                 your team
                             </p>
                         </div>
-                    ''',
-                    'email_from': request.env.user.partner_id.email,
-                    'email_to': mailing_list_contact.contact_id.email,
-                    'state': 'outgoing',
+                    """,
+                    "email_from": request.env.user.partner_id.email,
+                    "email_to": mailing_list_contact.contact_id.email,
+                    "state": "outgoing",
                 }
-                mail = request.env['mail.mail'].sudo().create(mail_values)
-                mail.sudo().send()
+                mail = request.env["mail.mail"].sudo().create(mail_values)
+                mail.with_context(**{"lang": language}).sudo().send()
             except Exception as e:
                 _logger.warning("Send mail issue: %s", e)
             return self.consent_success()
