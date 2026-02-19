@@ -124,6 +124,14 @@ class LivekitService {
         this.connected = false;
     }
 
+    handleParticpantDisconnected(participant) {
+        log("Participant disconnected", participant.identity);
+
+        const audioElementId = this._formAudioElementId(participant.identity);
+        const audioElement = document.getElementById(audioElementId);
+        audioElement?.remove();
+    }
+
     // Requires functions that accept info as parameter
     subscribeToInfoChange(name, listener) {
         log("Subscribing to info change:", name);
@@ -245,6 +253,9 @@ class LivekitService {
             .on(RoomEvent.Connected, () => {
                 log("Room connected - rebinding existing tracks");
                 setTimeout(() => this.rebindExistingTracks(), 100);
+            })
+            .on(RoomEvent.ParticipantDisconnected, (remoteParticipant) => {
+                this.handleParticpantDisconnected(remoteParticipant);
             });
 
         try {
