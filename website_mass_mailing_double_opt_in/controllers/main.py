@@ -91,7 +91,7 @@ class ConsentController(Controller):
                 request.env.user = mailing_list_contact.create_uid
             try:
                 mail_values = {
-                    "subject": "Newsletter Confirmation",
+                    "subject": "You Have Subscribed to the Newsletter",
                     "body_html": """
                         <div>
                             <p>Hi!</p>
