@@ -421,7 +421,6 @@ class DeliveryCarrier(models.Model):
         self._verify_dhl_parcel_packages(packages)
 
         # Calculate total weight for insurance distribution
-
         total_weight = sum(package.weight for package in packages)
         if weight_bulk:
             total_weight += weight_bulk
@@ -448,38 +447,6 @@ class DeliveryCarrier(models.Model):
             package_data.update(request_data)
             package_list.append(package_data)
 
-        if not weight_bulk:
-            return package_list
-
-        # Process bulk weight package with dynamic insurance calculation
-        height = (
-            self.dhl_parcel_de_provider_package_id
-            and self.dhl_parcel_de_provider_package_id.height
-            or 0
-        )
-        width = (
-            self.dhl_parcel_de_provider_package_id
-            and self.dhl_parcel_de_provider_package_id.width
-            or 0
-        )
-        length = (
-            self.dhl_parcel_de_provider_package_id
-            and self.dhl_parcel_de_provider_package_id.packaging_length
-            or 0
-        )
-        weight = self.convert_weight(weight_bulk)
-
-        # Calculate insurance dynamically based on weight distribution
-        insurance_value = self._calculate_package_insurance(
-            picking, weight_bulk, total_weight
-        )
-
-        package_data = self.create_dhl_de_package_dict(height, length, width, weight)
-        request_data = self.dhl_parcel_de_provider_retrive_package_info(
-            picking, insurance_value
-        )
-        package_data.update(request_data)
-        package_list.append(package_data)
         return package_list
 
     def dhl_parcel_de_provider_create_shipment(
@@ -582,6 +549,7 @@ class DeliveryCarrier(models.Model):
                                     label_data,
                                 )  # noqa:UP031
                             ],
+                            body_is_html=True,
                         )
                         final_tracking_number.append(tracking_number)
 
