@@ -14,7 +14,7 @@ if (MailComposerSendDropdown) {
     patch(MailComposerSendDropdown.prototype, {
         async onClickSend() {
             try {
-                const mailStore = this.env.services["mail.store"]; // get mail store services (Thread, Persona)
+                const mailStore = this.env.services["mail.store"];
                 const {Thread, Persona} = mailStore;
 
                 const model = this.props.record.data.model;
@@ -23,7 +23,7 @@ if (MailComposerSendDropdown) {
                 try {
                     resIds = JSON.parse(this.props.record.data.res_ids || "[]");
                 } catch (_) {
-                    // leave empty
+                    // Leave empty
                 }
                 const threadId =
                     Array.isArray(resIds) && resIds.length ? resIds[0] : undefined;
