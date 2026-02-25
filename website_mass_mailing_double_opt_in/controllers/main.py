@@ -64,6 +64,29 @@ class ConsentController(Controller):
     def subscribed(self, **kwargs):
         return request.render("website_mass_mailing_double_opt_in.subscribe_newsletter")
 
+    def _prepare_mail_content(self, mailing_list_contact, language):
+        """Newsletter Subscribed email template content"""
+        # Get translated strings
+        greeting = _("Hi!")
+        thank_you = _("Thank you for subscribing the newsletter.")
+        best_regards = _("Best regards,")
+        team = _("your team")
+        mail_values = {
+            "subject": "You Have Subscribed to the Newsletter",
+            "body_html": f"""
+                <div>
+                    <p>{greeting}</p>
+                    <p>{thank_you}</p>
+                    <br />
+                    <p>{best_regards}<br />{team}</p>
+                </div>
+            """,
+            "email_from": request.env.user.partner_id.email,
+            "email_to": mailing_list_contact.contact_id.email,
+            "state": "outgoing",
+        }
+        return mail_values
+
     @route(
         "/newsletter/confirmation/<access_token>",
         type="http",
@@ -86,27 +109,13 @@ class ConsentController(Controller):
             mailing_list_contact.write({"opt_out": False})
 
             # Send email with explicit user context for template rendering
-            language = mailing_list_contact.mail_language or request.lang.code
+            language = (
+                mailing_list_contact.mail_language or request.lang.code or "en_US"
+            )
             if not request.env.user:
                 request.env.user = mailing_list_contact.create_uid
             try:
-                mail_values = {
-                    "subject": "You Have Subscribed to the Newsletter",
-                    "body_html": """
-                        <div>
-                            <p>Hi!</p>
-                            <p>Thank you for subscribing the newsletter.</p>
-                            <br />
-                            <p>Best regards,
-                                <br />
-                                your team
-                            </p>
-                        </div>
-                    """,
-                    "email_from": request.env.user.partner_id.email,
-                    "email_to": mailing_list_contact.contact_id.email,
-                    "state": "outgoing",
-                }
+                mail_values = self._prepare_mail_content(mailing_list_contact, language)
                 mail = request.env["mail.mail"].sudo().create(mail_values)
                 mail.with_context(**{"lang": language}).sudo().send()
             except Exception as e:

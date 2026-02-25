@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 11:13+0000\n"
-"PO-Revision-Date: 2026-01-22 11:13+0000\n"
+"POT-Creation-Date: 2026-02-25 06:20+0000\n"
+"PO-Revision-Date: 2026-02-25 06:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -81,34 +81,15 @@ msgstr ""
 "        "
 
 #. module: website_mass_mailing_double_opt_in
-#: model:mail.template,body_html:website_mass_mailing_double_opt_in.newsletter_confirmation_success_template
-msgid ""
-"<div>\n"
-"                <p>Hi!</p>\n"
-"                <p>Thank you for subscribing the newsletter.</p>\n"
-"                <br/>\n"
-"                <p>Best regards,\n"
-"                    <br/>\n"
-"                    your team\n"
-"                </p>\n"
-"            </div>\n"
-"        "
-msgstr ""
-"<div>\n"
-"                <p>Hallo,</p>\n"
-"                <p>vielen Dank für die Anmeldung zum Newsletter.</p>\n"
-"                <br/>\n"
-"                <p>Viele Grüße,\n"
-"                    <br/>\n"
-"                    Ihr Team\n"
-"                </p>\n"
-"            </div>\n"
-"        "
-
-#. module: website_mass_mailing_double_opt_in
 #: model:ir.model.fields,field_description:website_mass_mailing_double_opt_in.field_mailing_subscription__access_token
 msgid "Access Token"
 msgstr "Zugriffs-Token"
+
+#. module: website_mass_mailing_double_opt_in
+#. odoo-python
+#: code:addons/website_mass_mailing_double_opt_in/controllers/main.py:0
+msgid "Best regards,"
+msgstr "Viele Grüße,"
 
 #. module: website_mass_mailing_double_opt_in
 #: model:mail.template,subject:website_mass_mailing_double_opt_in.newsletter_confirmation_request_template
@@ -126,6 +107,12 @@ msgid "Editor"
 msgstr ""
 
 #. module: website_mass_mailing_double_opt_in
+#. odoo-python
+#: code:addons/website_mass_mailing_double_opt_in/controllers/main.py:0
+msgid "Hi!"
+msgstr "Hallo,"
+
+#. module: website_mass_mailing_double_opt_in
 #: model:ir.model.fields,field_description:website_mass_mailing_double_opt_in.field_mailing_subscription__mail_language
 msgid "Mail Language"
 msgstr "Sprache der E-Mail"
@@ -136,14 +123,27 @@ msgid "Mailing List Subscription"
 msgstr "Informationen zum Massenmailing-Abonnement"
 
 #. module: website_mass_mailing_double_opt_in
-#: model:mail.template,name:website_mass_mailing_double_opt_in.newsletter_confirmation_success_template
-msgid "Newsletter Subscribed"
-msgstr "Newsletter abonniert"
-
-#. module: website_mass_mailing_double_opt_in
 #: model:mail.template,name:website_mass_mailing_double_opt_in.newsletter_confirmation_request_template
 msgid "Newsletter Subscription"
 msgstr "Newsletter-Abonnement"
+
+#. module: website_mass_mailing_double_opt_in
+#. odoo-python
+#: code:addons/website_mass_mailing_double_opt_in/controllers/main.py:0
+msgid "Suspicious activity detected by Google reCaptcha."
+msgstr "Mistænkelig aktivitet registreret af Google reCaptcha"
+
+#. module: website_mass_mailing_double_opt_in
+#. odoo-python
+#: code:addons/website_mass_mailing_double_opt_in/controllers/main.py:0
+msgid "Thank you for subscribing the newsletter."
+msgstr "vielen Dank für die Anmeldung zum Newsletter."
+
+#. module: website_mass_mailing_double_opt_in
+#. odoo-python
+#: code:addons/website_mass_mailing_double_opt_in/controllers/main.py:0
+msgid "Thanks for subscribing!"
+msgstr "vielen Dank für die Anmeldung!"
 
 #. module: website_mass_mailing_double_opt_in
 #: model_terms:ir.ui.view,arch_db:website_mass_mailing_double_opt_in.invalid_subscription_confirmation_template
@@ -151,9 +151,10 @@ msgid "This confirmation link is invalid."
 msgstr "Dieser Bestätigungslink ist ungültig"
 
 #. module: website_mass_mailing_double_opt_in
-#: model:mail.template,subject:website_mass_mailing_double_opt_in.newsletter_confirmation_success_template
+#. odoo-python
+#: code:addons/website_mass_mailing_double_opt_in/controllers/main.py:0
 msgid "You Have Subscribed to the Newsletter"
-msgstr "Sie haben den Newsletter abonniert"
+msgstr "Sie haben den Newsletter abonniert."
 
 #. module: website_mass_mailing_double_opt_in
 #: model_terms:ir.ui.view,arch_db:website_mass_mailing_double_opt_in.subscribe_newsletter
@@ -164,3 +165,15 @@ msgstr "Sie haben den Newsletter abonniert."
 #: model_terms:ir.ui.view,arch_db:website_mass_mailing_double_opt_in.subscribe_newsletter
 msgid "webpage..."
 msgstr "Webseite..."
+
+#. module: website_mass_mailing_double_opt_in
+#. odoo-python
+#: code:addons/website_mass_mailing_double_opt_in/controllers/main.py:0
+msgid "your team"
+msgstr "Ihr Team"
+
+#. module: website_mass_mailing_double_opt_in
+#. odoo-python
+#: code:addons/website_mass_mailing_double_opt_in/controllers/main.py:0
+msgid "You Have Subscribed to the Newsletter"
+msgstr "Sie haben den Newsletter abonniert"
