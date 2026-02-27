@@ -1,12 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_carrier_account_form_inherit_dhl" model="ir.ui.view">
         <field name="name">carrier.account.form.inherit.dhl</field>
         <field name="model">carrier.account</field>
-        <field name="inherit_id" ref="delivery_carrier_account.carrier_account_view_form"/>
+        <field
+            name="inherit_id"
+            ref="delivery_carrier_account.carrier_account_view_form"
+        />
         <field name="arch" type="xml">
             <field name="company_id" position="after">
-                <field name="use_dhl_parcel_de_shipping_provider"/>
+                <field name="use_dhl_parcel_de_shipping_provider" />
                 <field
                     name="dhl_parcel_de_api_url"
                     required="use_dhl_parcel_de_shipping_provider == True"
