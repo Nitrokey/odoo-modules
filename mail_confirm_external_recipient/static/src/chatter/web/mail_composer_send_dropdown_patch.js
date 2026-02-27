@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
-import {_t} from "@web/core/l10n/translation";
 import {ConfirmationDialog} from "@web/core/confirmation_dialog/confirmation_dialog";
+import {_t} from "@web/core/l10n/translation";
 import {patch} from "@web/core/utils/patch";
 import {registry} from "@web/core/registry";
 
@@ -14,69 +14,8 @@ if (MailComposerSendDropdown) {
     patch(MailComposerSendDropdown.prototype, {
         async onClickSend() {
             try {
-                const mailStore = this.env.services["mail.store"];
-                const {Thread, Persona} = mailStore;
-
-                const model = this.props.record.data.model;
-                const isNote = this.props?.record?.data?.subtype_is_log;
-                let resIds = [];
-                try {
-                    resIds = JSON.parse(this.props.record.data.res_ids || "[]");
-                } catch (_) {
-                    // Leave empty
-                }
-                const threadId =
-                    Array.isArray(resIds) && resIds.length ? resIds[0] : undefined;
-
-                const externalRecipients = [];
-                const checkedPartnerIds = new Set();
-                const checkPartner = (partnerId) => {
-                    if (!partnerId || checkedPartnerIds.has(partnerId)) {
-                        return;
-                    }
-                    checkedPartnerIds.add(partnerId);
-                    const persona = Persona.get({type: "partner", id: partnerId});
-                    // If persona is available, use it to determine internal/external
-                    if (persona && !persona.isInternalUser) {
-                        const name = persona.name || persona.email;
-                        if (name && !externalRecipients.includes(name)) {
-                            externalRecipients.push(name);
-                        }
-                    }
-                };
-
-                // 1. Check final recipients from the wizard (manually added)
-                const partnerIdsField = this.props.record.data.partner_ids;
-                if (partnerIdsField && partnerIdsField.records) {
-                    for (const partnerRecord of partnerIdsField.records) {
-                        checkPartner(partnerRecord.data.id || partnerRecord.resId);
-                    }
-                }
-
-                // 2. Check thread recipients (e.g. followers)
-                // These are displayed in the MailComposerRecipientList and cannot be removed
-                if (!isNote && model && threadId) {
-                    const thread = await Thread.getOrFetch({model, id: threadId});
-                    if (thread) {
-                        // Check thread.recipients (if populated)
-                        if (thread.recipients) {
-                            for (const follower of thread.recipients) {
-                                if (follower.partner) {
-                                    checkPartner(follower.partner.id);
-                                }
-                            }
-                        }
-                        // Check thread.followers as a fallback for "non-removable followers"
-                        if (thread.followers) {
-                            for (const follower of thread.followers) {
-                                if (follower.partner) {
-                                    checkPartner(follower.partner.id);
-                                }
-                            }
-                        }
-                    }
-                }
-
+                const externalRecipients =
+                    await this._getExternalRecipientsForDropdown();
                 if (externalRecipients.length > 0) {
                     const names = externalRecipients.join(", ");
                     const body = _t(
@@ -101,6 +40,78 @@ if (MailComposerSendDropdown) {
             }
 
             return superOnClickSend.apply(this, arguments);
+        },
+
+        async _getExternalRecipientsForDropdown() {
+            const mailStore = this.env.services["mail.store"];
+            const {Thread, Persona} = mailStore;
+            const externalRecipients = new Set();
+            const checkedPartnerIds = new Set();
+
+            const checkPartner = (partnerId) => {
+                if (!partnerId || checkedPartnerIds.has(partnerId)) {
+                    return;
+                }
+                checkedPartnerIds.add(partnerId);
+                const persona = Persona.get({type: "partner", id: partnerId});
+                if (persona && !persona.isInternalUser) {
+                    const name = persona.name || persona.email;
+                    if (name) {
+                        externalRecipients.add(name);
+                    }
+                }
+            };
+
+            this._addWizardRecipients(checkPartner);
+            await this._addThreadRecipients(checkPartner, Thread);
+
+            return [...externalRecipients];
+        },
+
+        _addWizardRecipients(checkPartner) {
+            const partnerIdsField = this.props.record.data.partner_ids;
+            if (!partnerIdsField || !partnerIdsField.records) {
+                return;
+            }
+            for (const partnerRecord of partnerIdsField.records) {
+                checkPartner(partnerRecord.data.id || partnerRecord.resId);
+            }
+        },
+
+        async _addThreadRecipients(checkPartner, Thread) {
+            const isNote = this.props?.record?.data?.subtype_is_log;
+            if (isNote) {
+                return;
+            }
+            const model = this.props.record.data.model;
+            const threadId = this._getThreadId();
+
+            if (!model || !threadId) {
+                return;
+            }
+            const thread = await Thread.getOrFetch({model, id: threadId});
+            if (!thread) {
+                return;
+            }
+            const recipients = [
+                ...(thread.recipients || []),
+                ...(thread.followers || []),
+            ];
+            for (const recipient of recipients) {
+                if (recipient.partner) {
+                    checkPartner(recipient.partner.id);
+                }
+            }
+        },
+
+        _getThreadId() {
+            let resIds = [];
+            try {
+                resIds = JSON.parse(this.props.record.data.res_ids || "[]");
+            } catch {
+                // Leave empty
+            }
+            return Array.isArray(resIds) && resIds.length ? resIds[0] : undefined;
         },
     });
 }
