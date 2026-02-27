@@ -79,7 +79,7 @@ class LivekitService {
 
         let audioElement = null;
 
-        if (track.kind == "audio") {
+        if (track.kind === "audio") {
             const audioElementId = this._formAudioElementId(participant.identity);
             audioElement = document.getElementById(audioElementId);
             audioElement?.remove();
@@ -335,25 +335,29 @@ class LivekitService {
         const publication = this.room?.localParticipant.getTrackPublication(source);
 
         if (mediaStreamTrack && enabled) {
-            if (!publication) {
-                log("Publishing new track for source:", source);
-                await this.room?.localParticipant.publishTrack(mediaStreamTrack, {
-                    source,
-                    simulcast: source !== Source.Microphone,
-                });
-            } else if (publication.track) {
-                log("Replacing track for source:", source);
-                await publication.track.replaceTrack(mediaStreamTrack);
-                if (
-                    publication.track.source !== Source.Microphone ||
-                    mediaStreamTrack?.enabled
-                ) {
-                    publication?.track?.unmute();
-                }
-            }
+            await this._publishOrReplaceTrack(source, publication, mediaStreamTrack);
         } else if (!enabled && publication?.track) {
             log("Muting/unmuting existing track for source:", source);
             await publication.track.mute();
+        }
+    }
+
+    async _publishOrReplaceTrack(source, publication, mediaStreamTrack) {
+        if (!publication) {
+            log("Publishing new track for source:", source);
+            await this.room?.localParticipant.publishTrack(mediaStreamTrack, {
+                source,
+                simulcast: source !== Source.Microphone,
+            });
+        } else if (publication.track) {
+            log("Replacing track for source:", source);
+            await publication.track.replaceTrack(mediaStreamTrack);
+            if (
+                publication.track.source !== Source.Microphone ||
+                mediaStreamTrack?.enabled
+            ) {
+                publication?.track?.unmute();
+            }
         }
     }
 
