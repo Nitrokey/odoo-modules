@@ -29,7 +29,7 @@ patch(CallParticipantVideo.prototype, {
         // Subscribe to track rebind events
         useExternalListener(this.env.bus, "LIVEKIT:TRACK:REBIND", (event) => {
             const {sessionId, identity, type} = event.detail;
-            if (this.props.identity == identity && this.props.type === type) {
+            if (this.props.identity === identity && this.props.type === type) {
                 console.log(
                     `LIVEKIT:TRACK:REBIND for identity ${identity}, type ${type}`
                 );
