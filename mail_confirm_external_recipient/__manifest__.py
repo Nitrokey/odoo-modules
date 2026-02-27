@@ -4,7 +4,7 @@
     "category": "Discuss",
     "summary": "Confirm sending message if there are external recipients",
     "author": "Nitrokey",
-    "website": "https://www.nitrokey.com",
+    "website": "https://github.com/Nitrokey/odoo-modules/",
     "depends": ["mail"],
     "data": [],
     "assets": {
