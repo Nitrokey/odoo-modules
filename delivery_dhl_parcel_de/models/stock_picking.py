@@ -22,7 +22,7 @@ class StockPicking(models.Model):
         """
         try:
             carrier_id = self.carrier_id
-            company_id = carrier_id.company_id
+            carrier_account_id = carrier_id.carrier_account_id
             shipper_address_error = carrier_id.check_address_details(
                 self.partner_id, ["zip", "city", "street"]
             )
@@ -70,9 +70,9 @@ class StockPicking(models.Model):
             )
             headers = {
                 "content-type": "application/json",
-                "Authorization": f"Bearer {company_id.dhl_access_token}",
+                "Authorization": f"Bearer {carrier_account_id.dhl_access_token}",
             }
-            api_url = f"{company_id.dhl_parcel_de_api_url}/parcel/de/shipping/returns/v1/orders?labelType=SHIPMENT_LABEL"  # noqa: E501
+            api_url = f"{carrier_account_id.dhl_parcel_de_api_url}/parcel/de/shipping/returns/v1/orders?labelType=SHIPMENT_LABEL"  # noqa: E501
             request_type = "POST"
             response_status, response_data = (
                 carrier_id.dhl_parcel_de_provider_create_shipment(

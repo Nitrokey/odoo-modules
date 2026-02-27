@@ -1,11 +1,11 @@
 import requests
 
-from odoo import fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
-class ResCompany(models.Model):
-    _inherit = "res.company"
+class CarrierAccount(models.Model):
+    _inherit = "carrier.account"
 
     use_dhl_parcel_de_shipping_provider = fields.Boolean(
         copy=False,
@@ -94,7 +94,7 @@ class ResCompany(models.Model):
             raise ValidationError(e)  # noqa: B904
 
     def dhl_parcel_de_get_access_token_cron(self):
-        for company_id in self.search(
+        for carrier_account_id in self.search(
             [("use_dhl_parcel_de_shipping_provider", "=", True)]
         ):
-            company_id.dhl_parcel_de_get_access_token()
+            carrier_account_id.dhl_parcel_de_get_access_token()

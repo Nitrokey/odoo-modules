@@ -15,29 +15,25 @@ Note that shipping rates are not retrieved from DHL but need to be configured.
 Configuration
 -------------
 
-Company
-^^^^^^^
-
-1. "Settings" -> "Users & Companies" -> "Companies"
-2. Select or create a company
-3. "DHL Parcel DE Configuration" tab -> set the "Use DHL Parcel DE Shipping Provider" as active
-4. Fill out the necessary information. The information below is only meant for testing purposes:
-
-   * DHL API URL: ``https://api-sandbox.dhl.com``
-   * DHL UserId: ``user-valid``
-   * DHL Password: ``SandboxPasswort2023!``
-   * DHL API Key: Add your own API key here
-   * DHL Tracking URL: (optional) Leave empty or use: ``https://www.dhl.de/en/privatkunden/pakete-empfangen/verfolgen.html?piececode=``
-
-5. Save your changes
-
 Create Delivery Methods
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 1. "Inventory" -> "Configuration" -> "Delivery" -> "Delivery Methods"
 2. Select or create a method
 3. Set the "Provider" to "DHL Parcel DE"
-4. Fill out the necessary information. The information below is only meant as an example:
+4. Select or create a 'Account'.
+   1. Choose the Delivery Type 'DHL Parcel DE' in the Account form view to display the DHL fields
+
+   2. Fill in the necessary information in the 'Account' form. The values below are for testing purposes only:
+
+      * DHL API URL: ``https://api-sandbox.dhl.com``
+      * DHL UserId: ``user-valid``
+      * DHL Password: ``SandboxPasswort2023!``
+      * DHL API Key: Add your own API key here
+      * DHL API Secret: Add your own API secret here
+      * DHL Tracking URL: (optional) Leave empty or use: ``https://www.dhl.de/en/privatkunden/pakete-empfangen/verfolgen.html?piececode=``
+
+7. Fill out the necessary information. The information below is only meant as an example:
 
    * Company: Company Name
    * DHL Weight UOM: ``KG``
@@ -60,7 +56,7 @@ Create Delivery Methods
 
      3. Save your changes
 
-5. Save your changes
+8. Save your changes
 
 
 Testing

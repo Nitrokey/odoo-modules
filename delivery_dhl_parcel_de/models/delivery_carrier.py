@@ -507,9 +507,9 @@ class DeliveryCarrier(models.Model):
             header = {
                 "accept": "application/json",
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {self.company_id.dhl_access_token}",
+                "Authorization": f"Bearer {self.carrier_account_id.dhl_access_token}",
             }
-            api_url = f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?docFormat={self.dhl_document_format}"  # noqa: E501
+            api_url = f"{self.carrier_account_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?docFormat={self.dhl_document_format}"  # noqa: E501
             request_type = "POST"
             (
                 response_status,
@@ -580,9 +580,9 @@ class DeliveryCarrier(models.Model):
             raise ValidationError(e) from e
 
     def dhl_parcel_de_provider_cancel_shipment(self, picking):
-        company_id = self.company_id
+        carrier_account_id = self.carrier_account_id
         try:
-            api_url = f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?profile=STANDARD_GRUPPENPROFIL"  # noqa: E501
+            api_url = f"{carrier_account_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?profile=STANDARD_GRUPPENPROFIL"  # noqa: E501
             awb_numbers = picking.carrier_tracking_ref.split(",")
             for shipment in awb_numbers:
                 api_url += f"&shipment={shipment}"
@@ -590,7 +590,7 @@ class DeliveryCarrier(models.Model):
             header = {
                 "accept": "application/json",
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {company_id.dhl_access_token}",
+                "Authorization": f"Bearer {carrier_account_id.dhl_access_token}",
             }
             request_type = "DELETE"
             (
@@ -609,9 +609,9 @@ class DeliveryCarrier(models.Model):
             raise ValidationError(e) from e
 
     def dhl_parcel_de_provider_get_tracking_link(self, picking):
-        if self.company_id and self.company_id.dhl_tracking_url:
+        if self.carrier_account_id and self.carrier_account_id.dhl_tracking_url:
             tracking_no = (picking.carrier_tracking_ref).split(",")
             for number in tracking_no:
-                return f"{self.company_id.dhl_tracking_url}{number}"
+                return f"{self.carrier_account_id.dhl_tracking_url}{number}"
         else:
             raise ValidationError(_("Please Set Tracking URL In Company"))

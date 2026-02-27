@@ -10,12 +10,13 @@
     "license": "AGPL-3",
     "depends": [
         "stock_delivery",
+        "delivery_carrier_account",
         "base_iso3166",
         "stock_picking_declared_value",
     ],
     "data": [
         "data/ir_cron.xml",
-        "views/res_company.xml",
+        "views/carrier_account_views.xml",
         "views/delivery_carrier.xml",
         "views/stock_picking.xml",
     ],
