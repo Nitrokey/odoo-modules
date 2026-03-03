@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_res_company_dhl_parcel_de_configuration" model="ir.ui.view">
+        <field name="name">dhl_parcel_de Configuration</field>
+        <field name="model">res.company</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[last()]" position="after">
+                <page string="DHL Parcel DE Configuration">
+                    <group>
+                        <field name="use_dhl_parcel_de_shipping_provider" />
+                    </group>
+                    <group invisible="use_dhl_parcel_de_shipping_provider != True">
+                        <field
+                            name="dhl_parcel_de_api_url"
+                            required="use_dhl_parcel_de_shipping_provider == True"
+                        />
+                        <field
+                            name="dhl_userid"
+                            required="use_dhl_parcel_de_shipping_provider == True"
+                        />
+                        <field
+                            name="dhl_password"
+                            password="True"
+                            required="use_dhl_parcel_de_shipping_provider == True"
+                        />
+                        <field
+                            name="dhl_api_key"
+                            password="True"
+                            required="use_dhl_parcel_de_shipping_provider == True"
+                        />
+                        <field
+                            name="dhl_api_secret"
+                            password="True"
+                            required="use_dhl_parcel_de_shipping_provider != False"
+                        />
+                        <field name="dhl_tracking_url" />
+                    </group>
+                    <group>
+                        <field
+                            name="dhl_access_token"
+                            invisible="use_dhl_parcel_de_shipping_provider != True"
+                        />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

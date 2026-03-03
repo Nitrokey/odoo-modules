@@ -1,6 +1,6 @@
 {
     "name": "Mail Sound Notifications",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.20",
     "category": "Discuss",
     "summary": "Play sound when receiving messages",
     "author": "Nitrokey GmbH",
