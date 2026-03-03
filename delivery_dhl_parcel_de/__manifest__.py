@@ -17,7 +17,6 @@
     "data": [
         "data/data.xml",
         "data/ir_cron.xml",
-        "views/res_company.xml",  # Tempororily view
         "views/carrier_account_views.xml",
         "views/delivery_carrier.xml",
         "views/stock_picking.xml",
