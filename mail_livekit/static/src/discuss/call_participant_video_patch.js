@@ -30,7 +30,7 @@ patch(CallParticipantVideo.prototype, {
         useExternalListener(this.env.bus, "LIVEKIT:TRACK:REBIND", (event) => {
             const {sessionId, identity, type} = event.detail;
             if (this.props.identity == identity && this.props.type === type) {
-                console.log(
+                console.debug(
                     `LIVEKIT:TRACK:REBIND for identity ${identity}, type ${type}`
                 );
                 if (sessionId && this.props.session.id !== sessionId) {
@@ -64,7 +64,7 @@ patch(CallParticipantVideo.prototype, {
         const livekitTrack = rtcSession.livekitTracks?.get(type);
 
         if (livekitTrack) {
-            console.log(
+            console.debug(
                 `Attaching LiveKit track for session ${rtcSession.id}, type ${type}`
             );
 

@@ -1,6 +1,7 @@
 from livekit.api import AccessToken, VideoGrants
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools.misc import str2bool
 
 from odoo.addons.mail.tools.discuss import Store
@@ -20,7 +21,7 @@ class MailRtcSession(models.Model):
         result = super().create(vals_list)
 
         if not livekit_params.get("valid"):
-            return
+            return result
 
         for session in result:
             session._generate_livekit_token(livekit_params)
@@ -46,6 +47,14 @@ class MailRtcSession(models.Model):
             and isinstance(api_secret, str)
             and api_secret.strip()
         )
+
+        if livekit_enabled and not valid:
+            raise UserError(
+                _(
+                    "LiveKit integration is enabled but not properly configured."
+                    " Please check the LiveKit settings."
+                )
+            )
 
         return {
             "valid": valid,

@@ -8,8 +8,6 @@ const Source = {
     SCREEN: window.LivekitClient.Track.Source.ScreenShare,
 };
 
-console.log("Livekit Source constants:", Source);
-
 Object.freeze(Source);
 
 let debug = false;

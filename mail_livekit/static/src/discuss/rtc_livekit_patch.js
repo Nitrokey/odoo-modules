@@ -22,11 +22,11 @@ patch(RtcSession.prototype, {
 
 patch(PeerToPeer.prototype, {
     async handleNotification() {
-        console.log("message intercepted");
+        console.debug("message intercepted");
     },
 
     _dataChannelupdateInBroadcast() {
-        console.log("message intercepted");
+        console.debug("message intercepted");
     },
 });
 
@@ -89,7 +89,7 @@ patch(Rtc.prototype, {
     },
 
     async _handleNetworkUpdates(eventdata) {
-        console.log("LIVEKIT: Network update received", eventdata);
+        console.debug("LIVEKIT: Network update received", eventdata);
         this.fixEventIds(eventdata);
         return super._handleNetworkUpdates(eventdata);
     },
@@ -107,7 +107,7 @@ patch(Rtc.prototype, {
     },
 
     async handleSetAudioVolume(eventdata) {
-        console.log("LIVEKIT: Set audio volume event received", eventdata);
+        console.debug("LIVEKIT: Set audio volume event received", eventdata);
         this.fixEventIds(eventdata);
         return this.setAudioVolume(
             eventdata.detail.payload.sessionId,
@@ -116,13 +116,13 @@ patch(Rtc.prototype, {
     },
 
     async handleTrackSubscribed(eventdata) {
-        console.log("LIVEKIT: Track subscribed event received", eventdata);
+        console.debug("LIVEKIT: Track subscribed event received", eventdata);
         this.fixEventIds(eventdata);
         if (eventdata.detail.name === "trackSubscribed") {
             const {identity, type, track} = eventdata.detail.payload;
             const sessionId = this.identityToSessionId(identity);
 
-            console.log(
+            console.debug(
                 `Track subscribed for session ${sessionId}, type ${type}. Triggering rebind.`
             );
 
@@ -164,7 +164,7 @@ patch(Rtc.prototype, {
     },
 
     async updateUpload() {
-        console.log("Updating uploads for tracks...");
+        console.debug("Updating uploads for tracks...");
         await this.network?.updateUpload(Source.MICROPHONE, this.state.audioTrack);
         await this.network?.updateUpload(
             Source.CAMERA,
@@ -189,7 +189,7 @@ patch(Rtc.prototype, {
             return;
         }
         try {
-            console.log("Connecting to LiveKit server...");
+            console.debug("Connecting to LiveKit server...");
             await this.network.connect(
                 this.selfSession.livekit_url,
                 this.selfSession.livekit_token
