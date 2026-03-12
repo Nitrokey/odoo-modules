@@ -520,7 +520,7 @@ class MergePartnerManualCheck(models.TransientModel):
             }
 
         self.env["base.partner.merge.automatic.wizard"]._merge(
-            partner_ids, self.dst_partner_id
+            list(partner_ids), self.dst_partner_id
         )
 
         if self.partner_wizard_id.current_line_id:
