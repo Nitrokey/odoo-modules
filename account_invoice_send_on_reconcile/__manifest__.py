@@ -1,5 +1,5 @@
 {
-    "name": "Account Invoice Send on Reconcile",
+    "name": "Account Invoice Send on Reconcile", # TODO remove this module
     "version": "18.0.1.0.0",
     "category": "Accounting",
     "summary": "Automatically send invoice emails when reconciling bank payments",
