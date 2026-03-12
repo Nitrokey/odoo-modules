@@ -215,6 +215,7 @@ class LivekitService {
             videoCaptureDefaults: {
                 resolution: VideoPresets.h720.resolution,
             },
+            disconnectOnPageLeave: false,
         });
 
         await this.room.prepareConnection(url, token);
