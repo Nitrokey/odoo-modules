@@ -1,10 +1,10 @@
 {
-    "name": "Partner User Status",
+    "name": "Partner User",
     "version": "18.0.1.0.0",
     "summary": """Added Users field in Partner form view""",
     "category": "Tools",
-    "author": "Nitrokey GmbH," "Odoo Community Association (OCA)",
-    "website": "https://github.com/OCA/partner-contact",
+    "author": "Nitrokey GmbH",
+    "website": "https://github.com/Nitrokey/odoo-modules",
     "license": "AGPL-3",
     "depends": ["base"],
     "data": [
