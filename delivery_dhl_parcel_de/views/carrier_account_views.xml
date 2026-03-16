@@ -9,49 +9,48 @@
         />
         <field name="arch" type="xml">
             <field name="company_id" position="after">
-                <field name="use_dhl_parcel_de_shipping_provider" />
                 <field
                     name="dhl_parcel_de_api_url"
-                    required="use_dhl_parcel_de_shipping_provider == True"
-                    invisible="use_dhl_parcel_de_shipping_provider != True"
+                    required="delivery_type == 'dhl_parcel_de_provider'"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
                 />
                 <field
                     name="dhl_userid"
-                    required="use_dhl_parcel_de_shipping_provider == True"
-                    invisible="use_dhl_parcel_de_shipping_provider != True"
+                    required="delivery_type == 'dhl_parcel_de_provider'"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
                 />
                 <field
                     name="dhl_password"
                     password="True"
-                    required="use_dhl_parcel_de_shipping_provider == True"
-                    invisible="use_dhl_parcel_de_shipping_provider != True"
+                    required="delivery_type == 'dhl_parcel_de_provider'"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
                 />
                 <field
                     name="dhl_api_key"
                     password="True"
-                    required="use_dhl_parcel_de_shipping_provider == True"
-                    invisible="use_dhl_parcel_de_shipping_provider != True"
+                    required="delivery_type == 'dhl_parcel_de_provider'"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
                 />
                 <field
                     name="dhl_api_secret"
                     password="True"
-                    required="use_dhl_parcel_de_shipping_provider != False"
-                    invisible="use_dhl_parcel_de_shipping_provider != True"
+                    required="delivery_type != 'dhl_parcel_de_provider'"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
                 />
                 <field
                     name="dhl_tracking_url"
-                    invisible="use_dhl_parcel_de_shipping_provider != True"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
                 />
                 <button
                     name="dhl_parcel_de_get_access_token"
                     type="object"
                     string="Generate Authentication Token"
                     class="fa fa-arrow-right oe_link"
-                    invisible="use_dhl_parcel_de_shipping_provider != True"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
                 />
                 <field
                     name="dhl_access_token"
-                    invisible="use_dhl_parcel_de_shipping_provider != True"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
                 />
             </field>
         </field>
