@@ -21,7 +21,7 @@ Create Delivery Methods
 1. "Inventory" -> "Configuration" -> "Delivery" -> "Delivery Methods"
 2. Select or create a method
 3. Set the "Provider" to "DHL Parcel DE"
-4. Select or create a 'Account'.
+4. Select or create an 'Account'.
    1. Choose the Delivery Type 'DHL Parcel DE' in the Account form view to display the DHL fields
 
    2. Fill in the necessary information in the 'Account' form. The values below are for testing purposes only:

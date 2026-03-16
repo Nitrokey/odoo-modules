@@ -12,7 +12,7 @@ class CarrierAccount(models.Model):
         string="Use DHL Parcel DE Shipping Provider",
         help="If use DHL Parcel DE shipping provider than value set TRUE.",
         default=False,
-    ) #Tempororily field
+    )  # Tempororily field
     dhl_parcel_de_api_url = fields.Char(
         string="DHL API URL", copy=False, default="https://api-sandbox.dhl.com"
     )
@@ -95,6 +95,6 @@ class CarrierAccount(models.Model):
 
     def dhl_parcel_de_get_access_token_cron(self):
         for carrier_account_id in self.search(
-            [("delivery_type", "=", 'dhl_parcel_de_provider')]
+            [("delivery_type", "=", "dhl_parcel_de_provider")]
         ):
             carrier_account_id.dhl_parcel_de_get_access_token()
