@@ -33,7 +33,7 @@ Create Delivery Methods
       * DHL API Secret: Add your own API secret here
       * DHL Tracking URL: (optional) Leave empty or use: ``https://www.dhl.de/en/privatkunden/pakete-empfangen/verfolgen.html?piececode=``
 
-7. Fill out the necessary information. The information below is only meant as an example:
+5. Fill out the necessary information. The information below is only meant as an example:
 
    * Company: Company Name
    * DHL Weight UOM: ``KG``
@@ -56,7 +56,7 @@ Create Delivery Methods
 
      3. Save your changes
 
-8. Save your changes
+6. Save your changes
 
 
 Testing
