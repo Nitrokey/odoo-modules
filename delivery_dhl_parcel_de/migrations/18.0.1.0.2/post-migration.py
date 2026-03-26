@@ -61,7 +61,12 @@ def migrate(cr, version):
             company_id = data.pop("company_id")
 
             existing = env.ref("delivery_dhl_parcel_de.dhl_carrier_account")
-            if existing and existing.dhl_userid and existing.dhl_password and existing.dhl_api_key:
+            if (
+                existing
+                and existing.dhl_userid
+                and existing.dhl_password
+                and existing.dhl_api_key
+            ):
                 _logger.info("Already migrated")
                 continue
 

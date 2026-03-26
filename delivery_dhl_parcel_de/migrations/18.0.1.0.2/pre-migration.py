@@ -83,8 +83,10 @@ def migrate(cr, version):
 
         # Optional: Verify the data was stored correctly
         if count > 0:
-            cr.execute("SELECT company_id, dhl_userid FROM temp_dhl_company_data LIMIT 5")
+            cr.execute(
+                "SELECT company_id, dhl_userid FROM temp_dhl_company_data LIMIT 5"
+            )
             sample_data = cr.fetchall()
             _logger.info(f"Sample data from temp table: {sample_data}")
     else:
-        _logger.warning(f"Not found columns in res.company")
+        _logger.warning("Not found columns in res.company")
