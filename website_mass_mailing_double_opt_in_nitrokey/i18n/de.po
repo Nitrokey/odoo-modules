@@ -190,6 +190,12 @@ msgstr "Ausgehende E-Mails"
 #. module: website_mass_mailing_double_opt_in_nitrokey
 #. odoo-python
 #: code:addons/website_mass_mailing_double_opt_in_nitrokey/controllers/main.py:0
+msgid "You Have Subscribed to the Nitrokey Newsletter"
+msgstr "Sie haben den Nitrokey Newsletter abonniert"
+
+#. module: website_mass_mailing_double_opt_in_nitrokey
+#. odoo-python
+#: code:addons/website_mass_mailing_double_opt_in_nitrokey/controllers/main.py:0
 msgid "Thank you for subscribing the Nitrokey newsletter."
 msgstr "Vielen Dank, dass Sie den Nitrokey Newsletter abonniert haben."
 

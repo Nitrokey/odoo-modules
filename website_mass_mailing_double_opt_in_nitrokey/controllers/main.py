@@ -23,13 +23,30 @@ class ConsentControllerExt(ConsentController):
         # Get company information
         user = request.env.user
         company = user.company_id or request.env.company
-        # Update subject
-        res["subject"] = _("You Have Subscribed to the Nitrokey Newsletter")
-        # Get translated strings for body header
-        greeting = _("Hi!")
-        thank_you = _("Thank you for subscribing the Nitrokey newsletter.")
-        best_regards = _("Best regards,")
-        team = _("your Nitrokey team")
+        if language == "de_DE":
+            # Update subject
+            res["subject"] = "Sie haben den Nitrokey Newsletter abonniert"
+            # Get translated strings for body header
+            greeting = "Hallo,"
+            thank_you = "Vielen Dank, dass Sie den Nitrokey Newsletter abonniert haben."
+            best_regards = "Viele Grüße,"
+            team = "Ihr Team"
+        elif language == "en_US":
+            # Update subject
+            res["subject"] = "You Have Subscribed to the Nitrokey Newsletter"
+            # Get translated strings for body header
+            greeting = "Hi!"
+            thank_you = "Thank you for subscribing the Nitrokey newsletter."
+            best_regards = "Best regards,"
+            team = "your Nitrokey team"
+        else:
+            # Update subject
+            res["subject"] = _("You Have Subscribed to the Nitrokey Newsletter")
+            # Get translated strings for body header
+            greeting = _("Hi!")
+            thank_you = _("Thank you for subscribing the Nitrokey newsletter.")
+            best_regards = _("Best regards,")
+            team = _("your Nitrokey team")
         # Build complete HTML with a single f-string
         res["body_html"] = f"""
             <div>
