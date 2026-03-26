@@ -66,13 +66,28 @@ class ConsentController(Controller):
 
     def _prepare_mail_content(self, mailing_list_contact, language):
         """Newsletter Subscribed email template content"""
-        # Get translated strings
-        greeting = _("Hi!")
-        thank_you = _("Thank you for subscribing the newsletter.")
-        best_regards = _("Best regards,")
-        team = _("your team")
+        if language == 'de_DE':
+            # Get translated strings
+            greeting = "Hallo,"
+            subject = "Sie haben den Newsletter abonniert"
+            thank_you = "vielen Dank für die Anmeldung zum Newsletter."
+            best_regards = "Viele Grüße,"
+            team = "Ihr Team"
+        elif language == 'en_US':
+            greeting = "Hi!"
+            subject = "You Have Subscribed to the Newsletter"
+            thank_you = "Thank you for subscribing the newsletter."
+            best_regards = "Best regards,"
+            team = "your team"
+        else:
+            # Get translated strings
+            greeting = _("Hi!")
+            subject = _("You Have Subscribed to the Newsletter")
+            thank_you = _("Thank you for subscribing the newsletter.")
+            best_regards = _("Best regards,")
+            team = _("your team")
         mail_values = {
-            "subject": "You Have Subscribed to the Newsletter",
+            "subject": subject,
             "body_html": f"""
                 <div>
                     <p>{greeting}</p>
