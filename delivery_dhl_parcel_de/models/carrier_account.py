@@ -7,12 +7,6 @@ from odoo.exceptions import ValidationError
 class CarrierAccount(models.Model):
     _inherit = "carrier.account"
 
-    use_dhl_parcel_de_shipping_provider = fields.Boolean(
-        copy=False,
-        string="Use DHL Parcel DE Shipping Provider",
-        help="If use DHL Parcel DE shipping provider than value set TRUE.",
-        default=False,
-    )  # Tempororily field
     dhl_parcel_de_api_url = fields.Char(
         string="DHL API URL", copy=False, default="https://api-sandbox.dhl.com"
     )
@@ -87,11 +81,11 @@ class CarrierAccount(models.Model):
                         }
                     }
                 else:
-                    raise ValidationError(response_data)  # noqa: B904
+                    raise ValidationError(str(response_data))  # noqa: B904
             else:
                 raise ValidationError(response.text)
         except Exception as e:
-            raise ValidationError(e)  # noqa: B904
+            raise ValidationError(str(e))  # noqa: B904
 
     def dhl_parcel_de_get_access_token_cron(self):
         for carrier_account_id in self.search(

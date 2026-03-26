@@ -45,7 +45,6 @@ def migrate(cr, version):
     carrier_fields = {row[0] for row in cr.fetchall()}
 
     field_mapping = [
-        "use_dhl_parcel_de_shipping_provider",
         "dhl_parcel_de_api_url",
         "dhl_userid",
         "dhl_password",
@@ -60,20 +59,15 @@ def migrate(cr, version):
     for data in companies_data:
         try:
             company_id = data.pop("company_id")
-            use_dhl = data.pop("use_dhl_parcel_de_shipping_provider")
-
-            if not use_dhl:
-                continue
 
             existing = env.ref("delivery_dhl_parcel_de.dhl_carrier_account")
-            if existing and existing.use_dhl_parcel_de_shipping_provider:
+            if existing and existing.dhl_userid and existing.dhl_password and existing.dhl_api_key:
                 _logger.info("Already migrated")
                 continue
 
             account_vals = {
                 "company_id": company_id,
                 "carrier_id": dhl_carrier.id,
-                "use_dhl_parcel_de_shipping_provider": True,
                 **{
                     k: v
                     for k, v in data.items()
