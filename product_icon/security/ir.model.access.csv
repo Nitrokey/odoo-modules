@@ -1,4 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_product_icon_read,product.logo,model_product_icon,base.group_public,1,0,0,0
+access_product_icon_portal,product.logo portal,model_product_icon,base.group_portal,1,0,0,0
 access_product_icon,product.logo,model_product_icon,base.group_user,1,1,1,1
 access_product_template_icon,access_product_template_icon,model_product_template_icon,base.group_user,1,1,1,1
+access_product_template_icon_portal,access_product_template_icon_portal,model_product_template_icon,base.group_portal,1,0,0,0
