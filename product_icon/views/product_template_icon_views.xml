@@ -54,7 +54,7 @@
                         <div class="oe_kanban_global_click">
                             <div class="o_kanban_image">
                                 <img
-                                    t-att-src="kanban_image('product.icon', 'image_128', record.icon_id.raw_value)"
+                                    t-attf-src="/web/image/product.icon/{{record.icon_id.raw_value}}/image_128"
                                     alt="Icon"
                                 />
                             </div>
