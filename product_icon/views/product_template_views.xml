@@ -27,7 +27,7 @@
                                                 <img
                                                     t-att-alt="record.name.value"
                                                     t-if="record.image_128.raw_value"
-                                                    t-att-src="kanban_image('product.icon', 'image_128', record.id.raw_value)"
+                                                    t-attf-src="/web/image/product.icon/{{record.id.raw_value}}/image_128"
                                                 />
                                                 <div
                                                     class="o_website_sale_image_card_title"
