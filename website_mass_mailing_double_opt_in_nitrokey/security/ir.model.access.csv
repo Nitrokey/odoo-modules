@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mail_mass_mailing_list_editor,access.mail.mass_mailing_list_editor,mass_mailing.model_mailing_subscription,website_mass_mailing_double_opt_in.group_mass_mailing_editor,1,0,0,0
