@@ -62,7 +62,7 @@ export class LiveKitAdapter {
     }
 
     handleTrackMuted(participantId, source, track, muted) {
-        console.log("Track muted event:", participantId, source, track, muted);
+        console.debug("Track muted event:", participantId, source, track, muted);
         const type =
             source === Source.MICROPHONE
                 ? "audio"
@@ -82,13 +82,13 @@ export class LiveKitAdapter {
 
     addLivekitListeners() {
         livekitService.subscribeToInfoChange("adapter", (info) => {
-            console.log("received Info change event:", info);
+            console.debug("received Info change event:", info);
             this._emit("info_change", info);
         });
         livekitService.subscribeToTrackSubscribed(
             "adapter",
             (participantId, source, track) => {
-                console.log(
+                console.debug(
                     "received Track subscribed event:",
                     participantId,
                     source,
@@ -100,7 +100,7 @@ export class LiveKitAdapter {
         livekitService.subscribeToTrackMuted(
             "adapter",
             (participantId, source, track, muted) => {
-                console.log(
+                console.debug(
                     "received Track muted event:",
                     participantId,
                     source,

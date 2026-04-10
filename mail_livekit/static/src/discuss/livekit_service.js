@@ -8,8 +8,6 @@ const Source = {
     SCREEN: window.LivekitClient.Track.Source.ScreenShare,
 };
 
-console.log("Livekit Source constants:", Source);
-
 Object.freeze(Source);
 
 let debug = false;
@@ -79,7 +77,7 @@ class LivekitService {
 
         let audioElement = null;
 
-        if (track.kind === "audio") {
+        if (track.kind == "audio") {
             const audioElementId = this._formAudioElementId(participant.identity);
             audioElement = document.getElementById(audioElementId);
             audioElement?.remove();
@@ -217,6 +215,7 @@ class LivekitService {
             videoCaptureDefaults: {
                 resolution: VideoPresets.h720.resolution,
             },
+            disconnectOnPageLeave: false,
         });
 
         await this.room.prepareConnection(url, token);
