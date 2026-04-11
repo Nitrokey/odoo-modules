@@ -28,6 +28,8 @@
                                                     t-att-alt="record.name.value"
                                                     t-if="record.image_128.raw_value"
                                                     t-attf-src="/web/image/product.icon/{{record.id.raw_value}}/image_128"
+                                                    class="img-fluid"
+                                                    style="object-fit: contain;"
                                                 />
                                                 <div
                                                     class="o_website_sale_image_card_title"
