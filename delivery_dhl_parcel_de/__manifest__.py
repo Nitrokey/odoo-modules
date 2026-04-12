@@ -12,6 +12,7 @@
         "stock_delivery",
         "base_iso3166",
         "stock_picking_declared_value",
+        "delivery_carrier_account",
     ],
     "data": [
         "data/ir_cron.xml",
