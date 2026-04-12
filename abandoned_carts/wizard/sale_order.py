@@ -107,6 +107,8 @@ class SaleOrderWizard(models.TransientModel):
 
         for order_id in order_ids:
             order = self.env["sale.order"].browse(order_id)
+            if not order.exists():
+                continue
             record_name = order.name
             record_id = order.id
             error = ""
