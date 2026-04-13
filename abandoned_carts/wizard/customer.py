@@ -178,6 +178,8 @@ ORDER BY p.id DESC"""  # noqa: E201,E202,E271,E272
 
         for partner_id in partner_ids:
             partner = self.env["res.partner"].browse(partner_id)
+            if not partner.exists():
+                continue
             record_name = partner.name
             record_id = partner.id
             error = ""
