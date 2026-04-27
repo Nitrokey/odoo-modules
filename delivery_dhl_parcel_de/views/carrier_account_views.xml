@@ -20,12 +20,6 @@
                     invisible="delivery_type != 'dhl_parcel_de_provider'"
                 />
                 <field
-                    name="dhl_password"
-                    password="True"
-                    required="delivery_type == 'dhl_parcel_de_provider'"
-                    invisible="delivery_type != 'dhl_parcel_de_provider'"
-                />
-                <field
                     name="dhl_api_key"
                     password="True"
                     required="delivery_type == 'dhl_parcel_de_provider'"
@@ -35,10 +29,6 @@
                     name="dhl_api_secret"
                     password="True"
                     required="delivery_type != 'dhl_parcel_de_provider'"
-                    invisible="delivery_type != 'dhl_parcel_de_provider'"
-                />
-                <field
-                    name="dhl_tracking_url"
                     invisible="delivery_type != 'dhl_parcel_de_provider'"
                 />
                 <button

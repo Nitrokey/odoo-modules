@@ -47,7 +47,7 @@ def migrate(cr, version):
     field_mapping = [
         "dhl_parcel_de_api_url",
         "dhl_userid",
-        "dhl_password",
+        "password",
         "dhl_api_key",
         "dhl_api_secret",
         "dhl_tracking_url",
@@ -64,7 +64,7 @@ def migrate(cr, version):
             if (
                 existing
                 and existing.dhl_userid
-                and existing.dhl_password
+                and existing.password
                 and existing.dhl_api_key
             ):
                 _logger.info("Already migrated")

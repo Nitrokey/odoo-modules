@@ -29,6 +29,7 @@ Create Delivery Methods
       * DHL API URL: ``https://api-sandbox.dhl.com``
       * DHL UserId: ``user-valid``
       * DHL Password: ``SandboxPasswort2023!``
+      * DHL Account number: ``3333333333`` (sandbox account)
       * DHL API Key: Add your own API key here
       * DHL API Secret: Add your own API secret here
       * DHL Tracking URL: (optional) Leave empty or use: ``https://www.dhl.de/en/privatkunden/pakete-empfangen/verfolgen.html?piececode=``
@@ -38,7 +39,6 @@ Create Delivery Methods
    * Company: Company Name
    * DHL Weight UOM: ``KG``
    * DHL Services Name: ``V53WPAK-DHL Paket``
-   * DHL Account number: ``3333333333`` (sandbox account)
    * DHL Procedure number: ``01``
    * DHL Participation number: ``02``
    * DHL Package Info: Create package type

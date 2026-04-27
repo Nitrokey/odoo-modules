@@ -16,13 +16,6 @@ class CarrierAccount(models.Model):
         help="When use the sandbox account developer id use as the userId."
         "When use the live account application id use as the userId.",
     )
-    dhl_password = fields.Char(
-        "DHL Password",
-        copy=False,
-        help="When use the sandbox account developer portal password use "
-        "to as the password.When use the live account application "
-        "token use to as the password.",
-    )
     dhl_api_key = fields.Char(
         "DHL API Key",
         copy=False,
@@ -31,12 +24,6 @@ class CarrierAccount(models.Model):
     dhl_api_secret = fields.Char(
         "DHL API Secret",
         copy=False,
-        help="Obtained via Get Access! (app creation) and manually approved by DHL.",
-    )
-    dhl_tracking_url = fields.Char(
-        "DHL Tracking URL",
-        copy=False,
-        default="https://www.dhl.de/en/privatkunden/pakete-empfangen/verfolgen.html?piececode=",
         help="Obtained via Get Access! (app creation) and manually approved by DHL.",
     )
     dhl_access_token = fields.Char(
@@ -54,7 +41,7 @@ class CarrierAccount(models.Model):
         payload = {
             "grant_type": "password",
             "username": self.dhl_userid,
-            "password": self.dhl_password,
+            "password": self.password,
             "client_id": self.dhl_api_key,
             "client_secret": self.dhl_api_secret,
         }
