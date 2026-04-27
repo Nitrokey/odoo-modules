@@ -288,7 +288,9 @@ class DeliveryCarrier(models.Model):
         receiver_phone = recipient_address_id.phone or ""
         receiver_email = recipient_address_id.email or ""
         billingNumber = (
-            self.carrier_account_id.account + self.dhl_procedure_no + self.dhl_participation_no
+            self.carrier_account_id.account
+            + self.dhl_procedure_no
+            + self.dhl_participation_no
         )
 
         package_data = {
@@ -620,4 +622,6 @@ class DeliveryCarrier(models.Model):
             tracking_no = picking.carrier_tracking_ref.split(",")[-1]
             return f"{self.dhl_tracking_url}{tracking_no}"
         else:
-            raise ValidationError(_("Please set tracking URL in DHL delivery method settings."))
+            raise ValidationError(
+                _("Please set tracking URL in DHL delivery method settings.")
+            )
