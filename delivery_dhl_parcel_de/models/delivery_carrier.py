@@ -36,11 +36,6 @@ class DeliveryCarrier(models.Model):
         string="Product Name",
         help="Shipping Services those are accepted by DHL.",
     )
-    dhl_account_no = fields.Char(
-        string="DHL Account Number",
-        help="The Account(EKP) number sent to you by DHL and it must "
-        "be maximum 10 digit allow.",
-    )
     dhl_procedure_no = fields.Char(
         string="DHL Procedure Number",
         help="The Procedure refers to DHL products that are used for "
@@ -85,6 +80,12 @@ class DeliveryCarrier(models.Model):
     is_return_shipment = fields.Boolean(string="Is Return Order", copy=False)
     dhl_return_receiver_id = fields.Char(
         string="Receiver ID", help="The receiver id of the return shipment."
+    )
+    dhl_tracking_url = fields.Char(
+        "DHL Tracking URL",
+        copy=False,
+        default="https://www.dhl.de/en/privatkunden/pakete-empfangen/verfolgen.html?piececode=",
+        help="Obtained via Get Access! (app creation) and manually approved by DHL.",
     )
 
     def _calculate_package_insurance(self, picking, package_weight, total_weight):
@@ -159,7 +160,7 @@ class DeliveryCarrier(models.Model):
 
             product_request = {
                 "itemDescription": rec.product_id.name,
-                "packagedQuantity": rec.qty_done,
+                "packagedQuantity": rec.quantity,
                 "itemValue": {
                     "currency": self.company_id
                     and self.company_id.currency_id
@@ -249,7 +250,7 @@ class DeliveryCarrier(models.Model):
             "warning_message": False,
         }
 
-    def dhl_parcel_de_provider_retrive_package_info(self, picking, insurance_value):
+    def dhl_parcel_de_provider_get_package_info(self, picking, insurance_value):
         shipper_address_id = (
             picking.picking_type_id
             and picking.picking_type_id.warehouse_id
@@ -287,7 +288,9 @@ class DeliveryCarrier(models.Model):
         receiver_phone = recipient_address_id.phone or ""
         receiver_email = recipient_address_id.email or ""
         billingNumber = (
-            self.dhl_account_no + self.dhl_procedure_no + self.dhl_participation_no
+            self.carrier_account_id.account
+            + self.dhl_procedure_no
+            + self.dhl_participation_no
         )
 
         package_data = {
@@ -441,7 +444,7 @@ class DeliveryCarrier(models.Model):
             package_data = self.create_dhl_de_package_dict(
                 height, length, width, weight
             )
-            request_data = self.dhl_parcel_de_provider_retrive_package_info(
+            request_data = self.dhl_parcel_de_provider_get_package_info(
                 picking, insurance_value
             )
             package_data.update(request_data)
@@ -501,15 +504,20 @@ class DeliveryCarrier(models.Model):
                     else "",
                 )
             )
+        if not self.carrier_account_id:
+            raise ValidationError(
+                _("Carrier account is not set for DHL delivery method.")
+            )
+
         packages = self.dhl_parcel_de_provider_packages(picking)
         request_data = json.dumps({"shipments": packages})
         try:
             header = {
                 "accept": "application/json",
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {self.company_id.dhl_access_token}",
+                "Authorization": f"Bearer {self.carrier_account_id.dhl_access_token}",
             }
-            api_url = f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?docFormat={self.dhl_document_format}"  # noqa: E501
+            api_url = f"{self.carrier_account_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?docFormat={self.dhl_document_format}"  # noqa: E501
             request_type = "POST"
             (
                 response_status,
@@ -580,9 +588,9 @@ class DeliveryCarrier(models.Model):
             raise ValidationError(e) from e
 
     def dhl_parcel_de_provider_cancel_shipment(self, picking):
-        company_id = self.company_id
+        carrier_account_id = self.carrier_account_id
         try:
-            api_url = f"{self.company_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?profile=STANDARD_GRUPPENPROFIL"  # noqa: E501
+            api_url = f"{carrier_account_id.dhl_parcel_de_api_url}/parcel/de/shipping/v2/orders?profile=STANDARD_GRUPPENPROFIL"  # noqa: E501
             awb_numbers = picking.carrier_tracking_ref.split(",")
             for shipment in awb_numbers:
                 api_url += f"&shipment={shipment}"
@@ -590,7 +598,7 @@ class DeliveryCarrier(models.Model):
             header = {
                 "accept": "application/json",
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {company_id.dhl_access_token}",
+                "Authorization": f"Bearer {carrier_account_id.dhl_access_token}",
             }
             request_type = "DELETE"
             (
@@ -609,9 +617,11 @@ class DeliveryCarrier(models.Model):
             raise ValidationError(e) from e
 
     def dhl_parcel_de_provider_get_tracking_link(self, picking):
-        if self.company_id and self.company_id.dhl_tracking_url:
-            tracking_no = (picking.carrier_tracking_ref).split(",")
-            for number in tracking_no:
-                return f"{self.company_id.dhl_tracking_url}{number}"
+        if self.dhl_tracking_url:
+            # Return link only for the latest tracking number
+            tracking_no = picking.carrier_tracking_ref.split(",")[-1]
+            return f"{self.dhl_tracking_url}{tracking_no}"
         else:
-            raise ValidationError(_("Please Set Tracking URL In Company"))
+            raise ValidationError(
+                _("Please set tracking URL in DHL delivery method settings.")
+            )

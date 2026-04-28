@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_carrier_account_form_inherit_dhl" model="ir.ui.view">
+        <field name="name">carrier.account.form.inherit.dhl</field>
+        <field name="model">carrier.account</field>
+        <field
+            name="inherit_id"
+            ref="delivery_carrier_account.carrier_account_view_form"
+        />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field
+                    name="dhl_parcel_de_api_url"
+                    required="delivery_type == 'dhl_parcel_de_provider'"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
+                />
+                <field
+                    name="dhl_userid"
+                    required="delivery_type == 'dhl_parcel_de_provider'"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
+                />
+                <field
+                    name="dhl_api_key"
+                    password="True"
+                    required="delivery_type == 'dhl_parcel_de_provider'"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
+                />
+                <field
+                    name="dhl_api_secret"
+                    password="True"
+                    required="delivery_type != 'dhl_parcel_de_provider'"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
+                />
+                <button
+                    name="dhl_parcel_de_get_access_token"
+                    type="object"
+                    string="Generate Authentication Token"
+                    class="fa fa-arrow-right oe_link"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
+                />
+                <field
+                    name="dhl_access_token"
+                    invisible="delivery_type != 'dhl_parcel_de_provider'"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

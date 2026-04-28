@@ -1,0 +1,45 @@
+<odoo noupdate="1">
+    <record id="dhl_stock_package_type" model="stock.package.type">
+        <field name="name">DHL Parcel DE</field>
+        <field name="package_carrier_type">dhl_parcel_de_provider</field>
+        <field name="packaging_length">5.00</field>
+        <field name="width">5.00</field>
+        <field name="height">5.00</field>
+        <field name="base_weight">0.50</field>
+        <field name="max_weight">10.00</field>
+        <field name="shipper_package_code">DHL-Paket</field>
+    </record>
+
+    <record id="dhl_carrier_account" model="carrier.account">
+        <field name="name">DHL Parcel DE Account</field>
+        <field name="delivery_type">dhl_parcel_de_provider</field>
+        <field name="account">3333333333</field>
+        <field name="password">dummy</field>
+    </record>
+
+    <record id="dhl_parcel_delivery_type" model="delivery.carrier">
+        <field name="name">DHL Parcel</field>
+        <field name="delivery_type">dhl_parcel_de_provider</field>
+        <field name="integration_level">rate_and_ship</field>
+        <field name="product_id" ref="delivery.product_product_delivery" />
+        <field name="sequence">15</field>
+        <field
+            name="dhl_parcel_de_provider_package_id"
+            ref="delivery_dhl_parcel_de.dhl_stock_package_type"
+        />
+        <field
+            name="carrier_account_id"
+            ref="delivery_dhl_parcel_de.dhl_carrier_account"
+        />
+        <field name="dhl_weight_uom">kg</field>
+        <field name="dhl_services_name">V01PAK</field>
+        <field name="dhl_premium" eval="False" />
+        <field name="dhl_export_type_description">DHL Parcel</field>
+        <field name="dhl_procedure_no">01</field>
+        <field name="dhl_participation_no">01</field>
+        <field name="dhl_bulky_goods" eval="False" />
+        <field name="dhl_endorsement">RETURN</field>
+        <field name="dhl_document_format">PDF</field>
+        <field name="dhl_export_type">OTHER</field>
+    </record>
+</odoo>

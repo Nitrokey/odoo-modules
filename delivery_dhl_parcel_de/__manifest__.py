@@ -1,7 +1,7 @@
 {
     "name": "DHL Parcel (Post & Parcel Germany) Integration",
     "category": "Website",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.2",
     "summary": """
         Create DHL Parce DE shipments from Odoo,
         update tracking information in Odoo from DHL,
@@ -10,12 +10,14 @@
     "license": "AGPL-3",
     "depends": [
         "stock_delivery",
+        "delivery_carrier_account",
         "base_iso3166",
         "stock_picking_declared_value",
     ],
     "data": [
+        "data/data.xml",
         "data/ir_cron.xml",
-        "views/res_company.xml",
+        "views/carrier_account_views.xml",
         "views/delivery_carrier.xml",
         "views/stock_picking.xml",
     ],
