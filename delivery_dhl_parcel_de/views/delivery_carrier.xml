@@ -48,7 +48,6 @@
                         </group>
                         <group>
                             <field name="dhl_bulky_goods" />
-                            <field name="dhl_premium" />
                             <field
                                 name="dhl_endorsement"
                                 required="delivery_type == 'dhl_parcel_de_provider'"
