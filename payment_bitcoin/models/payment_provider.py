@@ -18,6 +18,20 @@ class BitcoinPaymentProvider(models.Model):
     )
     bitcoin_send_email = fields.Boolean(default=False)
 
+    def _get_redirect_form_view(self, is_validation=False):
+        """Override to always return the bitcoin redirect form view.
+
+        The base implementation simply returns self.redirect_form_view_id, which
+        may not be set on existing installations because the provider data record
+        is wrapped in noupdate="1" and the field was added later.  By returning
+        the view via env.ref() we make the redirect flow work regardless of
+        whether the database field has been populated.
+        """
+        self.ensure_one()
+        if self.code != "bitcoin":
+            return super()._get_redirect_form_view(is_validation=is_validation)
+        return self.env.ref("payment_bitcoin.bitcoin_form")
+
     def _get_default_payment_method_id(self):
         self.ensure_one()
         if self.provider == "bitcoin":

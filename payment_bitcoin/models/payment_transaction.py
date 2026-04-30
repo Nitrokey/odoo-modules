@@ -147,10 +147,10 @@ class BitcoinPaymentTransaction(models.Model):
 
         if self.provider_code != "bitcoin":
             return res
-        self.provider_id.get_base_url()
+        # Only return the values actually used by the bitcoin_form template.
+        # The /payment/bitcoin/feedback controller resolves the transaction via
+        # `reference` alone, so no other fields are required in the POST body.
         return {
-            "currency_code": self.currency_id.name,
             "return_url": BitcoinController.accept_url,
             "reference": self.reference,
-            "tx_url": "/shop/payment/validate",
         }

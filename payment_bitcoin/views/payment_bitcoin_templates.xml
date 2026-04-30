@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="bitcoin_form">
+        <!-- Redirect form submitted by Odoo's JS payment flow (_processRedirectFlow).
+             The /payment/bitcoin/feedback controller only needs `reference` to look
+             up the transaction; all other fields that were here previously
+             (amount, currency_code, csrf_token) are unused by that controller and
+             `amount` would cause a QWeb NameError because it is not passed in the
+             rendering values. -->
         <form t-att-action="return_url" method="post">
-            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-            <t t-if="tx_url">
-                <input type='hidden' name='tx_url' t-att-value='tx_url' />
-            </t>
-            <input type='hidden' name='reference' t-att-value='reference' />
-            <input type='hidden' name='amount' t-att-value='amount' />
-            <input type='hidden' name='currency_code' t-att-value='currency_code' />
+            <input type="hidden" name="reference" t-att-value="reference" />
         </form>
     </template>
 
