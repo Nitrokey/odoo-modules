@@ -21,6 +21,12 @@
             "mail_livekit/static/src/discuss/call_participant_video_patch.js",
             "mail_livekit/static/src/discuss/call_context_menu_patch.js",
         ],
+        "web.assets_unit_tests": [
+            "mail_livekit/static/lib/livekit/livekit-client.umd.min.js",
+            "mail_livekit/static/src/discuss/livekit_service.js",
+            "mail_livekit/static/src/discuss/livekit_adapter.js",
+            "mail_livekit/static/tests/**/*",
+        ],
     },
     "external_dependencies": {
         "python": ["livekit-api"],

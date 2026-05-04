@@ -1,3 +1,5 @@
+/** @odoo-module */
+
 import {Source, livekitService} from "./livekit_service";
 
 export class LiveKitAdapter {
@@ -29,12 +31,13 @@ export class LiveKitAdapter {
     }
 
     async updateUpload(source, track) {
-        const livekitSource =
-            source === "audio"
-                ? Source.MICROPHONE
-                : source === "camera"
-                  ? Source.CAMERA
-                  : Source.SCREEN;
+        const livekitSource = Object.values(Source).includes(source)
+            ? source
+            : source === "audio"
+              ? Source.MICROPHONE
+              : source === "camera"
+                ? Source.CAMERA
+                : Source.SCREEN;
         await livekitService?.setTrackEnabled(livekitSource, Boolean(track), track);
     }
 
@@ -87,14 +90,14 @@ export class LiveKitAdapter {
         });
         livekitService.subscribeToTrackSubscribed(
             "adapter",
-            (participantId, source, track) => {
+            (participantId, source, track, audioElement = null) => {
                 console.debug(
                     "received Track subscribed event:",
                     participantId,
                     source,
                     track
                 );
-                this.handleTrackSubscribed(participantId, source, track);
+                this.handleTrackSubscribed(participantId, source, track, audioElement);
             }
         );
         livekitService.subscribeToTrackMuted(
@@ -113,8 +116,13 @@ export class LiveKitAdapter {
     }
 
     async connect(livekit_url, token) {
-        await livekitService?.connect(livekit_url, token);
         this.addLivekitListeners();
+        try {
+            await livekitService?.connect(livekit_url, token);
+        } catch (error) {
+            await livekitService?.disconnect();
+            throw error;
+        }
     }
 
     async disconnect() {
