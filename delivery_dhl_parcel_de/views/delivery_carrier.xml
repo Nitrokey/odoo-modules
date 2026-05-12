@@ -27,7 +27,7 @@
                             />
                             <field
                                 name="dhl_services_name"
-                                required="delivery_type == 'dhl_parcel_de_provider'"
+                                required="delivery_type == 'dhl_parcel_de_provider' and not is_return_shipment"
                             />
                             <field
                                 name="dhl_premium"
