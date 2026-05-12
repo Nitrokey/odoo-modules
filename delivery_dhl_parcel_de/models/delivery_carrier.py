@@ -327,13 +327,13 @@ class DeliveryCarrier(models.Model):
         europe_group_id = self.env.ref("base.europe")
         if recipient_address_id.country_id not in europe_group_id.country_ids:
             product_data = self.prepare_product_data_request(picking)
+            company = self.company_id or self.env.company
+            currency = company.currency_id and company.currency_id.name
             package_data["customs"] = {
                 "exportType": self.dhl_export_type,
                 "exportDescription": self.dhl_export_type_description or "",
                 "postalCharges": {
-                    "currency": self.company_id
-                    and self.company_id.currency_id
-                    and self.company_id.currency_id.name,
+                    "currency": currency,
                     "value": picking.sale_id.order_line.filtered(
                         lambda x: x.is_delivery
                     )[:1].price_subtotal
