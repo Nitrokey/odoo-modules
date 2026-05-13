@@ -21,8 +21,7 @@ class ConsentControllerExt(ConsentController):
         """Newsletter Subscribed email template content"""
         res = super()._prepare_mail_content(mailing_list_contact, language)
         # Get company information
-        user = request.env.user
-        company = user.company_id or request.env.company
+        company = request.env.company.sudo()
         if language == "de_DE":
             # Update subject
             res["subject"] = "Sie haben den Nitrokey Newsletter abonniert"

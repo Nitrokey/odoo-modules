@@ -96,7 +96,8 @@ class ConsentController(Controller):
                     <p>{best_regards}<br />{team}</p>
                 </div>
             """,
-            "email_from": request.env.user.partner_id.email,
+            "email_from": request.env.company.sudo().default_from_email
+            or request.env.company.sudo().partner_id.email,
             "email_to": mailing_list_contact.contact_id.email,
             "state": "outgoing",
         }
