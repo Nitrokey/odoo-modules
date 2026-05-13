@@ -173,6 +173,9 @@ class LivekitService {
                         publication,
                         participant
                     );
+                } else if (!publication.isSubscribed) {
+                    log(`Requesting missing audio subscription for ${identity}`);
+                    publication.setSubscribed?.(true);
                 }
             }
 

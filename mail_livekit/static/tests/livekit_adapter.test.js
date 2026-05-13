@@ -39,6 +39,24 @@ function makeRemoteAudioTrack(identity) {
     return {audioElement, participant, publication, track};
 }
 
+function makeRemoteAudioPublication(identity, {isSubscribed = false} = {}) {
+    const publication = {
+        source: Source.MICROPHONE,
+        track: null,
+        isSubscribed,
+        setSubscribed: (subscribed) => {
+            publication.requestedSubscription = subscribed;
+        },
+    };
+    const participant = {
+        identity,
+        sid: `${identity}-sid`,
+        audioTrackPublications: new Map([["microphone", publication]]),
+        videoTrackPublications: new Map(),
+    };
+    return {participant, publication};
+}
+
 describe("mail_livekit livekit adapter", () => {
     after(() => {
         window.LivekitClient = originalLivekitClient;
@@ -106,5 +124,26 @@ describe("mail_livekit livekit adapter", () => {
             source: Source.MICROPHONE,
             track,
         });
+    });
+
+    test("rebindExistingTracks requests missing remote microphone subscriptions in a multi-person call", async () => {
+        const {participant: alreadySubscribed} = makeRemoteAudioTrack("partner:10");
+        const {participant: missingPeerA, publication: missingPublicationA} =
+            makeRemoteAudioPublication("partner:11");
+        const {participant: missingPeerB, publication: missingPublicationB} =
+            makeRemoteAudioPublication("partner:12");
+
+        livekitService.room = {
+            remoteParticipants: new Map([
+                [alreadySubscribed.identity, alreadySubscribed],
+                [missingPeerA.identity, missingPeerA],
+                [missingPeerB.identity, missingPeerB],
+            ]),
+        };
+
+        await livekitService.rebindExistingTracks();
+
+        expect(missingPublicationA.requestedSubscription).toBe(true);
+        expect(missingPublicationB.requestedSubscription).toBe(true);
     });
 });
