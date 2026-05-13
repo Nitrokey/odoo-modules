@@ -13,6 +13,8 @@
         "delivery_carrier_account",
         "base_iso3166",
         "stock_picking_declared_value",
+        "mrp",
+        "product_harmonized_system",
     ],
     "data": [
         "data/data.xml",
