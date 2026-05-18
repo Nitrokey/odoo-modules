@@ -10,7 +10,7 @@ class MailThread(models.AbstractModel):
         """create activity from portal message"""
         msg = super().message_post(**kwargs)
         # Call method if from portal
-        if not self.env.context.get("allowed_company_ids"):
+        if "message_post_store" in self.env.context:
             self.schedule_email_activity()
         return msg
 
