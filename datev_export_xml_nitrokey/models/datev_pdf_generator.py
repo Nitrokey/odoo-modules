@@ -9,4 +9,6 @@ class DatevPdfGenerator(models.AbstractModel):
 
     @api.model
     def generate_pdf(self, invoice):
-        return super(DatevPdfGenerator, self.with_context(must_skip_send_to_printer=True)).generate_pdf(invoice)
+        return super(
+            DatevPdfGenerator, self.with_context(must_skip_send_to_printer=True)
+        ).generate_pdf(invoice)
