@@ -2,6 +2,8 @@ var globals = require('globals');
 jsdoc = require("eslint-plugin-jsdoc");
 
 const config = [{
+    ignores: ["**/static/lib/**"],
+}, {
     plugins: {
       jsdoc,
     },
