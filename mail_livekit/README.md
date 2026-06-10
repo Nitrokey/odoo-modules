@@ -101,7 +101,7 @@ Uses Odoo's `env.bus` for event propagation:
 
 This matches Odoo's existing patterns (e.g., `RTC-SERVICE:PLAY_MEDIA`)
 
-### Bundled Livekit SDK 2.17
+### Bundled Livekit SDK 2.19.2
 
 - Includes LiveKit client SDK and processors
 
