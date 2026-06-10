@@ -1,7 +1,7 @@
 {
     "name": "Discuss - Livekit Integration",
     "summary": "Integrate LiveKit video conferencing with Odoo Discuss",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "author": "Nitrokey GmbH, Solvti Sp. z o.o.",
     "license": "LGPL-3",
     "category": "Discuss",
