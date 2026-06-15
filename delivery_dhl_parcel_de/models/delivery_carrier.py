@@ -316,24 +316,16 @@ class DeliveryCarrier(models.Model):
         )
 
         if self._is_packstation(receiver_street2):
-            # Deliver to a DHL Packstation (locker). Street 1 holds the
-            # postNumber (DHL customer number / post number); Street 2
-            # contains the Packstation keyword followed by the locker ID.
+            # Deliver to a DHL Packstation (locker).
             locker_id = self._get_packstation_locker_id(receiver_street2)
             consignee = {
-                "name1": receiver_company or recipient_address_id.name,
-                "locker": {
-                    "lockerID": locker_id,
-                    "postNumber": receiver_street,
-                    "postalCode": receiver_zip,
-                    "city": receiver_city,
-                    "country": receiver_country_code,
-                },
-                "email": receiver_email,
-                "phone": receiver_phone,
+                "name": receiver_company or recipient_address_id.name,
+                "lockerID": int(locker_id),
+                "postNumber": receiver_street,
+                "postalCode": receiver_zip,
+                "city": receiver_city,
+                "country": receiver_country_code,
             }
-            if receiver_company:
-                consignee["name2"] = recipient_address_id.name
         else:
             consignee = {
                 "name1": receiver_company or recipient_address_id.name,

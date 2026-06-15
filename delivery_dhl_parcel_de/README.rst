@@ -18,8 +18,10 @@ Packstation (Locker) Delivery
 
 To ship to a DHL Packstation, set the recipient's address fields as follows:
 
-* **Street 1**: The recipient's DHL post number (8-digit customer number).
-* **Street 2**: ``Packstation <lockerID>``, e.g. ``Packstation 183`` or ``Packstation: 183`` (case-insensitive).
+* **Street 1**: The recipient's DHL post number (6–10 digits).
+* **Street 2**: ``Packstation <lockerID>``, e.g. ``Packstation 183`` or
+  ``Packstation: 183`` (case-insensitive). The locker ID is a 3-digit integer
+  (100–999) identifying the Packstation.
 * **ZIP / City / Country**: The Packstation's postal address.
 
 The module detects the keyword ``Packstation`` in Street 2 and automatically
