@@ -22,10 +22,18 @@ class TestPackstation(TransactionCase):
 
     def test_get_locker_id_simple(self):
         """Locker ID is extracted from 'Packstation NNN' formats."""
-        self.assertEqual(DeliveryCarrier._get_packstation_locker_id("Packstation 123"), "123")
-        self.assertEqual(DeliveryCarrier._get_packstation_locker_id("PACKSTATION 456"), "456")
+        self.assertEqual(
+            DeliveryCarrier._get_packstation_locker_id("Packstation 123"), "123"
+        )
+        self.assertEqual(
+            DeliveryCarrier._get_packstation_locker_id("PACKSTATION 456"), "456"
+        )
 
     def test_get_locker_id_with_colon(self):
         """Locker ID is extracted when a colon separates the keyword from the ID."""
-        self.assertEqual(DeliveryCarrier._get_packstation_locker_id("Packstation: 456"), "456")
-        self.assertEqual(DeliveryCarrier._get_packstation_locker_id("PACKSTATION  :  789"), "789")
+        self.assertEqual(
+            DeliveryCarrier._get_packstation_locker_id("Packstation: 456"), "456"
+        )
+        self.assertEqual(
+            DeliveryCarrier._get_packstation_locker_id("PACKSTATION  :  789"), "789"
+        )
