@@ -9,8 +9,22 @@ Features
 * Create DHL Parcel DE shipments directly from Odoo
 * Update tracking information in Odoo from DHL
 * Generate and print shipping labels in Odoo
+* Deliver to DHL Packstations (lockers)
 
 Note that shipping rates are not retrieved from DHL but need to be configured.
+
+Packstation (Locker) Delivery
+------------------------------
+
+To ship to a DHL Packstation, set the recipient's address fields as follows:
+
+* **Street 1**: The recipient's DHL post number (8-digit customer number).
+* **Street 2**: ``Packstation <lockerID>``, e.g. ``Packstation 183`` or ``Packstation: 183`` (case-insensitive).
+* **ZIP / City / Country**: The Packstation's postal address.
+
+The module detects the keyword ``Packstation`` in Street 2 and automatically
+sends a locker-addressed shipment request to DHL instead of a regular contact
+address.
 
 Configuration
 -------------

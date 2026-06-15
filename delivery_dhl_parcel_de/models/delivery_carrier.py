@@ -1,6 +1,7 @@
 import binascii
 import json
 import logging
+import re
 
 import requests
 
@@ -87,6 +88,27 @@ class DeliveryCarrier(models.Model):
         default="https://www.dhl.de/en/privatkunden/pakete-empfangen/verfolgen.html?piececode=",
         help="Obtained via Get Access! (app creation) and manually approved by DHL.",
     )
+
+    @staticmethod
+    def _is_packstation(street2):
+        """Return True if street2 indicates a DHL Packstation (locker) delivery."""
+        return bool(street2 and "packstation" in street2.lower())
+
+    @staticmethod
+    def _get_packstation_locker_id(street2):
+        """Extract the locker ID from a street2 field.
+
+        Removes the keyword 'Packstation' (case-insensitive), any adjacent
+        colons and surrounding whitespace, returning only the numeric locker ID.
+
+        Examples::
+
+            "Packstation 123"    -> "123"
+            "Packstation: 456"   -> "456"
+            "PACKSTATION  :  789" -> "789"
+        """
+        locker_id = re.sub(r"(?i)\s*packstation\s*:?\s*", "", street2).strip()
+        return locker_id
 
     def _calculate_package_insurance(self, picking, package_weight, total_weight):
         """
@@ -293,6 +315,40 @@ class DeliveryCarrier(models.Model):
             + self.dhl_participation_no
         )
 
+        if self._is_packstation(receiver_street2):
+            # Deliver to a DHL Packstation (locker). Street 1 holds the
+            # postNumber (DHL customer number / post number); Street 2
+            # contains the Packstation keyword followed by the locker ID.
+            locker_id = self._get_packstation_locker_id(receiver_street2)
+            consignee = {
+                "name1": receiver_company or recipient_address_id.name,
+                "locker": {
+                    "lockerID": locker_id,
+                    "postNumber": receiver_street,
+                    "postalCode": receiver_zip,
+                    "city": receiver_city,
+                    "country": receiver_country_code,
+                },
+                "email": receiver_email,
+                "phone": receiver_phone,
+            }
+            if receiver_company:
+                consignee["name2"] = recipient_address_id.name
+        else:
+            consignee = {
+                "name1": receiver_company or recipient_address_id.name,
+                "name2": recipient_address_id.name
+                if receiver_company
+                else receiver_street2,
+                "name3": receiver_street2 if receiver_company else "",
+                "addressStreet": receiver_street,
+                "postalCode": receiver_zip,
+                "city": receiver_city,
+                "country": receiver_country_code,
+                "email": receiver_email,
+                "phone": receiver_phone,
+            }
+
         package_data = {
             "product": self.dhl_services_name,
             "billingNumber": billingNumber,
@@ -307,21 +363,7 @@ class DeliveryCarrier(models.Model):
                 "email": sender_email,
                 "phone": sender_phone,
             },
-            "consignee": {
-                "name1": receiver_company
-                if receiver_company
-                else recipient_address_id.name,
-                "name2": recipient_address_id.name
-                if receiver_company
-                else receiver_street2,
-                "name3": receiver_street2 if receiver_company else "",
-                "addressStreet": receiver_street,
-                "postalCode": receiver_zip,
-                "city": receiver_city,
-                "country": receiver_country_code,
-                "email": receiver_email,
-                "phone": receiver_phone,
-            },
+            "consignee": consignee,
         }
 
         europe_group_id = self.env.ref("base.europe")
