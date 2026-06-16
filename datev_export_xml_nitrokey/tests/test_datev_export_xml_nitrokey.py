@@ -372,6 +372,38 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
                 }
             )
 
+    def create_pdf_attachment(self, invoice):
+        """Create a dummy PDF attachment for testing (no demo data dependency)."""
+        return self.env["ir.attachment"].create(
+            {
+                "name": invoice.name.replace("/", "-") + ".pdf",
+                "type": "binary",
+                "datas": base64.b64encode(b"%PDF-1.4 test"),
+                "res_model": "account.move",
+                "res_id": invoice.id,
+                "res_field": False,
+                "mimetype": "application/pdf",
+            }
+        )
+
+    def create_out_invoice(self, customer, start_date=None, end_date=None):
+        invoice = super().create_out_invoice(customer, start_date, end_date)
+        self.create_pdf_attachment(invoice)
+        return invoice
+
+    def create_out_invoice_with_tax(self, customer, start_date, end_date, tax):
+        invoice = super().create_out_invoice_with_tax(
+            customer, start_date, end_date, tax
+        )
+        self.create_pdf_attachment(invoice)
+        return invoice
+
+    def create_refund(self, invoice, refund_date):
+        refund = super().create_refund(invoice, refund_date)
+        if refund.move_type == "out_refund":
+            self.create_pdf_attachment(refund)
+        return refund
+
     def test_01_out_invoice_de_datev_export(self):
         return super().test_01_out_invoice_de_datev_export()
 
