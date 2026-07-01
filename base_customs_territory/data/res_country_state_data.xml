@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- Spain: territories outside the EU customs and VAT area -->
+
+    <!-- Canary Islands -->
+    <record id="base.state_es_gc" model="res.country.state">
+        <field name="outside_customs_territory" eval="True" />
+    </record>
+    <record id="base.state_es_tf" model="res.country.state">
+        <field name="outside_customs_territory" eval="True" />
+    </record>
+
+    <!-- Ceuta -->
+    <record id="base.state_es_ce" model="res.country.state">
+        <field name="outside_customs_territory" eval="True" />
+    </record>
+
+    <!-- Melilla -->
+    <record id="base.state_es_ml" model="res.country.state">
+        <field name="outside_customs_territory" eval="True" />
+    </record>
+</odoo>
