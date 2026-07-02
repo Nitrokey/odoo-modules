@@ -361,7 +361,10 @@ class DeliveryCarrier(models.Model):
         }
 
         europe_group_id = self.env.ref("base.europe")
-        if recipient_address_id.country_id not in europe_group_id.country_ids:
+        if (
+            recipient_address_id.country_id not in europe_group_id.country_ids
+            or recipient_address_id.state_id.outside_customs_territory
+        ):
             product_data = self.prepare_product_data_request(picking)
             company = self.company_id or self.env.company
             currency = company.currency_id and company.currency_id.name

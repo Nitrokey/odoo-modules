@@ -12,6 +12,7 @@
         "stock_delivery",
         "delivery_carrier_account",
         "base_iso3166",
+        "base_customs_territory",
         "stock_picking_declared_value",
         "mrp",
         "product_harmonized_system",
