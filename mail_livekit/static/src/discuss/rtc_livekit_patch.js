@@ -91,7 +91,44 @@ patch(Rtc.prototype, {
     async _handleNetworkUpdates(eventdata) {
         console.debug("LIVEKIT: Network update received", eventdata);
         this.fixEventIds(eventdata);
-        return super._handleNetworkUpdates(eventdata);
+        const result = await super._handleNetworkUpdates(eventdata);
+        // When a remote video stream stops (screen share ends, camera turned
+        // off, ...) or a participant's info changes, the focused (active)
+        // session may no longer have anything to display. In that case, leave
+        // the focus view and fall back to the tile view instead of showing an
+        // empty screen.
+        const name = eventdata.detail?.name;
+        if (
+            (name === "track" && eventdata.detail?.payload?.active === false) ||
+            name === "info_change"
+        ) {
+            this._exitFocusModeIfNeeded();
+        }
+        return result;
+    },
+
+    _exitFocusModeIfNeeded() {
+        const channel = this.state.channel;
+        const focused = channel?.activeRtcSession;
+        if (!focused) {
+            return;
+        }
+        // The main (focused) video stream is still active, nothing to do.
+        if (focused.isMainVideoStreamActive) {
+            return;
+        }
+        if (focused.isCameraOn) {
+            // Fall back to the camera stream if it is still available.
+            focused.mainVideoStreamType = "camera";
+        } else if (focused.isScreenSharingOn) {
+            // Fall back to the screen share stream if it is still available.
+            focused.mainVideoStreamType = "screen";
+        } else {
+            // Nothing left to display for this session: exit the focus view
+            // and return to the tile view.
+            channel.activeRtcSession = undefined;
+            focused.mainVideoStreamType = undefined;
+        }
     },
 
     async setAudioVolume(sessionId, element = null) {
