@@ -1,4 +1,4 @@
-/** @odoo-module **/
+// @odoo-module
 
 import {ConfirmationDialog} from "@web/core/confirmation_dialog/confirmation_dialog";
 import {_t} from "@web/core/l10n/translation";
