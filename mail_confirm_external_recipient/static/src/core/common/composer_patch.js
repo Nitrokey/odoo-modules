@@ -1,4 +1,4 @@
-/** @odoo-module **/
+// @odoo-module
 
 import {Composer} from "@mail/core/common/composer";
 import {ConfirmationDialog} from "@web/core/confirmation_dialog/confirmation_dialog";
