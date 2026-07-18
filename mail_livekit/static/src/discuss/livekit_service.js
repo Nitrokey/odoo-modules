@@ -1,4 +1,4 @@
-/** @odoo-module */
+// @odoo-module
 
 const {Room, VideoPresets, RoomEvent} = window.LivekitClient;
 
@@ -79,7 +79,7 @@ class LivekitService {
 
         let audioElement = null;
 
-        if (track.kind == "audio") {
+        if (track.kind === "audio") {
             const audioElementId = this._formAudioElementId(participant.identity);
             audioElement = document.getElementById(audioElementId);
             audioElement?.remove();

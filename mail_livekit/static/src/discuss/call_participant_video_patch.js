@@ -1,4 +1,4 @@
-/** @odoo-module */
+// @odoo-module
 
 import {onWillUnmount, useExternalListener} from "@odoo/owl";
 import {CallParticipantVideo} from "@mail/discuss/call/common/call_participant_video";
@@ -29,7 +29,7 @@ patch(CallParticipantVideo.prototype, {
         // Subscribe to track rebind events
         useExternalListener(this.env.bus, "LIVEKIT:TRACK:REBIND", (event) => {
             const {sessionId, identity, type} = event.detail;
-            if (this.props.identity == identity && this.props.type === type) {
+            if (this.props.identity === identity && this.props.type === type) {
                 console.debug(
                     `LIVEKIT:TRACK:REBIND for identity ${identity}, type ${type}`
                 );

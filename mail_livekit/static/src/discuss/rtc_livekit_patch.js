@@ -1,4 +1,4 @@
-/** @odoo-module */
+// @odoo-module
 import {CONNECTION_TYPES, Rtc, rtcService} from "@mail/discuss/call/common/rtc_service";
 import {LiveKitAdapter} from "./livekit_adapter";
 import {PeerToPeer} from "@mail/discuss/call/common/peer_to_peer";
@@ -75,7 +75,7 @@ patch(Rtc.prototype, {
             );
         }
         if (
-            eventdata.detail.name == "info_change" &&
+            eventdata.detail.name === "info_change" &&
             Object.keys(eventdata.detail.payload)[0].includes(":")
         ) {
             const fixedIdentity = this.identityToSessionId(
