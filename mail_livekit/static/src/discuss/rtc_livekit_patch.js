@@ -173,6 +173,19 @@ patch(Rtc.prototype, {
             rtcSession.videoStreams.set(type, dummyStream);
             await rtcSession.updateStreamState(type, true);
 
+            // When a remote participant starts sharing their screen, switch
+            // every other attendee to the focus (single-tile) view showing that
+            // screen share.
+            const channel = this.state.channel;
+            if (
+                type === "screen" &&
+                channel &&
+                rtcSession.notEq(this.selfSession)
+            ) {
+                rtcSession.mainVideoStreamType = "screen";
+                channel.activeRtcSession = rtcSession;
+            }
+
             // Trigger bus event to notify CallParticipantVideo to attach track
             this.store.env.bus.trigger("LIVEKIT:TRACK:REBIND", {
                 sessionId: rtcSession.id,
