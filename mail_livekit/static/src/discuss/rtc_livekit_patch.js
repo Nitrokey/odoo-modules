@@ -177,11 +177,7 @@ patch(Rtc.prototype, {
             // every other attendee to the focus (single-tile) view showing that
             // screen share.
             const channel = this.state.channel;
-            if (
-                type === "screen" &&
-                channel &&
-                rtcSession.notEq(this.selfSession)
-            ) {
+            if (type === "screen" && channel && rtcSession.notEq(this.selfSession)) {
                 rtcSession.mainVideoStreamType = "screen";
                 channel.activeRtcSession = rtcSession;
             }
