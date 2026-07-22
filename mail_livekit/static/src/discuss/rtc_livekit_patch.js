@@ -90,21 +90,10 @@ patch(Rtc.prototype, {
 
     async _handleNetworkUpdates(eventdata) {
         console.debug("LIVEKIT: Network update received", eventdata);
+        // Resolve LiveKit identities to session ids before the base class
+        // processes the event.
         this.fixEventIds(eventdata);
-        const result = await super._handleNetworkUpdates(eventdata);
-        // When a remote video stream stops (screen share ends, camera turned
-        // off, ...) or a participant's info changes, the focused (active)
-        // session may no longer have anything to display. In that case, leave
-        // the focus view and fall back to the tile view instead of showing an
-        // empty screen.
-        const name = eventdata.detail?.name;
-        if (
-            (name === "track" && eventdata.detail?.payload?.active === false) ||
-            name === "info_change"
-        ) {
-            this._exitFocusModeIfNeeded();
-        }
-        return result;
+        return super._handleNetworkUpdates(eventdata);
     },
 
     _exitFocusModeIfNeeded() {
@@ -188,6 +177,27 @@ patch(Rtc.prototype, {
                 type: type,
                 identity: identity,
             });
+        } else if (
+            eventdata.detail.name === "track" &&
+            eventdata.detail.payload?.active === false &&
+            eventdata.detail.payload?.type !== "audio"
+        ) {
+            // A remote video track became inactive (screen share stopped,
+            // camera turned off, ...). We handle this synchronously here so the
+            // session state is guaranteed to be updated before we decide
+            // whether to leave the focus view. fixEventIds() has already run in
+            // _handleNetworkUpdates (synchronously, before its first await), so
+            // the numeric sessionId is available on the payload.
+            const {sessionId, type} = eventdata.detail.payload;
+            const rtcSession = sessionId && this.store.RtcSession.get(sessionId);
+            if (rtcSession) {
+                rtcSession.livekitTracks.delete(type);
+                rtcSession.videoStreams.delete(type);
+                rtcSession.updateStreamState(type, false);
+            }
+            // If the focused session no longer has anything to show, drop back
+            // to the tile view instead of showing an empty focus view.
+            this._exitFocusModeIfNeeded();
         }
     },
 
