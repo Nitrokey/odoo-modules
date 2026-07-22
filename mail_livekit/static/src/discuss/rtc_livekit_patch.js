@@ -90,34 +90,30 @@ patch(Rtc.prototype, {
 
     async _handleNetworkUpdates(eventdata) {
         console.debug("LIVEKIT: Network update received", eventdata);
-        // Resolve LiveKit identities to session ids before the base class
-        // processes the event.
+        // Resolve LiveKit identities to session ids before the base handler.
         this.fixEventIds(eventdata);
-        return super._handleNetworkUpdates(eventdata);
+        const result = await super._handleNetworkUpdates(eventdata);
+        // After the base handler updated the session state, leave the focus
+        // view if the focused video is gone (authoritative over the base).
+        if (
+            eventdata.detail.name === "track" &&
+            eventdata.detail.payload?.active === false &&
+            eventdata.detail.payload?.type !== "audio"
+        ) {
+            this._exitFocusModeIfNeeded();
+        }
+        return result;
     },
 
     _exitFocusModeIfNeeded() {
         const channel = this.state.channel;
         const focused = channel?.activeRtcSession;
-        if (!focused) {
+        if (!focused || focused.isMainVideoStreamActive) {
             return;
         }
-        // The main (focused) video stream is still active, nothing to do.
-        if (focused.isMainVideoStreamActive) {
-            return;
-        }
-        if (focused.isCameraOn) {
-            // Fall back to the camera stream if it is still available.
-            focused.mainVideoStreamType = "camera";
-        } else if (focused.isScreenSharingOn) {
-            // Fall back to the screen share stream if it is still available.
-            focused.mainVideoStreamType = "screen";
-        } else {
-            // Nothing left to display for this session: exit the focus view
-            // and return to the tile view.
-            channel.activeRtcSession = undefined;
-            focused.mainVideoStreamType = undefined;
-        }
+        // Nothing left to show for the focused session: back to tile view.
+        channel.activeRtcSession = undefined;
+        focused.mainVideoStreamType = undefined;
     },
 
     async setAudioVolume(sessionId, element = null) {
@@ -162,9 +158,7 @@ patch(Rtc.prototype, {
             rtcSession.videoStreams.set(type, dummyStream);
             await rtcSession.updateStreamState(type, true);
 
-            // When a remote participant starts sharing their screen, switch
-            // every other attendee to the focus (single-tile) view showing that
-            // screen share.
+            // Remote screen share started: focus every attendee on it.
             const channel = this.state.channel;
             if (type === "screen" && channel && rtcSession.notEq(this.selfSession)) {
                 rtcSession.mainVideoStreamType = "screen";
@@ -182,22 +176,15 @@ patch(Rtc.prototype, {
             eventdata.detail.payload?.active === false &&
             eventdata.detail.payload?.type !== "audio"
         ) {
-            // A remote video track became inactive (screen share stopped,
-            // camera turned off, ...). We handle this synchronously here so the
-            // session state is guaranteed to be updated before we decide
-            // whether to leave the focus view. fixEventIds() has already run in
-            // _handleNetworkUpdates (synchronously, before its first await), so
-            // the numeric sessionId is available on the payload.
+            // Remote video track became inactive: drop the LiveKit track.
+            // Stream state and focus-view exit are handled by the base handler
+            // and _handleNetworkUpdates respectively.
             const {sessionId, type} = eventdata.detail.payload;
             const rtcSession = sessionId && this.store.RtcSession.get(sessionId);
             if (rtcSession) {
                 rtcSession.livekitTracks.delete(type);
                 rtcSession.videoStreams.delete(type);
-                rtcSession.updateStreamState(type, false);
             }
-            // If the focused session no longer has anything to show, drop back
-            // to the tile view instead of showing an empty focus view.
-            this._exitFocusModeIfNeeded();
         }
     },
 

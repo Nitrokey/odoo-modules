@@ -130,6 +130,23 @@ class LivekitService {
         const audioElementId = this._formAudioElementId(participant.identity);
         const audioElement = document.getElementById(audioElementId);
         audioElement?.remove();
+
+        // Notify listeners that the participant's video tracks are no longer
+        // active so the UI can leave the focus view if it was focused on this
+        // participant (e.g. their screen share or camera).
+        const videoPublications = Array.from(
+            participant.videoTrackPublications?.values?.() ?? []
+        );
+        for (const publication of videoPublications) {
+            for (const listener of this.trackMutedListeners.values()) {
+                listener(
+                    participant.identity,
+                    publication.source,
+                    publication.track,
+                    true
+                );
+            }
+        }
     }
 
     // Requires functions that accept info as parameter
