@@ -75,7 +75,7 @@ patch(Rtc.prototype, {
             );
         }
         if (
-            eventdata.detail.name == "info_change" &&
+            eventdata.detail.name === "info_change" &&
             Object.keys(eventdata.detail.payload)[0].includes(":")
         ) {
             const fixedIdentity = this.identityToSessionId(

@@ -1,5 +1,5 @@
-import {after, afterEach, describe, expect, test} from "@odoo/hoot";
 import {Source, livekitService} from "@mail_livekit/discuss/livekit_service";
+import {after, afterEach, describe, expect, test} from "@odoo/hoot";
 import {LiveKitAdapter} from "@mail_livekit/discuss/livekit_adapter";
 import {cleanupLivekitService} from "./livekit_test_helpers";
 
