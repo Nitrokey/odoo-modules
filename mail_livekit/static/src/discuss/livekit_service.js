@@ -130,6 +130,15 @@ class LivekitService {
         const audioElementId = this._formAudioElementId(participant.identity);
         const audioElement = document.getElementById(audioElementId);
         audioElement?.remove();
+
+        // A graceful disconnection unsubscribes every track first, but an
+        // abrupt one does not: report all sources as gone so that nothing keeps
+        // showing (or focusing on) the tracks of a participant who left.
+        for (const source of [Source.CAMERA, Source.SCREEN, Source.MICROPHONE]) {
+            for (const listener of this.trackMutedListeners.values()) {
+                listener(participant.identity, source, null, true);
+            }
+        }
     }
 
     // Requires functions that accept info as parameter
@@ -351,13 +360,13 @@ class LivekitService {
             log("Publishing new track for source:", source);
             await this.room?.localParticipant.publishTrack(mediaStreamTrack, {
                 source,
-                simulcast: source !== Source.Microphone,
+                simulcast: source !== Source.MICROPHONE,
             });
         } else if (publication.track) {
             log("Replacing track for source:", source);
             await publication.track.replaceTrack(mediaStreamTrack);
             if (
-                publication.track.source !== Source.Microphone ||
+                publication.track.source !== Source.MICROPHONE ||
                 mediaStreamTrack?.enabled
             ) {
                 publication?.track?.unmute();
@@ -389,7 +398,7 @@ class LivekitService {
     async setMicrophoneMuted(muted) {
         log("Setting microphone mute to:", muted);
         const publication = this.room?.localParticipant.getTrackPublication(
-            Source.Microphone
+            Source.MICROPHONE
         );
         if (publication?.track && publication.track.isMuted !== muted) {
             if (muted) {
