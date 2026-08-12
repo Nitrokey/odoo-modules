@@ -11,6 +11,7 @@ import {
     startServer,
 } from "@mail/../tests/mail_test_helpers";
 import {describe, expect, test, waitUntil} from "@odoo/hoot";
+import {animationFrame} from "@odoo/hoot-mock";
 import {mockLivekit} from "./livekit_test_helpers";
 
 describe.current.tags("desktop");
@@ -96,4 +97,16 @@ test("deafening mutes the audio received from the other attendees", async () => 
 test("the volume saved for an attendee is applied to the audio received", async () => {
     const {audioElement} = await startCallWithTalkingPeer({savedVolume: 0.31});
     expect(audioElement.volume).toBe(0.31);
+});
+
+test("audio of an attendee with no session on this client is ignored", async () => {
+    const {audioElement, livekit} = await startCallWithTalkingPeer();
+    // Somebody publishes before their session reached this client: their
+    // identity resolves to no session at all.
+    livekit.addRemotePeer("partner:999").startMicrophone();
+    await animationFrame();
+    // The call carries on: the attendees already known keep working.
+    await click(".o-discuss-CallActionList button[aria-label='Deafen']");
+    await contains(".o-discuss-CallActionList button[aria-label='Undeafen']");
+    expect(audioElement.muted).toBe(true);
 });

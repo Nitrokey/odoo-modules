@@ -99,6 +99,12 @@ patch(Rtc.prototype, {
             return;
         }
         const rtcSession = await this.store.RtcSession.getWhenReady(sessionId);
+        if (!rtcSession) {
+            // `identityToSessionId` falls back to the raw identity when the
+            // attendee has no session on this client yet: there is nothing to
+            // bind the element to.
+            return;
+        }
         // `RtcSession.volume` reads back from `audioElement`, so the saved
         // volume has to be resolved before the element is bound to the session,
         // otherwise it resolves to the element's own default.
@@ -135,6 +141,11 @@ patch(Rtc.prototype, {
             );
 
             const rtcSession = await this.store.RtcSession.getWhenReady(sessionId);
+            if (!rtcSession) {
+                // The attendee has no session on this client yet: their track
+                // is bound when it is replayed by `rebindExistingTracks`.
+                return;
+            }
 
             // Store LiveKit track separately
             rtcSession.livekitTracks.set(type, track);
@@ -170,30 +181,20 @@ patch(Rtc.prototype, {
         if (type === "camera" || type === "screen") {
             session.livekitTracks?.delete(type);
             this.removeVideoFromSession(session, {type, cleanup: false});
-            this.releaseActiveSession(session);
         }
-    },
-
-    /**
-     * Leaves the focus view when the session it focuses on has no video left,
-     * otherwise the focus view keeps showing an empty tile.
-     */
-    releaseActiveSession(session) {
-        const channel = this.state.channel;
-        if (!channel || session.notEq(channel.activeRtcSession)) {
-            return;
-        }
-        if (session.hasVideo) {
-            session.mainVideoStreamType = session.isScreenSharingOn
-                ? "screen"
-                : "camera";
-            return;
-        }
-        channel.activeRtcSession = undefined;
-        session.mainVideoStreamType = undefined;
     },
 
     async _initConnection() {
+        // Which stream is on display is a local viewing preference, not call
+        // state: joining starts on the tiles, so that a focus left over from a
+        // previous call cannot point at a stream this client no longer holds.
+        // An attendee already sharing their screen focuses it back on rebind.
+        if (this.state.channel) {
+            this.state.channel.activeRtcSession = undefined;
+            for (const session of this.state.channel.rtcSessions) {
+                session.mainVideoStreamType = undefined;
+            }
+        }
         this.selfSession.connectionState = "selecting network type";
         await this.network?.disconnect();
         this.network = new LiveKitAdapter();
@@ -271,6 +272,20 @@ patch(Rtc.prototype, {
 
     updateActiveSession(session, videoType, {addVideo = false} = {}) {
         this.state.channel ??= session.channel;
+        const channel = this.state.channel;
+        if (
+            !addVideo &&
+            session.eq(channel?.activeRtcSession) &&
+            session.mainVideoStreamType === videoType
+        ) {
+            // The stream on display is over: everyone goes back to the tile
+            // view, instead of falling back to another stream of the same
+            // participant (a screen share ending would otherwise leave everyone
+            // focused on the sharer's camera).
+            channel.activeRtcSession = undefined;
+            session.mainVideoStreamType = undefined;
+            return;
+        }
         return super.updateActiveSession(session, videoType, {addVideo});
     },
 

@@ -120,9 +120,11 @@ class MockLocalParticipant {
 }
 
 class MockRoom {
-    constructor(identity) {
+    constructor(identity, remoteParticipants) {
         this.localParticipant = new MockLocalParticipant(identity);
-        this.remoteParticipants = new Map();
+        // The other attendees outlive the local connection: they are still in
+        // the room when the local session leaves and joins again.
+        this.remoteParticipants = remoteParticipants;
         this.canPlaybackAudio = true;
         this.disconnectCount = 0;
     }
@@ -142,13 +144,13 @@ class MockRoom {
  * `livekitService` handlers the LiveKit SDK calls in production.
  */
 export class RemoteLivekitPeer {
-    constructor(identity, room) {
+    constructor(identity, remoteParticipants) {
         this.identity = identity;
         this.sid = `${identity}-sid`;
-        this.room = room;
+        this.remoteParticipants = remoteParticipants;
         this.audioTrackPublications = new Map();
         this.videoTrackPublications = new Map();
-        room.remoteParticipants.set(identity, this);
+        remoteParticipants.set(identity, this);
     }
 
     getTrackPublication(source) {
@@ -212,7 +214,7 @@ export class RemoteLivekitPeer {
 
     /** The peer leaves the LiveKit room (hangs up, closes the tab, crashes, ...). */
     leave() {
-        this.room.remoteParticipants.delete(this.identity);
+        this.remoteParticipants.delete(this.identity);
         livekitService.handleParticpantDisconnected(this);
     }
 }
@@ -227,14 +229,22 @@ export class RemoteLivekitPeer {
  * @param {String} [param0.identity] LiveKit identity of the browser session under test.
  */
 export function mockLivekit({identity = "local"} = {}) {
-    const state = {connectCount: 0, disconnectCount: 0, room: null};
+    const state = {
+        connectCount: 0,
+        disconnectCount: 0,
+        remoteParticipants: new Map(),
+        room: null,
+    };
     patchWithCleanup(livekitService, {
         async connect() {
             state.connectCount++;
-            state.room = new MockRoom(identity);
+            state.room = new MockRoom(identity, state.remoteParticipants);
             this.room = state.room;
             this.connected = true;
             this.initiated = false;
+            // Joining a room delivers what the attendees already publish, which
+            // the service handles on `RoomEvent.Connected`.
+            await this.rebindExistingTracks();
         },
         async disconnect() {
             state.disconnectCount++;
@@ -269,7 +279,7 @@ export function mockLivekit({identity = "local"} = {}) {
                     "cannot add a remote peer before the local session joined the room"
                 );
             }
-            return new RemoteLivekitPeer(peerIdentity, state.room);
+            return new RemoteLivekitPeer(peerIdentity, state.remoteParticipants);
         },
     };
 }

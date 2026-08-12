@@ -60,7 +60,13 @@ async function startCallWithPeer() {
         timeout: 2000,
         message: "the call should be connected to the LiveKit room",
     });
-    return {livekit, peer: livekit.addRemotePeer(`partner:${partnerId}`), pyEnv};
+    return {
+        channelId,
+        livekit,
+        partnerId,
+        peer: livekit.addRemotePeer(`partner:${partnerId}`),
+        pyEnv,
+    };
 }
 
 /**
@@ -91,6 +97,18 @@ test("focus view falls back to tile view when the focused screen share stops", a
     await focusVideoCard();
     peer.stopScreenShare();
     // The screen is gone: staying in focus view would only show an empty tile.
+    await contains(MAIN_CARD, {count: 2});
+});
+
+test("focus view falls back to tile view when a screen share stops with the camera on", async () => {
+    const {peer} = await startCallWithPeer();
+    // The camera alone does not focus anything, the screen share that follows does.
+    peer.startCamera();
+    peer.startScreenShare();
+    await contains(`${MAIN_CARD} video`);
+    await focusVideoCard();
+    peer.stopScreenShare();
+    // Back to the tiles, not to the sharer's camera in focus view.
     await contains(MAIN_CARD, {count: 2});
 });
 
