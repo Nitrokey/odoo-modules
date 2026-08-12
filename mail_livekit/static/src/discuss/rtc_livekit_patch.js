@@ -95,18 +95,26 @@ patch(Rtc.prototype, {
     },
 
     async setAudioVolume(sessionId, element = null) {
+        if (!element) {
+            return;
+        }
         const rtcSession = await this.store.RtcSession.getWhenReady(sessionId);
-        if (element) {
-            rtcSession.audioElement = element;
-        }
-        const volumeSetting = this.store.Volume.getForPartnerId(rtcSession.partnerId);
-        const volume = volumeSetting ? volumeSetting.volume / 100 : 1.0;
-        if (rtcSession.audioElement) {
-            rtcSession.audioElement.volume = volume;
-        }
+        // `RtcSession.volume` reads back from `audioElement`, so the saved
+        // volume has to be resolved before the element is bound to the session,
+        // otherwise it resolves to the element's own default.
+        element.volume = this.store.settings.getVolume(rtcSession);
+        // LiveKit attaches the element on its own, after the fact, so it has to
+        // catch up with a deafening that already happened.
+        element.muted = Boolean(this.selfSession?.isDeaf);
+        rtcSession.audioElement = element;
     },
 
     async handleSetAudioVolume(eventdata) {
+        // The adapter notifies every listener of every event, so the ones that
+        // are not meant for this handler have to be filtered out.
+        if (eventdata.detail.name !== "setAudioVolume") {
+            return;
+        }
         console.debug("LIVEKIT: Set audio volume event received", eventdata);
         this.fixEventIds(eventdata);
         return this.setAudioVolume(
@@ -136,6 +144,10 @@ patch(Rtc.prototype, {
             rtcSession.videoStreams.set(type, dummyStream);
             await rtcSession.updateStreamState(type, true);
 
+            // Raise the focus view on an incoming screen share, the way the
+            // standard `handleRemoteTrack` does for the other connection types.
+            this.updateActiveSession(rtcSession, type, {addVideo: true});
+
             // Trigger bus event to notify CallParticipantVideo to attach track
             this.store.env.bus.trigger("LIVEKIT:TRACK:REBIND", {
                 sessionId: rtcSession.id,
@@ -143,6 +155,42 @@ patch(Rtc.prototype, {
                 identity: identity,
             });
         }
+    },
+
+    /**
+     * LiveKit reports the end of a track (screen share stopped, camera turned
+     * off, participant gone) as an inactive track instead of an actual
+     * MediaStreamTrack, so the standard handler cannot be used to remove it.
+     */
+    async handleRemoteTrack({session, type, active = true}) {
+        if (active) {
+            return super.handleRemoteTrack(...arguments);
+        }
+        session.updateStreamState(type, false);
+        if (type === "camera" || type === "screen") {
+            session.livekitTracks?.delete(type);
+            this.removeVideoFromSession(session, {type, cleanup: false});
+            this.releaseActiveSession(session);
+        }
+    },
+
+    /**
+     * Leaves the focus view when the session it focuses on has no video left,
+     * otherwise the focus view keeps showing an empty tile.
+     */
+    releaseActiveSession(session) {
+        const channel = this.state.channel;
+        if (!channel || session.notEq(channel.activeRtcSession)) {
+            return;
+        }
+        if (session.hasVideo) {
+            session.mainVideoStreamType = session.isScreenSharingOn
+                ? "screen"
+                : "camera";
+            return;
+        }
+        channel.activeRtcSession = undefined;
+        session.mainVideoStreamType = undefined;
     },
 
     async _initConnection() {
@@ -155,6 +203,10 @@ patch(Rtc.prototype, {
         this.network.addEventListener(
             "updateTrack",
             this.handleTrackSubscribed.bind(this)
+        );
+        this.network.addEventListener(
+            "setAudioVolume",
+            this.handleSetAudioVolume.bind(this)
         );
 
         if (this.state.channel) {
@@ -215,11 +267,6 @@ patch(Rtc.prototype, {
 
     async _downgradeConnection() {
         // No-op
-    },
-
-    async leaveCall(...args) {
-        this.network?.disconnect();
-        return super.leaveCall(...args);
     },
 
     updateActiveSession(session, videoType, {addVideo = false} = {}) {
