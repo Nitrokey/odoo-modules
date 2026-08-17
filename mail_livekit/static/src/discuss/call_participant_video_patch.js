@@ -1,5 +1,3 @@
-/** @odoo-module */
-
 import {onWillUnmount, useExternalListener} from "@odoo/owl";
 import {CallParticipantVideo} from "@mail/discuss/call/common/call_participant_video";
 import {patch} from "@web/core/utils/patch";

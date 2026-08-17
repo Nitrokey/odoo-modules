@@ -1,5 +1,3 @@
-/** @odoo-module */
-
 import {Command, serverState} from "@web/../tests/web_test_helpers";
 import {Source, mockLivekit} from "./livekit_test_helpers";
 import {

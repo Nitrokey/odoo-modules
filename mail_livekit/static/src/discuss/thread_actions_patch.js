@@ -1,4 +1,3 @@
-/** @odoo-module */
 import {patch} from "@web/core/utils/patch";
 import {threadActionsRegistry} from "@mail/core/common/thread_actions";
 

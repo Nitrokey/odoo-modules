@@ -1,5 +1,3 @@
-/** @odoo-module */
-
 import {Source, livekitService} from "./livekit_service";
 
 export class LiveKitAdapter {

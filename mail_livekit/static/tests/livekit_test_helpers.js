@@ -1,5 +1,3 @@
-/** @odoo-module */
-
 import {Source, livekitService} from "@mail_livekit/discuss/livekit_service";
 import {after} from "@odoo/hoot";
 import {patchWithCleanup} from "@web/../tests/web_test_helpers";
