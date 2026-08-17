@@ -75,7 +75,7 @@ patch(Rtc.prototype, {
             );
         }
         if (
-            eventdata.detail.name == "info_change" &&
+            eventdata.detail.name === "info_change" &&
             Object.keys(eventdata.detail.payload)[0].includes(":")
         ) {
             const fixedIdentity = this.identityToSessionId(
@@ -95,18 +95,32 @@ patch(Rtc.prototype, {
     },
 
     async setAudioVolume(sessionId, element = null) {
+        if (!element) {
+            return;
+        }
         const rtcSession = await this.store.RtcSession.getWhenReady(sessionId);
-        if (element) {
-            rtcSession.audioElement = element;
+        if (!rtcSession) {
+            // `identityToSessionId` falls back to the raw identity when the
+            // attendee has no session on this client yet: there is nothing to
+            // bind the element to.
+            return;
         }
-        const volumeSetting = this.store.Volume.getForPartnerId(rtcSession.partnerId);
-        const volume = volumeSetting ? volumeSetting.volume / 100 : 1.0;
-        if (rtcSession.audioElement) {
-            rtcSession.audioElement.volume = volume;
-        }
+        // `RtcSession.volume` reads back from `audioElement`, so the saved
+        // volume has to be resolved before the element is bound to the session,
+        // otherwise it resolves to the element's own default.
+        element.volume = this.store.settings.getVolume(rtcSession);
+        // LiveKit attaches the element on its own, after the fact, so it has to
+        // catch up with a deafening that already happened.
+        element.muted = Boolean(this.selfSession?.isDeaf);
+        rtcSession.audioElement = element;
     },
 
     async handleSetAudioVolume(eventdata) {
+        // The adapter notifies every listener of every event, so the ones that
+        // are not meant for this handler have to be filtered out.
+        if (eventdata.detail.name !== "setAudioVolume") {
+            return;
+        }
         console.debug("LIVEKIT: Set audio volume event received", eventdata);
         this.fixEventIds(eventdata);
         return this.setAudioVolume(
@@ -127,6 +141,11 @@ patch(Rtc.prototype, {
             );
 
             const rtcSession = await this.store.RtcSession.getWhenReady(sessionId);
+            if (!rtcSession) {
+                // The attendee has no session on this client yet: their track
+                // is bound when it is replayed by `rebindExistingTracks`.
+                return;
+            }
 
             // Store LiveKit track separately
             rtcSession.livekitTracks.set(type, track);
@@ -135,6 +154,10 @@ patch(Rtc.prototype, {
             const dummyStream = new window.MediaStream();
             rtcSession.videoStreams.set(type, dummyStream);
             await rtcSession.updateStreamState(type, true);
+
+            // Raise the focus view on an incoming screen share, the way the
+            // standard `handleRemoteTrack` does for the other connection types.
+            this.updateActiveSession(rtcSession, type, {addVideo: true});
 
             // Trigger bus event to notify CallParticipantVideo to attach track
             this.store.env.bus.trigger("LIVEKIT:TRACK:REBIND", {
@@ -145,7 +168,33 @@ patch(Rtc.prototype, {
         }
     },
 
+    /**
+     * LiveKit reports the end of a track (screen share stopped, camera turned
+     * off, participant gone) as an inactive track instead of an actual
+     * MediaStreamTrack, so the standard handler cannot be used to remove it.
+     */
+    async handleRemoteTrack({session, type, active = true}) {
+        if (active) {
+            return super.handleRemoteTrack(...arguments);
+        }
+        session.updateStreamState(type, false);
+        if (type === "camera" || type === "screen") {
+            session.livekitTracks?.delete(type);
+            this.removeVideoFromSession(session, {type, cleanup: false});
+        }
+    },
+
     async _initConnection() {
+        // Which stream is on display is a local viewing preference, not call
+        // state: joining starts on the tiles, so that a focus left over from a
+        // previous call cannot point at a stream this client no longer holds.
+        // An attendee already sharing their screen focuses it back on rebind.
+        if (this.state.channel) {
+            this.state.channel.activeRtcSession = undefined;
+            for (const session of this.state.channel.rtcSessions) {
+                session.mainVideoStreamType = undefined;
+            }
+        }
         this.selfSession.connectionState = "selecting network type";
         await this.network?.disconnect();
         this.network = new LiveKitAdapter();
@@ -155,6 +204,10 @@ patch(Rtc.prototype, {
         this.network.addEventListener(
             "updateTrack",
             this.handleTrackSubscribed.bind(this)
+        );
+        this.network.addEventListener(
+            "setAudioVolume",
+            this.handleSetAudioVolume.bind(this)
         );
 
         if (this.state.channel) {
@@ -217,13 +270,22 @@ patch(Rtc.prototype, {
         // No-op
     },
 
-    async leaveCall(...args) {
-        this.network?.disconnect();
-        return super.leaveCall(...args);
-    },
-
     updateActiveSession(session, videoType, {addVideo = false} = {}) {
         this.state.channel ??= session.channel;
+        const channel = this.state.channel;
+        if (
+            !addVideo &&
+            session.eq(channel?.activeRtcSession) &&
+            session.mainVideoStreamType === videoType
+        ) {
+            // The stream on display is over: everyone goes back to the tile
+            // view, instead of falling back to another stream of the same
+            // participant (a screen share ending would otherwise leave everyone
+            // focused on the sharer's camera).
+            channel.activeRtcSession = undefined;
+            session.mainVideoStreamType = undefined;
+            return;
+        }
         return super.updateActiveSession(session, videoType, {addVideo});
     },
 

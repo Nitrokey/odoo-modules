@@ -1,20 +1,9 @@
-import {after, afterEach, describe, expect, test} from "@odoo/hoot";
 import {Source, livekitService} from "@mail_livekit/discuss/livekit_service";
+import {after, afterEach, describe, expect, test} from "@odoo/hoot";
 import {LiveKitAdapter} from "@mail_livekit/discuss/livekit_adapter";
+import {cleanupLivekitService} from "./livekit_test_helpers";
 
 const originalLivekitClient = window.LivekitClient;
-
-function cleanupLivekitService() {
-    livekitService.infoChangeListeners.clear();
-    livekitService.trackSubscribedListeners.clear();
-    livekitService.trackMutedListeners.clear();
-    livekitService.room = null;
-    livekitService.connected = false;
-    livekitService.initiated = false;
-    document
-        .querySelectorAll(`.${livekitService.audioElementClass}`)
-        .forEach((element) => element.remove());
-}
 
 function makeRemoteAudioTrack(identity) {
     const audioElement = document.createElement("audio");
