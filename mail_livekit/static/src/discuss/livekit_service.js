@@ -1,5 +1,3 @@
-/** @odoo-module */
-
 const {Room, VideoPresets, RoomEvent} = window.LivekitClient;
 
 // This script should be the only contact point with Livekit SDK
