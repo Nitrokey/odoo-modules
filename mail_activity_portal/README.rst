@@ -1,14 +1,14 @@
 ====================
 Mail Activity Portal
 ====================
-This module adds an activity board with form, tree, kanban, calendar, pivot, graph and search views.
+This module automatically schedules an activity for a configured team when a message is posted over the portal, so that a team member can process the message.
 
 
 Usage
 =====
-If a messages arrives over the portal an activity for a configured team is scheduled automatically to process the message.
+When a message arrives over the portal, an activity is scheduled automatically for a configured team so that a team member can process it.
 
-The configuration to add RMA and PO models (Settings --> Technical --> Activity Teams menu)
+Configure which models trigger an activity (for example RMA and PO models) under Settings --> Technical --> Activity Teams.
 
 
 Testing
