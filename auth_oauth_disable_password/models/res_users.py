@@ -22,8 +22,6 @@ class ResUsers(models.Model):
         ]
     )
     def _compute_disable_password_login(self):
-        # auth_oauth_multi_token makes oauth_access_token a required master UUID
-        # set for every user, so use oauth_access_token_ids when available.
         for rec in self:
             if "oauth_access_token_ids" in rec._fields:
                 rec.disable_password_login = bool(rec.oauth_access_token_ids)
