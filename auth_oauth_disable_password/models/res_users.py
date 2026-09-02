@@ -11,10 +11,22 @@ class ResUsers(models.Model):
         readonly=False,
     )
 
-    @api.depends("oauth_access_token")
+    @api.depends(
+        lambda self: [
+            "oauth_access_token",
+            *(
+                ["oauth_access_token_ids"]
+                if "oauth_access_token_ids" in self._fields
+                else []
+            ),
+        ]
+    )
     def _compute_disable_password_login(self):
         for rec in self:
-            rec.disable_password_login = rec.oauth_access_token
+            if "oauth_access_token_ids" in rec._fields:
+                rec.disable_password_login = bool(rec.oauth_access_token_ids)
+            else:
+                rec.disable_password_login = bool(rec.oauth_access_token)
 
     def _crypt_context(self):
         # The correct `_check_credentials` is not hookable because multiple modules
