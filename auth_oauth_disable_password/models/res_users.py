@@ -11,7 +11,16 @@ class ResUsers(models.Model):
         readonly=False,
     )
 
-    @api.depends("oauth_access_token", "oauth_access_token_ids")
+    @api.depends(
+        lambda self: [
+            "oauth_access_token",
+            *(
+                ["oauth_access_token_ids"]
+                if "oauth_access_token_ids" in self._fields
+                else []
+            ),
+        ]
+    )
     def _compute_disable_password_login(self):
         # auth_oauth_multi_token makes oauth_access_token a required master UUID
         # set for every user, so use oauth_access_token_ids when available.
