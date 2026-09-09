@@ -6,5 +6,5 @@ class HSCode(models.Model):
 
     country_id = fields.Many2many(
         "res.country",
-        string="Country",
+        string="Embargo Countries",
     )

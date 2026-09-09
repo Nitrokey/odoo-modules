@@ -18,7 +18,11 @@
         <field name="inherit_id" ref="product_harmonized_system.hs_code_view_form" />
         <field name="arch" type="xml">
             <field name="company_id" position="after">
-                <field name="country_id" />
+                <field
+                    name="country_id"
+                    widget="many2many_tags"
+                    options="{'no_create': True}"
+                />
             </field>
         </field>
     </record>

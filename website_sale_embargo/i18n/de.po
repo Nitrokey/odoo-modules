@@ -17,8 +17,8 @@ msgstr ""
 
 #. module: website_sale_embargo
 #: model:ir.model.fields,field_description:website_sale_embargo.field_hs_code__country_id
-msgid "Country"
-msgstr "Land"
+msgid "Embargo Countries"
+msgstr "Embargo Länder"
 
 #. module: website_sale_embargo
 #: model:ir.model.fields,field_description:website_sale_embargo.field_hs_code__embargo
