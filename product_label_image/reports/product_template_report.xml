@@ -83,7 +83,10 @@
         <field
             name="report_file"
         >product_label_image.producttemplatelabel_image_4x6</field>
-        <field name="paperformat_id" ref="product_label_image.paperformat_label_image_4x6" />
+        <field
+            name="paperformat_id"
+            ref="product_label_image.paperformat_label_image_4x6"
+        />
         <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
         <field name="binding_type">report</field>
     </record>
