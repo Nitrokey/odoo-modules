@@ -91,23 +91,27 @@ class DeliveryCarrier(models.Model):
 
     @staticmethod
     def _is_packstation(street2):
-        """Return True if street2 indicates a DHL Packstation (locker) delivery."""
-        return bool(street2 and "packstation" in street2.lower())
+        """Return True if street2 indicates a DHL Packstation or Postfiliale."""
+        return bool(street2 and re.search(r"(?i)packstation|postfiliale", street2))
 
     @staticmethod
     def _get_packstation_locker_id(street2):
-        """Extract the locker ID from a street2 field.
+        """Extract the locker/branch ID from a street2 field.
 
-        Removes the keyword 'Packstation' (case-insensitive), any adjacent
-        colons and surrounding whitespace, returning only the numeric locker ID.
+        Removes the keyword 'Packstation' or 'Postfiliale' (case-insensitive), any
+        adjacent colons and surrounding whitespace, returning only the numeric ID.
 
         Examples::
 
             "Packstation 123"    -> "123"
             "Packstation: 456"   -> "456"
             "PACKSTATION  :  789" -> "789"
+            "Postfiliale 123"    -> "123"
+            "POSTFILIALE  :  789" -> "789"
         """
-        locker_id = re.sub(r"(?i)\s*packstation\s*:?\s*", "", street2).strip()
+        locker_id = re.sub(
+            r"(?i)\s*(?:packstation|postfiliale)\s*:?\s*", "", street2
+        ).strip()
         return locker_id
 
     def _calculate_package_insurance(self, picking, package_weight, total_weight):
@@ -317,10 +321,15 @@ class DeliveryCarrier(models.Model):
 
         if self._is_packstation(receiver_street2):
             locker_id = self._get_packstation_locker_id(receiver_street2)
+            address_street = (
+                "Postfiliale"
+                if "postfiliale" in receiver_street2.lower()
+                else "Packstation"
+            )
             consignee = {
                 "name1": receiver_company or recipient_address_id.name,
                 "name2": receiver_street,
-                "addressStreet": "Packstation",
+                "addressStreet": address_street,
                 "addressHouse": locker_id,
                 "postalCode": receiver_zip,
                 "city": receiver_city,
