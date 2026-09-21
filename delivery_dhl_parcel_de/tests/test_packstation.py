@@ -6,7 +6,7 @@ from odoo.addons.delivery_dhl_parcel_de.models.delivery_carrier import DeliveryC
 
 @tagged("post_install", "-at_install")
 class TestPackstation(TransactionCase):
-    """Unit tests for DHL Packstation (locker) address parsing helpers."""
+    """Unit tests for DHL Packstation/Postfiliale address parsing helpers."""
 
     def test_is_packstation(self):
         """Street2 containing 'Packstation' (any case) is detected as a locker."""
@@ -14,26 +14,41 @@ class TestPackstation(TransactionCase):
         self.assertTrue(DeliveryCarrier._is_packstation("PACKSTATION 456"))
         self.assertTrue(DeliveryCarrier._is_packstation("packstation 789"))
 
+    def test_is_postfiliale(self):
+        """Street2 containing 'Postfiliale' (any case) is detected as well."""
+        self.assertTrue(DeliveryCarrier._is_packstation("Postfiliale 123"))
+        self.assertTrue(DeliveryCarrier._is_packstation("POSTFILIALE 456"))
+        self.assertTrue(DeliveryCarrier._is_packstation("postfiliale 789"))
+
     def test_is_packstation_false(self):
-        """Normal street2 values, empty strings and None are not Packstations."""
+        """Normal street2 values, empty strings and None are not lockers/branches."""
         self.assertFalse(DeliveryCarrier._is_packstation("Apartment 2B"))
         self.assertFalse(DeliveryCarrier._is_packstation(""))
         self.assertFalse(DeliveryCarrier._is_packstation(None))
 
     def test_get_locker_id_simple(self):
-        """Locker ID is extracted from 'Packstation NNN' formats."""
+        """Locker/branch ID is extracted from 'Packstation NNN' formats."""
         self.assertEqual(
             DeliveryCarrier._get_packstation_locker_id("Packstation 123"), "123"
         )
         self.assertEqual(
             DeliveryCarrier._get_packstation_locker_id("PACKSTATION 456"), "456"
         )
+        self.assertEqual(
+            DeliveryCarrier._get_packstation_locker_id("Postfiliale 123"), "123"
+        )
 
     def test_get_locker_id_with_colon(self):
-        """Locker ID is extracted when a colon separates the keyword from the ID."""
+        """Locker/branch ID is extracted when a colon separates keyword and ID."""
         self.assertEqual(
             DeliveryCarrier._get_packstation_locker_id("Packstation: 456"), "456"
         )
         self.assertEqual(
             DeliveryCarrier._get_packstation_locker_id("PACKSTATION  :  789"), "789"
+        )
+        self.assertEqual(
+            DeliveryCarrier._get_packstation_locker_id("Postfiliale: 456"), "456"
+        )
+        self.assertEqual(
+            DeliveryCarrier._get_packstation_locker_id("POSTFILIALE  :  789"), "789"
         )
