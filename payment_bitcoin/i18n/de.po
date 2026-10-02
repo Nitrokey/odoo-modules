@@ -554,13 +554,6 @@ msgid "The access token is invalid."
 msgstr ""
 
 #. module: payment_bitcoin
-#: model_terms:payment.acquirer,pre_msg:payment_bitcoin.payment_acquirer_bitcoin
-msgid "Transfer information will be provided after choosing the payment mode."
-msgstr ""
-"Die Überweisungsinformationen werden nach Auswahl des Zahlungsmodus zur "
-"Verfügung gestellt."
-
-#. module: payment_bitcoin
 #: model_terms:ir.ui.view,arch_db:payment_bitcoin.view_bitcoin_address_search
 msgid "Unused"
 msgstr "Ungebraucht"
