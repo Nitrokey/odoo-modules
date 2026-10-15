@@ -15,7 +15,8 @@ _logger = logging.getLogger(__name__)
 
 class ConsentControllerExt(ConsentController):
     def consent_success(self):
-        return request.redirect("https://www.nitrokey.com/subscribed")
+        # local=False: otherwise the host is stripped and the redirect stays local
+        return request.redirect("https://www.nitrokey.com/subscribed", local=False)
 
     def _prepare_mail_content(self, mailing_list_contact, language):
         """Newsletter Subscribed email template content"""
@@ -118,12 +119,6 @@ class PaymentPortalExt(PaymentPortal):
 
 
 class WebsiteSaleExt(WebsiteSale):
-    def _prepare_checkout_page_values(self, order_sudo, **_kwargs):
-        res = super()._prepare_checkout_page_values(order_sudo, **_kwargs)
-        if res and res.get("checkout"):
-            res["checkout"]["newsletter"] = res.get("newsletter") == "on"
-        return res
-
     def _handle_extra_form_data(self, extra_form_data, address_values):
         res = super()._handle_extra_form_data(extra_form_data, address_values)
         if extra_form_data.get("newsletter") and address_values.get("email"):
