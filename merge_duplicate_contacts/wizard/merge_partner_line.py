@@ -1,3 +1,5 @@
+from ast import literal_eval
+
 from odoo import api, fields, models
 
 
@@ -14,4 +16,4 @@ class MergePartnerLine(models.TransientModel):
     @api.depends("aggr_ids")
     def _compute_aggr_ids_count(self):
         for record in self:
-            record.aggr_ids_count = len(record.aggr_ids or [])
+            record.aggr_ids_count = len(literal_eval(record.aggr_ids or "[]"))

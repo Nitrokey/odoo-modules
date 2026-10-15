@@ -1,9 +1,8 @@
-import itertools
 import logging
 from ast import literal_eval
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -354,101 +353,11 @@ class MergePartnerManualCheck(models.TransientModel):
         )
         return self.partner_wizard_id._action_new_next_screen()
 
-    def _get_ordered_partner(self, partner_ids):
-        partners = self.env["res.partner"].browse(list(partner_ids))
-        ordered_partners = partners.sorted(
-            lambda p: (not p.active, p.create_date), reverse=True
-        )
-        return ordered_partners
-
-    # delete source partner, since they are merged
-    def _log_merge_operation(self, src_partners, dst_partner):
-        _logger.info(
-            "(uid = %s) merged the partners %r with %s",
-            self.env.uid,
-            src_partners.ids,
-            dst_partner.id,
-        )
-
-    def _update_foreign_keys(self, src_partners, dst_partner):
-        res = self.env["base.partner.merge.automatic.wizard"]._update_foreign_keys(
-            src_partners, dst_partner
-        )
-        return res
-
-    def _update_reference_fields(self, src_partners, dst_partner, context=None):
-        res = self.env["base.partner.merge.automatic.wizard"]._update_reference_fields(
-            src_partners, dst_partner
-        )
-        return res
-
-    @api.model
-    def _update_values(self, src_partners, dst_partner):
-        """Update destination partner with values from source partners,
-        excluding certain form fields and computed fields."""
-        _logger.debug(
-            "_update_values for dst_partner: %s for src_partners: %r",
-            dst_partner.id,
-            src_partners.ids,
-        )
-
-        def write_serializer(item):
-            """Convert recordsets to IDs for safe write operations."""
-            return item.id if isinstance(item, models.BaseModel) else item
-
-        # Fields to exclude from merging
-        excluded_fields = {
-            "name",
-            "email",
-            "phone",
-            "street",
-            "street2",
-            "zip",
-            "city",
-            "state_id",
-            "country_id",
-            "is_company",
-            "vat",
-        }
-
-        values = {}
-        for field_name, field in dst_partner._fields.items():
-            if (
-                field.type not in ("many2many", "one2many")
-                and not field.compute
-                and field_name not in excluded_fields
-            ):
-                for record in itertools.chain(src_partners, [dst_partner]):
-                    if record[field_name]:
-                        values[field_name] = write_serializer(record[field_name])
-
-        # Remove non-writable fields
-        values.pop("id", None)
-        parent_id = values.pop("parent_id", None)
-
-        # Ensure company flag consistency
-        if dst_partner.child_ids and "is_company" not in values:
-            values["is_company"] = dst_partner.is_company
-
-        # Apply updates
-        dst_partner.write(values)
-
-        # Handle parent_id carefully to avoid recursion errors
-        if parent_id and parent_id != dst_partner.id:
-            try:
-                dst_partner.write({"parent_id": parent_id})
-            except ValidationError:
-                _logger.info(
-                    "Skipped recursive hierarchy for parent_id %s of partner %s",
-                    parent_id,
-                    dst_partner.id,
-                )
-
     def action_merge(self, context=None):
         """Merge two partners based on selection (keep1/keep2) with VAT bypass."""
         context = dict(context or {}, active_test=False)
         if not (self.keep1 or self.keep2):
-            raise Warning(_("Please select a contact to keep."))
+            raise UserError(_("Please select a contact to keep."))
 
         def update_partner_data(dst, data, vat_value):
             """Helper to write partner data and bypass VAT validation."""
@@ -477,7 +386,7 @@ class MergePartnerManualCheck(models.TransientModel):
                         "city": self.city or False,
                         "state_id": self.state_id.id if self.state_id else False,
                         "country_id": self.country_id.id if self.country_id else False,
-                        "is_company": self.is_company2 or False,
+                        "is_company": self.is_company or False,
                         "vat": self.vat_1 or False,
                     },
                     self.vat_1,
