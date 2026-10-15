@@ -108,6 +108,8 @@ class ConsentController(Controller):
         type="http",
         auth="none",
         website=True,
+        # auth="none" routes are read-only by default, but this one writes
+        readonly=False,
     )
     def consent(self, access_token, **kwargs):
         try:
