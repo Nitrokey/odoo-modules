@@ -479,7 +479,7 @@ class DeliveryCarrier(models.Model):
         # Process existing packages with dynamic insurance calculation
         for package in packages:
             dimensions = package.dimension
-            height = dimensions.get("dimensions", 0)
+            height = dimensions.get("height", 0)
             width = dimensions.get("width", 0)
             length = dimensions.get("length", 0)
             weight = self.convert_weight(package.weight)
@@ -660,7 +660,7 @@ class DeliveryCarrier(models.Model):
                     "Cancel API : Parcel DE Response Data : %s", response_data
                 )
             else:
-                raise ValidationError(response_data.reason or response_data)
+                raise ValidationError(response_data)
         except Exception as e:
             raise ValidationError(e) from e
 
