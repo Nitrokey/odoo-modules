@@ -41,7 +41,7 @@ class WebsiteSaleFirstLastname(WebsiteSale):
 
             # Case 1: both changed
             if first_name_changed and last_name_changed:
-                invalid_fields.update("name")
+                invalid_fields.add("name")
                 invalid_fields.add("last_name")
             # Case 2: only first name changed
             elif first_name_changed and not last_name_changed:
