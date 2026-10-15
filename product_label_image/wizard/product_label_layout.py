@@ -28,6 +28,8 @@ class ProductLabelLayout(models.TransientModel):
         elif self.product_ids:
             products = self.product_ids.ids
             active_model = "product.product"
+        else:
+            raise UserError(_("You need to select at least one product."))
 
         # Build data to pass to the report
         data = {
