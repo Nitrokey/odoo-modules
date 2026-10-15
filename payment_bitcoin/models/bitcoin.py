@@ -1,6 +1,6 @@
 import codecs
 import logging
-from datetime import date, datetime
+from datetime import date
 from datetime import timedelta as td
 from hashlib import sha256
 
@@ -106,7 +106,11 @@ def decode_base58(bc, length):
 
 
 def validate_bitcoin_address_old_format(address):
-    bcbytes = decode_base58(address, 25)
+    try:
+        bcbytes = decode_base58(address, 25)
+    except ValueError:
+        # character outside of the base58 alphabet
+        return False
     return bcbytes[-4:] == sha256(sha256(bcbytes[:-4]).digest()).digest()[:4]
 
 
@@ -163,6 +167,7 @@ def check_received(addr):
         return default_response
 
     min_conf = None
+    last_trans = None
     for tx in txs:
         try:
             tx_info = requests.get(tx_info_url.format(tx=tx["hash"]), timeout=30)
@@ -188,6 +193,10 @@ def check_received(addr):
         min_conf = min(conf, min_conf) if min_conf is not None else conf
         last_trans = tx
 
+    # none of the transactions could be looked up
+    if last_trans is None:
+        return default_response
+
     # here all transactions are >= 10 times confirmed,
     # we consider total_received" as "received" btc
     # define the "transaction-finalized" when the last transaction
@@ -197,7 +206,7 @@ def check_received(addr):
         "received": addr_data.get("total_received", 0) / 1e8,
         "min_conf": min_conf,
         "transaction": last_trans.get("hash"),
-        "when": datetime.now() - td(minutes=10) * (min_conf - needed_confirms),
+        "when": fields.Datetime.now() - td(minutes=10) * (min_conf - needed_confirms),
     }
 
 
@@ -235,7 +244,7 @@ class BitcoinAddress(models.Model):
         provider_obj = self.env["payment.provider"].search([("code", "=", "bitcoin")])
         payment_journal_obj = provider_obj.journal_id
         check_hours = provider_obj.bitcoin_order_older_than
-        check_date = datetime.now() - td(hours=int(check_hours))
+        check_date = fields.Datetime.now() - td(hours=int(check_hours))
         for bit_add_obj in self.search(
             [
                 "|",
@@ -452,12 +461,16 @@ class BitcoinAddress(models.Model):
 
     @api.constrains("name")
     def _check_bitcoin_address(self):
-        if not validate_bitcoin_address(self.name):
-            if not validate_bitcoin_address_old_format(self.name):
-                raise ValidationError(
-                    _("Bitcoin Address '%s' doesn't seem to valid " "Bitcoin Address")
-                    % self.name
-                )
+        for address in self:
+            if not validate_bitcoin_address(address.name):
+                if not validate_bitcoin_address_old_format(address.name):
+                    raise ValidationError(
+                        _(
+                            "Bitcoin Address '%s' doesn't seem to valid "
+                            "Bitcoin Address"
+                        )
+                        % address.name
+                    )
 
 
 class BitcoinRate(models.Model):
@@ -546,7 +559,8 @@ class BitcoinRate(models.Model):
                     "create_date",
                     ">=",
                     (
-                        datetime.now() - relativedelta(minutes=sobj.valid_minutes)
+                        fields.Datetime.now()
+                        - relativedelta(minutes=sobj.valid_minutes)
                     ).strftime("%Y-%m-%d %H:%M:00"),
                 ),
             ]
