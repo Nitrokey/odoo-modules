@@ -78,6 +78,7 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
     def _ensure_demo_data(cls):
         """Create all necessary demo data for tests to work with empty DB."""
         cls._ensure_countries()
+        cls._ensure_company_address()
         cls._ensure_customers()
         cls._ensure_vendors()
         cls._ensure_accounts()
@@ -91,6 +92,19 @@ class TestDatevExportXmlNitrokey(test_datev_export.TestDatevExport):
         """Ensure required countries exist."""
         if not cls.env.ref("base.de", raise_if_not_found=False):
             cls.env["res.country"].create({"name": "Germany", "code": "DE"})
+
+    @classmethod
+    def _ensure_company_address(cls):
+        """The XML export is only valid with the address of the company."""
+        if not cls.company.zip:
+            cls.company.write(
+                {
+                    "street": "Teststr. 1",
+                    "zip": "14513",
+                    "city": "Teltow",
+                    "country_id": cls.env.ref("base.de").id,
+                }
+            )
 
     @classmethod
     def _ensure_customers(cls):
