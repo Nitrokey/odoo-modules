@@ -19,7 +19,7 @@ inspection of the given Manufacturing Order. It builds on ``iot_input_oca``
 Configuration
 =============
 
-#. Go to IoT > Config > Add a new Device. It shows a configuration URL.
+#. Go to IoT > Configuration > Add a new Device. It shows a configuration URL.
 #. Send a POST request with the parameter ``template=Quality Control
    measurements`` to that URL (once; the URL is valid for a single use)::
 
@@ -35,7 +35,7 @@ Configuration
      function ``post_measurement`` of the model *iot.quality.control*. The
      **address** of the input is the key name sent by the device.
 
-#. To accept more keys, add inputs to the template (IoT > Config >
+#. To accept more keys, add inputs to the template (IoT > Configuration >
    Templates) before step 2, or directly to the device afterwards,
    copying an existing one: model ``iot.quality.control``, function
    ``post_measurement``, params ``{"address": "<key>"}``. Keys that are not
@@ -51,15 +51,16 @@ Usage
 
 The Manufacturing Order must already have a quality inspection. The device
 sends all values in one request to ``/iot/<serial>/multi_input`` (the serial
-and passphrase of the *Multi input* input). The ID of the Manufacturing
-Order (``mo_id``) must be part of every entry::
+and passphrase of the *Multi input* input). The reference of the
+Manufacturing Order (``mo_id``, e.g. ``WH/MO/00042``, not the database ID)
+must be part of every entry::
 
     curl -X POST https://odoo.example.com/iot/<serial>/multi_input \
       --data-urlencode 'passphrase=<passphrase>' \
       --data-urlencode 'values=[
-        {"address": "cpu", "value": "Intel N100", "mo_id": 42},
-        {"address": "ram", "value": "16 GB", "mo_id": 42},
-        {"address": "storage", "value": "512 GB", "mo_id": 42}
+        {"address": "cpu", "value": "Intel N100", "mo_id": "WH/MO/00042"},
+        {"address": "ram", "value": "16 GB", "mo_id": "WH/MO/00042"},
+        {"address": "storage", "value": "512 GB", "mo_id": "WH/MO/00042"}
       ]'
 
 Each entry results in one note on the inspection, e.g. **cpu**: Intel N100.

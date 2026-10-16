@@ -70,14 +70,16 @@ class TestIotQualityControl(HttpCase):
 
     def test_post_measurement(self):
         result = self.cpu_input.call_device(
-            value="Intel N100", mo_id=self.production.id
+            value="Intel N100", mo_id=self.production.name
         )
         self.assertEqual(result["status"], "ok")
         self.assertIn("cpu", self._notes()[:1].body)
         self.assertIn("Intel N100", self._notes()[:1].body)
 
     def test_post_measurement_escapes_html(self):
-        self.cpu_input.call_device(value="<script>x</script>", mo_id=self.production.id)
+        self.cpu_input.call_device(
+            value="<script>x</script>", mo_id=self.production.name
+        )
         self.assertNotIn("<script>", self._notes()[:1].body)
 
     def test_invalid_mo(self):
@@ -85,12 +87,10 @@ class TestIotQualityControl(HttpCase):
             self.cpu_input.call_device(value="x", mo_id="abc")["status"], "error"
         )
         self.assertEqual(
-            self.cpu_input.call_device(value="x", mo_id=0)["status"], "error"
+            self.cpu_input.call_device(value="x", mo_id="")["status"], "error"
         )
         self.assertEqual(
-            self.cpu_input.call_device(value="x", mo_id=self.production.id + 1000)[
-                "status"
-            ],
+            self.cpu_input.call_device(value="x", mo_id="WH/MO/DOESNOTEXIST")["status"],
             "error",
         )
 
@@ -98,19 +98,19 @@ class TestIotQualityControl(HttpCase):
         other = self.env["mrp.production"].create(
             {"product_id": self.product.id, "product_qty": 1}
         )
-        result = self.cpu_input.call_device(value="x", mo_id=other.id)
+        result = self.cpu_input.call_device(value="x", mo_id=other.name)
         self.assertEqual(result["status"], "error")
 
     def test_test_parameter_filters(self):
         self.env["ir.config_parameter"].sudo().set_param(
             "iot_quality_control.qc_test_id", "999999"
         )
-        result = self.cpu_input.call_device(value="x", mo_id=self.production.id)
+        result = self.cpu_input.call_device(value="x", mo_id=self.production.name)
         self.assertEqual(result["status"], "error")
 
     def test_missing_key(self):
         result = self.env["iot.quality.control"].post_measurement(
-            value="x", mo_id=self.production.id
+            value="x", mo_id=self.production.name
         )
         self.assertEqual(result["status"], "error")
         self.assertFalse(self._notes())
@@ -123,7 +123,7 @@ class TestIotQualityControl(HttpCase):
     def test_note_only(self):
         state = self.inspection.state
         lines = self.inspection.inspection_lines
-        self.cpu_input.call_device(value="x", mo_id=self.production.id)
+        self.cpu_input.call_device(value="x", mo_id=self.production.name)
         self.assertEqual(self.inspection.state, state)
         self.assertEqual(self.inspection.inspection_lines, lines)
 
@@ -172,7 +172,7 @@ class TestIotQualityControl(HttpCase):
                         {
                             "address": key,
                             "value": key.upper(),
-                            "mo_id": self.production.id,
+                            "mo_id": self.production.name,
                         }
                         for key in ("cpu", "ram", "storage")
                     ]
@@ -185,8 +185,8 @@ class TestIotQualityControl(HttpCase):
     def test_multi_input_endpoint(self):
         result = self._post(
             [
-                {"address": "cpu", "value": "i7", "mo_id": self.production.id},
-                {"address": "unknown", "value": "x", "mo_id": self.production.id},
+                {"address": "cpu", "value": "i7", "mo_id": self.production.name},
+                {"address": "unknown", "value": "x", "mo_id": self.production.name},
             ]
         )
         self.assertEqual(result[0]["status"], "ok")

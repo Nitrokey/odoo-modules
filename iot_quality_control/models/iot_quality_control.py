@@ -41,7 +41,8 @@ class IotQualityControl(models.AbstractModel):
         """Post one key/value measurement as a note on the MO's inspection.
 
         Called through ``iot.device.input``: the key is the address of the
-        input that received the value.
+        input that received the value. ``mo_id`` is the reference of the
+        Manufacturing Order, e.g. ``WH/MO/00001``.
         """
         device_input = self.env["iot.device.input"].browse(
             self.env.context.get("iot_device_input_id")
@@ -49,13 +50,14 @@ class IotQualityControl(models.AbstractModel):
         key = device_input.address or device_input.name
         if not key:
             return self._error(_("Measurement key could not be determined"))
-        try:
-            mo_id = int(mo_id)
-        except (TypeError, ValueError):
+        mo_name = str(mo_id or "").strip()
+        if not mo_name:
             return self._error(_("A valid mo_id is required"))
-        production = self.env["mrp.production"].browse(mo_id).exists()
+        production = self.env["mrp.production"].search([("name", "=", mo_name)])
         if not production:
-            return self._error(_("Manufacturing Order %s not found", mo_id))
+            return self._error(_("Manufacturing Order %s not found", mo_name))
+        if len(production) > 1:
+            return self._error(_("Manufacturing Order %s is not unique", mo_name))
         inspection = self._get_inspection(production)
         if not inspection:
             return self._error(

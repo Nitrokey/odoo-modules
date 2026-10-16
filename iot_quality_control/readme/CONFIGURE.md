@@ -1,4 +1,4 @@
-1.  Go to IoT \> Config \> Add a new Device. It shows a configuration URL.
+1.  Go to IoT \> Configuration \> Add a new Device. It shows a configuration URL.
 2.  Send a POST request with the parameter `template=Quality Control
     measurements` to that URL (once; the URL is valid for a single use):
 
@@ -13,7 +13,7 @@
     - one input per measurement key (`cpu`, `ram`, `storage`), using the
       function `post_measurement` of the model *iot.quality.control*. The
       **address** of the input is the key name sent by the device.
-3.  To accept more keys, add inputs to the template (IoT \> Config \>
+3.  To accept more keys, add inputs to the template (IoT \> Configuration \>
     Templates) before step 2, or directly to the device afterwards,
     copying an existing one: model `iot.quality.control`, function
     `post_measurement`, params `{"address": "<key>"}`. Keys that are not
