@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="iot_template_quality_control" model="iot.template">
+        <field name="name">Quality Control measurements</field>
+    </record>
+    <record id="iot_template_quality_control_serial" model="iot.template.key">
+        <field name="template_id" ref="iot_template_quality_control" />
+        <field name="key">serial</field>
+    </record>
+    <!-- Entry point called by the device on /iot/<serial>/multi_input -->
+    <record id="iot_template_quality_control_multi" model="iot.template.input">
+        <field name="template_id" ref="iot_template_quality_control" />
+        <field name="name">Multi input</field>
+        <field name="call_function">parse_multi_input</field>
+        <field name="params">{}</field>
+    </record>
+    <!-- One input per measurement key. Copy these to add more keys. -->
+    <record id="iot_template_quality_control_cpu" model="iot.template.input">
+        <field name="template_id" ref="iot_template_quality_control" />
+        <field name="name">CPU</field>
+        <field name="call_model_id" ref="model_iot_quality_control" />
+        <field name="call_function">post_measurement</field>
+        <field name="params">{"address": "cpu"}</field>
+    </record>
+    <record id="iot_template_quality_control_ram" model="iot.template.input">
+        <field name="template_id" ref="iot_template_quality_control" />
+        <field name="name">RAM</field>
+        <field name="call_model_id" ref="model_iot_quality_control" />
+        <field name="call_function">post_measurement</field>
+        <field name="params">{"address": "ram"}</field>
+    </record>
+    <record id="iot_template_quality_control_storage" model="iot.template.input">
+        <field name="template_id" ref="iot_template_quality_control" />
+        <field name="name">Storage</field>
+        <field name="call_model_id" ref="model_iot_quality_control" />
+        <field name="call_function">post_measurement</field>
+        <field name="params">{"address": "storage"}</field>
+    </record>
+</odoo>
