@@ -5,7 +5,7 @@
         <field name="model">hs.code</field>
         <field name="inherit_id" ref="product_harmonized_system.hs_code_view_tree" />
         <field name="arch" type="xml">
-            <field name="company_id" position="after">
+            <field name="long_description" position="after">
                 <field name="country_id" />
             </field>
         </field>
@@ -17,7 +17,7 @@
         <field name="model">hs.code</field>
         <field name="inherit_id" ref="product_harmonized_system.hs_code_view_form" />
         <field name="arch" type="xml">
-            <field name="company_id" position="after">
+            <field name="long_description" position="after">
                 <field
                     name="country_id"
                     widget="many2many_tags"
