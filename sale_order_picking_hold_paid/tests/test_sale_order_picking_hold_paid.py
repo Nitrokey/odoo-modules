@@ -200,6 +200,18 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
             sale_order.picking_ids, "Picking should be created after invoice is paid"
         )
 
+    def test_paying_user_not_subscribed_to_picking(self):
+        """The user registering the payment must not follow the released picking."""
+        user = self.env.ref("base.user_admin")
+        sale_order = self._create_sale_order(self.payment_term_hold)
+        sale_order.action_confirm()
+        invoice = self._create_invoice(sale_order)
+
+        self._register_payment(invoice.with_user(user))
+
+        self.assertTrue(sale_order.picking_ids)
+        self.assertNotIn(user.partner_id, sale_order.picking_ids.message_partner_ids)
+
     def test_manufacturing_orders(self):
         """Test that manufacturing orders are created even with hold payment term."""
         # Create and confirm sale order with hold payment term and MTO+MFG product
@@ -257,7 +269,7 @@ class TestSaleOrderPickingHoldPaid(TransactionCase):
 
         # Create and post payment
         payment_register = (
-            self.env["account.payment.register"]
+            invoice.env["account.payment.register"]
             .with_context(active_model="account.move", active_ids=[invoice.id])
             .create(
                 {

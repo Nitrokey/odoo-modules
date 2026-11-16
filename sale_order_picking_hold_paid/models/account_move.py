@@ -13,5 +13,7 @@ class AccountMove(models.Model):
         orders = self.filtered(lambda move: move.is_invoice()).mapped(
             "invoice_line_ids.sale_line_ids.order_id"
         )
-        orders.with_context(auto_removal_on_payment=True).action_remove_delivery_block()
+        orders.with_context(
+            auto_removal_on_payment=True, mail_create_nosubscribe=True
+        ).action_remove_delivery_block()
         return res
