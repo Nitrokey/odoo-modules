@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Testnet addresses, free for new orders -->
+    <record id="demo_bitcoin_address_free_1" model="bitcoin.address">
+        <field name="name">tb1qand5wgyllf0ceehfdwww7k6npvp79ggmrng8ad</field>
+    </record>
+    <record id="demo_bitcoin_address_free_2" model="bitcoin.address">
+        <field name="name">tb1q8xp5g2qxlqwgl9afcjv4uk437h368ycllwe5y4</field>
+    </record>
+    <record id="demo_bitcoin_address_free_3" model="bitcoin.address">
+        <field name="name">tb1qwgvac3e95fsg7huu7c5s8czd74epca4uxr707g</field>
+    </record>
+    <record id="demo_bitcoin_address_free_4" model="bitcoin.address">
+        <field name="name">tb1qqte4q7mjjrresupxn26rwh7k32uea94zn88887</field>
+    </record>
+
+    <!-- Order paid in Bitcoin -->
+    <record id="demo_sale_order_bitcoin_paid" model="sale.order">
+        <field name="partner_id" ref="base.res_partner_2" />
+        <field name="client_order_ref">BTC-DEMO-1</field>
+    </record>
+    <record id="demo_sale_order_bitcoin_paid_line_1" model="sale.order.line">
+        <field name="order_id" ref="demo_sale_order_bitcoin_paid" />
+        <field name="product_id" ref="product.product_product_9" />
+        <field name="product_uom_qty">2</field>
+    </record>
+
+    <function model="sale.order" name="action_confirm">
+        <value eval="[ref('demo_sale_order_bitcoin_paid')]" />
+    </function>
+
+    <record id="demo_bitcoin_address_used" model="bitcoin.address">
+        <field name="name">tb1q03w9rkz6309zd8c5nlzvhhqdx6xzvmxnd5ewuq</field>
+        <field name="order_id" ref="demo_sale_order_bitcoin_paid" />
+        <field name="is_btc_used" eval="True" />
+    </record>
+
+    <!-- Expired rate lookups -->
+    <record id="demo_bitcoin_rate_line_order" model="bitcoin.rate.line">
+        <field name="rate_id" ref="payment_bitcoin.bitcoin_rate_default" />
+        <field
+            name="create_date"
+            eval="(DateTime.now() - timedelta(days=3)).strftime('%Y-%m-%d %H:%M:%S')"
+        />
+        <field name="rate">0.00041250</field>
+        <field name="currency_id" ref="base.EUR" />
+        <field name="amount">39.0</field>
+        <field name="order_id" ref="demo_sale_order_bitcoin_paid" />
+        <field name="name">BTC-DEMO-1</field>
+    </record>
+    <record id="demo_bitcoin_rate_line_usd" model="bitcoin.rate.line">
+        <field name="rate_id" ref="payment_bitcoin.bitcoin_rate_default" />
+        <field
+            name="create_date"
+            eval="(DateTime.now() - timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"
+        />
+        <field name="rate">0.00105600</field>
+        <field name="currency_id" ref="base.USD" />
+        <field name="amount">99.0</field>
+        <field name="name">Rate lookup without order</field>
+    </record>
+</odoo>

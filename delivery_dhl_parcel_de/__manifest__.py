@@ -24,6 +24,9 @@
         "views/delivery_carrier.xml",
         "views/stock_picking.xml",
     ],
+    "demo": [
+        "demo/delivery_dhl_parcel_de_demo.xml",
+    ],
     "author": "Vraja Technologies, initOS, Nitrokey",
     "website": "https://github.com/Nitrokey/odoo-modules/",
     "maintainer": ["initOS", "Nitrokey"],

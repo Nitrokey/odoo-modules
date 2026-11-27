@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="demo_product_dhl" model="product.product">
+        <field name="name">Security Key (DHL Demo)</field>
+        <field name="default_code">DEMO-DHL-KEY</field>
+        <field name="type">consu</field>
+        <field name="is_storable" eval="True" />
+        <field name="list_price">65.0</field>
+        <field name="weight">0.25</field>
+        <field name="hs_code_id" ref="product_harmonized_system.84717050" />
+        <field name="origin_country_id" ref="base.de" />
+    </record>
+
+    <record id="demo_quant_dhl" model="stock.quant">
+        <field name="product_id" ref="demo_product_dhl" />
+        <field name="location_id" ref="stock.stock_location_stock" />
+        <field name="inventory_quantity">200</field>
+    </record>
+
+    <function model="stock.quant" name="action_apply_inventory">
+        <value eval="[ref('demo_quant_dhl')]" />
+    </function>
+
+    <record id="demo_partner_dhl_domestic" model="res.partner">
+        <field name="name">Lisa Paket</field>
+        <field name="street">Charles-de-Gaulle-Straße 20</field>
+        <field name="zip">53113</field>
+        <field name="city">Bonn</field>
+        <field name="country_id" ref="base.de" />
+        <field name="email">lisa.paket@example.com</field>
+        <field name="phone">+49 228 1820</field>
+    </record>
+
+    <!-- EU country, outside the customs territory: needs customs data -->
+    <record id="demo_partner_dhl_canary" model="res.partner">
+        <field name="name">Pablo Islas</field>
+        <field name="street">Avenida Marítima 3</field>
+        <field name="zip">35003</field>
+        <field name="city">Las Palmas de Gran Canaria</field>
+        <field name="state_id" ref="base.state_es_gc" />
+        <field name="country_id" ref="base.es" />
+        <field name="email">pablo.islas@example.com</field>
+    </record>
+
+    <!-- Non-EU: export documents -->
+    <record id="demo_partner_dhl_ch" model="res.partner">
+        <field name="name">Heidi Berg</field>
+        <field name="street">Marktgasse 5</field>
+        <field name="zip">3011</field>
+        <field name="city">Bern</field>
+        <field name="country_id" ref="base.ch" />
+        <field name="email">heidi.berg@example.com</field>
+    </record>
+
+    <record id="demo_sale_order_dhl_domestic" model="sale.order">
+        <field name="partner_id" ref="demo_partner_dhl_domestic" />
+        <field name="carrier_id" ref="dhl_parcel_delivery_type" />
+        <field name="client_order_ref">DHL-DEMO-1</field>
+    </record>
+    <record id="demo_sale_order_dhl_domestic_line_1" model="sale.order.line">
+        <field name="order_id" ref="demo_sale_order_dhl_domestic" />
+        <field name="product_id" ref="demo_product_dhl" />
+        <field name="product_uom_qty">2</field>
+    </record>
+
+    <record id="demo_sale_order_dhl_canary" model="sale.order">
+        <field name="partner_id" ref="demo_partner_dhl_canary" />
+        <field name="carrier_id" ref="dhl_parcel_delivery_type" />
+        <field name="client_order_ref">DHL-DEMO-2</field>
+    </record>
+    <record id="demo_sale_order_dhl_canary_line_1" model="sale.order.line">
+        <field name="order_id" ref="demo_sale_order_dhl_canary" />
+        <field name="product_id" ref="demo_product_dhl" />
+        <field name="product_uom_qty">1</field>
+    </record>
+
+    <record id="demo_sale_order_dhl_ch" model="sale.order">
+        <field name="partner_id" ref="demo_partner_dhl_ch" />
+        <field name="carrier_id" ref="dhl_parcel_delivery_type" />
+        <field name="client_order_ref">DHL-DEMO-3</field>
+    </record>
+    <record id="demo_sale_order_dhl_ch_line_1" model="sale.order.line">
+        <field name="order_id" ref="demo_sale_order_dhl_ch" />
+        <field name="product_id" ref="demo_product_dhl" />
+        <field name="product_uom_qty">3</field>
+    </record>
+
+    <function model="sale.order" name="action_confirm">
+        <value
+            eval="[
+                ref('demo_sale_order_dhl_domestic'),
+                ref('demo_sale_order_dhl_canary'),
+                ref('demo_sale_order_dhl_ch'),
+            ]"
+        />
+    </function>
+</odoo>

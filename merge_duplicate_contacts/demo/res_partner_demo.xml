@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Same name, different emails and addresses -->
+    <record id="demo_merge_name_1" model="res.partner">
+        <field name="name">Merge Demo Hannah Schmidt</field>
+        <field name="email">hannah.schmidt@example.com</field>
+        <field name="street">Lindenweg 3</field>
+        <field name="zip">04109</field>
+        <field name="city">Leipzig</field>
+        <field name="country_id" ref="base.de" />
+    </record>
+    <record id="demo_merge_name_2" model="res.partner">
+        <field name="name">Merge Demo Hannah Schmidt</field>
+        <field name="email">h.schmidt@example.org</field>
+        <field name="phone">+49 341 555555</field>
+        <field name="city">Leipzig</field>
+        <field name="country_id" ref="base.de" />
+    </record>
+
+    <!-- Same name, one of them is a company -->
+    <record id="demo_merge_company_1" model="res.partner">
+        <field name="name">Merge Demo Solutions GmbH</field>
+        <field name="is_company" eval="True" />
+        <field name="email">info@merge-demo-solutions.example.com</field>
+        <field name="vat">DE123456788</field>
+        <field name="country_id" ref="base.de" />
+    </record>
+    <record id="demo_merge_company_2" model="res.partner">
+        <field name="name">Merge Demo Solutions GmbH</field>
+        <field name="email">sales@merge-demo-solutions.example.com</field>
+        <field name="country_id" ref="base.de" />
+    </record>
+
+    <!-- Same email, different spelling of the name -->
+    <record id="demo_merge_email_1" model="res.partner">
+        <field name="name">Merge Demo Jürgen Müller</field>
+        <field name="email">juergen.mueller@example.com</field>
+    </record>
+    <record id="demo_merge_email_2" model="res.partner">
+        <field name="name">Merge Demo Juergen Mueller</field>
+        <field name="email">juergen.mueller@example.com</field>
+        <field name="mobile">+49 170 1234567</field>
+    </record>
+
+    <!-- Same phone number, different names -->
+    <record id="demo_merge_phone_1" model="res.partner">
+        <field name="name">Merge Demo Front Desk</field>
+        <field name="phone">+49 89 7654321</field>
+    </record>
+    <record id="demo_merge_phone_2" model="res.partner">
+        <field name="name">Merge Demo Reception</field>
+        <field name="phone">+49 89 7654321</field>
+    </record>
+
+    <!-- Three partners with the same name, one with a sales order -->
+    <record id="demo_merge_triple_1" model="res.partner">
+        <field name="name">Merge Demo Tom Becker</field>
+        <field name="email">tom.becker@example.com</field>
+    </record>
+    <record id="demo_merge_triple_2" model="res.partner">
+        <field name="name">Merge Demo Tom Becker</field>
+        <field name="email">tbecker@example.net</field>
+    </record>
+    <record id="demo_merge_triple_3" model="res.partner">
+        <field name="name">Merge Demo Tom Becker</field>
+        <field name="city">Hannover</field>
+    </record>
+    <record id="demo_merge_triple_order" model="sale.order">
+        <field name="partner_id" ref="demo_merge_triple_2" />
+    </record>
+    <record id="demo_merge_triple_order_line_1" model="sale.order.line">
+        <field name="order_id" ref="demo_merge_triple_order" />
+        <field name="product_id" ref="product.product_product_9" />
+        <field name="product_uom_qty">1</field>
+    </record>
+</odoo>

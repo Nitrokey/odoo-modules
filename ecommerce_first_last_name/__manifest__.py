@@ -11,6 +11,9 @@
     "data": [
         "views/templates.xml",
     ],
+    "demo": [
+        "demo/res_partner_demo.xml",
+    ],
     "assets": {
         "web.assets_frontend": [
             "ecommerce_first_last_name/static/src/js/**/*",

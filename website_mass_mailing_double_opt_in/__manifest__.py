@@ -22,6 +22,9 @@
         "views/invalid_confirmation.xml",
         "views/subscribe_template.xml",
     ],
+    "demo": [
+        "demo/mailing_subscription_demo.xml",
+    ],
     "assets": {
         "web.assets_tests": [
             "website_mass_mailing_double_opt_in/static/tests/**/*",

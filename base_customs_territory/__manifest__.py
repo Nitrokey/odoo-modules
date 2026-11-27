@@ -11,5 +11,8 @@
     "data": [
         "data/res_country_state_data.xml",
     ],
+    "demo": [
+        "demo/res_partner_demo.xml",
+    ],
     "installable": True,
 }

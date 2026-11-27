@@ -19,6 +19,9 @@
     "data": [
         "views/hs_code.xml",
     ],
+    "demo": [
+        "demo/website_sale_embargo_demo.xml",
+    ],
     "installable": True,
     "auto_install": False,
 }

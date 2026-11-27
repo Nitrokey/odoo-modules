@@ -12,6 +12,9 @@
         "data/ir_domain_email.xml",
         "wizard/merge_contact_view.xml",
     ],
+    "demo": [
+        "demo/res_partner_demo.xml",
+    ],
     "assets": {
         "web.assets_backend": [
             "merge_duplicate_contacts/static/src/css/merge_radio.css",

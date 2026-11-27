@@ -22,5 +22,8 @@
         "security/ir.model.access.csv",
         "data/mail_template.xml",
     ],
+    "demo": [
+        "demo/mailing_subscription_demo.xml",
+    ],
     "installable": True,
 }

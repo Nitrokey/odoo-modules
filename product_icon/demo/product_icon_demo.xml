@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="demo_product_template_icons" model="product.template">
+        <field name="name">Security Key (Icon Demo)</field>
+        <field name="default_code">DEMO-ICON-KEY</field>
+        <field name="type">consu</field>
+        <field name="list_price">59.0</field>
+        <field name="is_published" eval="True" />
+    </record>
+    <record id="demo_product_icon_usb_c" model="product.icon">
+        <field name="name">USB-C</field>
+        <field name="sequence">1</field>
+        <field name="product_template_id" ref="demo_product_template_icons" />
+        <field name="image_1920" type="base64" file="product_icon/demo/img/usb_c.png" />
+    </record>
+    <record id="demo_product_icon_nfc" model="product.icon">
+        <field name="name">NFC</field>
+        <field name="sequence">2</field>
+        <field name="product_template_id" ref="demo_product_template_icons" />
+        <field name="image_1920" type="base64" file="product_icon/demo/img/nfc.png" />
+    </record>
+    <record id="demo_product_icon_open_source" model="product.icon">
+        <field name="name">Open Source</field>
+        <field name="sequence">3</field>
+        <field name="product_template_id" ref="demo_product_template_icons" />
+        <field
+            name="image_1920"
+            type="base64"
+            file="product_icon/demo/img/open_source.png"
+        />
+    </record>
+
+    <record id="demo_product_template_one_icon" model="product.template">
+        <field name="name">USB-A Token (Icon Demo)</field>
+        <field name="default_code">DEMO-ICON-TOKEN</field>
+        <field name="type">consu</field>
+        <field name="list_price">29.0</field>
+        <field name="is_published" eval="True" />
+    </record>
+    <record id="demo_product_icon_usb_a" model="product.icon">
+        <field name="name">USB-A</field>
+        <field name="product_template_id" ref="demo_product_template_one_icon" />
+        <field name="image_1920" type="base64" file="product_icon/demo/img/usb_a.png" />
+    </record>
+</odoo>

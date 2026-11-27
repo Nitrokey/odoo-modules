@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- National format, normalized with the partner's country -->
+    <record id="demo_partner_phone_national" model="res.partner">
+        <field name="name">Nora National</field>
+        <field name="country_id" ref="base.de" />
+        <field name="phone">030 1234567</field>
+        <field name="mobile">0151 23456789</field>
+    </record>
+
+    <!-- International notation with spaces, brackets and a trunk prefix -->
+    <record id="demo_partner_phone_international" model="res.partner">
+        <field name="name">Ian International</field>
+        <field name="country_id" ref="base.de" />
+        <field name="phone">+49 (0)30 123 45 67</field>
+        <field name="mobile">0049 151 2345 6789</field>
+    </record>
+
+    <!-- Foreign number for a German partner -->
+    <record id="demo_partner_phone_foreign" model="res.partner">
+        <field name="name">Fiona Foreign</field>
+        <field name="country_id" ref="base.de" />
+        <field name="phone">+41 44 668 18 00</field>
+    </record>
+
+    <!-- International number without a country on the partner -->
+    <record id="demo_partner_phone_no_country" model="res.partner">
+        <field name="name">Nico Nocountry</field>
+        <field name="phone">+1 415 555 0132</field>
+    </record>
+
+    <!-- National number without a country: kept as entered -->
+    <record id="demo_partner_phone_ambiguous" model="res.partner">
+        <field name="name">Anton Ambiguous</field>
+        <field name="phone">0221 9876543</field>
+    </record>
+
+    <!-- Not a phone number at all: kept as entered -->
+    <record id="demo_partner_phone_invalid" model="res.partner">
+        <field name="name">Ivo Invalid</field>
+        <field name="country_id" ref="base.fr" />
+        <field name="phone">call me maybe</field>
+    </record>
+</odoo>
