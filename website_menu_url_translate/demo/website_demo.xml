@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="demo_shipping_view" model="ir.ui.view">
+        <field name="name">Shipping Information (URL Translate Demo)</field>
+        <field name="type">qweb</field>
+        <field name="key">website_menu_url_translate.demo_shipping</field>
+        <field name="arch" type="xml">
+            <t
+                name="Shipping Information"
+                t-name="website_menu_url_translate.demo_shipping"
+            >
+                <t t-call="website.layout">
+                    <div id="wrap" class="oe_structure oe_empty">
+                        <section class="container py-5">
+                            <h1>Shipping Information</h1>
+                            <p>We ship within 2 working days.</p>
+                        </section>
+                    </div>
+                </t>
+            </t>
+        </field>
+    </record>
+
+    <!-- /shipping in English, /versand in German -->
+    <record id="demo_shipping_page" model="website.page">
+        <field name="url">/shipping</field>
+        <field name="is_published" eval="True" />
+        <field name="view_id" ref="demo_shipping_view" />
+    </record>
+    <function model="website.page" name="update_field_translations">
+        <value eval="[ref('demo_shipping_page')]" />
+        <value>url</value>
+        <value eval="{'de_DE': '/versand'}" />
+    </function>
+
+    <record id="demo_shipping_menu" model="website.menu">
+        <field name="name">Shipping</field>
+        <field name="url">/shipping</field>
+        <field name="parent_id" ref="website.main_menu" />
+        <field name="sequence">90</field>
+    </record>
+    <!-- Also translate the copies created for each website -->
+    <function model="website.menu" name="write" context="{'lang': 'de_DE'}">
+        <value
+            model="website.menu"
+            eval="obj().search([('url', '=', '/shipping')]).ids"
+        />
+        <value eval="{'name': 'Versand', 'url': '/versand'}" />
+    </function>
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Portal messages on contacts create an email activity for this team -->
+    <record id="demo_activity_team_contacts" model="mail.activity.team">
+        <field name="name">Customer Support (Portal Demo)</field>
+        <field
+            name="res_model_ids"
+            eval="[Command.set([ref('base.model_res_partner')])]"
+        />
+        <field name="user_id" ref="base.user_admin" />
+        <field
+            name="member_ids"
+            eval="[Command.set([ref('base.user_admin'), ref('base.user_demo')])]"
+        />
+    </record>
+
+    <function model="res.partner" name="message_post">
+        <value eval="[ref('base.partner_demo_portal')]" />
+        <value name="body">Please update my delivery address to the new office.</value>
+        <value name="author_id" eval="ref('base.partner_demo_portal')" />
+        <value name="message_type">comment</value>
+        <value name="subtype_xmlid">mail.mt_comment</value>
+    </function>
+
+    <function model="res.partner" name="schedule_email_activity">
+        <value eval="[ref('base.partner_demo_portal')]" />
+    </function>
+</odoo>

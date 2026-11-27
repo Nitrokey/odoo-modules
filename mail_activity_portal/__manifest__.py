@@ -17,5 +17,8 @@
         "mail_activity_team",
         "portal",
     ],
+    "demo": [
+        "demo/mail_activity_portal_demo.xml",
+    ],
     "installable": True,
 }

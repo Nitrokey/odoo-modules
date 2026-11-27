@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Signs in with OAuth only: password login is rejected -->
+    <record id="demo_user_oauth_only" model="res.users">
+        <field name="name">Olivia OAuth</field>
+        <field name="login">olivia.oauth@example.com</field>
+        <field name="email">olivia.oauth@example.com</field>
+        <field name="groups_id" eval="[Command.set([ref('base.group_portal')])]" />
+        <field name="oauth_provider_id" ref="auth_oauth.provider_openerp" />
+        <field name="oauth_uid">demo-olivia-oauth</field>
+        <field name="disable_password_login" eval="True" />
+    </record>
+
+    <!-- Same provider, password login still allowed -->
+    <record id="demo_user_oauth_and_password" model="res.users">
+        <field name="name">Peter Password</field>
+        <field name="login">peter.password@example.com</field>
+        <field name="email">peter.password@example.com</field>
+        <field name="groups_id" eval="[Command.set([ref('base.group_portal')])]" />
+        <field name="oauth_provider_id" ref="auth_oauth.provider_openerp" />
+        <field name="oauth_uid">demo-peter-password</field>
+        <field name="disable_password_login" eval="False" />
+    </record>
+</odoo>
