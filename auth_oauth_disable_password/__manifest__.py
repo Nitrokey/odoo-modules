@@ -12,5 +12,8 @@
     "data": [
         "views/res_users_views.xml",
     ],
+    "demo": [
+        "demo/res_users_demo.xml",
+    ],
     "installable": True,
 }

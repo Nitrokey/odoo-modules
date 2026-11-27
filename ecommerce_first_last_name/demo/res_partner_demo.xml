@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="demo_partner_first_last" model="res.partner">
+        <field name="name">Erika Mustermann</field>
+        <field name="last_name">Mustermann</field>
+        <field name="street">Musterstraße 1</field>
+        <field name="zip">12345</field>
+        <field name="city">Musterstadt</field>
+        <field name="country_id" ref="base.de" />
+        <field name="email">erika.mustermann@example.com</field>
+    </record>
+
+    <!-- Compound last name -->
+    <record id="demo_partner_compound_last" model="res.partner">
+        <field name="name">Juan García López</field>
+        <field name="last_name">García López</field>
+        <field name="street">Calle de Alcalá 20</field>
+        <field name="zip">28014</field>
+        <field name="city">Madrid</field>
+        <field name="country_id" ref="base.es" />
+        <field name="email">juan.garcia@example.com</field>
+    </record>
+
+    <!-- Last name with a nobiliary particle -->
+    <record id="demo_partner_particle_last" model="res.partner">
+        <field name="name">Anna von Brandenburg</field>
+        <field name="last_name">von Brandenburg</field>
+        <field name="street">Unter den Linden 5</field>
+        <field name="zip">10117</field>
+        <field name="city">Berlin</field>
+        <field name="country_id" ref="base.de" />
+        <field name="email">anna.vonbrandenburg@example.com</field>
+    </record>
+
+    <!-- Created in the backend, without a separate last name -->
+    <record id="demo_partner_no_last" model="res.partner">
+        <field name="name">Madonna</field>
+        <field name="email">madonna@example.com</field>
+    </record>
+</odoo>

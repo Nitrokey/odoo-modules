@@ -9,6 +9,9 @@
     "version": "18.0.1.0.0",
     "external_dependencies": {"python": ["phonenumbers"]},
     "depends": ["phone_validation"],
+    "demo": [
+        "demo/res_partner_demo.xml",
+    ],
     "author": "Nitrokey GmbH",
     "website": "https://github.com/Nitrokey/odoo-modules",
 }

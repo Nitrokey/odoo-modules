@@ -21,6 +21,9 @@
         "data/ir_cron_data.xml",
         "data/payment_provider_data.xml",
     ],
+    "demo": [
+        "demo/payment_bitcoin_demo.xml",
+    ],
     "assets": {
         "web.assets_frontend": [
             "payment_bitcoin/static/src/js/bitcoin.js",

@@ -19,4 +19,7 @@
         "views/sale_stock_picking_blocking_reason_view.xml",
         "views/sale_order_views.xml",
     ],
+    "demo": [
+        "demo/sale_order_picking_hold_paid_demo.xml",
+    ],
 }

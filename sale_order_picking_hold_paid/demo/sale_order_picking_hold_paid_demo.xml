@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="demo_block_reason_prepayment" model="sale.delivery.block.reason">
+        <field name="name">Waiting for prepayment</field>
+        <field name="remove_on_payment" eval="True" />
+    </record>
+
+    <record id="demo_block_reason_manual" model="sale.delivery.block.reason">
+        <field name="name">Clarify delivery address</field>
+        <field name="remove_on_payment" eval="False" />
+    </record>
+
+    <record id="demo_product_hold" model="product.product">
+        <field name="name">Security Key (Delivery Block Demo)</field>
+        <field name="default_code">DEMO-HOLD-KEY</field>
+        <field name="type">consu</field>
+        <field name="list_price">45.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+
+    <record id="demo_payment_term_prepayment" model="account.payment.term">
+        <field name="name">Prepayment</field>
+        <field
+            name="note"
+        >Payment in advance. Goods are shipped after the payment has been received.</field>
+        <field
+            name="default_delivery_block_reason_id"
+            ref="demo_block_reason_prepayment"
+        />
+    </record>
+
+    <!-- Blocked until the invoice is paid -->
+    <record id="demo_sale_order_prepayment" model="sale.order">
+        <field name="partner_id" ref="base.res_partner_12" />
+        <field name="payment_term_id" ref="demo_payment_term_prepayment" />
+        <field name="client_order_ref">HOLD-DEMO-1</field>
+    </record>
+    <record id="demo_sale_order_prepayment_line_1" model="sale.order.line">
+        <field name="order_id" ref="demo_sale_order_prepayment" />
+        <field name="product_id" ref="demo_product_hold" />
+        <field name="product_uom_qty">4</field>
+    </record>
+
+    <!-- Blocked manually: stays blocked after the payment -->
+    <record id="demo_sale_order_manual_block" model="sale.order">
+        <field name="partner_id" ref="base.res_partner_4" />
+        <field name="client_order_ref">HOLD-DEMO-2</field>
+    </record>
+    <record id="demo_sale_order_manual_block_line_1" model="sale.order.line">
+        <field name="order_id" ref="demo_sale_order_manual_block" />
+        <field name="product_id" ref="demo_product_hold" />
+        <field name="product_uom_qty">1</field>
+    </record>
+    <!-- Set separately: the block is recomputed from the payment term on create -->
+    <record id="demo_sale_order_manual_block" model="sale.order">
+        <field name="delivery_block_id" ref="demo_block_reason_manual" />
+    </record>
+
+    <function model="sale.order" name="action_confirm">
+        <value
+            eval="[ref('demo_sale_order_prepayment'), ref('demo_sale_order_manual_block')]"
+        />
+    </function>
+
+    <!-- Prepayment invoice, not yet paid -->
+    <function model="sale.order" name="_create_invoices">
+        <value eval="[ref('demo_sale_order_prepayment')]" />
+        <value eval="False" />
+        <value eval="False" />
+    </function>
+    <function model="account.move" name="action_post">
+        <value
+            model="sale.order"
+            eval="obj(ref('demo_sale_order_prepayment')).invoice_ids.ids"
+        />
+    </function>
+</odoo>

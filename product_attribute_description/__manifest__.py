@@ -11,6 +11,9 @@
     "data": [
         "views/product_attribute_view.xml",
     ],
+    "demo": [
+        "demo/product_attribute_demo.xml",
+    ],
     "license": "AGPL-3",
     "installable": True,
 }

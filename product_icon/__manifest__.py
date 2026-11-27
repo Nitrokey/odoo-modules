@@ -34,4 +34,7 @@
         "views/product_icon_views.xml",
         "views/product_template_views.xml",
     ],
+    "demo": [
+        "demo/product_icon_demo.xml",
+    ],
 }

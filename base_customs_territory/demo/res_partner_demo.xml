@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Inside the EU, but outside its customs territory -->
+    <record id="demo_partner_gran_canaria" model="res.partner">
+        <field name="name">Canarias Seguridad S.L.</field>
+        <field name="is_company" eval="True" />
+        <field name="street">Calle Mayor de Triana 1</field>
+        <field name="zip">35002</field>
+        <field name="city">Las Palmas de Gran Canaria</field>
+        <field name="state_id" ref="base.state_es_gc" />
+        <field name="country_id" ref="base.es" />
+        <field name="email">pedidos@canarias-seguridad.example.com</field>
+    </record>
+
+    <record id="demo_partner_tenerife" model="res.partner">
+        <field name="name">Ana Tenerife</field>
+        <field name="street">Calle del Castillo 10</field>
+        <field name="zip">38002</field>
+        <field name="city">Santa Cruz de Tenerife</field>
+        <field name="state_id" ref="base.state_es_tf" />
+        <field name="country_id" ref="base.es" />
+        <field name="email">ana.tenerife@example.com</field>
+    </record>
+
+    <record id="demo_partner_ceuta" model="res.partner">
+        <field name="name">Ceuta Import S.L.</field>
+        <field name="is_company" eval="True" />
+        <field name="street">Paseo del Revellín 5</field>
+        <field name="zip">51001</field>
+        <field name="city">Ceuta</field>
+        <field name="state_id" ref="base.state_es_ce" />
+        <field name="country_id" ref="base.es" />
+        <field name="email">info@ceuta-import.example.com</field>
+    </record>
+
+    <!-- Same country, inside the customs territory -->
+    <record id="demo_partner_madrid" model="res.partner">
+        <field name="name">Madrid Privacidad S.A.</field>
+        <field name="is_company" eval="True" />
+        <field name="street">Gran Vía 1</field>
+        <field name="zip">28013</field>
+        <field name="city">Madrid</field>
+        <field name="state_id" ref="base.state_es_m" />
+        <field name="country_id" ref="base.es" />
+        <field name="email">compras@madrid-privacidad.example.com</field>
+    </record>
+</odoo>

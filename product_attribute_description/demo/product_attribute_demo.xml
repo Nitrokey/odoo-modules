@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="product.product_attribute_1" model="product.attribute">
+        <field
+            name="description"
+        >Material of the desk legs. Steel legs are more stable, aluminium legs are lighter.</field>
+    </record>
+
+    <record id="product.product_attribute_2" model="product.attribute">
+        <field name="description">Color of the desk top.</field>
+    </record>
+
+    <record id="demo_product_attribute_connector" model="product.attribute">
+        <field name="name">Connector</field>
+        <field name="create_variant">always</field>
+        <field
+            name="description"
+        >USB-A fits most desktop computers. USB-C fits current notebooks, tablets and smartphones.</field>
+    </record>
+    <record id="demo_product_attribute_value_usb_a" model="product.attribute.value">
+        <field name="name">USB-A</field>
+        <field name="attribute_id" ref="demo_product_attribute_connector" />
+        <field name="sequence">1</field>
+    </record>
+    <record id="demo_product_attribute_value_usb_c" model="product.attribute.value">
+        <field name="name">USB-C</field>
+        <field name="attribute_id" ref="demo_product_attribute_connector" />
+        <field name="sequence">2</field>
+    </record>
+
+    <!-- Without description -->
+    <record id="demo_product_attribute_nfc" model="product.attribute">
+        <field name="name">NFC</field>
+        <field name="create_variant">always</field>
+    </record>
+    <record id="demo_product_attribute_value_nfc_yes" model="product.attribute.value">
+        <field name="name">With NFC</field>
+        <field name="attribute_id" ref="demo_product_attribute_nfc" />
+        <field name="sequence">1</field>
+    </record>
+    <record id="demo_product_attribute_value_nfc_no" model="product.attribute.value">
+        <field name="name">Without NFC</field>
+        <field name="attribute_id" ref="demo_product_attribute_nfc" />
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="demo_product_template_key" model="product.template">
+        <field name="name">Security Key (Attribute Demo)</field>
+        <field name="default_code">DEMO-ATTR-KEY</field>
+        <field name="type">consu</field>
+        <field name="list_price">55.0</field>
+    </record>
+    <record
+        id="demo_product_template_key_line_connector"
+        model="product.template.attribute.line"
+    >
+        <field name="product_tmpl_id" ref="demo_product_template_key" />
+        <field name="attribute_id" ref="demo_product_attribute_connector" />
+        <field
+            name="value_ids"
+            eval="[Command.set([ref('demo_product_attribute_value_usb_a'), ref('demo_product_attribute_value_usb_c')])]"
+        />
+    </record>
+    <record
+        id="demo_product_template_key_line_nfc"
+        model="product.template.attribute.line"
+    >
+        <field name="product_tmpl_id" ref="demo_product_template_key" />
+        <field name="attribute_id" ref="demo_product_attribute_nfc" />
+        <field
+            name="value_ids"
+            eval="[Command.set([ref('demo_product_attribute_value_nfc_yes'), ref('demo_product_attribute_value_nfc_no')])]"
+        />
+    </record>
+</odoo>

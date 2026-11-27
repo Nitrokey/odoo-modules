@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="demo_hs_code_embargo" model="hs.code">
+        <field name="local_code">84718000</field>
+        <field
+            name="description"
+        >Other units of automatic data-processing machines (embargo demo)</field>
+        <field
+            name="country_id"
+            eval="[Command.set([ref('base.by'), ref('base.cu'), ref('base.ir'), ref('base.kp'), ref('base.ru'), ref('base.sy')])]"
+        />
+    </record>
+
+    <record id="demo_product_embargo" model="product.template">
+        <field name="name">Encrypted Storage Appliance (Embargo Demo)</field>
+        <field name="default_code">DEMO-EMBARGO</field>
+        <field name="type">consu</field>
+        <field name="list_price">499.0</field>
+        <field name="is_published" eval="True" />
+        <field name="hs_code_id" ref="demo_hs_code_embargo" />
+        <field name="origin_country_id" ref="base.de" />
+    </record>
+
+    <record id="demo_partner_embargo" model="res.partner">
+        <field name="name">Minsk Trading LLC</field>
+        <field name="is_company" eval="True" />
+        <field name="street">Prospekt Nezavisimosti 1</field>
+        <field name="zip">220030</field>
+        <field name="city">Minsk</field>
+        <field name="country_id" ref="base.by" />
+        <field name="email">info@minsk-trading.example.com</field>
+    </record>
+
+    <record id="demo_partner_not_embargoed" model="res.partner">
+        <field name="name">Oslo Privacy AS</field>
+        <field name="is_company" eval="True" />
+        <field name="street">Karl Johans gate 1</field>
+        <field name="zip">0154</field>
+        <field name="city">Oslo</field>
+        <field name="country_id" ref="base.no" />
+        <field name="email">post@oslo-privacy.example.com</field>
+    </record>
+
+    <!-- Cannot be confirmed: the product is under embargo for Belarus -->
+    <record id="demo_sale_order_embargo_blocked" model="sale.order">
+        <field name="partner_id" ref="demo_partner_embargo" />
+        <field name="client_order_ref">EMBARGO-DEMO-1</field>
+    </record>
+    <record id="demo_sale_order_embargo_blocked_line_1" model="sale.order.line">
+        <field name="order_id" ref="demo_sale_order_embargo_blocked" />
+        <field
+            name="product_id"
+            model="product.template"
+            eval="obj().env.ref('website_sale_embargo.demo_product_embargo').product_variant_id.id"
+        />
+        <field name="product_uom_qty">1</field>
+    </record>
+
+    <!-- Same product to Norway: can be confirmed -->
+    <record id="demo_sale_order_embargo_allowed" model="sale.order">
+        <field name="partner_id" ref="demo_partner_not_embargoed" />
+        <field name="client_order_ref">EMBARGO-DEMO-2</field>
+    </record>
+    <record id="demo_sale_order_embargo_allowed_line_1" model="sale.order.line">
+        <field name="order_id" ref="demo_sale_order_embargo_allowed" />
+        <field
+            name="product_id"
+            model="product.template"
+            eval="obj().env.ref('website_sale_embargo.demo_product_embargo').product_variant_id.id"
+        />
+        <field name="product_uom_qty">1</field>
+    </record>
+
+    <function model="sale.order" name="action_confirm">
+        <value eval="[ref('demo_sale_order_embargo_allowed')]" />
+    </function>
+</odoo>

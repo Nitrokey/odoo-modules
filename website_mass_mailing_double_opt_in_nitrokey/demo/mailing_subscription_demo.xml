@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="demo_partner_newsletter_subscribed" model="res.partner">
+        <field name="name">Nadine Newsletter</field>
+        <field name="email">nadine.newsletter@example.com</field>
+        <field name="lang">de_DE</field>
+        <field name="newsletter_subscribed" eval="True" />
+    </record>
+
+    <record id="demo_mailing_contact_german" model="mailing.contact">
+        <field name="name">Nadine Newsletter</field>
+        <field name="email">nadine.newsletter@example.com</field>
+    </record>
+
+    <!-- German subscriptions go to the German newsletter list -->
+    <record
+        id="demo_mailing_subscription_german_confirmed"
+        model="mailing.subscription"
+    >
+        <field name="contact_id" ref="demo_mailing_contact_german" />
+        <field name="list_id" ref="nitrokey_setup.german_newsletter_mass_mail_list" />
+        <field name="opt_out" eval="False" />
+        <field name="access_token">5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b</field>
+        <field name="mail_language">de_DE</field>
+    </record>
+
+    <record id="demo_mailing_contact_german_pending" model="mailing.contact">
+        <field name="name">Gerd Geduldig</field>
+        <field name="email">gerd.geduldig@example.com</field>
+    </record>
+    <record id="demo_mailing_subscription_german_pending" model="mailing.subscription">
+        <field name="contact_id" ref="demo_mailing_contact_german_pending" />
+        <field name="list_id" ref="nitrokey_setup.german_newsletter_mass_mail_list" />
+        <field name="opt_out" eval="True" />
+        <field name="access_token">b0a9f8e7d6c5b4a39281706f5e4d3c2b</field>
+        <field name="mail_language">de_DE</field>
+    </record>
+</odoo>

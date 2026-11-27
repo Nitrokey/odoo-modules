@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="demo_mailing_contact_pending" model="mailing.contact">
+        <field name="name">Petra Pending</field>
+        <field name="email">petra.pending@example.com</field>
+    </record>
+    <record id="demo_mailing_contact_pending_de" model="mailing.contact">
+        <field name="name">Werner Wartend</field>
+        <field name="email">werner.wartend@example.com</field>
+    </record>
+    <record id="demo_mailing_contact_confirmed" model="mailing.contact">
+        <field name="name">Carl Confirmed</field>
+        <field name="email">carl.confirmed@example.com</field>
+    </record>
+    <record id="demo_mailing_contact_unsubscribed" model="mailing.contact">
+        <field name="name">Ulla Unsubscribed</field>
+        <field name="email">ulla.unsubscribed@example.com</field>
+    </record>
+
+    <!-- Confirmation requested, not yet confirmed -->
+    <record id="demo_mailing_subscription_pending" model="mailing.subscription">
+        <field name="contact_id" ref="demo_mailing_contact_pending" />
+        <field name="list_id" ref="mass_mailing.mailing_list_data" />
+        <field name="opt_out" eval="True" />
+        <field name="access_token">0f1e2d3c4b5a69788796a5b4c3d2e1f0</field>
+        <field name="mail_language">en_US</field>
+    </record>
+    <record id="demo_mailing_subscription_pending_de" model="mailing.subscription">
+        <field name="contact_id" ref="demo_mailing_contact_pending_de" />
+        <field name="list_id" ref="mass_mailing.mailing_list_data" />
+        <field name="opt_out" eval="True" />
+        <field name="access_token">a1b2c3d4e5f60718293a4b5c6d7e8f90</field>
+        <field name="mail_language">de_DE</field>
+    </record>
+
+    <!-- Confirmed: the token has been used -->
+    <record id="demo_mailing_subscription_confirmed" model="mailing.subscription">
+        <field name="contact_id" ref="demo_mailing_contact_confirmed" />
+        <field name="list_id" ref="mass_mailing.mailing_list_data" />
+        <field name="opt_out" eval="False" />
+        <field name="access_token">9a8b7c6d5e4f30211203f4e5d6c7b8a9</field>
+        <field name="mail_language">en_US</field>
+    </record>
+
+    <!-- Confirmed earlier, unsubscribed later -->
+    <record id="demo_mailing_subscription_unsubscribed" model="mailing.subscription">
+        <field name="contact_id" ref="demo_mailing_contact_unsubscribed" />
+        <field name="list_id" ref="mass_mailing.mailing_list_data" />
+        <field name="opt_out" eval="True" />
+        <field
+            name="opt_out_datetime"
+            eval="(DateTime.now() - timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S')"
+        />
+        <field name="mail_language">en_US</field>
+    </record>
+</odoo>

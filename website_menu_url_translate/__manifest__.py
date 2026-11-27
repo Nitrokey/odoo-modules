@@ -11,6 +11,9 @@
         "data/res_lang.xml",
         "views/website_page.xml",
     ],
+    "demo": [
+        "demo/website_demo.xml",
+    ],
     "installable": True,
     "application": False,
 }
