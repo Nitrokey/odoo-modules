@@ -10,6 +10,7 @@ from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import float_compare
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -262,36 +263,25 @@ class BitcoinAddress(models.Model):
             if record.create_date < check_date:
                 continue
 
+            # The transaction holds the amount the customer was asked to pay
+            tx = bit_add_obj._get_bitcoin_transaction()
+            if not tx:
+                continue
+            btc_amount = tx.bitcoin_amount
+            if tx.bitcoin_unit == "mBTC":
+                btc_amount /= 1000.0
+
             address_info = check_received(bit_add_obj.name)
             if not address_info:
-                continue
-
-            if bit_add_obj.order_id:
-                domain = [
-                    ("order_id", "=", bit_add_obj.order_id.id),
-                    ("name", "=", bit_add_obj.order_id.name),
-                ]
-            elif bit_add_obj.invoice_id:
-                domain = [
-                    ("invoice_id", "=", bit_add_obj.invoice_id.id),
-                    ("name", "=", bit_add_obj.invoice_id.name),
-                ]
-            else:
                 continue
 
             recs_to_post = list(
                 filter(None, (bit_add_obj.order_id, bit_add_obj.invoice_id))
             )
 
-            valid_rate_exists = (
-                self.env["bitcoin.rate.line"].sudo().search(domain, limit=1)
-            )
-            valid_rate = 0.0
-            if valid_rate_exists:
-                valid_rate = valid_rate_exists.rate
-
-            amount_received = self.convert_num_to_standard(address_info["received"])
-            if valid_rate and address_info["received"] >= valid_rate:
+            received = float(address_info["received"])
+            amount_received = self.convert_num_to_standard(received)
+            if btc_amount and float_compare(received, btc_amount, 8) >= 0:
                 open_invoice_objs = None
                 if bit_add_obj.order_id and bit_add_obj.order_id.state != "cancel":
                     if bit_add_obj.order_id.state not in ("done", "sale"):
@@ -361,7 +351,10 @@ class BitcoinAddress(models.Model):
 
                     (line_to_reconcile + payment_line).reconcile()
                     bit_add_obj.write({"is_btc_used": True})
-                    if float(address_info["received"]) == float(valid_rate):
+                    # Link the payment so post-processing doesn't create a second one
+                    tx.payment_id = payment_obj
+                    tx._set_done()
+                    if float_compare(received, btc_amount, 8) == 0:
                         for rec in recs_to_post:
                             rec.message_post(
                                 body=_(
@@ -379,10 +372,8 @@ class BitcoinAddress(models.Model):
                                     ),
                                 }
                             )
-                    elif float(address_info["received"]) > float(valid_rate):
-                        max_amount_received = float(address_info["received"]) - float(
-                            valid_rate
-                        )
+                    else:
+                        max_amount_received = received - btc_amount
                         log_max_amt = _(
                             "Bitcoin transaction %(transaction)s \
                                 for %(address)s \
@@ -404,9 +395,7 @@ class BitcoinAddress(models.Model):
                         for rec in recs_to_post:
                             rec.message_post(body=log_max_amt)
             else:
-                insufficiant_amount = float(valid_rate) - float(
-                    address_info["received"]
-                )
+                insufficiant_amount = btc_amount - received
                 if address_info.get("transaction") and float(amount_received) > 0.0:
                     for rec in recs_to_post:
                         rec.message_post(
@@ -435,6 +424,23 @@ class BitcoinAddress(models.Model):
                         force_send=True,
                         raise_exception=True,
                     )
+
+    def _get_bitcoin_transaction(self):
+        self.ensure_one()
+        domain = [
+            ("provider_code", "=", "bitcoin"),
+            ("state", "in", ("draft", "pending")),
+            ("bitcoin_address", "=", self.name),
+        ]
+        if self.order_id:
+            domain.append(("sale_order_ids", "in", self.order_id.ids))
+        else:
+            domain.append(("invoice_ids", "in", self.invoice_id.ids))
+        return (
+            self.env["payment.transaction"]
+            .sudo()
+            .search(domain, order="id desc", limit=1)
+        )
 
     @api.model
     def send_bitcoin_address_goes_low_notification(self):
@@ -593,7 +599,7 @@ class BitcoinRate(models.Model):
                     "name": name,
                 }
             )
-            order.message_post(
+            (order or invoice).message_post(
                 body=Markup(
                     _(
                         """Bitcoin Address: <span><a target="_blank" \
