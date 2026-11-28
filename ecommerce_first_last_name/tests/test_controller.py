@@ -155,6 +155,32 @@ class TestFirstLastName(TransactionCase):
         )
         self.assertEqual(invalid, {"name", "last_name"})
 
+    def test_validate_full_name_too_long(self):
+        """First and last name together are limited to 50 characters"""
+        address_values, _extra = self._parse({"name": "x" * 25, "last_name": "y" * 25})
+        invalid, missing, messages = self._validate(
+            address_values, self.env["res.partner"]
+        )
+        self.assertEqual(invalid, {"name", "last_name"})
+        self.assertTrue(any("50 characters" in m for m in messages))
+
+    def test_validate_full_name_max_length(self):
+        """A full name of exactly 50 characters is valid"""
+        address_values, _extra = self._parse({"name": "x" * 24, "last_name": "y" * 25})
+        invalid, missing, messages = self._validate(
+            address_values, self.env["res.partner"]
+        )
+        self.assertNotIn("name", invalid)
+        self.assertNotIn("last_name", invalid)
+
+    def test_validate_full_name_too_long_locked_name(self):
+        """The length check is not undone by the locked name check"""
+        address_values, _extra = self._parse({"name": "John", "last_name": "y" * 50})
+        invalid, missing, messages = self._validate(
+            address_values, self.partner, can_edit_name=False
+        )
+        self.assertEqual(invalid, {"name", "last_name"})
+
     # res.partner
 
     def test_partner_last_name_field(self):

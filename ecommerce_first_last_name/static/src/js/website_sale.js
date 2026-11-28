@@ -2,7 +2,36 @@
 
 import websiteSaleAddress from "@website_sale/js/address";
 
+const NAME_MAX_LENGTH = 50;
+
 websiteSaleAddress.include({
+    /**
+     * @override
+     */
+    start() {
+        const def = this._super(...arguments);
+        this.firstNameInput = this.addressForm.querySelector('input[name="name"]');
+        this.lastNameInput = this.addressForm.querySelector('input[name="last_name"]');
+        if (this.firstNameInput && this.lastNameInput) {
+            const update = this._updateNameMaxLength.bind(this);
+            this.firstNameInput.addEventListener("input", update);
+            this.lastNameInput.addEventListener("input", update);
+            update();
+        }
+        return def;
+    },
+
+    /**
+     * The server stores "<first name> <last name>" as the partner name, so
+     * both inputs share one budget, including the separating space.
+     */
+    _updateNameMaxLength() {
+        const first = this.firstNameInput.value.length;
+        const last = this.lastNameInput.value.length;
+        this.firstNameInput.maxLength = Math.max(NAME_MAX_LENGTH - last - 1, 0);
+        this.lastNameInput.maxLength = Math.max(NAME_MAX_LENGTH - first - 1, 0);
+    },
+
     /**
      * Register change events for radio buttons.
      */
