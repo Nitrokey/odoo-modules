@@ -47,6 +47,12 @@ msgid "Contact"
 msgstr "Kontakt"
 
 #. module: ecommerce_first_last_name
+#. odoo-python
+#: code:addons/ecommerce_first_last_name/controllers/main.py:0
+msgid "First and last name together must not be longer than %s characters."
+msgstr "Vor- und Nachname dürfen zusammen nicht länger als %s Zeichen sein."
+
+#. module: ecommerce_first_last_name
 #: model_terms:ir.ui.view,arch_db:ecommerce_first_last_name.address_inherit
 msgid "First name"
 msgstr "Vorname"

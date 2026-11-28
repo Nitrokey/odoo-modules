@@ -3,7 +3,7 @@ Ecommerce First Last Name
 =========================
 
 This module is used in website and during checkout shows two fields, first name and last name,
-instead of just one name field.
+instead of just one name field. Both together are limited to 50 characters.
 
 **Table of contents**
 

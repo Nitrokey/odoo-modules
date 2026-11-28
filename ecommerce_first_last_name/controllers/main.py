@@ -1,8 +1,12 @@
 import logging
 
+from odoo import _
+
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 
 _logger = logging.getLogger(__name__)
+
+NAME_MAX_LENGTH = 50
 
 
 class WebsiteSaleFirstLastname(WebsiteSale):
@@ -51,6 +55,16 @@ class WebsiteSaleFirstLastname(WebsiteSale):
             elif last_name_changed and not first_name_changed:
                 invalid_fields.discard("name")
                 invalid_fields.add("last_name")
+
+        if len(address_values.get("name") or "") > NAME_MAX_LENGTH:
+            invalid_fields.update({"name", "last_name"})
+            error_messages.append(
+                _(
+                    "First and last name together must not be longer than %s "
+                    "characters.",
+                    NAME_MAX_LENGTH,
+                )
+            )
 
         return invalid_fields, missing_fields, error_messages
 
