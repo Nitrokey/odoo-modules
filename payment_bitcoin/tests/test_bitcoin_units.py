@@ -7,6 +7,7 @@ from psycopg2 import IntegrityError
 
 from odoo import fields
 from odoo.exceptions import UserError, ValidationError
+from odoo.fields import Command
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 from odoo.tools import mute_logger
@@ -325,6 +326,16 @@ class TestBitcoinRate(TransactionCase):
         with patch(REQUESTS_GET, return_value=self._rate_response()):
             self.assertTrue(self.rate.test_rate())
 
+    def test_get_rate_invoice_only(self):
+        invoice = self.env["account.move"].create(
+            {"move_type": "out_invoice", "partner_id": self.partner.id}
+        )
+        with patch(REQUESTS_GET, return_value=self._rate_response()):
+            result = self.env["bitcoin.rate"].get_rate(invoice_id=invoice.id)
+        self.assertEqual(result, (P2SH_ADDRESS, 0.002, "BTC"))
+        self.assertEqual(self.address.invoice_id, invoice)
+        self.assertIn(P2SH_ADDRESS, invoice.message_ids[0].body)
+
 
 @tagged("post_install", "-at_install")
 class TestBitcoinTransaction(TransactionCase):
@@ -379,6 +390,33 @@ class TestBitcoinTransaction(TransactionCase):
         self.assertEqual(tx.bitcoin_address, P2SH_ADDRESS)
         self.assertAlmostEqual(tx.bitcoin_amount, 0.002)
         self.assertEqual(tx.bitcoin_unit, "BTC")
+
+    def _prepare_rate_lookup(self):
+        self.env["bitcoin.address"].search([]).unlink()
+        self.env["bitcoin.address"].create({"name": P2SH_ADDRESS})
+        self.env["bitcoin.rate"].search([]).write(
+            {"markup": 0.0, "unit": "BTC", "digits": 8}
+        )
+
+    def test_create_with_link_command(self):
+        self._prepare_rate_lookup()
+        order = self.env["sale.order"].create({"partner_id": self.partner.id})
+        with patch(REQUESTS_GET, return_value=_response(content=b"0.002")):
+            tx = self._tx(sale_order_ids=[Command.link(order.id)])
+        self.assertEqual(tx.sale_order_ids, order)
+        self.assertEqual(tx.bitcoin_address, P2SH_ADDRESS)
+        self.assertAlmostEqual(tx.bitcoin_amount, 0.002)
+
+    def test_create_with_invoice_link_tuple(self):
+        self._prepare_rate_lookup()
+        invoice = self.env["account.move"].create(
+            {"move_type": "out_invoice", "partner_id": self.partner.id}
+        )
+        with patch(REQUESTS_GET, return_value=_response(content=b"0.002")):
+            tx = self._tx(invoice_ids=[(4, invoice.id)])
+        self.assertEqual(tx.invoice_ids, invoice)
+        self.assertEqual(tx.bitcoin_address, P2SH_ADDRESS)
+        self.assertAlmostEqual(tx.bitcoin_amount, 0.002)
 
     def test_compute_link_address(self):
         tx = self._tx(bitcoin_address=P2SH_ADDRESS)
@@ -464,6 +502,127 @@ class TestBitcoinTransaction(TransactionCase):
         info = self.env["account.payment.method"]._get_payment_method_information()
         self.assertIn("bitcoin", info)
         self.assertEqual(info["bitcoin"]["mode"], "unique")
+
+
+@tagged("post_install", "-at_install")
+class TestBitcoinReconciliation(TransactionCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.provider = cls.env.ref("payment_bitcoin.payment_acquirer_bitcoin")
+        cls.provider.write({"bitcoin_order_older_than": 6, "bitcoin_send_email": False})
+        cls.method = cls.env.ref("payment_bitcoin.payment_method_bitcoin")
+        cls.rate = cls.env["bitcoin.rate"].search([])
+        cls.rate.write({"markup": 10.0, "unit": "BTC", "digits": 8})
+        cls.partner = cls.env["res.partner"].create({"name": "Cron Partner"})
+        product = cls.env["product.product"].create(
+            {"name": "Cron Product", "type": "consu", "list_price": 100.0}
+        )
+        cls.order = cls.env["sale.order"].create(
+            {
+                "partner_id": cls.partner.id,
+                "order_line": [Command.create({"product_id": product.id})],
+            }
+        )
+        cls.address = cls.env["bitcoin.address"].create(
+            {"name": P2SH_ADDRESS, "order_id": cls.order.id}
+        )
+        cls.env["bitcoin.rate.line"].create(
+            {
+                "rate_id": cls.rate.id,
+                "rate": 0.001,
+                "amount": cls.order.amount_total,
+                "currency_id": cls.order.currency_id.id,
+                "order_id": cls.order.id,
+                "name": cls.order.name,
+            }
+        )
+        cls.tx = cls._create_tx(cls.order)
+        cls.tx._set_pending()
+
+    @classmethod
+    def _create_tx(cls, order):
+        with patch(REQUESTS_GET, return_value=_response(content=b"0.001")):
+            return cls.env["payment.transaction"].create(
+                {
+                    "provider_id": cls.provider.id,
+                    "payment_method_id": cls.method.id,
+                    "amount": order.amount_total,
+                    "currency_id": order.currency_id.id,
+                    "partner_id": cls.partner.id,
+                    "reference": "BTC-CRON-{}".format(
+                        cls.env["payment.transaction"].search_count([])
+                    ),
+                    "sale_order_ids": [Command.link(order.id)],
+                }
+            )
+
+    def _run_cron(self, received):
+        def fake_check_received(addr):
+            if addr != P2SH_ADDRESS:
+                return {"received": 0, "min_conf": 0, "when": None, "transaction": None}
+            return {
+                "received": received,
+                "min_conf": 3,
+                "when": datetime.now(),
+                "transaction": TX_HASH,
+            }
+
+        with (
+            patch(
+                "odoo.addons.payment_bitcoin.models.bitcoin.check_received",
+                side_effect=fake_check_received,
+            ) as check_mock,
+            patch(
+                "odoo.addons.sale.models.sale_order.SaleOrder._create_invoices",
+                return_value=self.env["account.move"],
+            ),
+        ):
+            self.env["bitcoin.address"].cron_bitcoin_payment_reconciliation()
+        return check_mock
+
+    def test_transaction_amount_includes_markup(self):
+        self.assertEqual(self.tx.bitcoin_address, P2SH_ADDRESS)
+        self.assertAlmostEqual(self.tx.bitcoin_amount, 0.0011)
+
+    def test_amount_without_markup_is_insufficient(self):
+        self._run_cron(0.001)
+        self.assertEqual(self.order.state, "draft")
+        self.assertFalse(self.address.is_btc_used)
+        self.assertIn("missing", self.order.message_ids[0].body)
+        self.assertIn("0.0001", self.order.message_ids[0].body)
+
+    def test_amount_with_markup_is_accepted(self):
+        self._run_cron(0.0011)
+        self.assertEqual(self.order.state, "sale")
+
+    def test_amount_in_mbtc_is_accepted(self):
+        self.tx.write({"bitcoin_amount": 1.1, "bitcoin_unit": "mBTC"})
+        self._run_cron(0.0011)
+        self.assertEqual(self.order.state, "sale")
+
+    def test_rate_settings_changed_after_checkout(self):
+        self.rate.markup = 50.0
+        self._run_cron(0.0011)
+        self.assertEqual(self.order.state, "sale")
+
+    def test_no_transaction_is_skipped(self):
+        self.tx._set_canceled()
+        check_mock = self._run_cron(0.0011)
+        self.assertNotIn(
+            P2SH_ADDRESS, [call.args[0] for call in check_mock.call_args_list]
+        )
+        self.assertEqual(self.order.state, "draft")
+
+    def test_get_bitcoin_transaction(self):
+        self.assertEqual(self.address._get_bitcoin_transaction(), self.tx)
+        other_address_tx = self._create_tx(self.order)
+        other_address_tx.bitcoin_address = LEGACY_ADDRESS
+        self.assertEqual(self.address._get_bitcoin_transaction(), self.tx)
+        other_order_tx = self._create_tx(self.order.copy())
+        self.assertNotEqual(self.address._get_bitcoin_transaction(), other_order_tx)
+        self.tx._set_done()
+        self.assertFalse(self.address._get_bitcoin_transaction())
 
 
 @tagged("post_install", "-at_install")

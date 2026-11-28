@@ -4,10 +4,23 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.fields import Command
 
 from ..controllers.bitcoin import BitcoinController
 
 _logger = logging.getLogger(__name__)
+
+
+def _first_id_from_commands(commands):
+    """Return the first record id linked by x2many commands."""
+    for command in commands or []:
+        if isinstance(command, int):
+            return command
+        if command[0] == Command.SET and command[2]:
+            return command[2][0]
+        if command[0] == Command.LINK:
+            return command[1]
+    return False
 
 
 class BitcoinPaymentTransaction(models.Model):
@@ -69,13 +82,13 @@ class BitcoinPaymentTransaction(models.Model):
                     continue
 
                 kwargs = {}
-                sale_order_ids = values.get("sale_order_ids", [])
-                if sale_order_ids:
-                    kwargs["order_id"] = sale_order_ids[0][2][0]
+                order_id = _first_id_from_commands(values.get("sale_order_ids"))
+                if order_id:
+                    kwargs["order_id"] = order_id
 
-                invoice_ids = values.get("invoice_ids", [])
-                if invoice_ids:
-                    kwargs["invoice_id"] = invoice_ids[0][2][0]
+                invoice_id = _first_id_from_commands(values.get("invoice_ids"))
+                if invoice_id:
+                    kwargs["invoice_id"] = invoice_id
 
                 if kwargs:
                     resp = self.env["bitcoin.rate"].get_rate(**kwargs)

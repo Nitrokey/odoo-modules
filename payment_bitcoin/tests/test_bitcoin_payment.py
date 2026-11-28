@@ -709,7 +709,7 @@ class TestBitcoinPayment(TransactionCase):
         transaction.write(
             {
                 "bitcoin_address": "32NUyczyB1uizWPHknAqDbWV3eogkVnpLh",
-                "bitcoin_amount": 0.00001234,  # Same as mocked rate
+                "bitcoin_amount": 1.234,  # More than the mocked payment
                 "bitcoin_unit": "BTC",
             }
         )
