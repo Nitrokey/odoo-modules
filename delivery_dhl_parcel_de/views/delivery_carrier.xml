@@ -62,6 +62,7 @@
                                 required="dhl_export_type == 'OTHER'"
                                 invisible="dhl_export_type != 'OTHER'"
                             />
+                            <field name="declared_value_percentage" />
                             <field name="is_return_shipment" />
                             <field
                                 name="dhl_return_receiver_id"

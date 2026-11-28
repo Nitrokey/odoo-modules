@@ -10,6 +10,7 @@ Features
 * Update tracking information in Odoo from DHL
 * Generate and print shipping labels in Odoo
 * Deliver to DHL Packstations (lockers) and Postfilialen (post offices)
+* Insure shipments with a declared value of "Declared Value (%)" of the sale price
 
 Note that shipping rates are not retrieved from DHL but need to be configured.
 

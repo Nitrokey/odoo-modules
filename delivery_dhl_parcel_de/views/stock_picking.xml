@@ -17,6 +17,14 @@
                 <xpath expr="//field[@name='origin']" position="after">
                     <field name="is_return_shipment" invisible="1" />
                 </xpath>
+                <field name="carrier_id" position="after">
+                    <field name="declared_value_currency_id" invisible="1" />
+                    <field
+                        name="declared_value"
+                        invisible="delivery_type != 'dhl_parcel_de_provider'"
+                        readonly="state in ('done', 'cancel')"
+                    />
+                </field>
             </field>
         </record>
     </data>
