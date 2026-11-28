@@ -21,11 +21,7 @@
                 <div>
                     <field name="bitcoin_address_link" readonly="1" />
                 </div>
-                <label for="bitcoin_amount" />
-                <div>
-            <field name="bitcoin_amount" />&amp;nbsp;
-            <field name="bitcoin_unit" />
-          </div>
+                <field name="bitcoin_amount" />
             </xpath>
         </field>
     </record>

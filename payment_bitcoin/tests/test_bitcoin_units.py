@@ -271,7 +271,7 @@ class TestBitcoinRate(TransactionCase):
     def test_get_rate_new_lookup(self):
         with patch(REQUESTS_GET, return_value=self._rate_response()) as mocked:
             result = self.env["bitcoin.rate"].get_rate(order_id=self.order.id)
-        self.assertEqual(result, (P2SH_ADDRESS, 0.002, "BTC"))
+        self.assertEqual(result, (P2SH_ADDRESS, 0.002))
         url = mocked.call_args[0][0]
         self.assertIn(self.order.currency_id.name, url)
         self.assertIn(str(self.order.amount_total), url)
@@ -286,17 +286,26 @@ class TestBitcoinRate(TransactionCase):
             self.env["bitcoin.rate"].get_rate(order_id=self.order.id)
         with patch(REQUESTS_GET, side_effect=AssertionError("no lookup")):
             result = self.env["bitcoin.rate"].get_rate(order_ref=self.order.name)
-        self.assertEqual(result, (P2SH_ADDRESS, 0.002, "BTC"))
+        self.assertEqual(result, (P2SH_ADDRESS, 0.002))
 
     def test_get_rate_markup_and_mbtc(self):
         self.rate.write({"markup": 10.0, "unit": "mBTC", "digits": 4})
         with patch(REQUESTS_GET, return_value=self._rate_response()):
-            address, amount, unit = self.env["bitcoin.rate"].get_rate(
-                order_id=self.order.id
-            )
+            address, amount = self.env["bitcoin.rate"].get_rate(order_id=self.order.id)
         self.assertEqual(address, P2SH_ADDRESS)
-        self.assertEqual(unit, "mBTC")
-        self.assertAlmostEqual(amount, 2.2)
+        self.assertAlmostEqual(amount, 0.0022)
+
+    def test_get_rate_rounds_in_display_unit(self):
+        self.rate.write({"unit": "mBTC", "digits": 2})
+        response = self._rate_response(b"0.00123456")
+        with patch(REQUESTS_GET, return_value=response):
+            self.assertEqual(
+                self.env["bitcoin.rate"].get_rate(order_id=self.order.id)[1], 0.00123
+            )
+        self.rate.write({"unit": "BTC", "digits": 4})
+        self.assertEqual(
+            self.env["bitcoin.rate"].get_rate(order_id=self.order.id)[1], 0.0012
+        )
 
     def test_get_rate_http_error(self):
         with patch(REQUESTS_GET, return_value=_response(status_code=500)):
@@ -332,7 +341,7 @@ class TestBitcoinRate(TransactionCase):
         )
         with patch(REQUESTS_GET, return_value=self._rate_response()):
             result = self.env["bitcoin.rate"].get_rate(invoice_id=invoice.id)
-        self.assertEqual(result, (P2SH_ADDRESS, 0.002, "BTC"))
+        self.assertEqual(result, (P2SH_ADDRESS, 0.002))
         self.assertEqual(self.address.invoice_id, invoice)
         self.assertIn(P2SH_ADDRESS, invoice.message_ids[0].body)
 
@@ -389,7 +398,6 @@ class TestBitcoinTransaction(TransactionCase):
             tx = self._tx(sale_order_ids=[(6, 0, order.ids)])
         self.assertEqual(tx.bitcoin_address, P2SH_ADDRESS)
         self.assertAlmostEqual(tx.bitcoin_amount, 0.002)
-        self.assertEqual(tx.bitcoin_unit, "BTC")
 
     def _prepare_rate_lookup(self):
         self.env["bitcoin.address"].search([]).unlink()
@@ -481,22 +489,31 @@ class TestBitcoinTransaction(TransactionCase):
 
     def test_render_values(self):
         lang = self.env["res.lang"]._lang_get("en_US")
-        tx = self._tx(
-            bitcoin_address=P2SH_ADDRESS, bitcoin_amount=0.5, bitcoin_unit="BTC"
-        )
+        tx = self._tx(bitcoin_address=P2SH_ADDRESS, bitcoin_amount=0.5)
         tx.last_state_change = fields.Datetime.now()
         info, uri = get_bitcoin_render_values(tx, lang)
         self.assertEqual(
             uri, f"bitcoin:{P2SH_ADDRESS}$$amount=0.5*$message=Bitcoin Payment"
         )
         self.assertIn(P2SH_ADDRESS, info)
-        self.assertIn("500.0 mBTC", info)
+        self.assertIn("0.5 BTC", info)
+        self.assertIn("500 mBTC", info)
 
-        tx.bitcoin_unit = "mBTC"
-        tx.bitcoin_amount = 500.0
+        tx.bitcoin_amount = 0.0022
         order = SimpleNamespace(name="S001")
         info, uri = get_bitcoin_render_values(tx, lang, order=order)
-        self.assertIn("amount=0.5*", uri)
+        self.assertIn("amount=0.0022*$message=S001", uri)
+        self.assertIn("0.0022 BTC", info)
+        self.assertIn("2.2 mBTC", info)
+
+    def test_render_values_small_amount(self):
+        lang = self.env["res.lang"]._lang_get("en_US")
+        tx = self._tx(bitcoin_address=P2SH_ADDRESS, bitcoin_amount=0.00005)
+        tx.last_state_change = fields.Datetime.now()
+        info, uri = get_bitcoin_render_values(tx, lang)
+        self.assertIn("amount=0.00005*", uri)
+        self.assertIn("0.00005 BTC", info)
+        self.assertIn("0.05 mBTC", info)
 
     def test_account_payment_method_information(self):
         info = self.env["account.payment.method"]._get_payment_method_information()
@@ -596,13 +613,15 @@ class TestBitcoinReconciliation(TransactionCase):
         self._run_cron(0.0011)
         self.assertEqual(self.order.state, "sale")
 
-    def test_amount_in_mbtc_is_accepted(self):
-        self.tx.write({"bitcoin_amount": 1.1, "bitcoin_unit": "mBTC"})
+    def test_checkout_in_mbtc_is_accepted(self):
+        self.rate.unit = "mBTC"
+        tx = self._create_tx(self.order)
+        self.assertAlmostEqual(tx.bitcoin_amount, 0.0011)
         self._run_cron(0.0011)
         self.assertEqual(self.order.state, "sale")
 
     def test_rate_settings_changed_after_checkout(self):
-        self.rate.markup = 50.0
+        self.rate.write({"markup": 50.0, "unit": "mBTC"})
         self._run_cron(0.0011)
         self.assertEqual(self.order.state, "sale")
 

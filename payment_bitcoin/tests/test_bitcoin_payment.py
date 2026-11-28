@@ -397,7 +397,6 @@ class TestBitcoinPayment(TransactionCase):
             {
                 "bitcoin_address": "3N1MrpKTxGfb4CmTzgEYXfcDM9o2s3P5Q1",
                 "bitcoin_amount": 0.00001234,  # Same as mocked rate
-                "bitcoin_unit": "BTC",
             }
         )
 
@@ -594,7 +593,6 @@ class TestBitcoinPayment(TransactionCase):
             {
                 "bitcoin_address": "3Qe4hNh78zVBsPptZAayxgTko6yRPPMrp4",
                 "bitcoin_amount": 0.00001234,  # Same as mocked rate
-                "bitcoin_unit": "BTC",
             }
         )
 
@@ -710,7 +708,6 @@ class TestBitcoinPayment(TransactionCase):
             {
                 "bitcoin_address": "32NUyczyB1uizWPHknAqDbWV3eogkVnpLh",
                 "bitcoin_amount": 1.234,  # More than the mocked payment
-                "bitcoin_unit": "BTC",
             }
         )
 
