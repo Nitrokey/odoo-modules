@@ -80,6 +80,30 @@ class TestCarrierHelpers(common.DhlCommon):
             0.0,
         )
 
+    # declared value
+
+    def test_declared_value_from_sale_order(self):
+        self.carrier.declared_value_percentage = 80
+        order = self._make_order()
+        order.carrier_id = self.carrier
+        order.action_confirm()
+        picking = order.picking_ids
+        picking.move_ids.quantity = 1
+        self.assertEqual(picking.declared_value_currency_id, order.currency_id)
+        self.assertAlmostEqual(
+            picking.declared_value, order.order_line.price_total * 0.8
+        )
+
+    def test_declared_value_without_sale_order(self):
+        self.carrier.declared_value_percentage = 100
+        self.assertEqual(self._make_picking().declared_value, 0.0)
+
+    def test_declared_value_percentage_range(self):
+        with self.assertRaises(ValidationError):
+            self.carrier.declared_value_percentage = 101
+        with self.assertRaises(ValidationError):
+            self.carrier.declared_value_percentage = -1
+
     # package dict
 
     def test_create_package_dict_kg(self):

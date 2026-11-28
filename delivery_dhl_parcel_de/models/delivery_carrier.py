@@ -5,7 +5,7 @@ import re
 
 import requests
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -88,6 +88,20 @@ class DeliveryCarrier(models.Model):
         default="https://www.dhl.de/en/privatkunden/pakete-empfangen/verfolgen.html?piececode=",
         help="Obtained via Get Access! (app creation) and manually approved by DHL.",
     )
+    declared_value_percentage = fields.Float(
+        string="Declared Value (%)",
+        default=0.0,
+        help="Percentage of the sale price to be used as the declared value "
+        "for shipping. 100% means the full sale price will be used.",
+    )
+
+    @api.constrains("declared_value_percentage")
+    def _check_declared_value_percentage(self):
+        for carrier in self:
+            if not 0.0 <= carrier.declared_value_percentage <= 100.0:
+                raise ValidationError(
+                    _("The declared value percentage must be between 0 and 100.")
+                )
 
     @staticmethod
     def _is_packstation(street2):
