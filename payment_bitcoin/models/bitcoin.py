@@ -268,8 +268,6 @@ class BitcoinAddress(models.Model):
             if not tx:
                 continue
             btc_amount = tx.bitcoin_amount
-            if tx.bitcoin_unit == "mBTC":
-                btc_amount /= 1000.0
 
             address_info = check_received(bit_add_obj.name)
             if not address_info:
@@ -627,10 +625,13 @@ class BitcoinRate(models.Model):
             else:
                 b_amount = rate
 
+            # Round in the display unit, but return BTC
             if sobj.unit == "mBTC":
-                b_amount = b_amount * 1000.0
+                b_amount = round(b_amount * 1000.0, sobj.digits) / 1000.0
+            else:
+                b_amount = round(b_amount, sobj.digits)
 
-        return (b_addr, round(b_amount, sobj.digits), sobj.unit)
+        return (b_addr, round(b_amount, 8))
 
     def test_rate(self):
         order = self.env["sale.order"].search([], limit=1)

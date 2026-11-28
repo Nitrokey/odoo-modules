@@ -10,12 +10,11 @@ _logger = logging.getLogger(__name__)
 
 
 def get_bitcoin_render_values(transaction, lang, order=None, invoice=None):
-    if transaction.bitcoin_unit == "mBTC":
-        bitcoin_amount = transaction.bitcoin_amount / 1000.0
-        m_bitcoin_amount = transaction.bitcoin_amount
-    else:
-        bitcoin_amount = transaction.bitcoin_amount
-        m_bitcoin_amount = transaction.bitcoin_amount * 1000.0
+    bitcoin_amount = transaction.bitcoin_amount
+    # Fixed-point, as str() switches to scientific notation below 0.0001
+    bitcoin_text = f"{bitcoin_amount:.8f}".rstrip("0").rstrip(".")
+    btc_places = len(bitcoin_text.partition(".")[2])
+    mbtc_places = max(btc_places - 3, 0)
 
     if order:
         message = order.name
@@ -26,17 +25,16 @@ def get_bitcoin_render_values(transaction, lang, order=None, invoice=None):
 
     uri = _("bitcoin:%(address)s$$amount=%(bt_amt)s*$message=%(msg)s") % {
         "address": transaction.bitcoin_address,
-        "bt_amt": bitcoin_amount,
+        "bt_amt": bitcoin_text,
         "msg": message,
     }
-    decimal_places = len(str(transaction.bitcoin_amount).split(".")[1])
     info = _(
         "Please send %(amount_btc)s %(unit_btc)s \
         (%(amount_mbtc)s %(unit_mbtc)s) \
         to the address %(address)s by %(deadline_date)s UTC."
     ) % {
-        "amount_btc": lang.format(f"%.{decimal_places}f", bitcoin_amount, True),
-        "amount_mbtc": lang.format(f"%.{decimal_places}f", m_bitcoin_amount, True),
+        "amount_btc": lang.format(f"%.{btc_places}f", bitcoin_amount, True),
+        "amount_mbtc": lang.format(f"%.{mbtc_places}f", bitcoin_amount * 1000.0, True),
         "unit_btc": "BTC",
         "unit_mbtc": "mBTC",
         "address": transaction.bitcoin_address,

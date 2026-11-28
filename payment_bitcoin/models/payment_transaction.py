@@ -30,14 +30,7 @@ class BitcoinPaymentTransaction(models.Model):
         string="Time Remaining", compute="_compute_time_remaining"
     )
     bitcoin_address = fields.Char()
-    bitcoin_amount = fields.Float(digits=(20, 6))
-    bitcoin_unit = fields.Selection(
-        [
-            ("BTC", "BTC"),
-            ("mBTC", "mBTC"),
-        ],
-        "Display Unit",
-    )
+    bitcoin_amount = fields.Float("Bitcoin Amount (BTC)", digits=(20, 8))
     bitcoin_address_link = fields.Html("Address Link", compute="_compute_link_address")
 
     def format_bitcoin_amount(self, amount, decimal_places=8):
@@ -95,7 +88,6 @@ class BitcoinPaymentTransaction(models.Model):
                     if resp:
                         values["bitcoin_address"] = resp[0]
                         values["bitcoin_amount"] = resp[1]
-                        values["bitcoin_unit"] = resp[2]
         return super().create(values_list)
 
     @api.model
